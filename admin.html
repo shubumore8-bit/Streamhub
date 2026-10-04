@@ -1,0 +1,5 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin — DesiVexa</title><link rel="stylesheet" href="style.css"></head><body>
+<header><a href="index.html" class="logo">Desi<span>Vexa</span></a><nav><a href="index.html">View site</a></nav></header>
+<main class="wrap admin"><div id="auth"></div><div id="panel" hidden>
+<h1>Admin panel</h1><form id="upload"><label>Title<input name="title" required></label><label>Category<input name="category" required></label><label>Description<textarea name="description"></textarea></label><label>Thumbnail <input name="thumb" type="file" accept="image/*"></label><label>Video <input name="video" type="file" accept="video/*" required></label><label class="check"><input name="confirm" type="checkbox" required> I confirm the uploader has the legal rights and required consent for this content.</label><button class="btn">Upload & Publish</button><p id="status"></p></form><h2>Videos</h2><div id="manage"></div></div></main>
+<script type="module" src="admin.js"></script></body></html>
