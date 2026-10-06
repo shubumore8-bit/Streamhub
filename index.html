@@ -29,7 +29,11 @@
       You must be 18 or older to enter this website.
     </p>
 
-    <button id="enter" class="btn" type="button">
+    <button
+      id="enter"
+      class="btn"
+      type="button"
+    >
       I am 18+ — Enter
     </button>
 
@@ -53,7 +57,10 @@
       ☰
     </button>
 
-    <a href="index.html" class="dvLogo">
+    <a
+      href="index.html"
+      class="dvLogo"
+    >
       Desi<span>Vexa</span>
     </a>
 
@@ -69,7 +76,7 @@
   </div>
 
 
-  <!-- Search -->
+  <!-- SEARCH -->
 
   <div class="dvSearchBox">
 
@@ -89,7 +96,10 @@
 
 <!-- ================= MOBILE MENU ================= -->
 
-<div id="mobileMenu" class="mobileMenu">
+<div
+  id="mobileMenu"
+  class="mobileMenu"
+>
 
   <a href="index.html">
     Home
@@ -97,6 +107,14 @@
 
   <a href="#categories">
     Categories
+  </a>
+
+  <a href="most-viewed.html">
+    Most Viewed
+  </a>
+
+  <a href="latest.html">
+    Latest
   </a>
 
 </div>
@@ -111,6 +129,7 @@
   </div>
 
   <div class="adSpace">
+
     <script
       async
       type="application/javascript"
@@ -127,6 +146,7 @@
         "serve": {}
       });
     </script>
+
   </div>
 
 </div>
@@ -142,9 +162,17 @@
   <section class="welcomeBox">
 
     <div class="sectionTitle">
-      <span class="hdBadge">HD</span>
-      <h1>Best HD Videos</h1>
+
+      <span class="hdBadge">
+        HD
+      </span>
+
+      <h1>
+        Best HD Videos
+      </h1>
+
     </div>
+
 
     <div class="welcomeText">
 
@@ -153,7 +181,10 @@
         and browse our growing collection.
       </p>
 
-      <button class="moreBtn" type="button">
+      <button
+        class="moreBtn"
+        type="button"
+      >
         MORE
       </button>
 
@@ -179,6 +210,7 @@
         ☰ Categories
       </button>
 
+
       <div
         id="cats"
         class="categoryList"
@@ -195,6 +227,7 @@
 
         </div>
 
+
         <div id="categoryItems"></div>
 
       </div>
@@ -209,9 +242,24 @@
   <section class="dvSection">
 
     <div class="dvSectionTitle">
-      <span>›</span>
-      <h2>Most Viewed</h2>
+
+      <span>
+        ›
+      </span>
+
+      <h2>
+
+        <a
+          href="most-viewed.html"
+          class="sectionPageLink"
+        >
+          Most Viewed
+        </a>
+
+      </h2>
+
     </div>
+
 
     <div
       id="trendingVideos"
@@ -223,13 +271,26 @@
 
   <!-- ================= LATEST ================= -->
 
-  <section class="dvSection latestSection">
+  <section
+    class="dvSection latestSection"
+  >
 
     <div class="dvSectionTitle">
 
-      <span>›</span>
+      <span>
+        ›
+      </span>
 
-      <h2>Latest Videos</h2>
+      <h2>
+
+        <a
+          href="latest.html"
+          class="sectionPageLink"
+        >
+          Latest Videos
+        </a>
+
+      </h2>
 
     </div>
 
@@ -274,7 +335,15 @@
 </footer>
 
 
-<script type="module" src="app.js?v=13"></script>
+<!-- ================= APP ================= -->
+
+<script
+  type="module"
+  src="app.js?v=13">
+</script>
+
+
+<!-- ================= MOBILE CONTROLS ================= -->
 
 <script>
 
@@ -291,24 +360,58 @@ const searchBox =
   document.querySelector(".dvSearchBox");
 
 
-menuBtn?.addEventListener("click", () => {
+/* MENU */
 
-  mobileMenu.classList.toggle("show");
+menuBtn?.addEventListener(
+  "click",
+  () => {
 
-});
+    mobileMenu?.classList.toggle("show");
 
-
-mobileSearchBtn?.addEventListener("click", () => {
-
-  searchBox.classList.toggle("show");
-
-  if (searchBox.classList.contains("show")) {
-    document.querySelector("#search")?.focus();
   }
+);
 
-});
+
+/* SEARCH */
+
+mobileSearchBtn?.addEventListener(
+  "click",
+  () => {
+
+    searchBox?.classList.toggle("show");
+
+    if (
+      searchBox?.classList.contains("show")
+    ) {
+
+      document
+        .querySelector("#search")
+        ?.focus();
+
+    }
+
+  }
+);
 
 </script>
+
+
+<!-- ================= SECTION LINK STYLE ================= -->
+
+<style>
+
+.sectionPageLink {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.sectionPageLink:hover {
+  color: #d90000;
+}
+
+</style>
+
 
 </body>
 </html>
