@@ -1,13 +1,15 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Watch Video — DesiVexa</title>
 
   <link rel="stylesheet" href="style.css">
 
+  <!-- Fluid Player -->
   <link
     rel="stylesheet"
     href="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.css"
@@ -82,6 +84,29 @@
       text-decoration: none;
     }
 
+    /* ===============================
+       JUICYADS
+    =============================== */
+
+    .juicyAdBox {
+      width: 100%;
+      min-height: 286px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 15px auto 25px;
+      overflow: hidden;
+    }
+
+    .juicyAdBox ins {
+      display: block;
+      max-width: 100%;
+    }
+
+    /* ===============================
+       RANDOM VIDEOS
+    =============================== */
+
     .randomSection {
       margin-top: 25px;
     }
@@ -95,6 +120,7 @@
     }
 
     @media (max-width: 699px) {
+
       .videoPage {
         padding: 10px 5px 40px;
       }
@@ -106,95 +132,211 @@
       .videoMeta {
         font-size: 11px;
       }
+
+      .juicyAdBox {
+        min-height: 286px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+      }
     }
   </style>
 </head>
 
+
 <body>
 
-  <header class="dvHeader">
-    <div class="dvHeaderInner">
-      <button class="headerIcon" id="menuBtn" type="button">☰</button>
+  <!-- ===============================
+       HEADER
+  =============================== -->
 
-      <a href="index.html" class="dvLogo">
+  <header class="dvHeader">
+
+    <div class="dvHeaderInner">
+
+      <button
+        class="headerIcon"
+        id="menuBtn"
+        type="button"
+        aria-label="Menu"
+      >
+        ☰
+      </button>
+
+      <a
+        href="index.html"
+        class="dvLogo"
+      >
         Desi<span>Vexa</span>
       </a>
 
-      <button class="headerIcon" id="searchBtn" type="button">⌕</button>
+      <button
+        class="headerIcon"
+        id="searchBtn"
+        type="button"
+        aria-label="Search"
+      >
+        ⌕
+      </button>
+
     </div>
 
-    <div class="dvSearchBox" id="searchBox">
+
+    <div
+      class="dvSearchBox"
+      id="searchBox"
+    >
+
       <input
         id="topSearch"
         type="search"
         placeholder="Search videos..."
         autocomplete="off"
       >
+
       <span>⌕</span>
+
     </div>
+
   </header>
 
-  <div class="mobileMenu" id="mobileMenu">
-    <a href="index.html">Home</a>
-    <a href="index.html#categories">Categories</a>
-    <a href="most-viewed.html">Most Viewed</a>
-    <a href="latest.html">Latest</a>
+
+  <!-- ===============================
+       MOBILE MENU
+  =============================== -->
+
+  <div
+    class="mobileMenu"
+    id="mobileMenu"
+  >
+
+    <a href="index.html">
+      Home
+    </a>
+
+    <a href="index.html#categories">
+      Categories
+    </a>
+
+    <a href="most-viewed.html">
+      Most Viewed
+    </a>
+
+    <a href="latest.html">
+      Latest
+    </a>
+
   </div>
 
+
+  <!-- ===============================
+       MAIN
+  =============================== -->
+
   <main class="wrap videoPage">
+
     <div id="page">
-      <p class="muted">Loading video...</p>
+
+      <p class="muted">
+        Loading video...
+      </p>
+
     </div>
+
   </main>
 
+
+  <!-- ===============================
+       FOOTER
+  =============================== -->
+
   <footer class="dvFooter">
+
     <div class="footerLogo">
       Desi<span>Vexa</span>
     </div>
 
-    <p>18+ only · All content must be lawful and consensual.</p>
+    <p>
+      18+ only · All content must be lawful and consensual.
+    </p>
 
     <p>
-      <a href="legal.html">Terms & Privacy</a>
+      <a href="legal.html">
+        Terms & Privacy
+      </a>
     </p>
+
   </footer>
 
+
+  <!-- ===============================
+       HEADER JS
+  =============================== -->
+
   <script>
-    const menuBtn = document.querySelector("#menuBtn");
-    const mobileMenu = document.querySelector("#mobileMenu");
 
-    const searchBtn = document.querySelector("#searchBtn");
-    const searchBox = document.querySelector("#searchBox");
+    const menuBtn =
+      document.querySelector("#menuBtn");
 
-    menuBtn?.addEventListener("click", () => {
-      mobileMenu?.classList.toggle("show");
-    });
+    const mobileMenu =
+      document.querySelector("#mobileMenu");
 
-    searchBtn?.addEventListener("click", () => {
-      searchBox?.classList.toggle("show");
+    const searchBtn =
+      document.querySelector("#searchBtn");
 
-      if (searchBox?.classList.contains("show")) {
-        document.querySelector("#topSearch")?.focus();
+    const searchBox =
+      document.querySelector("#searchBox");
+
+
+    menuBtn?.addEventListener(
+      "click",
+      () => {
+
+        mobileMenu?.classList.toggle("show");
+
       }
-    });
+    );
 
-    document.querySelector("#topSearch")?.addEventListener("keydown", event => {
-      if (event.key !== "Enter") return;
 
-      const value = event.target.value.trim();
+    searchBtn?.addEventListener(
+      "click",
+      () => {
 
-      if (!value) return;
+        searchBox?.classList.toggle("show");
 
-      location.href =
-        `index.html?search=${encodeURIComponent(value)}`;
-    });
+        if (
+          searchBox?.classList.contains("show")
+        ) {
+
+          document
+            .querySelector("#topSearch")
+            ?.focus();
+
+        }
+
+      }
+    );
+
   </script>
+
+
+  <!-- ===============================
+       FLUID PLAYER
+  =============================== -->
 
   <script
     src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js">
   </script>
 
-  <script type="module" src="video.js?v=22"></script>
+
+  <!-- ===============================
+       VIDEO JS
+  =============================== -->
+
+  <script
+    type="module"
+    src="video.js?v=23">
+  </script>
+
 
 </body>
 </html>
