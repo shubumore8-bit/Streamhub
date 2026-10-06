@@ -6,16 +6,17 @@ const supabase = createClient(
   SUPABASE_ANON_KEY
 );
 
-// ===============================
+
+// =====================================
 // HILLTOPADS VAST
-// ===============================
+// =====================================
 const HILLTOPADS_VAST =
   "https://organic-package.com/dYm/F.zHdyGONAvyZkGAUS/qeGmn9PuvZDUclVkvPITVcs0/O-T/MwxWN/j/EPtqNizIQj5FMbzmEV2/NIQU";
 
 
-// ===============================
+// =====================================
 // HELPERS
-// ===============================
+// =====================================
 function esc(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
@@ -25,14 +26,15 @@ function esc(value) {
     .replace(/'/g, "&#039;");
 }
 
+
 function getVideoId() {
   return new URLSearchParams(location.search).get("id");
 }
 
 
-// ===============================
+// =====================================
 // AGE GATE
-// ===============================
+// =====================================
 function ageGate() {
   const key = "desivexa_age_verified";
 
@@ -50,13 +52,14 @@ function ageGate() {
   }
 
   localStorage.setItem(key, "1");
+
   return true;
 }
 
 
-// ===============================
+// =====================================
 // LOAD VIDEO
-// ===============================
+// =====================================
 async function loadVideo() {
   const page = document.querySelector("#page");
 
@@ -75,12 +78,26 @@ async function loadVideo() {
     return;
   }
 
-  page.innerHTML = `<p class="muted">Loading video...</p>`;
+  page.innerHTML = `
+    <p class="muted">Loading video...</p>
+  `;
 
   try {
+
+    // =====================================
+    // ONLY FETCH REQUIRED VIDEO FIELDS
+    // =====================================
     const { data: video, error } = await supabase
       .from("videos")
-      .select("*")
+      .select(`
+        id,
+        title,
+        category,
+        description,
+        video_url,
+        thumbnail_url,
+        views
+      `)
       .eq("id", id)
       .eq("published", true)
       .maybeSingle();
@@ -98,11 +115,30 @@ async function loadVideo() {
       return;
     }
 
-    const title = esc(video.title || "Untitled video");
-    const category = esc(video.category || "Other");
-    const description = esc(video.description || "");
-    const videoUrl = esc(video.video_url || "");
-    const thumbnail = esc(video.thumbnail_url || "");
+
+    // =====================================
+    // DATA
+    // =====================================
+    const title = esc(
+      video.title || "Untitled video"
+    );
+
+    const category = esc(
+      video.category || "Other"
+    );
+
+    const description = esc(
+      video.description || ""
+    );
+
+    const videoUrl = esc(
+      video.video_url || ""
+    );
+
+    const thumbnail = esc(
+      video.thumbnail_url || ""
+    );
+
 
     if (!videoUrl) {
       page.innerHTML = `
@@ -113,38 +149,52 @@ async function loadVideo() {
       return;
     }
 
-    // ===============================
+
+    // =====================================
     // VIDEO HTML
-    // ===============================
+    // =====================================
     page.innerHTML = `
       <section class="videoWatch">
 
         <div class="videoPlayerWrap">
+
           <video
             id="player"
             controls
             playsinline
             preload="metadata"
             ${thumbnail ? `poster="${thumbnail}"` : ""}
-            style="width:100%;height:auto;background:#000;"
+            style="
+              width:100%;
+              height:auto;
+              background:#000;
+            "
           >
+
             <source
               src="${videoUrl}"
               type="video/mp4"
             >
+
           </video>
+
         </div>
+
 
         <div class="videoInfo">
 
           <h1>${title}</h1>
 
           <div class="videoMeta">
+
             <span>${category}</span>
+
             <span>
               ${Number(video.views || 0).toLocaleString()} views
             </span>
+
           </div>
+
 
           ${
             description
@@ -154,6 +204,7 @@ async function loadVideo() {
 
         </div>
 
+
         <!-- RANDOM VIDEOS -->
         <div id="randomVideos"></div>
 
@@ -161,9 +212,9 @@ async function loadVideo() {
     `;
 
 
-    // ===============================
+    // =====================================
     // HILLTOPADS PRE-ROLL
-    // ===============================
+    // =====================================
     if (window.fluidPlayer) {
 
       try {
@@ -171,25 +222,41 @@ async function loadVideo() {
         window.fluidPlayer("player", {
 
           layoutControls: {
+
             autoPlay: false,
+
             allowDownload: false,
+
             playbackRateEnabled: true,
+
             fillToContainer: true,
+
             playButtonShowing: true,
+
             primaryColor: "#d90000"
+
           },
+
 
           vastOptions: {
 
             adList: [
+
               {
                 roll: "preRoll",
+
                 vastTag: HILLTOPADS_VAST
               }
+
             ],
 
-            maxAllowedVastTagRedirects: 5,
-            vastTimeout: 15000,
+            // Reduced from 5
+            maxAllowedVastTagRedirects: 3,
+
+            // Reduced from 15 seconds
+            vastTimeout: 8000,
+
+            // Keep enabled because current VAST setup uses it
             allowVPAID: true
 
           }
@@ -197,15 +264,20 @@ async function loadVideo() {
         });
 
       } catch (e) {
-        console.error("Fluid Player error:", e);
+
+        console.error(
+          "Fluid Player error:",
+          e
+        );
+
       }
 
     }
 
 
-    // ===============================
+    // =====================================
     // COUNT VIEW
-    // ===============================
+    // =====================================
     try {
 
       await supabase.rpc(
@@ -225,10 +297,11 @@ async function loadVideo() {
     }
 
 
-    // ===============================
+    // =====================================
     // RANDOM VIDEOS
-    // ===============================
+    // =====================================
     await loadRandomVideos(video.id);
+
 
   } catch (error) {
 
@@ -236,9 +309,15 @@ async function loadVideo() {
 
     page.innerHTML = `
       <div class="videoError">
+
         <h3>Something went wrong</h3>
+
         <p>Please try again later.</p>
-        <a href="index.html">Go Home</a>
+
+        <a href="index.html">
+          Go Home
+        </a>
+
       </div>
     `;
 
@@ -246,26 +325,45 @@ async function loadVideo() {
 }
 
 
-// ===============================
+// =====================================
 // RANDOM VIDEOS
-// ===============================
+// =====================================
 async function loadRandomVideos(currentId) {
 
-  const box = document.querySelector("#randomVideos");
+  const box = document.querySelector(
+    "#randomVideos"
+  );
 
   if (!box) return;
 
+
   try {
 
-    // Get published videos except current video
+    // =====================================
+    // ONLY GET SMALL REQUIRED FIELDS
+    // =====================================
     const { data, error } = await supabase
+
       .from("videos")
-      .select("*")
+
+      .select(`
+        id,
+        title,
+        category,
+        thumbnail_url,
+        views
+      `)
+
       .eq("published", true)
+
       .neq("id", currentId)
-      .limit(50);
+
+      // Previously 50
+      .limit(12);
+
 
     if (error) throw error;
+
 
     if (!data || data.length === 0) {
 
@@ -275,12 +373,21 @@ async function loadRandomVideos(currentId) {
     }
 
 
-    // Shuffle videos
+    // =====================================
+    // RANDOMIZE
+    // =====================================
     const shuffled = [...data]
-      .sort(() => Math.random() - 0.5)
+
+      .sort(
+        () => Math.random() - 0.5
+      )
+
       .slice(0, 8);
 
 
+    // =====================================
+    // DISPLAY
+    // =====================================
     box.innerHTML = `
 
       <section class="dvSection randomSection">
@@ -294,6 +401,7 @@ async function loadRandomVideos(currentId) {
 
         </div>
 
+
         <div class="dvGrid randomGrid">
 
           ${shuffled
@@ -306,6 +414,21 @@ async function loadRandomVideos(currentId) {
 
     `;
 
+
+    // =====================================
+    // LAZY LOAD IMAGES
+    // =====================================
+    box
+      .querySelectorAll("img")
+      .forEach(img => {
+
+        img.loading = "lazy";
+
+        img.decoding = "async";
+
+      });
+
+
   } catch (error) {
 
     console.warn(
@@ -317,24 +440,30 @@ async function loadRandomVideos(currentId) {
 }
 
 
-// ===============================
+// =====================================
 // VIDEO CARD
-// ===============================
+// =====================================
 function videoCard(video) {
 
-  const id = encodeURIComponent(video.id);
+  const id = encodeURIComponent(
+    video.id
+  );
+
 
   const title = esc(
     video.title || "Untitled video"
   );
 
+
   const category = esc(
     video.category || "Other"
   );
 
+
   const views = Number(
     video.views || 0
   ).toLocaleString();
+
 
   const thumbnail = video.thumbnail_url
     ? esc(video.thumbnail_url)
@@ -352,14 +481,25 @@ function videoCard(video) {
 
         ${
           thumbnail
+
             ? `
+
               <img
+
                 src="${thumbnail}"
+
                 alt="${title}"
+
                 loading="lazy"
+
+                decoding="async"
+
               >
+
             `
+
             : `
+
               <div
                 style="
                   width:100%;
@@ -367,8 +507,10 @@ function videoCard(video) {
                   background:#191919;
                 "
               ></div>
+
             `
         }
+
 
         <div class="thumbOverlay">
 
@@ -376,8 +518,11 @@ function videoCard(video) {
             ▶
           </div>
 
+
           <span class="cardViews">
+
             ${views} views
+
           </span>
 
         </div>
@@ -387,13 +532,17 @@ function videoCard(video) {
 
       <div class="body">
 
-        <h3>${title}</h3>
+        <h3>
+          ${title}
+        </h3>
+
 
         <div class="cardMeta">
 
           <span>
             ${category}
           </span>
+
 
           <span>
             ${views} views
@@ -409,45 +558,59 @@ function videoCard(video) {
 }
 
 
-// ===============================
+// =====================================
 // SEARCH
-// ===============================
+// =====================================
 function setupSearch() {
 
   const search =
-    document.querySelector("#topSearch");
+    document.querySelector(
+      "#topSearch"
+    );
+
 
   if (!search) return;
+
 
   search.addEventListener(
     "keydown",
     event => {
 
-      if (event.key !== "Enter") return;
+      if (event.key !== "Enter") {
+        return;
+      }
+
 
       const value =
-        search.value.trim();
+        event.target.value.trim();
+
 
       if (!value) return;
+
 
       location.href =
         `index.html?search=${encodeURIComponent(value)}`;
 
     }
   );
+
 }
 
 
-// ===============================
+// =====================================
 // START
-// ===============================
+// =====================================
 document.addEventListener(
   "DOMContentLoaded",
   () => {
 
-    if (!ageGate()) return;
+    if (!ageGate()) {
+      return;
+    }
+
 
     setupSearch();
+
 
     loadVideo();
 
