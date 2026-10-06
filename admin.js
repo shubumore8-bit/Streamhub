@@ -1,17 +1,722 @@
-import {supabase,esc} from "./app.js";
-const auth=document.querySelector("#auth"),panel=document.querySelector("#panel"),status=document.querySelector("#status");
-async function boot(){
- const {data:{session}}=await supabase.auth.getSession();
- if(!session){showLogin();return}
- panel.hidden=false;auth.innerHTML=`<p>Signed in as ${esc(session.user.email)} <button id="logout" class="btn ghost">Log out</button></p>`;document.querySelector("#logout").onclick=()=>supabase.auth.signOut().then(()=>location.reload());load();
+import { supabase, esc } from "./app.js";
+
+
+const auth =
+  document.querySelector("#auth");
+
+const panel =
+  document.querySelector("#panel");
+
+const status =
+  document.querySelector("#status");
+
+const manage =
+  document.querySelector("#manage");
+
+const adminSearch =
+  document.querySelector("#adminSearch");
+
+const adminFilter =
+  document.querySelector("#adminFilter");
+
+const uploadBtn =
+  document.querySelector("#uploadBtn");
+
+
+let videos = [];
+
+
+/* =========================
+   BOOT
+========================= */
+
+async function boot() {
+
+  const {
+    data: {
+      session
+    }
+  } = await supabase.auth.getSession();
+
+
+  if (!session) {
+
+    showLogin();
+
+    return;
+
+  }
+
+
+  panel.hidden = false;
+
+
+  auth.innerHTML = `
+
+    <div class="adminAccount">
+
+      <span>
+        Signed in as
+        <strong>
+          ${esc(session.user.email)}
+        </strong>
+      </span>
+
+      <button
+        id="logout"
+        class="btn ghost"
+        type="button"
+      >
+        Log out
+      </button>
+
+    </div>
+
+  `;
+
+
+  document
+    .querySelector("#logout")
+    .onclick = async () => {
+
+      await supabase.auth.signOut();
+
+      location.reload();
+
+    };
+
+
+  await load();
+
 }
-function showLogin(){auth.innerHTML=`<form id="login" class="form"><h1>Admin login</h1><label>Email<input name="email" type="email" required></label><label>Password<input name="password" type="password" required></label><button class="btn">Sign in</button><p id="loginMsg"></p></form>`;document.querySelector("#login").onsubmit=async e=>{e.preventDefault();const d=new FormData(e.target);const {error}=await supabase.auth.signInWithPassword({email:d.get("email"),password:d.get("password")});if(error)document.querySelector("#loginMsg").textContent=error.message;else location.reload()}}
-async function load(){const {data}=await supabase.from("videos").select("*").order("created_at",{ascending:false});document.querySelector("#manage").innerHTML=(data||[]).map(v=>`<div class="manage"><strong>${esc(v.title)}</strong><span>${v.published?"Published":"Hidden"}</span><button data-edit="${v.id}" class="btn ghost">Edit</button><button data-id="${v.id}" data-p="${v.published}" class="btn ghost">${v.published?"Unpublish":"Publish"}</button><button data-del="${v.id}" class="btn danger">Delete</button></div>`).join("");document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=async()=>{const id=b.dataset.edit;const {data:v,error}=await supabase.from("videos").select("*").eq("id",id).single();if(error||!v){alert("Could not load video");return}const title=prompt("Title",v.title);if(title===null)return;const category=prompt("Category",v.category);if(category===null)return;const description=prompt("Description",v.description||"");if(description===null)return;const {error:ue}=await supabase.from("videos").update({title,category,description}).eq("id",id);if(ue)alert(ue.message);else load()});document.querySelectorAll("[data-id]").forEach(b=>b.onclick=async()=>{await supabase.from("videos").update({published:b.dataset.p!=="true"}).eq("id",b.dataset.id);load()});document.querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{if(confirm("Delete this record?")){await supabase.from("videos").delete().eq("id",b.dataset.del);load()}})}
-document.querySelector("#upload").onsubmit=async e=>{e.preventDefault();status.textContent="Uploading...";const d=new FormData(e.target),video=d.get("video"),thumb=d.get("thumb"),id=crypto.randomUUID(),base=`${id}-${Date.now()}`;
- const vr=await supabase.storage.from("videos").upload(`${base}-${video.name}`,video,{contentType:video.type,upsert:false}); if(vr.error){status.textContent=vr.error.message;return}
- let thumbUrl="";if(thumb?.size){const tr=await supabase.storage.from("thumbnails").upload(`${base}-${thumb.name}`,thumb,{contentType:thumb.type});if(!tr.error)thumbUrl=supabase.storage.from("thumbnails").getPublicUrl(tr.data.path).data.publicUrl}
- const vu=supabase.storage.from("videos").getPublicUrl(vr.data.path).data.publicUrl;
- const {error}=await supabase.from("videos").insert({id,title:d.get("title"),category:d.get("category"),description:d.get("description"),video_url:vu,thumbnail_url:thumbUrl,published:true});
- status.textContent=error?error.message:"Uploaded and published.";if(!error){e.target.reset();load()}
-};
-boot();
+
+
+/* =========================
+   LOGIN
+========================= */
+
+function showLogin() {
+
+  auth.innerHTML = `
+
+    <div class="adminLogin">
+
+      <span class="sectionLabel">
+        DESIVEXA ADMIN
+      </span>
+
+      <h1>Admin Login</h1>
+
+      <p class="muted">
+        Sign in to manage your videos.
+      </p>
+
+
+      <form id="login" class="adminForm">
+
+        <label>
+          Email
+
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            required
+          >
+        </label>
+
+
+        <label>
+          Password
+
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            required
+          >
+        </label>
+
+
+        <button
+          class="btn"
+          type="submit"
+        >
+          Sign in
+        </button>
+
+
+        <p
+          id="loginMsg"
+          class="adminStatus"
+        ></p>
+
+      </form>
+
+    </div>
+
+  `;
+
+
+  document
+    .querySelector("#login")
+    .onsubmit = async e => {
+
+      e.preventDefault();
+
+
+      const form =
+        new FormData(e.target);
+
+
+      const email =
+        form.get("email");
+
+      const password =
+        form.get("password");
+
+
+      const msg =
+        document.querySelector(
+          "#loginMsg"
+        );
+
+
+      msg.textContent =
+        "Signing in...";
+
+
+      const {
+        error
+      } =
+        await supabase.auth
+          .signInWithPassword({
+            email,
+            password
+          });
+
+
+      if (error) {
+
+        msg.textContent =
+          error.message;
+
+        return;
+
+      }
+
+
+      location.reload();
+
+    };
+
+}
+
+
+/* =========================
+   LOAD
+========================= */
+
+async function load() {
+
+  const {
+    data,
+    error
+  } =
+    await supabase
+      .from("videos")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+
+  if (error) {
+
+    manage.innerHTML = `
+
+      <p class="empty">
+        ${esc(error.message)}
+      </p>
+
+    `;
+
+    return;
+
+  }
+
+
+  videos = data || [];
+
+
+  updateStats();
+
+  render();
+
+}
+
+
+/* =========================
+   STATS
+========================= */
+
+function updateStats() {
+
+  const total =
+    videos.length;
+
+
+  const published =
+    videos.filter(
+      v => v.published
+    ).length;
+
+
+  const hidden =
+    total - published;
+
+
+  const views =
+    videos.reduce(
+      (sum, v) =>
+        sum +
+        Number(v.views || 0),
+      0
+    );
+
+
+  const totalEl =
+    document.querySelector(
+      "#statTotal"
+    );
+
+  const publishedEl =
+    document.querySelector(
+      "#statPublished"
+    );
+
+  const hiddenEl =
+    document.querySelector(
+      "#statHidden"
+    );
+
+  const viewsEl =
+    document.querySelector(
+      "#statViews"
+    );
+
+
+  if (totalEl)
+    totalEl.textContent =
+      total.toLocaleString();
+
+
+  if (publishedEl)
+    publishedEl.textContent =
+      published.toLocaleString();
+
+
+  if (hiddenEl)
+    hiddenEl.textContent =
+      hidden.toLocaleString();
+
+
+  if (viewsEl)
+    viewsEl.textContent =
+      views.toLocaleString();
+
+}
+
+
+/* =========================
+   FILTER
+========================= */
+
+function getFiltered() {
+
+  const query =
+    (
+      adminSearch?.value ||
+      ""
+    )
+      .toLowerCase()
+      .trim();
+
+
+  const filter =
+    adminFilter?.value ||
+    "all";
+
+
+  return videos.filter(v => {
+
+    const text = (
+
+      String(v.title || "") +
+      " " +
+      String(v.category || "") +
+      " " +
+      String(v.description || "")
+
+    ).toLowerCase();
+
+
+    const searchOk =
+      !query ||
+      text.includes(query);
+
+
+    const filterOk =
+
+      filter === "all"
+
+        ? true
+
+        : filter === "published"
+
+          ? v.published === true
+
+          : v.published === false;
+
+
+    return (
+      searchOk &&
+      filterOk
+    );
+
+  });
+
+}
+
+
+/* =========================
+   RENDER
+========================= */
+
+function render() {
+
+  const items =
+    getFiltered();
+
+
+  if (!items.length) {
+
+    manage.innerHTML = `
+
+      <div class="adminEmpty">
+
+        <strong>
+          No videos found
+        </strong>
+
+        <span>
+          Try another search or filter.
+        </span>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  manage.innerHTML =
+    items
+      .map(videoRow)
+      .join("");
+
+
+  /* EDIT */
+
+  document
+    .querySelectorAll(
+      "[data-edit]"
+    )
+    .forEach(button => {
+
+      button.onclick = () =>
+        editVideo(
+          button.dataset.edit
+        );
+
+    });
+
+
+  /* PUBLISH */
+
+  document
+    .querySelectorAll(
+      "[data-toggle]"
+    )
+    .forEach(button => {
+
+      button.onclick = () =>
+        togglePublish(
+          button.dataset.toggle,
+          button.dataset.published
+        );
+
+    });
+
+
+  /* DELETE */
+
+  document
+    .querySelectorAll(
+      "[data-delete]"
+    )
+    .forEach(button => {
+
+      button.onclick = () =>
+        deleteVideo(
+          button.dataset.delete
+        );
+
+    });
+
+}
+
+
+/* =========================
+   VIDEO ROW
+========================= */
+
+function videoRow(v) {
+
+  const title =
+    esc(
+      v.title ||
+      "Untitled video"
+    );
+
+
+  const category =
+    esc(
+      v.category ||
+      "Other"
+    );
+
+
+  const views =
+    Number(
+      v.views || 0
+    ).toLocaleString();
+
+
+  const thumb =
+    v.thumbnail_url
+
+      ? `
+        <img
+          src="${esc(v.thumbnail_url)}"
+          alt=""
+        >
+      `
+
+      : `
+        <div class="adminThumbEmpty">
+          ▶
+        </div>
+      `;
+
+
+  return `
+
+    <div class="manage">
+
+      <div class="manageThumb">
+        ${thumb}
+      </div>
+
+
+      <div class="manageInfo">
+
+        <strong>
+          ${title}
+        </strong>
+
+        <span>
+          ${category}
+          ·
+          ${views} views
+        </span>
+
+        <small
+          class="${
+            v.published
+              ? "published"
+              : "hidden"
+          }"
+        >
+
+          ${
+            v.published
+              ? "● Published"
+              : "● Hidden"
+          }
+
+        </small>
+
+      </div>
+
+
+      <div class="manageActions">
+
+        <button
+          class="btn ghost"
+          data-edit="${v.id}"
+          type="button"
+        >
+          Edit
+        </button>
+
+
+        <button
+          class="btn ghost"
+          data-toggle="${v.id}"
+          data-published="${v.published}"
+          type="button"
+        >
+          ${
+            v.published
+              ? "Unpublish"
+              : "Publish"
+          }
+        </button>
+
+
+        <button
+          class="btn danger"
+          data-delete="${v.id}"
+          type="button"
+        >
+          Delete
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =========================
+   EDIT
+========================= */
+
+async function editVideo(id) {
+
+  const video =
+    videos.find(
+      v => String(v.id) === String(id)
+    );
+
+
+  if (!video) {
+
+    alert(
+      "Video not found."
+    );
+
+    return;
+
+  }
+
+
+  const title =
+    prompt(
+      "Title",
+      video.title || ""
+    );
+
+
+  if (title === null)
+    return;
+
+
+  const category =
+    prompt(
+      "Category",
+      video.category || ""
+    );
+
+
+  if (category === null)
+    return;
+
+
+  const description =
+    prompt(
+      "Description",
+      video.description || ""
+    );
+
+
+  if (description === null)
+    return;
+
+
+  const {
+    error
+  } =
+    await supabase
+      .from("videos")
+      .update({
+        title:
+          title.trim(),
+
+        category:
+          category.trim(),
+
+        description:
+          description.trim()
+      })
+      .eq(
+        "id",
+        id
+      );
+
+
+  if (error) {
+
+    alert(
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  await load();
+
+}
+
+
+/* =========================
+   PUBLISH
+========================= */
+
+async function togglePublish(
+  id,
+  current
+) {
+
+  const next =
+    current !== "true";
+
+
+  const {
+    error
+  } =
+    await supabase
+      .from("videos")
+      .update({
+        published
