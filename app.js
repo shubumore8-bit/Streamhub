@@ -39,6 +39,21 @@ const search = document.querySelector("#search");
 
 
 /* =========================
+   SEARCH FROM URL
+========================= */
+
+const urlParams = new URLSearchParams(location.search);
+
+let searchQuery =
+  (urlParams.get("search") || "")
+    .trim();
+
+if (search && searchQuery) {
+  search.value = searchQuery;
+}
+
+
+/* =========================
    DATA
 ========================= */
 
@@ -57,11 +72,9 @@ categoryBtn?.addEventListener("click", (e) => {
   categoryList?.classList.toggle("show");
 
   if (categoryList?.classList.contains("show")) {
-
     setTimeout(() => {
       categorySearch?.focus();
     }, 50);
-
   }
 
 });
@@ -81,15 +94,46 @@ document.addEventListener("click", (e) => {
 
 
 /* =========================
+   SEARCH
+   ENTER = PAGE REFRESH
+========================= */
+
+search?.addEventListener("keydown", (e) => {
+
+  if (e.key !== "Enter") return;
+
+  e.preventDefault();
+
+  const value =
+    search.value.trim();
+
+  if (!value) {
+
+    location.href = "index.html";
+
+    return;
+  }
+
+  location.href =
+    `index.html?search=${encodeURIComponent(value)}`;
+
+});
+
+
+/* =========================
    LOAD VIDEOS
 ========================= */
 
 async function load() {
 
   if (videosEl) {
+
     videosEl.innerHTML = `
-      <p class="muted">Loading videos...</p>
+      <p class="muted">
+        Loading videos...
+      </p>
     `;
+
   }
 
   const { data, error } = await supabase
@@ -100,33 +144,35 @@ async function load() {
       ascending: false
     });
 
+
   if (error) {
 
-    console.error("Supabase error:", error);
+    console.error(
+      "Supabase error:",
+      error
+    );
 
     if (videosEl) {
+
       videosEl.innerHTML = `
         <p class="muted">
           Could not load videos.
         </p>
       `;
-    }
 
-    if (trendingEl) {
-      trendingEl.innerHTML = `
-        <p class="muted">
-          Could not load videos.
-        </p>
-      `;
     }
 
     return;
   }
 
+
   all = data || [];
 
+
   render();
+
   renderTrending();
+
 }
 
 
@@ -137,9 +183,10 @@ async function load() {
 function getFiltered() {
 
   const q =
-    (search?.value || "")
+    searchQuery
       .toLowerCase()
       .trim();
+
 
   return all.filter(v => {
 
@@ -147,15 +194,22 @@ function getFiltered() {
       `${v.title || ""} ${v.category || ""} ${v.description || ""}`
         .toLowerCase();
 
+
     const categoryOk =
       activeCategory === "All" ||
       String(v.category || "")
         .toLowerCase() ===
       activeCategory.toLowerCase();
 
+
+    const searchOk =
+      !q ||
+      text.includes(q);
+
+
     return (
       categoryOk &&
-      (!q || text.includes(q))
+      searchOk
     );
 
   });
@@ -179,7 +233,9 @@ function videoCard(v) {
     esc(v.category || "Other");
 
   const views =
-    Number(v.views || 0).toLocaleString();
+    Number(v.views || 0)
+      .toLocaleString();
+
 
   const thumbnail =
     v.thumbnail_url
@@ -201,6 +257,7 @@ function videoCard(v) {
       `
       : "";
 
+
   return `
     <a
       class="card"
@@ -217,6 +274,7 @@ function videoCard(v) {
 
         ${thumbnail}
 
+
         <div
           class="thumbOverlay"
           style="
@@ -225,6 +283,7 @@ function videoCard(v) {
             z-index:1;
           "
         ></div>
+
 
         <div
           class="playCircle"
@@ -235,6 +294,7 @@ function videoCard(v) {
         >
           ▶
         </div>
+
 
         <div
           class="cardViews"
@@ -248,11 +308,13 @@ function videoCard(v) {
 
       </div>
 
+
       <div class="body">
 
         <h3>
           ${title}
         </h3>
+
 
         <div class="cardMeta">
 
@@ -270,32 +332,50 @@ function videoCard(v) {
 
     </a>
   `;
+
 }
 
 
 /* =========================
-   LATEST VIDEOS
+   LATEST / SEARCH RESULTS
 ========================= */
 
 function render() {
 
   if (!videosEl) return;
 
+
   const items =
     getFiltered();
 
-  videosEl.innerHTML =
-    items
-      .map(videoCard)
-      .join("");
+
+  if (!items.length) {
+
+    videosEl.innerHTML = `
+      <div class="videoError">
+        <h3>No videos found</h3>
+        <p>
+          No video matches
+          "${esc(searchQuery)}".
+        </p>
+      </div>
+    `;
+
+  } else {
+
+    videosEl.innerHTML =
+      items
+        .map(videoCard)
+        .join("");
+
+  }
 
 
   const empty =
     document.querySelector("#empty");
 
   if (empty) {
-    empty.hidden =
-      items.length > 0;
+    empty.hidden = true;
   }
 
 
@@ -311,6 +391,22 @@ function render() {
 function renderTrending() {
 
   if (!trendingEl) return;
+
+
+  /* Search ke time Most Viewed hide */
+
+  if (searchQuery) {
+
+    trendingEl.parentElement.style.display =
+      "none";
+
+    return;
+  }
+
+
+  trendingEl.parentElement.style.display =
+    "";
+
 
   const mostViewed =
     [...all]
@@ -350,15 +446,19 @@ function renderCategories() {
 
   if (!categoryItems) return;
 
+
   const categories = [
     "All",
+
     ...new Set(
       all
         .map(v =>
-          String(v.category || "").trim()
+          String(v.category || "")
+            .trim()
         )
         .filter(Boolean)
     )
+
   ];
 
 
@@ -390,7 +490,9 @@ function renderCategories() {
           }"
           data-category="${esc(category)}"
         >
+
           ${esc(category)}
+
         </button>
 
       `)
@@ -398,7 +500,9 @@ function renderCategories() {
 
 
   categoryItems
-    .querySelectorAll("[data-category]")
+    .querySelectorAll(
+      "[data-category]"
+    )
     .forEach(button => {
 
       button.addEventListener(
@@ -414,7 +518,8 @@ function renderCategories() {
             categoryBtn.textContent =
               activeCategory === "All"
                 ? "☰ Categories"
-                : "☰ " + activeCategory;
+                : "☰ " +
+                  activeCategory;
 
           }
 
@@ -449,40 +554,22 @@ categorySearch?.addEventListener(
 
 
 /* =========================
-   VIDEO SEARCH
-========================= */
-
-search?.addEventListener(
-  "input",
-  () => {
-
-    activeCategory = "All";
-
-    if (categoryBtn) {
-      categoryBtn.textContent =
-        "☰ Categories";
-    }
-
-    render();
-
-  }
-);
-
-
-/* =========================
    ESCAPE HTML
 ========================= */
 
 export function esc(s) {
 
   return String(s ?? "")
-    .replace(/[&<>"']/g, m => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    }[m]));
+    .replace(
+      /[&<>"']/g,
+      m => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[m])
+    );
 
 }
 
