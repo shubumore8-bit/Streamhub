@@ -2095,3 +2095,242 @@ body {
   }
 
 }
+
+/* =====================================================
+   DESIVEXA PREMIUM CARD + MOBILE POLISH
+   ===================================================== */
+
+.dvSection {
+  margin-bottom: 18px;
+}
+
+/* Section heading */
+.dvSectionTitle {
+  min-height: 44px;
+  padding: 8px 12px !important;
+  background: linear-gradient(#191919, #050505) !important;
+  border-top: 1px solid #333 !important;
+  border-bottom: 1px solid #333 !important;
+}
+
+.dvSectionTitle span {
+  color: #d90000;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.dvSectionTitle h2 {
+  font-size: 21px !important;
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+/* Video grid */
+.dvGrid {
+  gap: 5px !important;
+  padding: 7px 3px !important;
+}
+
+/* Card */
+.dvGrid .card {
+  background: #0b0b0b !important;
+  border: 1px solid #242424;
+  border-radius: 4px;
+  overflow: hidden;
+  transition:
+    transform .15s ease,
+    border-color .15s ease;
+}
+
+.dvGrid .card:hover {
+  transform: translateY(-2px);
+  border-color: #555;
+}
+
+/* Thumbnail */
+.dvGrid .thumb {
+  aspect-ratio: 16 / 10 !important;
+  background: #191919 !important;
+}
+
+/* Dark overlay */
+.dvGrid .thumbOverlay {
+  background:
+    linear-gradient(
+      to bottom,
+      transparent 45%,
+      rgba(0,0,0,.15) 65%,
+      rgba(0,0,0,.72) 100%
+    ) !important;
+}
+
+/* Play button */
+.dvGrid .playCircle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0,0,0,.72);
+  border: 2px solid rgba(255,255,255,.9);
+
+  color: #fff;
+  font-size: 16px;
+
+  box-shadow: 0 3px 12px rgba(0,0,0,.7);
+}
+
+/* Views badge */
+.dvGrid .cardViews {
+  padding: 3px 6px;
+  border-radius: 3px;
+
+  background: rgba(0,0,0,.82);
+  color: #fff;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* Card body */
+.dvGrid .body {
+  padding: 7px 6px 8px !important;
+  background: #0b0b0b;
+}
+
+/* Title */
+.dvGrid .body h3 {
+  margin: 0 0 6px !important;
+
+  color: #eee !important;
+  font-size: 14px !important;
+  font-weight: 700;
+
+  line-height: 1.3 !important;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Category + views */
+.dvGrid .cardMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+
+  color: #777;
+  font-size: 10px;
+}
+
+.dvGrid .cardMeta span:first-child {
+  color: #d90000;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.dvGrid .cardMeta span:last-child {
+  color: #777;
+}
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (max-width: 699px) {
+
+  .dvGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+    padding: 6px 2px !important;
+  }
+
+  .dvGrid .card {
+    border-radius: 3px;
+  }
+
+  .dvGrid .playCircle {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .dvGrid .body {
+    padding: 6px 5px 7px !important;
+  }
+
+  .dvGrid .body h3 {
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+  }
+
+  .dvGrid .cardMeta {
+    font-size: 9px;
+  }
+
+  .dvGrid .cardViews {
+    font-size: 9px;
+    padding: 2px 5px;
+  }
+
+  .dvSection {
+    margin-bottom: 14px;
+  }
+
+  .dvSectionTitle {
+    min-height: 42px;
+  }
+
+  .dvSectionTitle h2 {
+    font-size: 19px !important;
+  }
+}
+
+/* =====================================================
+   DESKTOP
+   ===================================================== */
+
+@media (min-width: 700px) {
+
+  .dvGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 9px !important;
+    padding: 10px 4px !important;
+  }
+
+  .dvGrid .body h3 {
+    font-size: 15px !important;
+  }
+
+  .dvGrid .card:hover .playCircle {
+    transform: scale(1.08);
+  }
+}
+
+/* =====================================================
+   LOADING / EMPTY
+   ===================================================== */
+
+.muted {
+  color: #888 !important;
+  text-align: center;
+  padding: 25px 10px;
+}
+
+.videoError {
+  padding: 35px 15px;
+  text-align: center;
+  color: #999;
+}
+
+.videoError h3 {
+  color: #eee;
+  margin-bottom: 8px;
+}
+
+/* =====================================================
+   SEARCH
