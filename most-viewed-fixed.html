@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>Most Viewed Videos — DesiVexa</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="dvHeader">
+
+  <div class="dvHeaderInner">
+
+    <button
+      class="headerIcon"
+      id="menuBtn"
+      type="button"
+      aria-label="Menu"
+    >
+      ☰
+    </button>
+
+    <a
+      href="index.html"
+      class="dvLogo"
+    >
+      Desi<span>Vexa</span>
+    </a>
+
+    <button
+      class="headerIcon"
+      id="searchBtn"
+      type="button"
+      aria-label="Search"
+    >
+      ⌕
+    </button>
+
+  </div>
+
+  <div
+    class="dvSearchBox"
+    id="searchBox"
+  >
+    <input
+      id="search"
+      type="search"
+      placeholder="Search videos..."
+      autocomplete="off"
+    >
+
+    <span>⌕</span>
+  </div>
+
+</header>
+
+
+<div
+  class="mobileMenu"
+  id="mobileMenu"
+>
+
+  <a href="index.html">
+    Home
+  </a>
+
+  <a href="most-viewed.html">
+    Most Viewed
+  </a>
+
+  <a href="latest.html">
+    Latest
+  </a>
+
+</div>
+
+
+<main class="dvMain">
+
+  <section class="dvSection">
+
+    <div class="dvSectionTitle pageSectionTitle">
+
+      <a
+        href="index.html"
+        class="sectionBack"
+      >
+        ‹
+      </a>
+
+      <span>›</span>
+
+      <h1>
+        Most Viewed
+      </h1>
+
+    </div>
+
+    <div
+      id="videos"
+      class="dvGrid"
+    ></div>
+
+  </section>
+
+</main>
+
+
+<footer>
+  <p>© DesiVexa</p>
+</footer>
+
+
+<script type="module">
+
+import { createClient }
+  from "https://esm.sh/@supabase/supabase-js@2";
+
+import {
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+} from "./config.js";
+
+
+const supabase = createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+
+const videosEl =
+  document.querySelector("#videos");
+
+
+function esc(s) {
+
+  return String(s ?? "")
+    .replace(
+      /[&<>"']/g,
+      m =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        })[m]
+    );
+
+}
+
+
+function videoCard(v) {
+
+  const id =
+    encodeURIComponent(v.id);
+
+  const title =
+    esc(v.title || "Untitled video");
+
+  const category =
+    esc(v.category || "Other");
+
+  const views =
+    Number(v.views || 0)
+      .toLocaleString();
+
+  const thumbnail =
+    v.thumbnail_url
+      ? `
+        <img
+          src="${esc(v.thumbnail_url)}"
+          alt="${title}"
+          loading="lazy"
+        >
+      `
+      : "";
+
+  return `
+    <a
+      class="card"
+      href="video.html?id=${id}"
+    >
+
+      <div class="thumb">
+
+        ${thumbnail}
+
+        <div class="thumbOverlay"></div>
+
+        <div class="playCircle">
+          ▶
+        </div>
+
+        <div class="cardViews">
+          ${views} views
+        </div>
+
+      </div>
+
+      <div class="body">
+
+        <h3>
+          ${title}
+        </h3>
+
+        <div class="cardMeta">
+
+          <span>
+            ${category}
+          </span>
+
+          <span>
+            ${views} views
+          </span>
+
+        </div>
+
+      </div>
+
+    </a>
+  `;
+
+}
+
+
+async function load() {
+
+  videosEl.innerHTML =
+    `<p class="muted">Loading videos...</p>`;
+
+
+  // -------------------------------------------------
+  // MOST VIEWED
+  // Show only the Top 8 published videos by views.
+  // -------------------------------------------------
+
+  const {
+    data,
+    error
+  } = await supabase
+    .from("videos")
+    .select("*")
+    .eq("published", true)
+    .order("views", {
+      ascending: false
+    })
+    .limit(8);
+
+
+  if (error) {
+
+    console.error(error);
+
+    videosEl.innerHTML = `
+      <div class="videoError">
+
+        <h3>
+          Could not load videos
+        </h3>
+
+        <p>
+          Please try again later.
+        </p>
+
+      </div>
+    `;
+
+    return;
+  }
+
+
+  if (!data?.length) {
+
+    videosEl.innerHTML = `
+      <div class="videoError">
+
+        <h3>
+          No videos available
+        </h3>
+
+        <p>
+          There are no published videos yet.
+        </p>
+
+      </div>
+    `;
+
+    return;
+  }
+
+
+  videosEl.innerHTML =
+    data
+      .map(videoCard)
+      .join("");
+
+}
+
+
+load();
+
+
+// Mobile menu
+
+const menuBtn =
+  document.querySelector("#menuBtn");
+
+const mobileMenu =
+  document.querySelector("#mobileMenu");
+
+menuBtn?.addEventListener(
+  "click",
+  () => {
+    mobileMenu?.classList.toggle("show");
+  }
+);
+
+
+// Search
+
+const searchBtn =
+  document.querySelector("#searchBtn");
+
+const searchBox =
+  document.querySelector("#searchBox");
+
+searchBtn?.addEventListener(
+  "click",
+  () => {
+
+    searchBox?.classList.toggle("show");
+
+    if (
+      searchBox?.classList.contains("show")
+    ) {
+
+      document
+        .querySelector("#search")
+        ?.focus();
+
+    }
+
+  }
+);
+
+
+document
+  .querySelector("#search")
+  ?.addEventListener(
+    "keydown",
+    e => {
+
+      if (e.key !== "Enter")
+        return;
+
+      const value =
+        e.target.value.trim();
+
+      if (!value)
+        return;
+
+      location.href =
+        `index.html?search=${encodeURIComponent(value)}`;
+
+    }
+  );
+
+</script>
+
+</body>
+</html>
