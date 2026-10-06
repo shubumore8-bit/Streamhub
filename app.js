@@ -6,10 +6,9 @@ export const supabase = createClient(
   SUPABASE_ANON_KEY
 );
 
-
-/* =========================
-   AGE GATE
-========================= */
+// =========================
+// AGE GATE
+// =========================
 
 const gate = document.querySelector("#ageGate");
 
@@ -22,10 +21,9 @@ document.querySelector("#enter")?.addEventListener("click", () => {
   gate?.remove();
 });
 
-
-/* =========================
-   ELEMENTS
-========================= */
+// =========================
+// ELEMENTS
+// =========================
 
 const videosEl = document.querySelector("#videos");
 const trendingEl = document.querySelector("#trendingVideos");
@@ -37,36 +35,32 @@ const categorySearch = document.querySelector("#categorySearch");
 
 const search = document.querySelector("#search");
 
-
-/* =========================
-   SEARCH FROM URL
-========================= */
+// =========================
+// URL PARAMETERS
+// =========================
 
 const urlParams = new URLSearchParams(location.search);
 
-let searchQuery =
-  (urlParams.get("search") || "")
-    .trim();
+let searchQuery = (urlParams.get("search") || "").trim();
+
+let activeCategory =
+  (urlParams.get("category") || "All").trim() || "All";
 
 if (search && searchQuery) {
   search.value = searchQuery;
 }
 
-
-/* =========================
-   DATA
-========================= */
+// =========================
+// DATA
+// =========================
 
 let all = [];
-let activeCategory = "All";
 
-
-/* =========================
-   CATEGORY MENU
-========================= */
+// =========================
+// CATEGORY MENU
+// =========================
 
 categoryBtn?.addEventListener("click", (e) => {
-
   e.stopPropagation();
 
   categoryList?.classList.toggle("show");
@@ -76,64 +70,57 @@ categoryBtn?.addEventListener("click", (e) => {
       categorySearch?.focus();
     }, 50);
   }
-
 });
 
-
-/* =========================
-   CLOSE CATEGORY MENU
-========================= */
-
 document.addEventListener("click", (e) => {
-
   if (!e.target.closest(".categoryMenu")) {
     categoryList?.classList.remove("show");
   }
-
 });
 
-
-/* =========================
-   SEARCH
-   ENTER = PAGE REFRESH
-========================= */
+// =========================
+// HOMEPAGE SEARCH
+// =========================
 
 search?.addEventListener("keydown", (e) => {
-
   if (e.key !== "Enter") return;
 
   e.preventDefault();
 
-  const value =
-    search.value.trim();
+  const value = search.value.trim();
 
   if (!value) {
-
-    location.href = "index.html";
+    // Search clear karne par category preserve rahegi
+    if (activeCategory !== "All") {
+      location.href =
+        `index.html?category=${encodeURIComponent(activeCategory)}`;
+    } else {
+      location.href = "index.html";
+    }
 
     return;
   }
 
-  location.href =
-    `index.html?search=${encodeURIComponent(value)}`;
+  // Search + current category dono URL me save
+  const params = new URLSearchParams();
 
+  params.set("search", value);
+
+  if (activeCategory !== "All") {
+    params.set("category", activeCategory);
+  }
+
+  location.href = `index.html?${params.toString()}`;
 });
 
-
-/* =========================
-   LOAD VIDEOS
-========================= */
+// =========================
+// LOAD VIDEOS
+// =========================
 
 async function load() {
 
   if (videosEl) {
-
-    videosEl.innerHTML = `
-      <p class="muted">
-        Loading videos...
-      </p>
-    `;
-
+    videosEl.innerHTML = `<p class="muted">Loading videos...</p>`;
   }
 
   const { data, error } = await supabase
@@ -144,87 +131,68 @@ async function load() {
       ascending: false
     });
 
-
   if (error) {
 
-    console.error(
-      "Supabase error:",
-      error
-    );
+    console.error("Supabase error:", error);
 
     if (videosEl) {
-
-      videosEl.innerHTML = `
-        <p class="muted">
-          Could not load videos.
-        </p>
-      `;
-
+      videosEl.innerHTML =
+        `<p class="muted">Could not load videos.</p>`;
     }
 
     return;
   }
 
-
   all = data || [];
 
-
   render();
-
   renderTrending();
-
 }
 
-
-/* =========================
-   FILTER VIDEOS
-========================= */
+// =========================
+// FILTER VIDEOS
+// =========================
 
 function getFiltered() {
 
-  const q =
-    searchQuery
-      .toLowerCase()
-      .trim();
+  const q = searchQuery
+    .toLowerCase()
+    .trim();
 
-
-  return all.filter(v => {
+  return all.filter((v) => {
 
     const text =
       `${v.title || ""} ${v.category || ""} ${v.description || ""}`
         .toLowerCase();
 
+    const videoCategory =
+      String(v.category || "")
+        .trim()
+        .toLowerCase();
+
+    const selectedCategory =
+      activeCategory
+        .trim()
+        .toLowerCase();
 
     const categoryOk =
-      activeCategory === "All" ||
-      String(v.category || "")
-        .toLowerCase() ===
-      activeCategory.toLowerCase();
-
+      selectedCategory === "all" ||
+      videoCategory === selectedCategory;
 
     const searchOk =
-      !q ||
-      text.includes(q);
+      !q || text.includes(q);
 
-
-    return (
-      categoryOk &&
-      searchOk
-    );
-
+    return categoryOk && searchOk;
   });
-
 }
 
-
-/* =========================
-   VIDEO CARD
-========================= */
+// =========================
+// VIDEO CARD
+// =========================
 
 function videoCard(v) {
 
-  const id =
-    encodeURIComponent(v.id);
+  const id = encodeURIComponent(v.id);
 
   const title =
     esc(v.title || "Untitled video");
@@ -233,9 +201,7 @@ function videoCard(v) {
     esc(v.category || "Other");
 
   const views =
-    Number(v.views || 0)
-      .toLocaleString();
-
+    Number(v.views || 0).toLocaleString();
 
   const thumbnail =
     v.thumbnail_url
@@ -257,7 +223,6 @@ function videoCard(v) {
       `
       : "";
 
-
   return `
     <a
       class="card"
@@ -274,7 +239,6 @@ function videoCard(v) {
 
         ${thumbnail}
 
-
         <div
           class="thumbOverlay"
           style="
@@ -283,7 +247,6 @@ function videoCard(v) {
             z-index:1;
           "
         ></div>
-
 
         <div
           class="playCircle"
@@ -294,7 +257,6 @@ function videoCard(v) {
         >
           ▶
         </div>
-
 
         <div
           class="cardViews"
@@ -308,68 +270,63 @@ function videoCard(v) {
 
       </div>
 
-
       <div class="body">
 
-        <h3>
-          ${title}
-        </h3>
-
+        <h3>${title}</h3>
 
         <div class="cardMeta">
-
-          <span>
-            ${category}
-          </span>
-
-          <span>
-            ${views} views
-          </span>
-
+          <span>${category}</span>
+          <span>${views} views</span>
         </div>
 
       </div>
 
     </a>
   `;
-
 }
 
-
-/* =========================
-   LATEST / SEARCH RESULTS
-========================= */
+// =========================
+// RENDER LATEST / SEARCH
+// =========================
 
 function render() {
 
   if (!videosEl) return;
 
-
-  const items =
-    getFiltered();
-
+  const items = getFiltered();
 
   if (!items.length) {
+
+    let message = "No videos found.";
+
+    if (searchQuery && activeCategory !== "All") {
+
+      message =
+        `No videos found for "${esc(searchQuery)}" in "${esc(activeCategory)}".`;
+
+    } else if (searchQuery) {
+
+      message =
+        `No video matches "${esc(searchQuery)}".`;
+
+    } else if (activeCategory !== "All") {
+
+      message =
+        `No videos found in "${esc(activeCategory)}".`;
+    }
 
     videosEl.innerHTML = `
       <div class="videoError">
         <h3>No videos found</h3>
-        <p>
-          No video matches
-          "${esc(searchQuery)}".
-        </p>
+        <p>${message}</p>
       </div>
     `;
 
   } else {
 
     videosEl.innerHTML =
-      items
-        .map(videoCard)
-        .join("");
-
+      items.map(videoCard).join("");
   }
-
 
   const empty =
     document.querySelector("#empty");
@@ -378,35 +335,43 @@ function render() {
     empty.hidden = true;
   }
 
-
   renderCategories();
 
+  // Selected category button text
+  if (categoryBtn) {
+
+    categoryBtn.textContent =
+      activeCategory === "All"
+        ? "☰ Categories"
+        : "☰ " + activeCategory;
+  }
 }
 
-
-/* =========================
-   MOST VIEWED
-========================= */
+// =========================
+// MOST VIEWED
+// =========================
 
 function renderTrending() {
 
   if (!trendingEl) return;
 
+  const section =
+    trendingEl.closest(".videoSection");
 
-  /* Search ke time Most Viewed hide */
+  // Search ya category filter laga ho
+  // to Most Viewed hide rahega
+  if (searchQuery || activeCategory !== "All") {
 
-  if (searchQuery) {
-
-    trendingEl.parentElement.style.display =
-      "none";
+    if (section) {
+      section.style.display = "none";
+    }
 
     return;
   }
 
-
-  trendingEl.parentElement.style.display =
-    "";
-
+  if (section) {
+    section.style.display = "";
+  }
 
   const mostViewed =
     [...all]
@@ -417,56 +382,41 @@ function renderTrending() {
       )
       .slice(0, 8);
 
-
   if (!mostViewed.length) {
 
-    trendingEl.innerHTML = `
-      <p class="muted">
-        No videos available yet.
-      </p>
-    `;
+    trendingEl.innerHTML =
+      `<p class="muted">No videos available yet.</p>`;
 
     return;
   }
 
-
   trendingEl.innerHTML =
-    mostViewed
-      .map(videoCard)
-      .join("");
-
+    mostViewed.map(videoCard).join("");
 }
 
-
-/* =========================
-   CATEGORIES
-========================= */
+// =========================
+// CATEGORIES
+// =========================
 
 function renderCategories() {
 
   if (!categoryItems) return;
 
-
   const categories = [
     "All",
-
     ...new Set(
       all
         .map(v =>
-          String(v.category || "")
-            .trim()
+          String(v.category || "").trim()
         )
         .filter(Boolean)
     )
-
   ];
-
 
   const q =
     (categorySearch?.value || "")
       .toLowerCase()
       .trim();
-
 
   const filtered =
     categories.filter(category =>
@@ -475,107 +425,111 @@ function renderCategories() {
         .includes(q)
     );
 
-
   categoryItems.innerHTML =
     filtered
-      .map(category => `
+      .map(category => {
 
-        <button
-          type="button"
-          class="categoryItem ${
-            category.toLowerCase() ===
-            activeCategory.toLowerCase()
-              ? "active"
-              : ""
-          }"
-          data-category="${esc(category)}"
-        >
+        const active =
+          category.toLowerCase() ===
+          activeCategory.toLowerCase();
 
-          ${esc(category)}
-
-        </button>
-
-      `)
+        return `
+          <button
+            type="button"
+            class="categoryItem ${active ? "active" : ""}"
+            data-category="${esc(category)}"
+          >
+            ${esc(category)}
+          </button>
+        `;
+      })
       .join("");
 
-
   categoryItems
-    .querySelectorAll(
-      "[data-category]"
-    )
+    .querySelectorAll("[data-category]")
     .forEach(button => {
 
-      button.addEventListener(
-        "click",
-        () => {
+      button.addEventListener("click", () => {
 
-          activeCategory =
-            button.dataset.category;
+        const selected =
+          button.dataset.category || "All";
 
+        // =========================
+        // ALL CATEGORY
+        // =========================
 
-          if (categoryBtn) {
+        if (
+          selected.toLowerCase() === "all"
+        ) {
 
-            categoryBtn.textContent =
-              activeCategory === "All"
-                ? "☰ Categories"
-                : "☰ " +
-                  activeCategory;
+          location.href =
+            searchQuery
+              ? `index.html?search=${encodeURIComponent(searchQuery)}`
+              : "index.html";
 
-          }
-
-
-          categoryList
-            ?.classList
-            .remove("show");
-
-
-          render();
-
+          return;
         }
-      );
 
+        // =========================
+        // CATEGORY URL
+        // =========================
+
+        const params =
+          new URLSearchParams();
+
+        params.set(
+          "category",
+          selected
+        );
+
+        // Agar search bhi hai
+        if (searchQuery) {
+
+          params.set(
+            "search",
+            searchQuery
+          );
+        }
+
+        location.href =
+          `index.html?${params.toString()}`;
+      });
     });
-
 }
 
-
-/* =========================
-   CATEGORY SEARCH
-========================= */
+// =========================
+// CATEGORY SEARCH
+// =========================
 
 categorySearch?.addEventListener(
   "input",
   () => {
-
     renderCategories();
-
   }
 );
 
-
-/* =========================
-   ESCAPE HTML
-========================= */
+// =========================
+// ESCAPE HTML
+// =========================
 
 export function esc(s) {
 
   return String(s ?? "")
     .replace(
       /[&<>"']/g,
-      m => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      }[m])
+      m =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        })[m]
     );
-
 }
 
-
-/* =========================
-   START
-========================= */
+// =========================
+// START
+// =========================
 
 load();
