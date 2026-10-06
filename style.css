@@ -1076,3 +1076,57 @@ footer a:hover{
   }
 
 }
+
+/* =========================
+   VIDEO SECTIONS
+========================= */
+
+.videoSection{
+  margin-top:34px;
+}
+
+.latestSection{
+  margin-top:45px;
+}
+
+.sectionHeading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  margin-bottom:16px;
+}
+
+.sectionHeading h2{
+  margin:3px 0 0;
+
+  color:#fff;
+
+  font-size:21px;
+  line-height:1.2;
+}
+
+.sectionLabel{
+  color:var(--red);
+
+  font-size:10px;
+  font-weight:900;
+
+  letter-spacing:2px;
+}
+
+@media(max-width:800px){
+
+  .videoSection{
+    margin-top:26px;
+  }
+
+  .latestSection{
+    margin-top:35px;
+  }
+
+  .sectionHeading h2{
+    font-size:18px;
+  }
+
+}
