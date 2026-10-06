@@ -1,5 +1,13 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+import {
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+} from "./config.js";
+
+
+/* =========================
+   SUPABASE
+========================= */
 
 export const supabase = createClient(
   SUPABASE_URL,
@@ -54,22 +62,26 @@ categoryBtn?.addEventListener("click", (e) => {
   categoryList?.classList.toggle("show");
 
   if (categoryList?.classList.contains("show")) {
+
     setTimeout(() => {
       categorySearch?.focus();
     }, 50);
+
   }
 
 });
 
 
-/* CLOSE WHEN CLICKING OUTSIDE */
+/* =========================
+   CLOSE CATEGORY MENU
+========================= */
 
 document.addEventListener("click", (e) => {
 
-  if (
-    !e.target.closest(".categoryMenu")
-  ) {
+  if (!e.target.closest(".categoryMenu")) {
+
     categoryList?.classList.remove("show");
+
   }
 
 });
@@ -89,19 +101,27 @@ async function load() {
       ascending: false
     });
 
+
   if (error) {
 
-    console.error(error);
+    console.error("Supabase error:", error);
 
-    videosEl.innerHTML =
-      "<p>Could not load videos.</p>";
+    if (videosEl) {
+      videosEl.innerHTML = `
+        <p class="empty">
+          Could not load videos.
+        </p>
+      `;
+    }
 
     return;
   }
 
+
   all = data || [];
 
   render();
+
 }
 
 
@@ -116,22 +136,24 @@ function getFiltered() {
       .toLowerCase()
       .trim();
 
+
   return all.filter(v => {
 
-    const text =
-      (
-        v.title +
-        " " +
-        v.category +
-        " " +
-        (v.description || "")
-      ).toLowerCase();
+    const text = (
+      String(v.title || "") +
+      " " +
+      String(v.category || "") +
+      " " +
+      String(v.description || "")
+    ).toLowerCase();
+
 
     const categoryOk =
       activeCategory === "All" ||
       String(v.category || "")
         .toLowerCase() ===
       activeCategory.toLowerCase();
+
 
     return (
       categoryOk &&
@@ -149,11 +171,30 @@ function getFiltered() {
 
 function render() {
 
+  if (!videosEl) return;
+
+
   const items = getFiltered();
 
 
-  videosEl.innerHTML =
-    items.map(v => `
+  videosEl.innerHTML = items.map(v => {
+
+    const title =
+      esc(v.title || "Untitled video");
+
+    const category =
+      esc(v.category || "Other");
+
+    const views =
+      Number(v.views || 0).toLocaleString();
+
+    const thumbnail =
+      v.thumbnail_url
+        ? `background-image:url("${esc(v.thumbnail_url)}")`
+        : "";
+
+
+    return `
 
       <a
         class="card"
@@ -162,14 +203,18 @@ function render() {
 
         <div
           class="thumb"
-          style="${
-            v.thumbnail_url
-              ? `background-image:url('${esc(v.thumbnail_url)}')`
-              : ""
-          }"
+          style="${thumbnail}"
         >
 
-          <b>▶</b>
+          <div class="thumbOverlay"></div>
+
+          <div class="playCircle">
+            ▶
+          </div>
+
+          <div class="cardViews">
+            ${views} views
+          </div>
 
         </div>
 
@@ -177,32 +222,44 @@ function render() {
         <div class="body">
 
           <h3>
-            ${esc(v.title)}
+            ${title}
           </h3>
 
-          <small>
-            ${esc(v.category || "Other")}
-            ·
-            ${Number(v.views || 0).toLocaleString()}
-            views
-          </small>
+          <div class="cardMeta">
+
+            <span>
+              ${category}
+            </span>
+
+            <span>
+              ${views} views
+            </span>
+
+          </div>
 
         </div>
 
       </a>
 
-    `).join("");
+    `;
+
+  }).join("");
 
 
   const empty =
     document.querySelector("#empty");
 
+
   if (empty) {
-    empty.hidden = items.length > 0;
+
+    empty.hidden =
+      items.length > 0;
+
   }
 
 
   renderCategories();
+
 }
 
 
@@ -212,15 +269,22 @@ function render() {
 
 function renderCategories() {
 
+  if (!categoryItems) return;
+
+
   const categories = [
     "All",
+
     ...new Set(
+
       all
         .map(v =>
           String(v.category || "").trim()
         )
         .filter(Boolean)
+
     )
+
   ];
 
 
@@ -232,11 +296,9 @@ function renderCategories() {
 
   const filtered =
     categories.filter(category =>
-
       category
         .toLowerCase()
         .includes(q)
-
     );
 
 
@@ -305,7 +367,9 @@ function renderCategories() {
 categorySearch?.addEventListener(
   "input",
   () => {
+
     renderCategories();
+
   }
 );
 
@@ -320,10 +384,14 @@ search?.addEventListener(
 
     activeCategory = "All";
 
+
     if (categoryBtn) {
+
       categoryBtn.textContent =
         "☰ Categories";
+
     }
+
 
     render();
 
@@ -338,17 +406,22 @@ search?.addEventListener(
 export function esc(s) {
 
   return String(s ?? "")
-    .replace(/[&<>"']/g, m => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    }[m]));
+    .replace(
+      /[&<>"']/g,
+      m => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[m])
+    );
 
 }
 
 
-/* START */
+/* =========================
+   START
+========================= */
 
 load();
