@@ -1,36 +1,70 @@
 <!doctype html>
-<html>
+<html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Video — DesiVexa</title>
+
+  <title>Watch Video — DesiVexa</title>
 
   <link rel="stylesheet" href="style.css">
 
   <link
     rel="stylesheet"
     href="https://cdn.fluidplayer.com/v2/current/fluidplayer.min.css"
-    type="text/css"
-  />
+  >
 
-  <script src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"></script>
+  <script
+    src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js">
+  </script>
 </head>
 
 <body>
 
 <header>
-  <a href="index.html" class="logo">Desi<span>Vexa</span></a>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="admin.html">Admin</a>
-  </nav>
+
+  <div class="headerInner">
+
+    <a href="index.html" class="logo">
+      Desi<span>Vexa</span>
+    </a>
+
+    <div class="topSearch">
+
+      <input
+        id="topSearch"
+        type="search"
+        placeholder="Search videos..."
+        autocomplete="off"
+      >
+
+      <span>⌕</span>
+
+    </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="index.html#categories">Categories</a>
+    </nav>
+
+  </div>
+
 </header>
 
-<main class="wrap videoPage" id="page">
-  Loading...
+
+<main class="wrap videoPage">
+
+  <div id="page">
+    Loading...
+  </div>
+
 </main>
 
-<script type="module" src="video.js?v=4"></script>
+
+<script
+  type="module"
+  src="video.js?v=5">
+</script>
 
 </body>
 </html>
