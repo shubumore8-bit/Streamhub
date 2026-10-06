@@ -12,6 +12,7 @@ const supabase = createClient(
 const HILLTOPADS_VAST =
   "https://organic-package.com/dYm/F.zHdyGONAvyZkGAUS/qeGmn9PuvZDUclVkvPITVcs0/O-T/MwxWN/j/EPtqNizIQj5FMbzmEV2/NIQU";
 
+
 // ===============================
 // HELPERS
 // ===============================
@@ -25,9 +26,9 @@ function esc(value) {
 }
 
 function getVideoId() {
-  const params = new URLSearchParams(location.search);
-  return params.get("id");
+  return new URLSearchParams(location.search).get("id");
 }
+
 
 // ===============================
 // AGE GATE
@@ -40,7 +41,7 @@ function ageGate() {
   }
 
   const ok = confirm(
-    "18+ ONLY\n\nYou must be 18 years or older to access this website.\n\nPress OK to continue."
+    "18+ ONLY\n\nYou must be 18 years or older to access this website."
   );
 
   if (!ok) {
@@ -51,6 +52,7 @@ function ageGate() {
   localStorage.setItem(key, "1");
   return true;
 }
+
 
 // ===============================
 // LOAD VIDEO
@@ -89,7 +91,7 @@ async function loadVideo() {
       page.innerHTML = `
         <div class="videoError">
           <h3>Video not found</h3>
-          <p>This video may have been removed or is not published.</p>
+          <p>This video may have been removed.</p>
           <a href="index.html">Go Home</a>
         </div>
       `;
@@ -106,14 +108,13 @@ async function loadVideo() {
       page.innerHTML = `
         <div class="videoError">
           <h3>Video unavailable</h3>
-          <p>This video does not currently have a playable video file.</p>
         </div>
       `;
       return;
     }
 
     // ===============================
-    // VIDEO PLAYER HTML
+    // VIDEO HTML
     // ===============================
     page.innerHTML = `
       <section class="videoWatch">
@@ -121,7 +122,6 @@ async function loadVideo() {
         <div class="videoPlayerWrap">
           <video
             id="player"
-            class="video-js"
             controls
             playsinline
             preload="metadata"
@@ -141,7 +141,9 @@ async function loadVideo() {
 
           <div class="videoMeta">
             <span>${category}</span>
-            <span>${Number(video.views || 0).toLocaleString()} views</span>
+            <span>
+              ${Number(video.views || 0).toLocaleString()} views
+            </span>
           </div>
 
           ${
@@ -152,17 +154,22 @@ async function loadVideo() {
 
         </div>
 
-        <div id="relatedVideos"></div>
+        <!-- RANDOM VIDEOS -->
+        <div id="randomVideos"></div>
 
       </section>
     `;
+
 
     // ===============================
     // HILLTOPADS PRE-ROLL
     // ===============================
     if (window.fluidPlayer) {
+
       try {
+
         window.fluidPlayer("player", {
+
           layoutControls: {
             autoPlay: false,
             allowDownload: false,
@@ -173,6 +180,7 @@ async function loadVideo() {
           },
 
           vastOptions: {
+
             adList: [
               {
                 roll: "preRoll",
@@ -181,36 +189,49 @@ async function loadVideo() {
             ],
 
             maxAllowedVastTagRedirects: 5,
-
             vastTimeout: 15000,
-
             allowVPAID: true
+
           }
+
         });
+
       } catch (e) {
-        console.error("HilltopAds / Fluid Player error:", e);
+        console.error("Fluid Player error:", e);
       }
-    } else {
-      console.error("Fluid Player library not loaded.");
+
     }
+
 
     // ===============================
     // COUNT VIEW
     // ===============================
     try {
-      await supabase.rpc("increment_video_views", {
-        video_id: video.id
-      });
-    } catch (viewError) {
-      console.warn("View counter error:", viewError);
+
+      await supabase.rpc(
+        "increment_video_views",
+        {
+          video_id: video.id
+        }
+      );
+
+    } catch (error) {
+
+      console.warn(
+        "View counter error:",
+        error
+      );
+
     }
 
+
     // ===============================
-    // RELATED VIDEOS
+    // RANDOM VIDEOS
     // ===============================
-    loadRelatedVideos(video);
+    await loadRandomVideos(video.id);
 
   } catch (error) {
+
     console.error(error);
 
     page.innerHTML = `
@@ -220,69 +241,108 @@ async function loadVideo() {
         <a href="index.html">Go Home</a>
       </div>
     `;
+
   }
 }
 
+
 // ===============================
-// RELATED VIDEOS
+// RANDOM VIDEOS
 // ===============================
-async function loadRelatedVideos(currentVideo) {
-  const box = document.querySelector("#relatedVideos");
+async function loadRandomVideos(currentId) {
+
+  const box = document.querySelector("#randomVideos");
 
   if (!box) return;
 
   try {
+
+    // Get published videos except current video
     const { data, error } = await supabase
       .from("videos")
       .select("*")
       .eq("published", true)
-      .eq("category", currentVideo.category)
-      .neq("id", currentVideo.id)
-      .order("created_at", {
-        ascending: false
-      })
-      .limit(8);
+      .neq("id", currentId)
+      .limit(50);
 
     if (error) throw error;
 
     if (!data || data.length === 0) {
+
       box.innerHTML = "";
+
       return;
     }
 
+
+    // Shuffle videos
+    const shuffled = [...data]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 8);
+
+
     box.innerHTML = `
-      <section class="dvSection">
+
+      <section class="dvSection randomSection">
+
         <div class="dvSectionTitle">
+
           <h2>
-            <span>▸</span>
-            Related Videos
+            <span>🎲</span>
+            Random Videos
           </h2>
+
         </div>
 
-        <div class="dvGrid">
-          ${data.map(videoCard).join("")}
+        <div class="dvGrid randomGrid">
+
+          ${shuffled
+            .map(videoCard)
+            .join("")}
+
         </div>
+
       </section>
+
     `;
 
   } catch (error) {
-    console.warn("Related videos error:", error);
+
+    console.warn(
+      "Random videos error:",
+      error
+    );
+
   }
 }
+
 
 // ===============================
 // VIDEO CARD
 // ===============================
 function videoCard(video) {
+
   const id = encodeURIComponent(video.id);
-  const title = esc(video.title || "Untitled video");
-  const category = esc(video.category || "Other");
-  const views = Number(video.views || 0).toLocaleString();
+
+  const title = esc(
+    video.title || "Untitled video"
+  );
+
+  const category = esc(
+    video.category || "Other"
+  );
+
+  const views = Number(
+    video.views || 0
+  ).toLocaleString();
+
   const thumbnail = video.thumbnail_url
     ? esc(video.thumbnail_url)
     : "";
 
+
   return `
+
     <a
       class="card"
       href="video.html?id=${id}"
@@ -299,7 +359,15 @@ function videoCard(video) {
                 loading="lazy"
               >
             `
-            : ""
+            : `
+              <div
+                style="
+                  width:100%;
+                  height:100%;
+                  background:#191919;
+                "
+              ></div>
+            `
         }
 
         <div class="thumbOverlay">
@@ -316,50 +384,72 @@ function videoCard(video) {
 
       </div>
 
+
       <div class="body">
 
         <h3>${title}</h3>
 
         <div class="cardMeta">
-          <span>${category}</span>
-          <span>${views} views</span>
+
+          <span>
+            ${category}
+          </span>
+
+          <span>
+            ${views} views
+          </span>
+
         </div>
 
       </div>
 
     </a>
+
   `;
 }
+
 
 // ===============================
 // SEARCH
 // ===============================
 function setupSearch() {
-  const search = document.querySelector("#topSearch");
+
+  const search =
+    document.querySelector("#topSearch");
 
   if (!search) return;
 
-  search.addEventListener("keydown", event => {
-    if (event.key !== "Enter") return;
+  search.addEventListener(
+    "keydown",
+    event => {
 
-    const value = search.value.trim();
+      if (event.key !== "Enter") return;
 
-    if (!value) return;
+      const value =
+        search.value.trim();
 
-    location.href =
-      `index.html?search=${encodeURIComponent(value)}`;
-  });
+      if (!value) return;
+
+      location.href =
+        `index.html?search=${encodeURIComponent(value)}`;
+
+    }
+  );
 }
+
 
 // ===============================
 // START
 // ===============================
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
 
-  if (!ageGate()) return;
+    if (!ageGate()) return;
 
-  setupSearch();
+    setupSearch();
 
-  loadVideo();
+    loadVideo();
 
-});
+  }
+);
