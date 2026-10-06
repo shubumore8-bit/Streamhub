@@ -1,206 +1,314 @@
-import {
-  createClient
-} from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
-
-import {
+const supabase = createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
-} from "./config.js";
+);
 
+// ===============================
+// HILLTOPADS VAST
+// ===============================
+const HILLTOPADS_VAST =
+  "https://organic-package.com/dYm/F.zHdyGONAvyZkGAUS/qeGmn9PuvZDUclVkvPITVcs0/O-T/MwxWN/j/EPtqNizIQj5FMbzmEV2/NIQU";
 
-const supabase =
-  createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
+// ===============================
+// HELPERS
+// ===============================
+function esc(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function getVideoId() {
+  const params = new URLSearchParams(location.search);
+  return params.get("id");
+}
+
+// ===============================
+// AGE GATE
+// ===============================
+function ageGate() {
+  const key = "desivexa_age_verified";
+
+  if (localStorage.getItem(key) === "1") {
+    return true;
+  }
+
+  const ok = confirm(
+    "18+ ONLY\n\nYou must be 18 years or older to access this website.\n\nPress OK to continue."
   );
 
+  if (!ok) {
+    location.href = "index.html";
+    return false;
+  }
 
+  localStorage.setItem(key, "1");
+  return true;
+}
 
-/* =====================================================
-   ELEMENT
-===================================================== */
+// ===============================
+// LOAD VIDEO
+// ===============================
+async function loadVideo() {
+  const page = document.querySelector("#page");
 
-const page =
-  document.querySelector("#page");
+  if (!page) return;
 
+  const id = getVideoId();
 
+  if (!id) {
+    page.innerHTML = `
+      <div class="videoError">
+        <h3>Video not found</h3>
+        <p>No video ID was provided.</p>
+        <a href="index.html">Go Home</a>
+      </div>
+    `;
+    return;
+  }
 
-/* =====================================================
-   VIDEO ID
-===================================================== */
+  page.innerHTML = `<p class="muted">Loading video...</p>`;
 
-const id =
-  new URLSearchParams(
-    location.search
-  ).get("id");
+  try {
+    const { data: video, error } = await supabase
+      .from("videos")
+      .select("*")
+      .eq("id", id)
+      .eq("published", true)
+      .maybeSingle();
 
+    if (error) throw error;
 
+    if (!video) {
+      page.innerHTML = `
+        <div class="videoError">
+          <h3>Video not found</h3>
+          <p>This video may have been removed or is not published.</p>
+          <a href="index.html">Go Home</a>
+        </div>
+      `;
+      return;
+    }
 
-/* =====================================================
-   EXOCLICK VAST URL
-===================================================== */
+    const title = esc(video.title || "Untitled video");
+    const category = esc(video.category || "Other");
+    const description = esc(video.description || "");
+    const videoUrl = esc(video.video_url || "");
+    const thumbnail = esc(video.thumbnail_url || "");
 
-const EXOCLICK_VAST =
-  "https://s.magsrv.com/v1/vast.php?idz=6048654";
+    if (!videoUrl) {
+      page.innerHTML = `
+        <div class="videoError">
+          <h3>Video unavailable</h3>
+          <p>This video does not currently have a playable video file.</p>
+        </div>
+      `;
+      return;
+    }
 
+    // ===============================
+    // VIDEO PLAYER HTML
+    // ===============================
+    page.innerHTML = `
+      <section class="videoWatch">
 
+        <div class="videoPlayerWrap">
+          <video
+            id="player"
+            class="video-js"
+            controls
+            playsinline
+            preload="metadata"
+            ${thumbnail ? `poster="${thumbnail}"` : ""}
+            style="width:100%;height:auto;background:#000;"
+          >
+            <source
+              src="${videoUrl}"
+              type="video/mp4"
+            >
+          </video>
+        </div>
 
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
+        <div class="videoInfo">
 
-function esc(value) {
+          <h1>${title}</h1>
 
-  return String(value ?? "")
-    .replace(
-      /[&<>"']/g,
-      character => {
+          <div class="videoMeta">
+            <span>${category}</span>
+            <span>${Number(video.views || 0).toLocaleString()} views</span>
+          </div>
 
-        return {
+          ${
+            description
+              ? `<p class="videoDescription">${description}</p>`
+              : ""
+          }
 
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;"
+        </div>
 
-        }[character];
+        <div id="relatedVideos"></div>
 
+      </section>
+    `;
+
+    // ===============================
+    // HILLTOPADS PRE-ROLL
+    // ===============================
+    if (window.fluidPlayer) {
+      try {
+        window.fluidPlayer("player", {
+          layoutControls: {
+            autoPlay: false,
+            allowDownload: false,
+            playbackRateEnabled: true,
+            fillToContainer: true,
+            playButtonShowing: true,
+            primaryColor: "#d90000"
+          },
+
+          vastOptions: {
+            adList: [
+              {
+                roll: "preRoll",
+                vastTag: HILLTOPADS_VAST
+              }
+            ],
+
+            maxAllowedVastTagRedirects: 5,
+
+            vastTimeout: 15000,
+
+            allowVPAID: true
+          }
+        });
+      } catch (e) {
+        console.error("HilltopAds / Fluid Player error:", e);
       }
-    );
+    } else {
+      console.error("Fluid Player library not loaded.");
+    }
 
+    // ===============================
+    // COUNT VIEW
+    // ===============================
+    try {
+      await supabase.rpc("increment_video_views", {
+        video_id: video.id
+      });
+    } catch (viewError) {
+      console.warn("View counter error:", viewError);
+    }
+
+    // ===============================
+    // RELATED VIDEOS
+    // ===============================
+    loadRelatedVideos(video);
+
+  } catch (error) {
+    console.error(error);
+
+    page.innerHTML = `
+      <div class="videoError">
+        <h3>Something went wrong</h3>
+        <p>Please try again later.</p>
+        <a href="index.html">Go Home</a>
+      </div>
+    `;
+  }
 }
 
+// ===============================
+// RELATED VIDEOS
+// ===============================
+async function loadRelatedVideos(currentVideo) {
+  const box = document.querySelector("#relatedVideos");
 
+  if (!box) return;
 
-/* =====================================================
-   ERROR PAGE
-===================================================== */
+  try {
+    const { data, error } = await supabase
+      .from("videos")
+      .select("*")
+      .eq("published", true)
+      .eq("category", currentVideo.category)
+      .neq("id", currentVideo.id)
+      .order("created_at", {
+        ascending: false
+      })
+      .limit(8);
 
-function show(message) {
+    if (error) throw error;
 
-  page.innerHTML = `
+    if (!data || data.length === 0) {
+      box.innerHTML = "";
+      return;
+    }
 
-    <div class="videoError">
+    box.innerHTML = `
+      <section class="dvSection">
+        <div class="dvSectionTitle">
+          <h2>
+            <span>▸</span>
+            Related Videos
+          </h2>
+        </div>
 
-      <h1>
-        ${esc(message)}
-      </h1>
+        <div class="dvGrid">
+          ${data.map(videoCard).join("")}
+        </div>
+      </section>
+    `;
 
-      <p>
-
-        <a href="index.html">
-          ← Back to videos
-        </a>
-
-      </p>
-
-    </div>
-
-  `;
-
+  } catch (error) {
+    console.warn("Related videos error:", error);
+  }
 }
 
-
-
-/* =====================================================
-   VIDEO CARD
-===================================================== */
-
+// ===============================
+// VIDEO CARD
+// ===============================
 function videoCard(video) {
-
-  const id =
-    encodeURIComponent(
-      video.id
-    );
-
-
-  const title =
-    esc(
-      video.title ||
-      "Untitled video"
-    );
-
-
-  const category =
-    esc(
-      video.category ||
-      "Other"
-    );
-
-
-  const views =
-    Number(
-      video.views || 0
-    ).toLocaleString();
-
-
-  const thumbnail =
-    video.thumbnail_url
-      ? `
-
-        <img
-
-          src="${esc(
-            video.thumbnail_url
-          )}"
-
-          alt="${title}"
-
-          loading="lazy"
-
-          onerror="
-            this.style.display='none'
-          "
-
-        >
-
-      `
-      : "";
-
+  const id = encodeURIComponent(video.id);
+  const title = esc(video.title || "Untitled video");
+  const category = esc(video.category || "Other");
+  const views = Number(video.views || 0).toLocaleString();
+  const thumbnail = video.thumbnail_url
+    ? esc(video.thumbnail_url)
+    : "";
 
   return `
-
     <a
-
       class="card"
-
       href="video.html?id=${id}"
-
     >
 
       <div class="thumb">
 
-        ${thumbnail}
+        ${
+          thumbnail
+            ? `
+              <img
+                src="${thumbnail}"
+                alt="${title}"
+                loading="lazy"
+              >
+            `
+            : ""
+        }
 
-        <div class="thumbOverlay"></div>
+        <div class="thumbOverlay">
 
-        <div class="playCircle">
-          ▶
-        </div>
+          <div class="playCircle">
+            ▶
+          </div>
 
-        <div class="cardViews">
-          ${views} views
-        </div>
-
-      </div>
-
-
-      <div class="body">
-
-        <h3>
-          ${title}
-        </h3>
-
-
-        <div class="cardMeta">
-
-          <span>
-            ${category}
-          </span>
-
-          <span>
+          <span class="cardViews">
             ${views} views
           </span>
 
@@ -208,561 +316,50 @@ function videoCard(video) {
 
       </div>
 
+      <div class="body">
+
+        <h3>${title}</h3>
+
+        <div class="cardMeta">
+          <span>${category}</span>
+          <span>${views} views</span>
+        </div>
+
+      </div>
+
     </a>
-
   `;
-
 }
 
+// ===============================
+// SEARCH
+// ===============================
+function setupSearch() {
+  const search = document.querySelector("#topSearch");
 
+  if (!search) return;
 
-/* =====================================================
-   LOAD VIDEO
-===================================================== */
+  search.addEventListener("keydown", event => {
+    if (event.key !== "Enter") return;
 
-async function run() {
+    const value = search.value.trim();
 
-  try {
+    if (!value) return;
 
-
-    /* ================================================
-       AGE GATE
-    ================================================ */
-
-    if (
-      localStorage.dv18 !== "yes"
-    ) {
-
-      show("18+ only");
-
-      return;
-
-    }
-
-
-
-    /* ================================================
-       ID CHECK
-    ================================================ */
-
-    if (!id) {
-
-      show("Video not found");
-
-      return;
-
-    }
-
-
-
-    /* ================================================
-       GET VIDEO
-    ================================================ */
-
-    const {
-
-      data: video,
-
-      error
-
-    } = await supabase
-
-      .from("videos")
-
-      .select("*")
-
-      .eq(
-        "id",
-        id
-      )
-
-      .eq(
-        "published",
-        true
-      )
-
-      .maybeSingle();
-
-
-
-    if (error) {
-
-      console.error(
-        "Database error:",
-        error
-      );
-
-
-      show(
-        "Database error"
-      );
-
-
-      return;
-
-    }
-
-
-
-    if (!video) {
-
-      show(
-        "Video not found"
-      );
-
-
-      return;
-
-    }
-
-
-
-    /* ================================================
-       RELATED VIDEOS
-    ================================================ */
-
-    let related = [];
-
-
-    const relatedResult =
-      await supabase
-
-        .from("videos")
-
-        .select("*")
-
-        .eq(
-          "published",
-          true
-        )
-
-        .neq(
-          "id",
-          video.id
-        )
-
-        .order(
-          "views",
-          {
-            ascending: false
-          }
-        )
-
-        .limit(8);
-
-
-
-    if (
-      !relatedResult.error
-    ) {
-
-      related =
-        relatedResult.data ||
-        [];
-
-    }
-
-
-
-    /* ================================================
-       PAGE HTML
-    ================================================ */
-
-    page.innerHTML = `
-
-      <div class="watchTop">
-
-        <a
-          href="index.html"
-          class="backLink"
-        >
-
-          ← Back to videos
-
-        </a>
-
-      </div>
-
-
-
-      <!-- PLAYER -->
-
-      <div class="playerBox">
-
-        <video
-
-          id="player"
-
-          controls
-
-          playsinline
-
-          preload="metadata"
-
-          poster="${esc(
-            video.thumbnail_url || ""
-          )}"
-
-          style="
-            width:100%;
-            height:auto;
-            display:block;
-            background:#000;
-          "
-
-        >
-
-          <source
-
-            src="${esc(
-              video.video_url
-            )}"
-
-            type="video/mp4"
-
-          >
-
-          Your browser does not support
-          HTML5 video.
-
-        </video>
-
-      </div>
-
-
-
-      <!-- VIDEO INFO -->
-
-      <div class="videoInfo">
-
-        <div>
-
-          <span class="videoCategory">
-
-            ${esc(
-              video.category ||
-              "Other"
-            )}
-
-          </span>
-
-
-          <h1>
-
-            ${esc(
-              video.title ||
-              "Untitled video"
-            )}
-
-          </h1>
-
-
-          <p class="videoStats">
-
-            ${Number(
-              video.views || 0
-            ).toLocaleString()}
-
-            views
-
-          </p>
-
-        </div>
-
-      </div>
-
-
-
-      <!-- DESCRIPTION -->
-
-      <div class="videoDescription">
-
-        <p>
-
-          ${esc(
-            video.description ||
-            ""
-          )}
-
-        </p>
-
-      </div>
-
-
-
-      <!-- RELATED -->
-
-      <section class="relatedSection">
-
-        <div class="sectionHeading">
-
-          <div>
-
-            <span class="sectionLabel">
-              MORE VIDEOS
-            </span>
-
-            <h2>
-              Related Videos
-            </h2>
-
-          </div>
-
-        </div>
-
-
-        <div
-          id="relatedVideos"
-          class="videoGrid"
-        ></div>
-
-      </section>
-
-    `;
-
-
-
-    /* ================================================
-       RELATED RENDER
-    ================================================ */
-
-    const relatedEl =
-      document.querySelector(
-        "#relatedVideos"
-      );
-
-
-    if (relatedEl) {
-
-      relatedEl.innerHTML =
-        related
-          .map(videoCard)
-          .join("");
-
-    }
-
-
-
-    /* ================================================
-       PLAYER
-    ================================================ */
-
-    if (
-      typeof window.fluidPlayer !==
-      "function"
-    ) {
-
-      console.error(
-        "Fluid Player JS not loaded"
-      );
-
-
-      return;
-
-    }
-
-
-
-    /* ================================================
-       EXOCLICK PRE-ROLL
-    ================================================ */
-
-    console.log(
-      "ExoClick VAST:",
-      EXOCLICK_VAST
-    );
-
-
-    const player =
-      window.fluidPlayer(
-
-        "player",
-
-        {
-
-          /* -----------------------------------------
-             PLAYER CONTROLS
-          ----------------------------------------- */
-
-          layoutControls: {
-
-            autoPlay: false,
-
-            allowDownload: false,
-
-            playbackRateEnabled: true,
-
-            fillToContainer: true,
-
-            playButtonShowing: true,
-
-            primaryColor: "#d90000"
-
-          },
-
-
-          /* -----------------------------------------
-             VAST
-          ----------------------------------------- */
-
-          vastOptions: {
-
-            /* Pre-roll */
-
-            adList: [
-
-              {
-
-                roll:
-                  "preRoll",
-
-                vastTag:
-                  EXOCLICK_VAST
-
-              }
-
-            ],
-
-
-            /* VAST WRAPPERS */
-
-            maxAllowedVastTagRedirects:
-              5,
-
-
-            /* Timeout */
-
-            vastTimeout:
-              10000,
-
-
-            /* VPAID */
-
-            allowVPAID:
-              true
-
-          }
-
-        }
-
-      );
-
-
-    console.log(
-      "Fluid Player initialized",
-      player
-    );
-
-
-
-    /* ================================================
-       VIEW COUNTER
-    ================================================ */
-
-    Promise.resolve(
-
-      supabase.rpc(
-
-        "increment_video_views",
-
-        {
-          video_id:
-            video.id
-        }
-
-      )
-
-    )
-
-      .then(
-        ({ error }) => {
-
-          if (error) {
-
-            console.warn(
-              "View counter failed:",
-              error
-            );
-
-          }
-
-        }
-      )
-
-      .catch(
-        error => {
-
-          console.warn(
-            "View counter failed:",
-            error
-          );
-
-        }
-      );
-
-
-  }
-
-
-  catch (error) {
-
-    console.error(
-      "Video page error:",
-      error
-    );
-
-
-    show(
-      error?.message ||
-      "Something went wrong"
-    );
-
-  }
-
+    location.href =
+      `index.html?search=${encodeURIComponent(value)}`;
+  });
 }
 
+// ===============================
+// START
+// ===============================
+document.addEventListener("DOMContentLoaded", () => {
 
+  if (!ageGate()) return;
 
-/* =====================================================
-   SEARCH
-===================================================== */
+  setupSearch();
 
-document
-  .querySelector("#topSearch")
-  ?.addEventListener(
-    "keydown",
-    event => {
+  loadVideo();
 
-      if (
-        event.key !== "Enter"
-      ) {
-
-        return;
-
-      }
-
-
-      const value =
-        event.target.value.trim();
-
-
-      if (!value) {
-
-        return;
-
-      }
-
-
-      location.href =
-        `index.html?search=${encodeURIComponent(value)}`;
-
-    }
-  );
-
-
-
-/* =====================================================
-   START
-===================================================== */
-
-run();
+});
