@@ -1,4 +1,7 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import {
+  createClient
+} from "https://esm.sh/@supabase/supabase-js@2";
+
 
 import {
   SUPABASE_URL,
@@ -6,53 +9,74 @@ import {
 } from "./config.js";
 
 
-const supabase = createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const supabase =
+  createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
+
+
+/* =====================================================
+   ELEMENT
+===================================================== */
 
 const page =
   document.querySelector("#page");
 
 
+
+/* =====================================================
+   VIDEO ID
+===================================================== */
+
 const id =
-  new URLSearchParams(location.search).get("id");
+  new URLSearchParams(
+    location.search
+  ).get("id");
 
 
-// =====================================================
-// EXOCLICK VAST
-// =====================================================
+
+/* =====================================================
+   EXOCLICK VAST URL
+===================================================== */
 
 const EXOCLICK_VAST =
   "https://s.magsrv.com/v1/vast.php?idz=6048654";
 
 
-// =====================================================
-// ESCAPE HTML
-// =====================================================
 
-function esc(s) {
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
-  return String(s ?? "")
+function esc(value) {
+
+  return String(value ?? "")
     .replace(
       /[&<>"']/g,
-      m =>
-        ({
+      character => {
+
+        return {
+
           "&": "&amp;",
           "<": "&lt;",
           ">": "&gt;",
           '"': "&quot;",
           "'": "&#39;"
-        })[m]
+
+        }[character];
+
+      }
     );
 
 }
 
 
-// =====================================================
-// ERROR
-// =====================================================
+
+/* =====================================================
+   ERROR PAGE
+===================================================== */
 
 function show(message) {
 
@@ -65,9 +89,11 @@ function show(message) {
       </h1>
 
       <p>
+
         <a href="index.html">
           ← Back to videos
         </a>
+
       </p>
 
     </div>
@@ -77,51 +103,59 @@ function show(message) {
 }
 
 
-// =====================================================
-// VIDEO CARD
-// =====================================================
 
-function videoCard(v) {
+/* =====================================================
+   VIDEO CARD
+===================================================== */
+
+function videoCard(video) {
+
+  const id =
+    encodeURIComponent(
+      video.id
+    );
+
 
   const title =
     esc(
-      v.title ||
+      video.title ||
       "Untitled video"
     );
 
 
   const category =
     esc(
-      v.category ||
+      video.category ||
       "Other"
     );
 
 
   const views =
     Number(
-      v.views || 0
+      video.views || 0
     ).toLocaleString();
 
 
   const thumbnail =
-    v.thumbnail_url
+    video.thumbnail_url
       ? `
+
         <img
-          src="${esc(v.thumbnail_url)}"
+
+          src="${esc(
+            video.thumbnail_url
+          )}"
+
           alt="${title}"
+
           loading="lazy"
-          style="
-            position:absolute;
-            inset:0;
-            width:100%;
-            height:100%;
-            object-fit:cover;
-            display:block;
-          "
+
           onerror="
             this.style.display='none'
           "
+
         >
+
       `
       : "";
 
@@ -129,54 +163,24 @@ function videoCard(v) {
   return `
 
     <a
+
       class="card"
-      href="video.html?id=${encodeURIComponent(v.id)}"
+
+      href="video.html?id=${id}"
+
     >
 
-      <div
-        class="thumb"
-        style="
-          position:relative;
-          overflow:hidden;
-        "
-      >
+      <div class="thumb">
 
         ${thumbnail}
 
+        <div class="thumbOverlay"></div>
 
-        <div
-          class="thumbOverlay"
-          style="
-            position:absolute;
-            inset:0;
-            z-index:1;
-          "
-        ></div>
-
-
-        <div
-          class="playCircle"
-          style="
-            position:absolute;
-            left:50%;
-            top:50%;
-            transform:translate(-50%,-50%);
-            z-index:2;
-          "
-        >
+        <div class="playCircle">
           ▶
         </div>
 
-
-        <div
-          class="cardViews"
-          style="
-            position:absolute;
-            right:6px;
-            bottom:5px;
-            z-index:2;
-          "
-        >
+        <div class="cardViews">
           ${views} views
         </div>
 
@@ -188,6 +192,7 @@ function videoCard(v) {
         <h3>
           ${title}
         </h3>
+
 
         <div class="cardMeta">
 
@@ -210,18 +215,19 @@ function videoCard(v) {
 }
 
 
-// =====================================================
-// MAIN
-// =====================================================
+
+/* =====================================================
+   LOAD VIDEO
+===================================================== */
 
 async function run() {
 
   try {
 
 
-    // =================================================
-    // AGE CHECK
-    // =================================================
+    /* ================================================
+       AGE GATE
+    ================================================ */
 
     if (
       localStorage.dv18 !== "yes"
@@ -234,9 +240,10 @@ async function run() {
     }
 
 
-    // =================================================
-    // ID CHECK
-    // =================================================
+
+    /* ================================================
+       ID CHECK
+    ================================================ */
 
     if (!id) {
 
@@ -247,13 +254,17 @@ async function run() {
     }
 
 
-    // =================================================
-    // GET VIDEO
-    // =================================================
+
+    /* ================================================
+       GET VIDEO
+    ================================================ */
 
     const {
-      data: v,
+
+      data: video,
+
       error
+
     } = await supabase
 
       .from("videos")
@@ -273,6 +284,7 @@ async function run() {
       .maybeSingle();
 
 
+
     if (error) {
 
       console.error(
@@ -280,31 +292,34 @@ async function run() {
         error
       );
 
+
       show(
-        "Database error: " +
-        (
-          error.message ||
-          "Unknown error"
-        )
+        "Database error"
       );
 
-      return;
-
-    }
-
-
-    if (!v) {
-
-      show("Video not found");
 
       return;
 
     }
 
 
-    // =================================================
-    // RELATED VIDEOS
-    // =================================================
+
+    if (!video) {
+
+      show(
+        "Video not found"
+      );
+
+
+      return;
+
+    }
+
+
+
+    /* ================================================
+       RELATED VIDEOS
+    ================================================ */
 
     let related = [];
 
@@ -323,7 +338,7 @@ async function run() {
 
         .neq(
           "id",
-          v.id
+          video.id
         )
 
         .order(
@@ -336,7 +351,10 @@ async function run() {
         .limit(8);
 
 
-    if (!relatedResult.error) {
+
+    if (
+      !relatedResult.error
+    ) {
 
       related =
         relatedResult.data ||
@@ -345,9 +363,10 @@ async function run() {
     }
 
 
-    // =================================================
-    // PAGE
-    // =================================================
+
+    /* ================================================
+       PAGE HTML
+    ================================================ */
 
     page.innerHTML = `
 
@@ -357,31 +376,50 @@ async function run() {
           href="index.html"
           class="backLink"
         >
+
           ← Back to videos
+
         </a>
 
       </div>
 
 
+
+      <!-- PLAYER -->
+
       <div class="playerBox">
 
         <video
+
           id="player"
+
           controls
+
           playsinline
+
           preload="metadata"
+
           poster="${esc(
-            v.thumbnail_url || ""
+            video.thumbnail_url || ""
           )}"
+
           style="
             width:100%;
             height:auto;
+            display:block;
+            background:#000;
           "
+
         >
 
           <source
-            src="${esc(v.video_url)}"
+
+            src="${esc(
+              video.video_url
+            )}"
+
             type="video/mp4"
+
           >
 
           Your browser does not support
@@ -392,29 +430,41 @@ async function run() {
       </div>
 
 
+
+      <!-- VIDEO INFO -->
+
       <div class="videoInfo">
 
         <div>
 
           <span class="videoCategory">
+
             ${esc(
-              v.category ||
+              video.category ||
               "Other"
             )}
+
           </span>
 
+
           <h1>
+
             ${esc(
-              v.title ||
+              video.title ||
               "Untitled video"
             )}
+
           </h1>
 
+
           <p class="videoStats">
+
             ${Number(
-              v.views || 0
+              video.views || 0
             ).toLocaleString()}
+
             views
+
           </p>
 
         </div>
@@ -422,16 +472,25 @@ async function run() {
       </div>
 
 
+
+      <!-- DESCRIPTION -->
+
       <div class="videoDescription">
 
         <p>
+
           ${esc(
-            v.description || ""
+            video.description ||
+            ""
           )}
+
         </p>
 
       </div>
 
+
+
+      <!-- RELATED -->
 
       <section class="relatedSection">
 
@@ -462,9 +521,10 @@ async function run() {
     `;
 
 
-    // =================================================
-    // RELATED
-    // =================================================
+
+    /* ================================================
+       RELATED RENDER
+    ================================================ */
 
     const relatedEl =
       document.querySelector(
@@ -482,28 +542,10 @@ async function run() {
     }
 
 
-    // =================================================
-    // FLUID PLAYER + EXOCLICK PREROLL
-    // =================================================
 
-    const player =
-      document.querySelector(
-        "#player"
-      );
-
-
-    if (
-      !player
-    ) {
-
-      console.error(
-        "Player element not found"
-      );
-
-      return;
-
-    }
-
+    /* ================================================
+       PLAYER
+    ================================================ */
 
     if (
       typeof window.fluidPlayer !==
@@ -511,27 +553,36 @@ async function run() {
     ) {
 
       console.error(
-        "Fluid Player library not loaded"
+        "Fluid Player JS not loaded"
       );
+
 
       return;
 
     }
 
 
+
+    /* ================================================
+       EXOCLICK PRE-ROLL
+    ================================================ */
+
     console.log(
-      "Initializing ExoClick pre-roll..."
+      "ExoClick VAST:",
+      EXOCLICK_VAST
     );
 
 
-    const fp =
+    const player =
       window.fluidPlayer(
+
         "player",
+
         {
 
-          // =========================================
-          // PLAYER
-          // =========================================
+          /* -----------------------------------------
+             PLAYER CONTROLS
+          ----------------------------------------- */
 
           layoutControls: {
 
@@ -545,98 +596,50 @@ async function run() {
 
             playButtonShowing: true,
 
-            primaryColor: "#d90000",
-
-            preload: "metadata"
+            primaryColor: "#d90000"
 
           },
 
 
-          // =========================================
-          // VAST ADS
-          // =========================================
+          /* -----------------------------------------
+             VAST
+          ----------------------------------------- */
 
           vastOptions: {
 
-            // Allow VPAID ads
-            allowVPAID: true,
+            /* Pre-roll */
 
-
-            // Allow VAST wrappers
-            maxAllowedVastTagRedirects: 5,
-
-
-            // Give ExoClick enough time
-            vastTimeout: 10000,
-
-
-            // Pre-roll
             adList: [
 
               {
 
-                roll: "preRoll",
+                roll:
+                  "preRoll",
 
                 vastTag:
-                  EXOCLICK_VAST,
-
-                adText:
-                  "Advertisement",
-
-                adClickable:
-                  true
+                  EXOCLICK_VAST
 
               }
 
             ],
 
 
-            // =======================================
-            // DEBUG CALLBACKS
-            // =======================================
+            /* VAST WRAPPERS */
 
-            vastAdvanced: {
-
-              vastLoadedCallback:
-                function() {
-
-                  console.log(
-                    "✅ ExoClick VAST loaded"
-                  );
-
-                },
+            maxAllowedVastTagRedirects:
+              5,
 
 
-              noVastVideoCallback:
-                function() {
+            /* Timeout */
 
-                  console.warn(
-                    "⚠️ ExoClick returned no VAST video / no-fill"
-                  );
-
-                },
+            vastTimeout:
+              10000,
 
 
-              vastVideoSkippedCallback:
-                function() {
+            /* VPAID */
 
-                  console.log(
-                    "ExoClick ad skipped"
-                  );
-
-                },
-
-
-              vastVideoEndedCallback:
-                function() {
-
-                  console.log(
-                    "✅ ExoClick pre-roll finished"
-                  );
-
-                }
-
-            }
+            allowVPAID:
+              true
 
           }
 
@@ -646,29 +649,48 @@ async function run() {
 
 
     console.log(
-      "Fluid Player initialized:",
-      fp
+      "Fluid Player initialized",
+      player
     );
 
 
-    // =================================================
-    // VIEW COUNT
-    // =================================================
+
+    /* ================================================
+       VIEW COUNTER
+    ================================================ */
 
     Promise.resolve(
 
       supabase.rpc(
+
         "increment_video_views",
+
         {
-          video_id: v.id
+          video_id:
+            video.id
         }
+
       )
 
     )
-    .then(
-      ({ error }) => {
 
-        if (error) {
+      .then(
+        ({ error }) => {
+
+          if (error) {
+
+            console.warn(
+              "View counter failed:",
+              error
+            );
+
+          }
+
+        }
+      )
+
+      .catch(
+        error => {
 
           console.warn(
             "View counter failed:",
@@ -676,19 +698,7 @@ async function run() {
           );
 
         }
-
-      }
-    )
-    .catch(
-      error => {
-
-        console.warn(
-          "View counter failed:",
-          error
-        );
-
-      }
-    );
+      );
 
 
   }
@@ -712,8 +722,47 @@ async function run() {
 }
 
 
-// =====================================================
-// START
-// =====================================================
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+document
+  .querySelector("#topSearch")
+  ?.addEventListener(
+    "keydown",
+    event => {
+
+      if (
+        event.key !== "Enter"
+      ) {
+
+        return;
+
+      }
+
+
+      const value =
+        event.target.value.trim();
+
+
+      if (!value) {
+
+        return;
+
+      }
+
+
+      location.href =
+        `index.html?search=${encodeURIComponent(value)}`;
+
+    }
+  );
+
+
+
+/* =====================================================
+   START
+===================================================== */
 
 run();
