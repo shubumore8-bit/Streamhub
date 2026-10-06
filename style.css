@@ -1247,3 +1247,365 @@ footer a:hover{
   }
 
 }
+
+/* =========================
+   ADMIN DASHBOARD
+========================= */
+
+.admin{
+  padding-top:35px;
+  padding-bottom:70px;
+}
+
+.adminTop{
+  margin-bottom:25px;
+}
+
+.adminTop h1{
+  margin:5px 0;
+  color:#fff;
+  font-size:30px;
+}
+
+.muted{
+  color:#888;
+}
+
+
+/* ACCOUNT */
+
+.adminAccount{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+
+  padding:14px 16px;
+  margin-bottom:25px;
+
+  background:#111318;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:10px;
+
+  color:#999;
+  font-size:13px;
+}
+
+.adminAccount strong{
+  color:#fff;
+}
+
+
+/* LOGIN */
+
+.adminLogin{
+  max-width:480px;
+  margin:50px auto;
+  padding:28px;
+
+  background:#111318;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+}
+
+.adminLogin h1{
+  color:#fff;
+  margin:8px 0;
+}
+
+
+/* STATS */
+
+.adminStats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:25px;
+}
+
+.adminStat{
+  padding:20px;
+
+  background:#111318;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;
+}
+
+.adminStat span{
+  display:block;
+  color:#888;
+  font-size:12px;
+  margin-bottom:8px;
+}
+
+.adminStat strong{
+  color:#fff;
+  font-size:25px;
+}
+
+
+/* BOX */
+
+.adminBox{
+  margin-bottom:25px;
+  padding:22px;
+
+  background:#111318;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;
+}
+
+.adminBoxHead{
+  margin-bottom:20px;
+}
+
+.adminBoxHead h2{
+  color:#fff;
+  margin:4px 0 0;
+}
+
+
+/* FORM */
+
+.adminForm{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.adminForm label{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+
+  color:#aaa;
+  font-size:13px;
+}
+
+.adminForm input,
+.adminForm textarea,
+.adminTools input,
+.adminTools select{
+  width:100%;
+  box-sizing:border-box;
+
+  padding:12px 13px;
+
+  color:#fff;
+  background:#090a0d;
+
+  border:1px solid #292c32;
+  border-radius:8px;
+
+  outline:none;
+}
+
+.adminForm input:focus,
+.adminForm textarea:focus,
+.adminTools input:focus,
+.adminTools select:focus{
+  border-color:var(--red);
+}
+
+.adminFormGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+.check{
+  flex-direction:row !important;
+  align-items:flex-start;
+  gap:9px !important;
+}
+
+.check input{
+  width:auto;
+  margin-top:2px;
+}
+
+.check span{
+  color:#888;
+  line-height:1.5;
+}
+
+.adminStatus{
+  min-height:20px;
+  color:#aaa;
+  font-size:13px;
+}
+
+
+/* TOOLS */
+
+.adminTools{
+  display:grid;
+  grid-template-columns:1fr 180px;
+  gap:12px;
+  margin-bottom:16px;
+}
+
+
+/* MANAGE ROW */
+
+.manage{
+  display:grid;
+  grid-template-columns:90px 1fr auto;
+  align-items:center;
+  gap:15px;
+
+  padding:12px;
+
+  margin-bottom:10px;
+
+  background:#0b0c0f;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:10px;
+}
+
+.manageThumb{
+  width:90px;
+  height:55px;
+
+  overflow:hidden;
+  border-radius:6px;
+
+  background:#181a1f;
+}
+
+.manageThumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.adminThumbEmpty{
+  width:100%;
+  height:100%;
+
+  display:grid;
+  place-items:center;
+
+  color:#666;
+}
+
+.manageInfo{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+
+.manageInfo strong{
+  color:#fff;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.manageInfo span{
+  color:#888;
+  font-size:12px;
+}
+
+.manageInfo small{
+  font-size:11px;
+  font-weight:700;
+}
+
+.manageInfo small.published{
+  color:#42d392;
+}
+
+.manageInfo small.hidden{
+  color:#888;
+}
+
+.manageActions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:7px;
+}
+
+.manageActions .btn{
+  padding:8px 10px;
+  font-size:12px;
+}
+
+
+/* EMPTY */
+
+.adminEmpty{
+  padding:35px 15px;
+  text-align:center;
+  color:#777;
+}
+
+.adminEmpty strong,
+.adminEmpty span{
+  display:block;
+}
+
+.adminEmpty strong{
+  color:#aaa;
+  margin-bottom:5px;
+}
+
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+  .admin{
+    padding-top:20px;
+  }
+
+  .adminStats{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .adminFormGrid{
+    grid-template-columns:1fr;
+  }
+
+  .adminTools{
+    grid-template-columns:1fr;
+  }
+
+  .manage{
+    grid-template-columns:65px 1fr;
+  }
+
+  .manageThumb{
+    width:65px;
+    height:45px;
+  }
+
+  .manageActions{
+    grid-column:1 / -1;
+    justify-content:flex-start;
+  }
+
+  .adminAccount{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+}
+
+@media(max-width:480px){
+
+  .adminBox{
+    padding:15px;
+  }
+
+  .adminStat{
+    padding:15px;
+  }
+
+  .adminStat strong{
+    font-size:20px;
+  }
+
+}
