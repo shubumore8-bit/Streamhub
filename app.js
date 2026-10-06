@@ -28,10 +28,13 @@ document.querySelector("#enter")?.addEventListener("click", () => {
 ========================= */
 
 const videosEl = document.querySelector("#videos");
+const trendingEl = document.querySelector("#trendingVideos");
+
 const categoryBtn = document.querySelector("#categoryBtn");
 const categoryList = document.querySelector("#cats");
 const categoryItems = document.querySelector("#categoryItems");
 const categorySearch = document.querySelector("#categorySearch");
+
 const search = document.querySelector("#search");
 
 
@@ -54,9 +57,11 @@ categoryBtn?.addEventListener("click", (e) => {
   categoryList?.classList.toggle("show");
 
   if (categoryList?.classList.contains("show")) {
+
     setTimeout(() => {
       categorySearch?.focus();
     }, 50);
+
   }
 
 });
@@ -81,11 +86,11 @@ document.addEventListener("click", (e) => {
 
 async function load() {
 
-  if (!videosEl) return;
-
-  videosEl.innerHTML = `
-    <p class="muted">Loading videos...</p>
-  `;
+  if (videosEl) {
+    videosEl.innerHTML = `
+      <p class="muted">Loading videos...</p>
+    `;
+  }
 
   const { data, error } = await supabase
     .from("videos")
@@ -99,11 +104,21 @@ async function load() {
 
     console.error("Supabase error:", error);
 
-    videosEl.innerHTML = `
-      <p class="muted">
-        Could not load videos.
-      </p>
-    `;
+    if (videosEl) {
+      videosEl.innerHTML = `
+        <p class="muted">
+          Could not load videos.
+        </p>
+      `;
+    }
+
+    if (trendingEl) {
+      trendingEl.innerHTML = `
+        <p class="muted">
+          Could not load videos.
+        </p>
+      `;
+    }
 
     return;
   }
@@ -111,6 +126,7 @@ async function load() {
   all = data || [];
 
   render();
+  renderTrending();
 }
 
 
@@ -128,17 +144,8 @@ function getFiltered() {
   return all.filter(v => {
 
     const text =
-      (
-        v.title || ""
-      ) +
-      " " +
-      (
-        v.category || ""
-      ) +
-      " " +
-      (
-        v.description || ""
-      );
+      `${v.title || ""} ${v.category || ""} ${v.description || ""}`
+        .toLowerCase();
 
     const categoryOk =
       activeCategory === "All" ||
@@ -148,10 +155,7 @@ function getFiltered() {
 
     return (
       categoryOk &&
-      (
-        !q ||
-        text.toLowerCase().includes(q)
-      )
+      (!q || text.includes(q))
     );
 
   });
@@ -165,7 +169,8 @@ function getFiltered() {
 
 function videoCard(v) {
 
-  const id = encodeURIComponent(v.id);
+  const id =
+    encodeURIComponent(v.id);
 
   const title =
     esc(v.title || "Untitled video");
@@ -212,14 +217,34 @@ function videoCard(v) {
 
         ${thumbnail}
 
-        <b
+        <div
+          class="thumbOverlay"
+          style="
+            position:absolute;
+            inset:0;
+            z-index:1;
+          "
+        ></div>
+
+        <div
+          class="playCircle"
           style="
             position:relative;
             z-index:2;
           "
         >
           ▶
-        </b>
+        </div>
+
+        <div
+          class="cardViews"
+          style="
+            position:relative;
+            z-index:2;
+          "
+        >
+          ${views} views
+        </div>
 
       </div>
 
@@ -229,12 +254,17 @@ function videoCard(v) {
           ${title}
         </h3>
 
-        <small>
-          ${category}
-          ·
-          ${views}
-          views
-        </small>
+        <div class="cardMeta">
+
+          <span>
+            ${category}
+          </span>
+
+          <span>
+            ${views} views
+          </span>
+
+        </div>
 
       </div>
 
@@ -244,30 +274,30 @@ function videoCard(v) {
 
 
 /* =========================
-   RENDER VIDEOS
+   LATEST VIDEOS
 ========================= */
 
 function render() {
 
   if (!videosEl) return;
 
-  const items = getFiltered();
+  const items =
+    getFiltered();
 
   videosEl.innerHTML =
-    items.map(videoCard).join("");
+    items
+      .map(videoCard)
+      .join("");
 
-
-  /* EMPTY MESSAGE */
 
   const empty =
     document.querySelector("#empty");
 
   if (empty) {
-    empty.hidden = items.length > 0;
+    empty.hidden =
+      items.length > 0;
   }
 
-
-  /* CATEGORIES */
 
   renderCategories();
 
@@ -275,7 +305,45 @@ function render() {
 
 
 /* =========================
-   RENDER CATEGORIES
+   MOST VIEWED
+========================= */
+
+function renderTrending() {
+
+  if (!trendingEl) return;
+
+  const mostViewed =
+    [...all]
+      .sort(
+        (a, b) =>
+          Number(b.views || 0) -
+          Number(a.views || 0)
+      )
+      .slice(0, 8);
+
+
+  if (!mostViewed.length) {
+
+    trendingEl.innerHTML = `
+      <p class="muted">
+        No videos available yet.
+      </p>
+    `;
+
+    return;
+  }
+
+
+  trendingEl.innerHTML =
+    mostViewed
+      .map(videoCard)
+      .join("");
+
+}
+
+
+/* =========================
+   CATEGORIES
 ========================= */
 
 function renderCategories() {
@@ -309,24 +377,24 @@ function renderCategories() {
 
 
   categoryItems.innerHTML =
-    filtered.map(category => `
+    filtered
+      .map(category => `
 
-      <button
-        type="button"
-        class="categoryItem ${
-          category.toLowerCase() ===
-          activeCategory.toLowerCase()
-            ? "active"
-            : ""
-        }"
-        data-category="${esc(category)}"
-      >
+        <button
+          type="button"
+          class="categoryItem ${
+            category.toLowerCase() ===
+            activeCategory.toLowerCase()
+              ? "active"
+              : ""
+          }"
+          data-category="${esc(category)}"
+        >
+          ${esc(category)}
+        </button>
 
-        ${esc(category)}
-
-      </button>
-
-    `).join("");
+      `)
+      .join("");
 
 
   categoryItems
