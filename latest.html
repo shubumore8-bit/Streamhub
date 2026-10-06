@@ -1,29 +1,15 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width,initial-scale=1"
-  >
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
   <title>Latest Videos — DesiVexa</title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
-
+  <link rel="stylesheet" href="style.css">
 </head>
 
-
 <body>
-
-
-<!-- ================= HEADER ================= -->
 
 <header class="dvHeader">
 
@@ -38,14 +24,9 @@
       ☰
     </button>
 
-
-    <a
-      href="index.html"
-      class="dvLogo"
-    >
+    <a href="index.html" class="dvLogo">
       Desi<span>Vexa</span>
     </a>
-
 
     <button
       class="headerIcon"
@@ -58,11 +39,7 @@
 
   </div>
 
-
-  <div
-    class="dvSearchBox"
-    id="searchBox"
-  >
+  <div class="dvSearchBox" id="searchBox">
 
     <input
       id="search"
@@ -78,12 +55,7 @@
 </header>
 
 
-<!-- ================= MOBILE MENU ================= -->
-
-<div
-  class="mobileMenu"
-  id="mobileMenu"
->
+<div class="mobileMenu" id="mobileMenu">
 
   <a href="index.html">
     Home
@@ -100,12 +72,9 @@
 </div>
 
 
-<!-- ================= MAIN ================= -->
-
 <main class="dvMain">
 
   <section class="dvSection">
-
 
     <div class="dvSectionTitle pageSectionTitle">
 
@@ -130,13 +99,10 @@
       class="dvGrid"
     ></div>
 
-
   </section>
 
 </main>
 
-
-<!-- ================= FOOTER ================= -->
 
 <footer>
 
@@ -147,13 +113,10 @@
 </footer>
 
 
-<!-- ================= JAVASCRIPT ================= -->
-
 <script type="module">
 
 import { createClient }
-  from "https://esm.sh/@supabase/supabase-js@2";
-
+from "https://esm.sh/@supabase/supabase-js@2";
 
 import {
   SUPABASE_URL,
@@ -161,21 +124,19 @@ import {
 } from "./config.js";
 
 
-const supabase =
-  createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+const supabase = createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
 
 const videosEl =
   document.querySelector("#videos");
 
 
-
-/* =========================
-   ESCAPE HTML
-========================= */
+// =====================================================
+// ESCAPE HTML
+// =====================================================
 
 function esc(s) {
 
@@ -195,48 +156,36 @@ function esc(s) {
 }
 
 
-
-/* =========================
-   VIDEO CARD
-========================= */
+// =====================================================
+// VIDEO CARD
+// =====================================================
 
 function videoCard(v) {
 
   const id =
     encodeURIComponent(v.id);
 
-
   const title =
-    esc(
-      v.title ||
-      "Untitled video"
-    );
-
+    esc(v.title || "Untitled video");
 
   const category =
-    esc(
-      v.category ||
-      "Other"
-    );
-
+    esc(v.category || "Other");
 
   const views =
-    Number(
-      v.views || 0
-    ).toLocaleString();
+    Number(v.views || 0)
+      .toLocaleString();
 
 
   const thumbnail =
     v.thumbnail_url
-
       ? `
         <img
           src="${esc(v.thumbnail_url)}"
           alt="${title}"
           loading="lazy"
+          onerror="this.style.display='none'"
         >
       `
-
       : "";
 
 
@@ -247,30 +196,19 @@ function videoCard(v) {
       href="video.html?id=${id}"
     >
 
-
       <div class="thumb">
 
         ${thumbnail}
 
+        <div class="thumbOverlay"></div>
 
-        <div
-          class="thumbOverlay"
-        ></div>
-
-
-        <div
-          class="playCircle"
-        >
+        <div class="playCircle">
           ▶
         </div>
 
-
-        <div
-          class="cardViews"
-        >
+        <div class="cardViews">
           ${views} views
         </div>
-
 
       </div>
 
@@ -281,13 +219,11 @@ function videoCard(v) {
           ${title}
         </h3>
 
-
         <div class="cardMeta">
 
           <span>
             ${category}
           </span>
-
 
           <span>
             ${views} views
@@ -297,7 +233,6 @@ function videoCard(v) {
 
       </div>
 
-
     </a>
 
   `;
@@ -305,245 +240,218 @@ function videoCard(v) {
 }
 
 
-
-/* =========================
-   LOAD LATEST VIDEOS
-========================= */
+// =====================================================
+// LOAD LATEST VIDEOS
+// =====================================================
 
 async function load() {
 
-
-  videosEl.innerHTML =
-    `
-      <p class="muted">
-        Loading videos...
-      </p>
-    `;
+  videosEl.innerHTML = `
+    <p class="muted">
+      Loading videos...
+    </p>
+  `;
 
 
+  try {
 
-  /* =========================================
-     STEP 1
-     GET TOP 8 MOST VIEWED VIDEO IDs
-     ========================================= */
+    // -------------------------------------------------
+    // STEP 1
+    // Get TOP 8 MOST VIEWED video IDs
+    // -------------------------------------------------
 
-  const {
+    const {
+      data: mostViewed,
+      error: mostViewedError
+    } = await supabase
 
-    data: mostViewed,
+      .from("videos")
 
-    error: mostViewedError
+      .select("id")
 
-  } = await supabase
+      .eq("published", true)
 
-    .from("videos")
-
-    .select("id")
-
-    .eq(
-      "published",
-      true
-    )
-
-    .order(
-      "views",
-      {
+      .order("views", {
         ascending: false
-      }
-    )
+      })
 
-    .limit(8);
-
-
-
-  if (mostViewedError) {
-
-    console.error(
-      "Most viewed query error:",
-      mostViewedError
-    );
-
-
-    videosEl.innerHTML = `
-
-      <div class="videoError">
-
-        <h3>
-          Could not load videos
-        </h3>
-
-        <p>
-          Please try again later.
-        </p>
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-
-  /* =========================================
-     STORE MOST VIEWED IDs
-     ========================================= */
-
-  const excludedIds =
-    new Set(
-
-      (mostViewed || [])
-        .map(
-          video =>
-            String(video.id)
-        )
-
-    );
-
-
-
-  /* =========================================
-     STEP 2
-     GET ALL LATEST VIDEOS
-     ========================================= */
-
-  const {
-
-    data: latestVideos,
-
-    error: latestError
-
-  } = await supabase
-
-    .from("videos")
-
-    .select("*")
-
-    .eq(
-      "published",
-      true
-    )
-
-    .order(
-      "created_at",
-      {
+      .order("created_at", {
         ascending: false
-      }
-    );
+      })
+
+      .limit(8);
 
 
+    if (mostViewedError) {
 
-  if (latestError) {
+      console.error(
+        "Most viewed error:",
+        mostViewedError
+      );
 
-    console.error(
-      "Latest query error:",
-      latestError
-    );
+      videosEl.innerHTML = `
+        <div class="videoError">
 
+          <h3>
+            Could not load videos
+          </h3>
 
-    videosEl.innerHTML = `
+          <p>
+            Please try again later.
+          </p>
 
-      <div class="videoError">
+        </div>
+      `;
 
-        <h3>
-          Could not load videos
-        </h3>
-
-        <p>
-          Please try again later.
-        </p>
-
-      </div>
-
-    `;
-
-    return;
-
-  }
+      return;
+    }
 
 
+    // -------------------------------------------------
+    // STEP 2
+    // Store Most Viewed IDs
+    // -------------------------------------------------
 
-  /* =========================================
-     STEP 3
-     REMOVE TOP 8 MOST VIEWED VIDEOS
-     ========================================= */
-
-  const latestOnly =
-    (latestVideos || [])
-      .filter(
-
-        video =>
-          !excludedIds.has(
-            String(video.id)
-          )
-
+    const excludedIds =
+      new Set(
+        (mostViewed || [])
+          .map(video => String(video.id))
       );
 
 
+    // -------------------------------------------------
+    // STEP 3
+    // Get ALL latest videos
+    // -------------------------------------------------
 
-  /* =========================================
-     NO VIDEOS
-     ========================================= */
+    const {
+      data: latestVideos,
+      error: latestError
+    } = await supabase
 
-  if (!latestOnly.length) {
+      .from("videos")
+
+      .select("*")
+
+      .eq("published", true)
+
+      .order("created_at", {
+        ascending: false
+      });
+
+
+    if (latestError) {
+
+      console.error(
+        "Latest videos error:",
+        latestError
+      );
+
+      videosEl.innerHTML = `
+        <div class="videoError">
+
+          <h3>
+            Could not load videos
+          </h3>
+
+          <p>
+            Please try again later.
+          </p>
+
+        </div>
+      `;
+
+      return;
+    }
+
+
+    // -------------------------------------------------
+    // STEP 4
+    // Remove ONLY the top 8 Most Viewed videos
+    // -------------------------------------------------
+
+    const latestOnly =
+      (latestVideos || [])
+        .filter(video =>
+          !excludedIds.has(
+            String(video.id)
+          )
+        );
+
+
+    // -------------------------------------------------
+    // STEP 5
+    // Show Latest Videos
+    // -------------------------------------------------
+
+    if (!latestOnly.length) {
+
+      videosEl.innerHTML = `
+        <div class="videoError">
+
+          <h3>
+            No latest videos available
+          </h3>
+
+          <p>
+            Add more videos from the admin panel.
+          </p>
+
+        </div>
+      `;
+
+      return;
+    }
+
+
+    videosEl.innerHTML =
+      latestOnly
+        .map(videoCard)
+        .join("");
+
+
+  } catch (error) {
+
+    console.error(
+      "Latest page error:",
+      error
+    );
 
     videosEl.innerHTML = `
-
       <div class="videoError">
 
         <h3>
-          No latest videos available
+          Something went wrong
         </h3>
 
         <p>
-          New videos will appear here.
+          Please try again later.
         </p>
 
       </div>
-
     `;
 
-    return;
-
   }
-
-
-
-  /* =========================================
-     DISPLAY LATEST VIDEOS
-     ========================================= */
-
-  videosEl.innerHTML =
-    latestOnly
-      .map(videoCard)
-      .join("");
 
 }
 
 
-
-/* =========================
-   START
-========================= */
+// =====================================================
+// START
+// =====================================================
 
 load();
 
 
-
-/* =========================
-   MOBILE MENU
-========================= */
+// =====================================================
+// MOBILE MENU
+// =====================================================
 
 const menuBtn =
-  document.querySelector(
-    "#menuBtn"
-  );
-
+  document.querySelector("#menuBtn");
 
 const mobileMenu =
-  document.querySelector(
-    "#mobileMenu"
-  );
+  document.querySelector("#mobileMenu");
 
 
 menuBtn?.addEventListener(
@@ -558,21 +466,15 @@ menuBtn?.addEventListener(
 );
 
 
-
-/* =========================
-   SEARCH BUTTON
-========================= */
+// =====================================================
+// SEARCH BUTTON
+// =====================================================
 
 const searchBtn =
-  document.querySelector(
-    "#searchBtn"
-  );
-
+  document.querySelector("#searchBtn");
 
 const searchBox =
-  document.querySelector(
-    "#searchBox"
-  );
+  document.querySelector("#searchBox");
 
 
 searchBtn?.addEventListener(
@@ -590,8 +492,8 @@ searchBtn?.addEventListener(
       )
     ) {
 
-      searchBox
-        ?.querySelector("input")
+      document
+        .querySelector("#search")
         ?.focus();
 
     }
@@ -600,10 +502,9 @@ searchBtn?.addEventListener(
 );
 
 
-
-/* =========================
-   SEARCH
-========================= */
+// =====================================================
+// SEARCH
+// =====================================================
 
 document
   .querySelector("#search")
@@ -611,20 +512,16 @@ document
     "keydown",
     e => {
 
-      if (
-        e.key !== "Enter"
-      ) {
+      if (e.key !== "Enter")
         return;
-      }
 
 
       const value =
         e.target.value.trim();
 
 
-      if (!value) {
+      if (!value)
         return;
-      }
 
 
       location.href =
@@ -635,7 +532,5 @@ document
 
 </script>
 
-
 </body>
-
   </html>
