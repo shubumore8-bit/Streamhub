@@ -1,5 +1,265 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin — DesiVexa</title><link rel="stylesheet" href="style.css"></head><body>
-<header><a href="index.html" class="logo">Desi<span>Vexa</span></a><nav><a href="index.html">View site</a></nav></header>
-<main class="wrap admin"><div id="auth"></div><div id="panel" hidden>
-<h1>Admin panel</h1><form id="upload"><label>Title<input name="title" required></label><label>Category<input name="category" required></label><label>Description<textarea name="description"></textarea></label><label>Thumbnail <input name="thumb" type="file" accept="image/*"></label><label>Video <input name="video" type="file" accept="video/*" required></label><label class="check"><input name="confirm" type="checkbox" required> I confirm the uploader has the legal rights and required consent for this content.</label><button class="btn">Upload & Publish</button><p id="status"></p></form><h2>Videos</h2><div id="manage"></div></div></main>
-<script type="module" src="admin.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>Admin Dashboard — DesiVexa</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+  <div class="headerInner">
+
+    <a href="index.html" class="logo">
+      Desi<span>Vexa</span>
+    </a>
+
+    <nav>
+      <a href="index.html">View Site</a>
+    </nav>
+
+  </div>
+</header>
+
+
+<main class="wrap admin">
+
+  <!-- LOGIN / ACCOUNT -->
+  <div id="auth"></div>
+
+
+  <!-- DASHBOARD -->
+  <div id="panel" hidden>
+
+    <div class="adminTop">
+
+      <div>
+        <span class="sectionLabel">
+          DESIVEXA
+        </span>
+
+        <h1>Admin Dashboard</h1>
+
+        <p class="muted">
+          Manage your videos and publishing.
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- STATS -->
+
+    <div class="adminStats">
+
+      <div class="adminStat">
+        <span>Total Videos</span>
+        <strong id="statTotal">0</strong>
+      </div>
+
+      <div class="adminStat">
+        <span>Published</span>
+        <strong id="statPublished">0</strong>
+      </div>
+
+      <div class="adminStat">
+        <span>Hidden</span>
+        <strong id="statHidden">0</strong>
+      </div>
+
+      <div class="adminStat">
+        <span>Total Views</span>
+        <strong id="statViews">0</strong>
+      </div>
+
+    </div>
+
+
+    <!-- UPLOAD -->
+
+    <section class="adminBox">
+
+      <div class="adminBoxHead">
+
+        <div>
+          <span class="sectionLabel">
+            CONTENT
+          </span>
+
+          <h2>Upload New Video</h2>
+        </div>
+
+      </div>
+
+
+      <form id="upload" class="adminForm">
+
+        <div class="adminFormGrid">
+
+          <label>
+            Title
+
+            <input
+              name="title"
+              type="text"
+              placeholder="Video title"
+              required
+            >
+          </label>
+
+
+          <label>
+            Category
+
+            <input
+              name="category"
+              type="text"
+              placeholder="Category"
+              required
+            >
+          </label>
+
+        </div>
+
+
+        <label>
+          Description
+
+          <textarea
+            name="description"
+            rows="4"
+            placeholder="Video description..."
+          ></textarea>
+        </label>
+
+
+        <div class="adminFormGrid">
+
+          <label>
+            Thumbnail
+
+            <input
+              name="thumb"
+              type="file"
+              accept="image/*"
+            >
+          </label>
+
+
+          <label>
+            Video
+
+            <input
+              name="video"
+              type="file"
+              accept="video/*"
+              required
+            >
+          </label>
+
+        </div>
+
+
+        <label class="check">
+
+          <input
+            name="confirm"
+            type="checkbox"
+            required
+          >
+
+          <span>
+            I confirm the uploader has the legal
+            rights and required consent for this
+            content.
+          </span>
+
+        </label>
+
+
+        <button
+          class="btn"
+          id="uploadBtn"
+          type="submit"
+        >
+          Upload & Publish
+        </button>
+
+
+        <div
+          id="status"
+          class="adminStatus"
+        ></div>
+
+      </form>
+
+    </section>
+
+
+    <!-- MANAGE -->
+
+    <section class="adminBox">
+
+      <div class="adminBoxHead">
+
+        <div>
+          <span class="sectionLabel">
+            LIBRARY
+          </span>
+
+          <h2>Manage Videos</h2>
+        </div>
+
+      </div>
+
+
+      <div class="adminTools">
+
+        <input
+          id="adminSearch"
+          type="search"
+          placeholder="Search videos..."
+          autocomplete="off"
+        >
+
+
+        <select id="adminFilter">
+
+          <option value="all">
+            All videos
+          </option>
+
+          <option value="published">
+            Published
+          </option>
+
+          <option value="hidden">
+            Hidden
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div id="manage"></div>
+
+    </section>
+
+  </div>
+
+</main>
+
+
+<script
+  type="module"
+  src="admin.js?v=2">
+</script>
+
+</body>
+</html>
