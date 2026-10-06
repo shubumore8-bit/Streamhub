@@ -2386,3 +2386,15 @@ body {
 .sectionPageLink:hover {
   color: #d90000;
 }
+
+.randomSection {
+  margin-top: 25px;
+}
+
+.randomSection .dvSectionTitle {
+  margin-bottom: 8px;
+}
+
+.randomGrid {
+  margin-top: 5px;
+}
