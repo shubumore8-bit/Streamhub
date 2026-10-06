@@ -2334,3 +2334,43 @@ body {
 
 /* =====================================================
    SEARCH
+
+/* =====================================================
+   SECTION PAGE LINKS
+   ===================================================== */
+
+.dvSectionTitle h1 {
+  margin: 0;
+  color: #eee;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.sectionBack {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 28px;
+  height: 28px;
+
+  color: #fff;
+  text-decoration: none;
+
+  font-size: 30px;
+  line-height: 1;
+}
+
+.sectionBack:hover {
+  color: #d90000;
+}
+
+/* Make homepage headings clickable */
+
+.dvSectionTitle a {
+  text-decoration: none;
+}
+
+.pageSectionTitle {
+  cursor: default;
+}
