@@ -68,4 +68,359 @@ categoryBtn?.addEventListener("click", (e) => {
 
 document.addEventListener("click", (e) => {
 
-  if (!e
+  if (!e.target.closest(".categoryMenu")) {
+    categoryList?.classList.remove("show");
+  }
+
+});
+
+
+/* =========================
+   LOAD VIDEOS
+========================= */
+
+async function load() {
+
+  if (!videosEl) return;
+
+  videosEl.innerHTML = `
+    <p class="muted">Loading videos...</p>
+  `;
+
+  const { data, error } = await supabase
+    .from("videos")
+    .select("*")
+    .eq("published", true)
+    .order("created_at", {
+      ascending: false
+    });
+
+  if (error) {
+
+    console.error("Supabase error:", error);
+
+    videosEl.innerHTML = `
+      <p class="muted">
+        Could not load videos.
+      </p>
+    `;
+
+    return;
+  }
+
+  all = data || [];
+
+  render();
+}
+
+
+/* =========================
+   FILTER VIDEOS
+========================= */
+
+function getFiltered() {
+
+  const q =
+    (search?.value || "")
+      .toLowerCase()
+      .trim();
+
+  return all.filter(v => {
+
+    const text =
+      (
+        v.title || ""
+      ) +
+      " " +
+      (
+        v.category || ""
+      ) +
+      " " +
+      (
+        v.description || ""
+      );
+
+    const categoryOk =
+      activeCategory === "All" ||
+      String(v.category || "")
+        .toLowerCase() ===
+      activeCategory.toLowerCase();
+
+    return (
+      categoryOk &&
+      (
+        !q ||
+        text.toLowerCase().includes(q)
+      )
+    );
+
+  });
+
+}
+
+
+/* =========================
+   VIDEO CARD
+========================= */
+
+function videoCard(v) {
+
+  const id = encodeURIComponent(v.id);
+
+  const title =
+    esc(v.title || "Untitled video");
+
+  const category =
+    esc(v.category || "Other");
+
+  const views =
+    Number(v.views || 0).toLocaleString();
+
+  const thumbnail =
+    v.thumbnail_url
+      ? `
+        <img
+          src="${esc(v.thumbnail_url)}"
+          alt="${title}"
+          loading="lazy"
+          style="
+            position:absolute;
+            inset:0;
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+          "
+          onerror="this.style.display='none'"
+        >
+      `
+      : "";
+
+  return `
+    <a
+      class="card"
+      href="video.html?id=${id}"
+    >
+
+      <div
+        class="thumb"
+        style="
+          position:relative;
+          overflow:hidden;
+        "
+      >
+
+        ${thumbnail}
+
+        <b
+          style="
+            position:relative;
+            z-index:2;
+          "
+        >
+          ▶
+        </b>
+
+      </div>
+
+      <div class="body">
+
+        <h3>
+          ${title}
+        </h3>
+
+        <small>
+          ${category}
+          ·
+          ${views}
+          views
+        </small>
+
+      </div>
+
+    </a>
+  `;
+}
+
+
+/* =========================
+   RENDER VIDEOS
+========================= */
+
+function render() {
+
+  if (!videosEl) return;
+
+  const items = getFiltered();
+
+  videosEl.innerHTML =
+    items.map(videoCard).join("");
+
+
+  /* EMPTY MESSAGE */
+
+  const empty =
+    document.querySelector("#empty");
+
+  if (empty) {
+    empty.hidden = items.length > 0;
+  }
+
+
+  /* CATEGORIES */
+
+  renderCategories();
+
+}
+
+
+/* =========================
+   RENDER CATEGORIES
+========================= */
+
+function renderCategories() {
+
+  if (!categoryItems) return;
+
+  const categories = [
+    "All",
+    ...new Set(
+      all
+        .map(v =>
+          String(v.category || "").trim()
+        )
+        .filter(Boolean)
+    )
+  ];
+
+
+  const q =
+    (categorySearch?.value || "")
+      .toLowerCase()
+      .trim();
+
+
+  const filtered =
+    categories.filter(category =>
+      category
+        .toLowerCase()
+        .includes(q)
+    );
+
+
+  categoryItems.innerHTML =
+    filtered.map(category => `
+
+      <button
+        type="button"
+        class="categoryItem ${
+          category.toLowerCase() ===
+          activeCategory.toLowerCase()
+            ? "active"
+            : ""
+        }"
+        data-category="${esc(category)}"
+      >
+
+        ${esc(category)}
+
+      </button>
+
+    `).join("");
+
+
+  categoryItems
+    .querySelectorAll("[data-category]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          activeCategory =
+            button.dataset.category;
+
+
+          if (categoryBtn) {
+
+            categoryBtn.textContent =
+              activeCategory === "All"
+                ? "☰ Categories"
+                : "☰ " + activeCategory;
+
+          }
+
+
+          categoryList
+            ?.classList
+            .remove("show");
+
+
+          render();
+
+        }
+      );
+
+    });
+
+}
+
+
+/* =========================
+   CATEGORY SEARCH
+========================= */
+
+categorySearch?.addEventListener(
+  "input",
+  () => {
+
+    renderCategories();
+
+  }
+);
+
+
+/* =========================
+   VIDEO SEARCH
+========================= */
+
+search?.addEventListener(
+  "input",
+  () => {
+
+    activeCategory = "All";
+
+    if (categoryBtn) {
+      categoryBtn.textContent =
+        "☰ Categories";
+    }
+
+    render();
+
+  }
+);
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+export function esc(s) {
+
+  return String(s ?? "")
+    .replace(/[&<>"']/g, m => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    }[m]));
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+load();
