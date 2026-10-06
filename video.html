@@ -1,49 +1,135 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width,initial-scale=1"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Watch Video — DesiVexa</title>
 
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
+  <link rel="stylesheet" href="style.css">
 
   <!-- Fluid Player CSS -->
   <link
     rel="stylesheet"
-    href="https://cdn.fluidplayer.com/v2/current/fluidplayer.min.css"
+    href="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.css"
   >
 
-</head>
+  <style>
+    .videoPage {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px 10px 50px;
+    }
 
+    .videoPlayerWrap {
+      width: 100%;
+      background: #000;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .videoPlayerWrap video {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #000;
+    }
+
+    .videoInfo {
+      padding: 15px 5px 20px;
+    }
+
+    .videoInfo h1 {
+      margin: 0 0 10px;
+      color: #fff;
+      font-size: 22px;
+      line-height: 1.35;
+    }
+
+    .videoMeta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: #888;
+      font-size: 13px;
+    }
+
+    .videoMeta span:first-child {
+      color: #d90000;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .videoDescription {
+      margin-top: 15px;
+      color: #aaa;
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .videoError {
+      padding: 50px 15px;
+      text-align: center;
+      color: #999;
+    }
+
+    .videoError h3 {
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .videoError a {
+      color: #d90000;
+      text-decoration: none;
+    }
+
+    @media (max-width: 699px) {
+      .videoPage {
+        padding: 10px 5px 40px;
+      }
+
+      .videoInfo h1 {
+        font-size: 18px;
+      }
+
+      .videoMeta {
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
 
 <body>
 
+  <!-- HEADER -->
+  <header class="dvHeader">
+    <div class="dvHeaderInner">
 
-<!-- ================= HEADER ================= -->
+      <button
+        class="headerIcon"
+        id="menuBtn"
+        type="button"
+        aria-label="Menu"
+      >
+        ☰
+      </button>
 
-<header>
+      <a href="index.html" class="dvLogo">
+        Desi<span>Vexa</span>
+      </a>
 
-  <div class="headerInner">
+      <button
+        class="headerIcon"
+        id="searchBtn"
+        type="button"
+        aria-label="Search"
+      >
+        ⌕
+      </button>
 
-    <a
-      href="index.html"
-      class="logo"
-    >
-      Desi<span>Vexa</span>
-    </a>
+    </div>
 
-
-    <div class="topSearch">
+    <div class="dvSearchBox" id="searchBox">
 
       <input
         id="topSearch"
@@ -55,55 +141,113 @@
       <span>⌕</span>
 
     </div>
+  </header>
 
 
-    <nav>
+  <!-- MOBILE MENU -->
+  <div class="mobileMenu" id="mobileMenu">
 
-      <a href="index.html">
-        Home
-      </a>
+    <a href="index.html">
+      Home
+    </a>
 
-      <a href="index.html#categories">
-        Categories
-      </a>
+    <a href="index.html#categories">
+      Categories
+    </a>
 
-    </nav>
+    <a href="most-viewed.html">
+      Most Viewed
+    </a>
 
-  </div>
-
-</header>
-
-
-
-<!-- ================= MAIN ================= -->
-
-<main class="wrap videoPage">
-
-  <div id="page">
-
-    Loading...
+    <a href="latest.html">
+      Latest
+    </a>
 
   </div>
 
-</main>
+
+  <!-- MAIN -->
+  <main class="wrap videoPage">
+
+    <div id="page">
+      <p class="muted">
+        Loading video...
+      </p>
+    </div>
+
+  </main>
 
 
+  <!-- FOOTER -->
+  <footer class="dvFooter">
 
-<!-- Fluid Player JS -->
+    <div class="footerLogo">
+      Desi<span>Vexa</span>
+    </div>
 
-<script
-  src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js"
-></script>
+    <p>
+      18+ only · All content must be lawful and consensual.
+    </p>
+
+    <p>
+      <a href="legal.html">
+        Terms & Privacy
+      </a>
+    </p>
+
+  </footer>
 
 
-<!-- Video JS -->
+  <!-- MOBILE MENU + SEARCH -->
+  <script>
+    const menuBtn = document.querySelector("#menuBtn");
+    const mobileMenu = document.querySelector("#mobileMenu");
 
-<script
-  type="module"
-  src="video.js?v=20"
-></script>
+    const searchBtn = document.querySelector("#searchBtn");
+    const searchBox = document.querySelector("#searchBox");
 
+    menuBtn?.addEventListener("click", () => {
+      mobileMenu?.classList.toggle("show");
+    });
+
+    searchBtn?.addEventListener("click", () => {
+
+      searchBox?.classList.toggle("show");
+
+      if (searchBox?.classList.contains("show")) {
+        document.querySelector("#topSearch")?.focus();
+      }
+
+    });
+
+    document
+      .querySelector("#topSearch")
+      ?.addEventListener("keydown", event => {
+
+        if (event.key !== "Enter") return;
+
+        const value = event.target.value.trim();
+
+        if (!value) return;
+
+        location.href =
+          `index.html?search=${encodeURIComponent(value)}`;
+
+      });
+  </script>
+
+
+  <!-- Fluid Player JS -->
+  <script
+    src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js">
+  </script>
+
+
+  <!-- DesiVexa Video JS -->
+  <script
+    type="module"
+    src="video.js?v=21">
+  </script>
 
 </body>
-
 </html>
