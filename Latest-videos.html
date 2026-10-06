@@ -1,15 +1,29 @@
 <!doctype html>
 <html lang="en">
+
 <head>
+
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
 
   <title>Latest Videos — DesiVexa</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
 </head>
 
+
 <body>
+
+
+<!-- ================= HEADER ================= -->
 
 <header class="dvHeader">
 
@@ -24,12 +38,14 @@
       ☰
     </button>
 
+
     <a
       href="index.html"
       class="dvLogo"
     >
       Desi<span>Vexa</span>
     </a>
+
 
     <button
       class="headerIcon"
@@ -42,10 +58,12 @@
 
   </div>
 
+
   <div
     class="dvSearchBox"
     id="searchBox"
   >
+
     <input
       id="search"
       type="search"
@@ -54,10 +72,13 @@
     >
 
     <span>⌕</span>
+
   </div>
 
 </header>
 
+
+<!-- ================= MOBILE MENU ================= -->
 
 <div
   class="mobileMenu"
@@ -79,9 +100,12 @@
 </div>
 
 
+<!-- ================= MAIN ================= -->
+
 <main class="dvMain">
 
   <section class="dvSection">
+
 
     <div class="dvSectionTitle pageSectionTitle">
 
@@ -95,30 +119,41 @@
       <span>›</span>
 
       <h1>
-        Latest
+        Latest Videos
       </h1>
 
     </div>
+
 
     <div
       id="videos"
       class="dvGrid"
     ></div>
 
+
   </section>
 
 </main>
 
 
+<!-- ================= FOOTER ================= -->
+
 <footer>
-  <p>© DesiVexa</p>
+
+  <p>
+    © DesiVexa
+  </p>
+
 </footer>
 
+
+<!-- ================= JAVASCRIPT ================= -->
 
 <script type="module">
 
 import { createClient }
   from "https://esm.sh/@supabase/supabase-js@2";
+
 
 import {
   SUPABASE_URL,
@@ -126,15 +161,21 @@ import {
 } from "./config.js";
 
 
-const supabase = createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const supabase =
+  createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
 
 const videosEl =
   document.querySelector("#videos");
 
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
 
 function esc(s) {
 
@@ -154,23 +195,40 @@ function esc(s) {
 }
 
 
+
+/* =========================
+   VIDEO CARD
+========================= */
+
 function videoCard(v) {
 
   const id =
     encodeURIComponent(v.id);
 
+
   const title =
-    esc(v.title || "Untitled video");
+    esc(
+      v.title ||
+      "Untitled video"
+    );
+
 
   const category =
-    esc(v.category || "Other");
+    esc(
+      v.category ||
+      "Other"
+    );
+
 
   const views =
-    Number(v.views || 0)
-      .toLocaleString();
+    Number(
+      v.views || 0
+    ).toLocaleString();
+
 
   const thumbnail =
     v.thumbnail_url
+
       ? `
         <img
           src="${esc(v.thumbnail_url)}"
@@ -178,29 +236,44 @@ function videoCard(v) {
           loading="lazy"
         >
       `
+
       : "";
 
+
   return `
+
     <a
       class="card"
       href="video.html?id=${id}"
     >
 
+
       <div class="thumb">
 
         ${thumbnail}
 
-        <div class="thumbOverlay"></div>
 
-        <div class="playCircle">
+        <div
+          class="thumbOverlay"
+        ></div>
+
+
+        <div
+          class="playCircle"
+        >
           ▶
         </div>
 
-        <div class="cardViews">
+
+        <div
+          class="cardViews"
+        >
           ${views} views
         </div>
 
+
       </div>
+
 
       <div class="body">
 
@@ -208,11 +281,13 @@ function videoCard(v) {
           ${title}
         </h3>
 
+
         <div class="cardMeta">
 
           <span>
             ${category}
           </span>
+
 
           <span>
             ${views} views
@@ -222,35 +297,74 @@ function videoCard(v) {
 
       </div>
 
+
     </a>
+
   `;
 
 }
 
 
+
+/* =========================
+   LOAD LATEST VIDEOS
+========================= */
+
 async function load() {
 
-  videosEl.innerHTML =
-    `<p class="muted">Loading videos...</p>`;
 
+  videosEl.innerHTML =
+    `
+      <p class="muted">
+        Loading videos...
+      </p>
+    `;
+
+
+
+  /* =========================================
+     STEP 1
+     GET TOP 8 MOST VIEWED VIDEO IDs
+     ========================================= */
 
   const {
-    data,
-    error
+
+    data: mostViewed,
+
+    error: mostViewedError
+
   } = await supabase
+
     .from("videos")
-    .select("*")
-    .eq("published", true)
-    .order("created_at", {
-      ascending: false
-    });
+
+    .select("id")
+
+    .eq(
+      "published",
+      true
+    )
+
+    .order(
+      "views",
+      {
+        ascending: false
+      }
+    )
+
+    .limit(8);
 
 
-  if (error) {
 
-    console.error(error);
+  if (mostViewedError) {
+
+    console.error(
+      "Most viewed query error:",
+      mostViewedError
+    );
+
 
     videosEl.innerHTML = `
+
       <div class="videoError">
 
         <h3>
@@ -262,71 +376,218 @@ async function load() {
         </p>
 
       </div>
+
     `;
 
     return;
+
   }
 
 
-  if (!data?.length) {
+
+  /* =========================================
+     STORE MOST VIEWED IDs
+     ========================================= */
+
+  const excludedIds =
+    new Set(
+
+      (mostViewed || [])
+        .map(
+          video =>
+            String(video.id)
+        )
+
+    );
+
+
+
+  /* =========================================
+     STEP 2
+     GET ALL LATEST VIDEOS
+     ========================================= */
+
+  const {
+
+    data: latestVideos,
+
+    error: latestError
+
+  } = await supabase
+
+    .from("videos")
+
+    .select("*")
+
+    .eq(
+      "published",
+      true
+    )
+
+    .order(
+      "created_at",
+      {
+        ascending: false
+      }
+    );
+
+
+
+  if (latestError) {
+
+    console.error(
+      "Latest query error:",
+      latestError
+    );
+
 
     videosEl.innerHTML = `
+
       <div class="videoError">
 
         <h3>
-          No videos available
+          Could not load videos
         </h3>
 
+        <p>
+          Please try again later.
+        </p>
+
       </div>
+
     `;
 
     return;
+
   }
 
 
+
+  /* =========================================
+     STEP 3
+     REMOVE TOP 8 MOST VIEWED VIDEOS
+     ========================================= */
+
+  const latestOnly =
+    (latestVideos || [])
+      .filter(
+
+        video =>
+          !excludedIds.has(
+            String(video.id)
+          )
+
+      );
+
+
+
+  /* =========================================
+     NO VIDEOS
+     ========================================= */
+
+  if (!latestOnly.length) {
+
+    videosEl.innerHTML = `
+
+      <div class="videoError">
+
+        <h3>
+          No latest videos available
+        </h3>
+
+        <p>
+          New videos will appear here.
+        </p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+
+  /* =========================================
+     DISPLAY LATEST VIDEOS
+     ========================================= */
+
   videosEl.innerHTML =
-    data
+    latestOnly
       .map(videoCard)
       .join("");
 
 }
 
 
+
+/* =========================
+   START
+========================= */
+
 load();
 
 
-// Mobile menu
+
+/* =========================
+   MOBILE MENU
+========================= */
 
 const menuBtn =
-  document.querySelector("#menuBtn");
+  document.querySelector(
+    "#menuBtn"
+  );
+
 
 const mobileMenu =
-  document.querySelector("#mobileMenu");
+  document.querySelector(
+    "#mobileMenu"
+  );
+
 
 menuBtn?.addEventListener(
   "click",
   () => {
-    mobileMenu?.classList.toggle("show");
+
+    mobileMenu?.classList.toggle(
+      "show"
+    );
+
   }
 );
 
 
-// Search
+
+/* =========================
+   SEARCH BUTTON
+========================= */
 
 const searchBtn =
-  document.querySelector("#searchBtn");
+  document.querySelector(
+    "#searchBtn"
+  );
+
 
 const searchBox =
-  document.querySelector("#searchBox");
+  document.querySelector(
+    "#searchBox"
+  );
+
 
 searchBtn?.addEventListener(
   "click",
   () => {
 
-    searchBox?.classList.toggle("show");
+    searchBox?.classList.toggle(
+      "show"
+    );
+
 
     if (
-      searchBox?.classList.contains("show")
+      searchBox?.classList.contains(
+        "show"
+      )
     ) {
 
       searchBox
@@ -339,20 +600,32 @@ searchBtn?.addEventListener(
 );
 
 
+
+/* =========================
+   SEARCH
+========================= */
+
 document
   .querySelector("#search")
   ?.addEventListener(
     "keydown",
     e => {
 
-      if (e.key !== "Enter")
+      if (
+        e.key !== "Enter"
+      ) {
         return;
+      }
+
 
       const value =
         e.target.value.trim();
 
-      if (!value)
+
+      if (!value) {
         return;
+      }
+
 
       location.href =
         `index.html?search=${encodeURIComponent(value)}`;
@@ -362,5 +635,7 @@ document
 
 </script>
 
+
 </body>
-  </html>
+
+</html>
