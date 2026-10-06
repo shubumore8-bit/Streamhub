@@ -1,16 +1,142 @@
-<!doctype html><html><head>
-  <meta name="6a97888e-site-verification" content="cdfc6e06389c2153c30b80c3449ad95c">
-  <meta charset="utf-8"><meta name="6a97888e-site-verification" content="cdfc6e06389c2153c30b80c3449ad95c"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DesiVexa</title><link rel="stylesheet" href="style.css"></head><body>
-<div class="categoryMenu">
-  <button id="categoryBtn" class="categoryBtn" type="button">
-    ☰ Categories
-  </button>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <div id="cats" class="categoryList"></div>
+  <meta name="6a97888e-site-verification"
+        content="cdfc6e06389c2153c30b80c3449ad95c">
+
+  <title>DesiVexa</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- AGE GATE -->
+<div id="ageGate" class="gate">
+  <div class="gatebox">
+
+    <h1>Desi<span>Vexa</span></h1>
+
+    <h2>18+ Only</h2>
+
+    <p>
+      You must be 18 or older to enter.
+      Only lawful, consensual adult content is permitted.
+    </p>
+
+    <button id="enter" class="btn">
+      I am 18+ — Enter
+    </button>
+
+  </div>
 </div>
-    class="gatebox"><h1>Desi<span>Vexa</span></h1><h2>18+ Only</h2><p>You must be 18 or older to enter. Only lawful, consensual adult content is permitted.</p><button id="enter" class="btn">I am 18+ — Enter</button></div></div>
-<header><a href="index.html" class="logo">Desi<span>Vexa</span></a><nav><a href="index.html">Home</a><a href="#categories">Categories</a><a href="admin.html">Admin</a></nav></header>
-<main><section class="hero"><p>18+ VIDEO PLATFORM</p><h1>Watch. Discover. Responsibly.</h1><input id="search" placeholder="Search videos..."></section>
-<section class="wrap"><div id="cats" class="chips"></div><div id="videos" class="grid"></div><p id="empty">No published videos yet.</p></section></main>
-<footer>18+ only · <a href="legal.html">Terms & Privacy</a> · Report unlawful/non-consensual content to the site operator.</footer>
-<script type="module" src="app.js?v=6"></script></body></html>
+
+
+<!-- HEADER -->
+<header>
+
+  <a href="index.html" class="logo">
+    Desi<span>Vexa</span>
+  </a>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="#categories">Categories</a>
+    <a href="admin.html">Admin</a>
+  </nav>
+
+</header>
+
+
+<!-- MAIN -->
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+
+    <p>18+ VIDEO PLATFORM</p>
+
+    <h1>
+      Watch. Discover. Responsibly.
+    </h1>
+
+    <input
+      id="search"
+      type="search"
+      placeholder="Search videos..."
+      autocomplete="off"
+    >
+
+  </section>
+
+
+  <!-- VIDEOS -->
+  <section class="wrap" id="categories">
+
+    <!-- CATEGORY MENU -->
+    <div class="categoryMenu">
+
+      <button
+        id="categoryBtn"
+        class="categoryBtn"
+        type="button"
+      >
+        ☰ Categories
+      </button>
+
+
+      <div
+        id="cats"
+        class="categoryList"
+      >
+
+        <div class="categorySearch">
+
+          <input
+            id="categorySearch"
+            type="search"
+            placeholder="Search categories..."
+            autocomplete="off"
+          >
+
+        </div>
+
+        <div id="categoryItems"></div>
+
+      </div>
+
+    </div>
+
+
+    <!-- VIDEO GRID -->
+    <div id="videos" class="grid"></div>
+
+    <p id="empty">
+      No published videos yet.
+    </p>
+
+  </section>
+
+</main>
+
+
+<!-- FOOTER -->
+<footer>
+
+  18+ only ·
+  <a href="legal.html">Terms & Privacy</a>
+  · Report unlawful/non-consensual content to the site operator.
+
+</footer>
+
+
+<script
+  type="module"
+  src="app.js?v=8">
+</script>
+
+</body>
+</html>
