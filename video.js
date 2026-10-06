@@ -17,31 +17,42 @@ const page =
 
 
 const id =
-  new URLSearchParams(
-    location.search
-  ).get("id");
+  new URLSearchParams(location.search).get("id");
 
+
+// =====================================================
+// EXOCLICK VAST
+// =====================================================
 
 const EXOCLICK_VAST =
   "https://s.magsrv.com/v1/vast.php?idz=6048654";
 
+
+// =====================================================
+// ESCAPE HTML
+// =====================================================
 
 function esc(s) {
 
   return String(s ?? "")
     .replace(
       /[&<>"']/g,
-      m => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      }[m])
+      m =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        })[m]
     );
 
 }
 
+
+// =====================================================
+// ERROR
+// =====================================================
 
 function show(message) {
 
@@ -49,7 +60,9 @@ function show(message) {
 
     <div class="videoError">
 
-      <h1>${esc(message)}</h1>
+      <h1>
+        ${esc(message)}
+      </h1>
 
       <p>
         <a href="index.html">
@@ -64,11 +77,151 @@ function show(message) {
 }
 
 
+// =====================================================
+// VIDEO CARD
+// =====================================================
+
+function videoCard(v) {
+
+  const title =
+    esc(
+      v.title ||
+      "Untitled video"
+    );
+
+
+  const category =
+    esc(
+      v.category ||
+      "Other"
+    );
+
+
+  const views =
+    Number(
+      v.views || 0
+    ).toLocaleString();
+
+
+  const thumbnail =
+    v.thumbnail_url
+      ? `
+        <img
+          src="${esc(v.thumbnail_url)}"
+          alt="${title}"
+          loading="lazy"
+          style="
+            position:absolute;
+            inset:0;
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+          "
+          onerror="
+            this.style.display='none'
+          "
+        >
+      `
+      : "";
+
+
+  return `
+
+    <a
+      class="card"
+      href="video.html?id=${encodeURIComponent(v.id)}"
+    >
+
+      <div
+        class="thumb"
+        style="
+          position:relative;
+          overflow:hidden;
+        "
+      >
+
+        ${thumbnail}
+
+
+        <div
+          class="thumbOverlay"
+          style="
+            position:absolute;
+            inset:0;
+            z-index:1;
+          "
+        ></div>
+
+
+        <div
+          class="playCircle"
+          style="
+            position:absolute;
+            left:50%;
+            top:50%;
+            transform:translate(-50%,-50%);
+            z-index:2;
+          "
+        >
+          ▶
+        </div>
+
+
+        <div
+          class="cardViews"
+          style="
+            position:absolute;
+            right:6px;
+            bottom:5px;
+            z-index:2;
+          "
+        >
+          ${views} views
+        </div>
+
+      </div>
+
+
+      <div class="body">
+
+        <h3>
+          ${title}
+        </h3>
+
+        <div class="cardMeta">
+
+          <span>
+            ${category}
+          </span>
+
+          <span>
+            ${views} views
+          </span>
+
+        </div>
+
+      </div>
+
+    </a>
+
+  `;
+
+}
+
+
+// =====================================================
+// MAIN
+// =====================================================
+
 async function run() {
 
   try {
 
-    /* 18+ */
+
+    // =================================================
+    // AGE CHECK
+    // =================================================
 
     if (
       localStorage.dv18 !== "yes"
@@ -81,6 +234,10 @@ async function run() {
     }
 
 
+    // =================================================
+    // ID CHECK
+    // =================================================
+
     if (!id) {
 
       show("Video not found");
@@ -90,7 +247,9 @@ async function run() {
     }
 
 
-    /* CURRENT VIDEO */
+    // =================================================
+    // GET VIDEO
+    // =================================================
 
     const {
       data: v,
@@ -101,20 +260,32 @@ async function run() {
 
       .select("*")
 
-      .eq("id", id)
+      .eq(
+        "id",
+        id
+      )
 
-      .eq("published", true)
+      .eq(
+        "published",
+        true
+      )
 
       .maybeSingle();
 
 
     if (error) {
 
-      console.error(error);
+      console.error(
+        "Database error:",
+        error
+      );
 
       show(
         "Database error: " +
-        (error.message || "Unknown error")
+        (
+          error.message ||
+          "Unknown error"
+        )
       );
 
       return;
@@ -131,7 +302,9 @@ async function run() {
     }
 
 
-    /* RELATED VIDEOS */
+    // =================================================
+    // RELATED VIDEOS
+    // =================================================
 
     let related = [];
 
@@ -143,9 +316,15 @@ async function run() {
 
         .select("*")
 
-        .eq("published", true)
+        .eq(
+          "published",
+          true
+        )
 
-        .neq("id", v.id)
+        .neq(
+          "id",
+          v.id
+        )
 
         .order(
           "views",
@@ -160,12 +339,15 @@ async function run() {
     if (!relatedResult.error) {
 
       related =
-        relatedResult.data || [];
+        relatedResult.data ||
+        [];
 
     }
 
 
-    /* PAGE */
+    // =================================================
+    // PAGE
+    // =================================================
 
     page.innerHTML = `
 
@@ -216,13 +398,15 @@ async function run() {
 
           <span class="videoCategory">
             ${esc(
-              v.category || "Other"
+              v.category ||
+              "Other"
             )}
           </span>
 
           <h1>
             ${esc(
-              v.title || "Untitled video"
+              v.title ||
+              "Untitled video"
             )}
           </h1>
 
@@ -278,7 +462,9 @@ async function run() {
     `;
 
 
-    /* RELATED */
+    // =================================================
+    // RELATED
+    // =================================================
 
     const relatedEl =
       document.querySelector(
@@ -296,16 +482,56 @@ async function run() {
     }
 
 
-    /* FLUID PLAYER */
+    // =================================================
+    // FLUID PLAYER + EXOCLICK PREROLL
+    // =================================================
+
+    const player =
+      document.querySelector(
+        "#player"
+      );
+
 
     if (
-      typeof window.fluidPlayer ===
+      !player
+    ) {
+
+      console.error(
+        "Player element not found"
+      );
+
+      return;
+
+    }
+
+
+    if (
+      typeof window.fluidPlayer !==
       "function"
     ) {
 
-      fluidPlayer(
+      console.error(
+        "Fluid Player library not loaded"
+      );
+
+      return;
+
+    }
+
+
+    console.log(
+      "Initializing ExoClick pre-roll..."
+    );
+
+
+    const fp =
+      window.fluidPlayer(
         "player",
         {
+
+          // =========================================
+          // PLAYER
+          // =========================================
 
           layoutControls: {
 
@@ -317,13 +543,34 @@ async function run() {
 
             fillToContainer: true,
 
-            playButtonShowing: true
+            playButtonShowing: true,
+
+            primaryColor: "#d90000",
+
+            preload: "metadata"
 
           },
 
 
+          // =========================================
+          // VAST ADS
+          // =========================================
+
           vastOptions: {
 
+            // Allow VPAID ads
+            allowVPAID: true,
+
+
+            // Allow VAST wrappers
+            maxAllowedVastTagRedirects: 5,
+
+
+            // Give ExoClick enough time
+            vastTimeout: 10000,
+
+
+            // Pre-roll
             adList: [
 
               {
@@ -331,21 +578,82 @@ async function run() {
                 roll: "preRoll",
 
                 vastTag:
-                  EXOCLICK_VAST
+                  EXOCLICK_VAST,
+
+                adText:
+                  "Advertisement",
+
+                adClickable:
+                  true
 
               }
 
-            ]
+            ],
+
+
+            // =======================================
+            // DEBUG CALLBACKS
+            // =======================================
+
+            vastAdvanced: {
+
+              vastLoadedCallback:
+                function() {
+
+                  console.log(
+                    "✅ ExoClick VAST loaded"
+                  );
+
+                },
+
+
+              noVastVideoCallback:
+                function() {
+
+                  console.warn(
+                    "⚠️ ExoClick returned no VAST video / no-fill"
+                  );
+
+                },
+
+
+              vastVideoSkippedCallback:
+                function() {
+
+                  console.log(
+                    "ExoClick ad skipped"
+                  );
+
+                },
+
+
+              vastVideoEndedCallback:
+                function() {
+
+                  console.log(
+                    "✅ ExoClick pre-roll finished"
+                  );
+
+                }
+
+            }
 
           }
 
         }
+
       );
 
-    }
+
+    console.log(
+      "Fluid Player initialized:",
+      fp
+    );
 
 
-    /* VIEW COUNT */
+    // =================================================
+    // VIEW COUNT
+    // =================================================
 
     Promise.resolve(
 
@@ -357,41 +665,45 @@ async function run() {
       )
 
     )
+    .then(
+      ({ error }) => {
 
-      .then(
-        ({ error }) => {
+        if (error) {
 
-          if (error) {
-
-            console.warn(
-              "View counter failed:",
-              error
-            );
-
-          }
+          console.warn(
+            "View counter failed:",
+            error
+          );
 
         }
-      )
 
-      .catch(err => {
+      }
+    )
+    .catch(
+      error => {
 
         console.warn(
           "View counter failed:",
-          err
+          error
         );
 
-      });
+      }
+    );
 
 
-  } catch (err) {
+  }
+
+
+  catch (error) {
 
     console.error(
       "Video page error:",
-      err
+      error
     );
 
+
     show(
-      err?.message ||
+      error?.message ||
       "Something went wrong"
     );
 
@@ -400,94 +712,8 @@ async function run() {
 }
 
 
-/* =========================
-   RELATED CARD
-========================= */
-
-function videoCard(v) {
-
-  const title =
-    esc(
-      v.title ||
-      "Untitled video"
-    );
-
-
-  const category =
-    esc(
-      v.category ||
-      "Other"
-    );
-
-
-  const views =
-    Number(
-      v.views || 0
-    ).toLocaleString();
-
-
-  const thumbnail =
-    v.thumbnail_url
-
-      ? `background-image:url("${esc(
-          v.thumbnail_url
-        )}")`
-
-      : "";
-
-
-  return `
-
-    <a
-      class="card"
-      href="video.html?id=${encodeURIComponent(
-        v.id
-      )}"
-    >
-
-      <div
-        class="thumb"
-        style="${thumbnail}"
-      >
-
-        <div class="thumbOverlay"></div>
-
-        <div class="playCircle">
-          ▶
-        </div>
-
-        <div class="cardViews">
-          ${views} views
-        </div>
-
-      </div>
-
-
-      <div class="body">
-
-        <h3>
-          ${title}
-        </h3>
-
-        <div class="cardMeta">
-
-          <span>
-            ${category}
-          </span>
-
-          <span>
-            ${views} views
-          </span>
-
-        </div>
-
-      </div>
-
-    </a>
-
-  `;
-
-}
-
+// =====================================================
+// START
+// =====================================================
 
 run();
