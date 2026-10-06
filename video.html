@@ -1,14 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Watch Video — DesiVexa</title>
 
   <link rel="stylesheet" href="style.css">
 
-  <!-- Fluid Player CSS -->
   <link
     rel="stylesheet"
     href="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.css"
@@ -83,6 +82,18 @@
       text-decoration: none;
     }
 
+    .randomSection {
+      margin-top: 25px;
+    }
+
+    .randomSection .dvSectionTitle {
+      margin-bottom: 8px;
+    }
+
+    .randomGrid {
+      margin-top: 5px;
+    }
+
     @media (max-width: 699px) {
       .videoPage {
         padding: 10px 5px 40px;
@@ -101,104 +112,53 @@
 
 <body>
 
-  <!-- HEADER -->
   <header class="dvHeader">
     <div class="dvHeaderInner">
-
-      <button
-        class="headerIcon"
-        id="menuBtn"
-        type="button"
-        aria-label="Menu"
-      >
-        ☰
-      </button>
+      <button class="headerIcon" id="menuBtn" type="button">☰</button>
 
       <a href="index.html" class="dvLogo">
         Desi<span>Vexa</span>
       </a>
 
-      <button
-        class="headerIcon"
-        id="searchBtn"
-        type="button"
-        aria-label="Search"
-      >
-        ⌕
-      </button>
-
+      <button class="headerIcon" id="searchBtn" type="button">⌕</button>
     </div>
 
     <div class="dvSearchBox" id="searchBox">
-
       <input
         id="topSearch"
         type="search"
         placeholder="Search videos..."
         autocomplete="off"
       >
-
       <span>⌕</span>
-
     </div>
   </header>
 
-
-  <!-- MOBILE MENU -->
   <div class="mobileMenu" id="mobileMenu">
-
-    <a href="index.html">
-      Home
-    </a>
-
-    <a href="index.html#categories">
-      Categories
-    </a>
-
-    <a href="most-viewed.html">
-      Most Viewed
-    </a>
-
-    <a href="latest.html">
-      Latest
-    </a>
-
+    <a href="index.html">Home</a>
+    <a href="index.html#categories">Categories</a>
+    <a href="most-viewed.html">Most Viewed</a>
+    <a href="latest.html">Latest</a>
   </div>
 
-
-  <!-- MAIN -->
   <main class="wrap videoPage">
-
     <div id="page">
-      <p class="muted">
-        Loading video...
-      </p>
+      <p class="muted">Loading video...</p>
     </div>
-
   </main>
 
-
-  <!-- FOOTER -->
   <footer class="dvFooter">
-
     <div class="footerLogo">
       Desi<span>Vexa</span>
     </div>
 
-    <p>
-      18+ only · All content must be lawful and consensual.
-    </p>
+    <p>18+ only · All content must be lawful and consensual.</p>
 
     <p>
-      <a href="legal.html">
-        Terms & Privacy
-      </a>
+      <a href="legal.html">Terms & Privacy</a>
     </p>
-
   </footer>
 
-
-  <!-- MOBILE MENU + SEARCH -->
   <script>
     const menuBtn = document.querySelector("#menuBtn");
     const mobileMenu = document.querySelector("#mobileMenu");
@@ -211,43 +171,30 @@
     });
 
     searchBtn?.addEventListener("click", () => {
-
       searchBox?.classList.toggle("show");
 
       if (searchBox?.classList.contains("show")) {
         document.querySelector("#topSearch")?.focus();
       }
-
     });
 
-    document
-      .querySelector("#topSearch")
-      ?.addEventListener("keydown", event => {
+    document.querySelector("#topSearch")?.addEventListener("keydown", event => {
+      if (event.key !== "Enter") return;
 
-        if (event.key !== "Enter") return;
+      const value = event.target.value.trim();
 
-        const value = event.target.value.trim();
+      if (!value) return;
 
-        if (!value) return;
-
-        location.href =
-          `index.html?search=${encodeURIComponent(value)}`;
-
-      });
+      location.href =
+        `index.html?search=${encodeURIComponent(value)}`;
+    });
   </script>
 
-
-  <!-- Fluid Player JS -->
   <script
     src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js">
   </script>
 
-
-  <!-- DesiVexa Video JS -->
-  <script
-    type="module"
-    src="video.js?v=21">
-  </script>
+  <script type="module" src="video.js?v=22"></script>
 
 </body>
 </html>
