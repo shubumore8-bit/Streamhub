@@ -2374,3 +2374,15 @@ body {
 .pageSectionTitle {
   cursor: default;
 }
+
+/* Clickable Most Viewed / Latest headings */
+
+.sectionPageLink {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.sectionPageLink:hover {
+  color: #d90000;
+}
