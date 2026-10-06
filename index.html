@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -7,7 +7,7 @@
   <meta name="6a97888e-site-verification"
         content="cdfc6e06389c2153c30b80c3449ad95c">
 
-  <title>DesiVexa</title>
+  <title>DesiVexa — 18+ Videos</title>
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -17,20 +17,19 @@
 <!-- AGE GATE -->
 <div id="ageGate" class="gate">
   <div class="gatebox">
+    <div class="gateLogo">Desi<span>Vexa</span></div>
 
-    <h1>Desi<span>Vexa</span></h1>
+    <div class="adultBadge">18+</div>
 
-    <h2>18+ Only</h2>
+    <h2>Adults only</h2>
 
     <p>
-      You must be 18 or older to enter.
-      Only lawful, consensual adult content is permitted.
+      You must be 18 or older to enter this website.
     </p>
 
     <button id="enter" class="btn">
       I am 18+ — Enter
     </button>
-
   </div>
 </div>
 
@@ -38,83 +37,123 @@
 <!-- HEADER -->
 <header>
 
-  <a href="index.html" class="logo">
-    Desi<span>Vexa</span>
-  </a>
+  <div class="headerInner">
 
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="#categories">Categories</a>
-    <a href="admin.html">Admin</a>
-  </nav>
+    <a href="index.html" class="logo">
+      Desi<span>Vexa</span>
+    </a>
+
+    <div class="topSearch">
+      <input
+        id="search"
+        type="search"
+        placeholder="Search videos..."
+        autocomplete="off"
+      >
+      <span>⌕</span>
+    </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="#categories">Categories</a>
+    </nav>
+
+  </div>
 
 </header>
 
 
-<!-- MAIN -->
 <main>
 
   <!-- HERO -->
   <section class="hero">
 
-    <p>18+ VIDEO PLATFORM</p>
+    <div class="heroInner">
 
-    <h1>
-      Watch. Discover. Responsibly.
-    </h1>
+      <div>
+        <span class="eyebrow">18+ VIDEO PLATFORM</span>
 
-    <input
-      id="search"
-      type="search"
-      placeholder="Search videos..."
-      autocomplete="off"
-    >
+        <h1>
+          Discover videos.
+          <span>Watch more.</span>
+        </h1>
 
-  </section>
+        <p>
+          Browse the latest videos and discover something new.
+        </p>
+      </div>
 
+      <div class="heroSearch">
 
-  <!-- VIDEOS -->
-  <section class="wrap" id="categories">
+        <input
+          id="heroSearch"
+          type="search"
+          placeholder="What are you looking for?"
+          autocomplete="off"
+        >
 
-    <!-- CATEGORY MENU -->
-    <div class="categoryMenu">
-
-      <button
-        id="categoryBtn"
-        class="categoryBtn"
-        type="button"
-      >
-        ☰ Categories
-      </button>
-
-
-      <div
-        id="cats"
-        class="categoryList"
-      >
-
-        <div class="categorySearch">
-
-          <input
-            id="categorySearch"
-            type="search"
-            placeholder="Search categories..."
-            autocomplete="off"
-          >
-
-        </div>
-
-        <div id="categoryItems"></div>
+        <button type="button" id="heroSearchBtn">
+          Search
+        </button>
 
       </div>
 
     </div>
 
+  </section>
+
+
+  <!-- CONTENT -->
+  <section class="content" id="categories">
+
+    <!-- CATEGORY BAR -->
+    <div class="toolbar">
+
+      <div class="categoryMenu">
+
+        <button
+          id="categoryBtn"
+          class="categoryBtn"
+          type="button"
+        >
+          ☰ Categories
+        </button>
+
+        <div id="cats" class="categoryList">
+
+          <div class="categorySearch">
+            <input
+              id="categorySearch"
+              type="search"
+              placeholder="Search categories..."
+              autocomplete="off"
+            >
+          </div>
+
+          <div id="categoryItems"></div>
+
+        </div>
+
+      </div>
+
+      <div class="sectionTitle">
+        <strong>Latest Videos</strong>
+        <span>Fresh uploads</span>
+      </div>
+
+    </div>
+
+
+    <!-- AD SLOT - LATER -->
+    <div class="adSlot">
+      <span>Advertisement</span>
+    </div>
+
 
     <!-- VIDEO GRID -->
-    <div id="videos" class="grid"></div>
+    <div id="videos" class="videoGrid"></div>
 
-    <p id="empty">
+    <p id="empty" class="empty">
       No published videos yet.
     </p>
 
@@ -123,20 +162,24 @@
 </main>
 
 
-<!-- FOOTER -->
 <footer>
 
-  18+ only ·
-  <a href="legal.html">Terms & Privacy</a>
-  · Report unlawful/non-consensual content to the site operator.
+  <div class="footerLogo">
+    Desi<span>Vexa</span>
+  </div>
+
+  <p>
+    18+ only · All content must be lawful and consensual.
+  </p>
+
+  <p>
+    <a href="legal.html">Terms & Privacy</a>
+  </p>
 
 </footer>
 
 
-<script
-  type="module"
-  src="app.js?v=8">
-</script>
+<script type="module" src="app.js?v=9"></script>
 
 </body>
 </html>
