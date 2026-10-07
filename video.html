@@ -1,342 +1,66 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <title>Watch Video — DesiVexa</title>
+  <title>Video — DesiVexa</title>
 
   <link rel="stylesheet" href="style.css">
-
-  <!-- Fluid Player -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.css"
-  >
-
-  <style>
-    .videoPage {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 20px 10px 50px;
-    }
-
-    .videoPlayerWrap {
-      width: 100%;
-      background: #000;
-      border-radius: 5px;
-      overflow: hidden;
-    }
-
-    .videoPlayerWrap video {
-      display: block;
-      width: 100%;
-      height: auto;
-      background: #000;
-    }
-
-    .videoInfo {
-      padding: 15px 5px 20px;
-    }
-
-    .videoInfo h1 {
-      margin: 0 0 10px;
-      color: #fff;
-      font-size: 22px;
-      line-height: 1.35;
-    }
-
-    .videoMeta {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      color: #888;
-      font-size: 13px;
-    }
-
-    .videoMeta span:first-child {
-      color: #d90000;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .videoDescription {
-      margin-top: 15px;
-      color: #aaa;
-      line-height: 1.6;
-      font-size: 14px;
-    }
-
-    .videoError {
-      padding: 50px 15px;
-      text-align: center;
-      color: #999;
-    }
-
-    .videoError h3 {
-      color: #fff;
-      margin-bottom: 10px;
-    }
-
-    .videoError a {
-      color: #d90000;
-      text-decoration: none;
-    }
-
-    /* ===============================
-       JUICYADS
-    =============================== */
-
-    .juicyAdBox {
-      width: 100%;
-      min-height: 286px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 15px auto 25px;
-      overflow: hidden;
-    }
-
-    .juicyAdBox ins {
-      display: block;
-      max-width: 100%;
-    }
-
-    /* ===============================
-       RANDOM VIDEOS
-    =============================== */
-
-    .randomSection {
-      margin-top: 25px;
-    }
-
-    .randomSection .dvSectionTitle {
-      margin-bottom: 8px;
-    }
-
-    .randomGrid {
-      margin-top: 5px;
-    }
-
-    @media (max-width: 699px) {
-
-      .videoPage {
-        padding: 10px 5px 40px;
-      }
-
-      .videoInfo h1 {
-        font-size: 18px;
-      }
-
-      .videoMeta {
-        font-size: 11px;
-      }
-
-      .juicyAdBox {
-        min-height: 286px;
-        margin-top: 10px;
-        margin-bottom: 20px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="ads.css">
 </head>
-
 
 <body>
 
-  <!-- ===============================
-       HEADER
-  =============================== -->
+<header>
+  <a href="index.html" class="logo">
+    Desi<span>Vexa</span>
+  </a>
 
-  <header class="dvHeader">
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="admin.html">Admin</a>
+  </nav>
+</header>
 
-    <div class="dvHeaderInner">
+<main class="wrap videoPage" id="page">
 
-      <button
-        class="headerIcon"
-        id="menuBtn"
-        type="button"
-        aria-label="Menu"
-      >
-        ☰
-      </button>
+  <!-- VIDEO CONTENT -->
+  <div class="videoWatch">
 
-      <a
-        href="index.html"
-        class="dvLogo"
-      >
-        Desi<span>Vexa</span>
-      </a>
+    <!-- Video page ad -->
+    <div class="dvAdSlot dvAdWide"
+         data-juicy-ad="wide"></div>
 
-      <button
-        class="headerIcon"
-        id="searchBtn"
-        type="button"
-        aria-label="Search"
-      >
-        ⌕
-      </button>
-
+    <!-- Video/player will be inserted by video.js -->
+    <div id="videoContainer">
+      Loading video...
     </div>
 
+    <!-- Banner ad -->
+    <div class="dvAdSlot dvAdBanner"
+         data-juicy-ad="banner"></div>
 
-    <div
-      class="dvSearchBox"
-      id="searchBox"
-    >
-
-      <input
-        id="topSearch"
-        type="search"
-        placeholder="Search videos..."
-        autocomplete="off"
-      >
-
-      <span>⌕</span>
-
-    </div>
-
-  </header>
-
-
-  <!-- ===============================
-       MOBILE MENU
-  =============================== -->
-
-  <div
-    class="mobileMenu"
-    id="mobileMenu"
-  >
-
-    <a href="index.html">
-      Home
-    </a>
-
-    <a href="index.html#categories">
-      Categories
-    </a>
-
-    <a href="most-viewed.html">
-      Most Viewed
-    </a>
-
-    <a href="latest.html">
-      Latest
-    </a>
+    <!-- Compact ad -->
+    <div class="dvAdSlot dvAdCompact"
+         data-juicy-ad="compact"></div>
 
   </div>
 
+</main>
 
-  <!-- ===============================
-       MAIN
-  =============================== -->
+<!-- Your existing video system -->
+<script type="module" src="video.js?v=4"></script>
 
-  <main class="wrap videoPage">
+<!-- JuicyAds -->
+<script type="module">
+  import { initJuicyAds } from "./ads.js";
 
-    <div id="page">
-
-      <p class="muted">
-        Loading video...
-      </p>
-
-    </div>
-
-  </main>
-
-
-  <!-- ===============================
-       FOOTER
-  =============================== -->
-
-  <footer class="dvFooter">
-
-    <div class="footerLogo">
-      Desi<span>Vexa</span>
-    </div>
-
-    <p>
-      18+ only · All content must be lawful and consensual.
-    </p>
-
-    <p>
-      <a href="legal.html">
-        Terms & Privacy
-      </a>
-    </p>
-
-  </footer>
-
-
-  <!-- ===============================
-       HEADER JS
-  =============================== -->
-
-  <script>
-
-    const menuBtn =
-      document.querySelector("#menuBtn");
-
-    const mobileMenu =
-      document.querySelector("#mobileMenu");
-
-    const searchBtn =
-      document.querySelector("#searchBtn");
-
-    const searchBox =
-      document.querySelector("#searchBox");
-
-
-    menuBtn?.addEventListener(
-      "click",
-      () => {
-
-        mobileMenu?.classList.toggle("show");
-
-      }
-    );
-
-
-    searchBtn?.addEventListener(
-      "click",
-      () => {
-
-        searchBox?.classList.toggle("show");
-
-        if (
-          searchBox?.classList.contains("show")
-        ) {
-
-          document
-            .querySelector("#topSearch")
-            ?.focus();
-
-        }
-
-      }
-    );
-
-  </script>
-
-
-  <!-- ===============================
-       FLUID PLAYER
-  =============================== -->
-
-  <script
-    src="https://cdn.fluidplayer.com/v3/current/fluidplayer.min.js">
-  </script>
-
-
-  <!-- ===============================
-       VIDEO JS
-  =============================== -->
-
-  <script
-    type="module"
-    src="video.js?v=23">
-  </script>
-
+  initJuicyAds({
+    float: true,
+    native: true
+  });
+</script>
 
 </body>
-</html>
+  </html>
