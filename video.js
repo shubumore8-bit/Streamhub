@@ -6,10 +6,6 @@ import {
 } from "./config.js";
 
 
-/* =========================
-   SUPABASE
-========================= */
-
 const supabase = createClient(
   SUPABASE_URL,
   SUPABASE_ANON_KEY
@@ -55,12 +51,11 @@ function checkAge() {
   }
 
 
-  const accepted =
-    confirm(
-      "18+ ONLY\n\n" +
-      "You must be 18 years or older " +
-      "to access this website."
-    );
+  const accepted = confirm(
+    "18+ ONLY\n\n" +
+    "You must be 18 years or older " +
+    "to access this website."
+  );
 
 
   if (!accepted) {
@@ -95,7 +90,6 @@ function getVideoId() {
       window.location.search
     );
 
-
   return params.get("id");
 
 }
@@ -127,7 +121,7 @@ function createVideoCard(video) {
     ).toLocaleString();
 
 
-  let thumbnail;
+  let thumbnail = "";
 
 
   if (video.thumbnail_url) {
@@ -137,7 +131,8 @@ function createVideoCard(video) {
         src="${esc(video.thumbnail_url)}"
         alt="${title}"
         loading="lazy"
-        decoding="async">
+        decoding="async"
+      >
     `;
 
   } else {
@@ -154,7 +149,8 @@ function createVideoCard(video) {
   return `
     <a
       class="card"
-      href="video.html?id=${encodeURIComponent(video.id)}">
+      href="video.html?id=${encodeURIComponent(video.id)}"
+    >
 
       <div class="thumb">
 
@@ -200,7 +196,7 @@ function createVideoCard(video) {
 
 
 /* =========================
-   LOAD MORE VIDEOS
+   MORE / RANDOM VIDEOS
 ========================= */
 
 async function loadMoreVideos(
@@ -214,9 +210,7 @@ async function loadMoreVideos(
 
 
   if (!box) {
-
     return;
-
   }
 
 
@@ -246,14 +240,7 @@ async function loadMoreVideos(
       currentId
     )
 
-    .order(
-      "created_at",
-      {
-        ascending: false
-      }
-    )
-
-    .limit(8);
+    .limit(20);
 
 
   if (
@@ -267,6 +254,15 @@ async function loadMoreVideos(
     return;
 
   }
+
+
+  /* RANDOMIZE */
+  const randomVideos =
+    [...data]
+      .sort(
+        () => Math.random() - 0.5
+      )
+      .slice(0, 8);
 
 
   box.innerHTML = `
@@ -290,7 +286,7 @@ async function loadMoreVideos(
 
     <div class="dvGrid">
 
-      ${data
+      ${randomVideos
         .map(createVideoCard)
         .join("")}
 
@@ -308,9 +304,7 @@ async function loadMoreVideos(
 async function loadVideo() {
 
   if (!checkAge()) {
-
     return;
-
   }
 
 
@@ -342,7 +336,7 @@ async function loadVideo() {
 
 
   /* =========================
-     SUPABASE QUERY
+     GET VIDEO
   ========================== */
 
   const {
@@ -475,7 +469,7 @@ async function loadVideo() {
 
 
   /* =========================
-     VIDEO HTML
+     VIDEO PAGE
   ========================== */
 
   page.innerHTML = `
@@ -483,7 +477,7 @@ async function loadVideo() {
     <section class="videoWatch">
 
 
-      <!-- VIDEO PLAYER -->
+      <!-- PLAYER -->
 
       <div class="videoPlayerWrap">
 
@@ -492,11 +486,13 @@ async function loadVideo() {
           controls
           playsinline
           preload="metadata"
-          ${poster}>
+          ${poster}
+        >
 
           <source
             src="${esc(video.video_url)}"
-            type="video/mp4">
+            type="video/mp4"
+          >
 
           Your browser does not support
           HTML5 video.
@@ -506,7 +502,7 @@ async function loadVideo() {
       </div>
 
 
-      <!-- VIDEO INFORMATION -->
+      <!-- INFO -->
 
       <div class="videoInfo">
 
@@ -541,19 +537,50 @@ async function loadVideo() {
       </div>
 
 
-      <!-- SMALL AD -->
+      <!-- SMALL JUICYADS -->
 
       <div
         class="dvAdSlot dvAdSmall"
-        data-juicy-ad="small">
+        style="
+          width:100%;
+          max-width:108px;
+          min-height:140px;
+          margin:20px auto;
+          display:flex;
+          justify-content:center;
+          align-items:center;
+        "
+      >
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async
+          src="https://poweredby.jads.co/js/jads.js">
+        </script>
+
+        <ins
+          id="1128309"
+          data-width="108"
+          data-height="140">
+        </ins>
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async
+        >
+          (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone': 1128309
+          });
+        </script>
+
       </div>
 
 
       <!-- MORE VIDEOS -->
 
-      <div
-        id="randomVideos">
-      </div>
+      <div id="randomVideos"></div>
 
 
     </section>
@@ -585,7 +612,7 @@ async function loadVideo() {
 
 
   /* =========================
-     LOAD MORE
+     LOAD RANDOM VIDEOS
   ========================== */
 
   await loadMoreVideos(
@@ -596,7 +623,7 @@ async function loadVideo() {
 
 
 /* =========================
-   MENU
+   MOBILE MENU
 ========================= */
 
 document
@@ -606,7 +633,9 @@ document
     () => {
 
       document
-        .querySelector("#mobileMenu")
+        .querySelector(
+          "#mobileMenu"
+        )
         ?.classList
         .toggle("show");
 
@@ -656,9 +685,7 @@ document
       if (
         event.key !== "Enter"
       ) {
-
         return;
-
       }
 
 
