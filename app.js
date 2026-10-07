@@ -223,7 +223,7 @@ async function loadVideos() {
       }
     )
 
-    .limit(60);
+    .limit(40);
 
 
   if (error) {
