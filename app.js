@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
 import {
   SUPABASE_URL,
   SUPABASE_ANON_KEY
@@ -32,6 +33,7 @@ document
     );
 
     ageGate?.remove();
+
   });
 
 
@@ -54,23 +56,39 @@ function esc(value) {
 
 
 /* =========================
+   NORMALIZE
+========================= */
+
+function normalize(value) {
+
+  return String(value ?? "")
+    .trim()
+    .toLowerCase();
+
+}
+
+
+/* =========================
    VIDEO CARD
 ========================= */
 
 function createCard(video) {
 
-  const id =
-    encodeURIComponent(video.id);
+  const id = encodeURIComponent(
+    video.id
+  );
 
-  const title =
-    esc(video.title || "Untitled video");
+  const title = esc(
+    video.title || "Untitled video"
+  );
 
-  const category =
-    esc(video.category || "Other");
+  const category = esc(
+    video.category || "Other"
+  );
 
-  const views =
-    Number(video.views || 0)
-      .toLocaleString();
+  const views = Number(
+    video.views || 0
+  ).toLocaleString();
 
   let thumbnail = "";
 
@@ -81,7 +99,8 @@ function createCard(video) {
         src="${esc(video.thumbnail_url)}"
         alt="${title}"
         loading="lazy"
-        decoding="async">
+        decoding="async"
+      >
     `;
 
   } else {
@@ -94,11 +113,11 @@ function createCard(video) {
 
   }
 
-
   return `
     <a
       class="card"
-      href="video.html?id=${id}">
+      href="video.html?id=${id}"
+    >
 
       <div class="thumb">
 
@@ -115,7 +134,6 @@ function createCard(video) {
         </div>
 
       </div>
-
 
       <div class="body">
 
@@ -139,6 +157,7 @@ function createCard(video) {
 
     </a>
   `;
+
 }
 
 
@@ -187,20 +206,24 @@ async function loadVideos() {
       title,
       category,
       description,
-      video_url,
       thumbnail_url,
       views,
       created_at
     `)
 
-    .eq("published", true)
+    .eq(
+      "published",
+      true
+    )
 
     .order(
       "created_at",
       {
         ascending: false
       }
-    );
+    )
+
+    .limit(60);
 
 
   if (error) {
@@ -220,6 +243,7 @@ async function loadVideos() {
       `;
 
     }
+
 
     if (trendingContainer) {
 
@@ -255,29 +279,34 @@ function renderVideos() {
 
 
   const searchQuery =
-    (
+    normalize(
       params.get("search") || ""
-    )
-      .trim()
-      .toLowerCase();
+    );
 
 
   let filtered =
     allVideos.filter(video => {
 
-      const category =
-        video.category || "Other";
+      const videoCategory =
+        normalize(
+          video.category || "Other"
+        );
 
+
+      /* CATEGORY FILTER */
 
       if (
         activeCategory !== "All" &&
-        category !== activeCategory
+        videoCategory !==
+          normalize(activeCategory)
       ) {
 
         return false;
 
       }
 
+
+      /* SEARCH FILTER */
 
       if (!searchQuery) {
 
@@ -286,15 +315,12 @@ function renderVideos() {
       }
 
 
-      const searchableText = `
-
-        ${video.title || ""}
-
-        ${video.category || ""}
-
-        ${video.description || ""}
-
-      `.toLowerCase();
+      const searchableText =
+        normalize(`
+          ${video.title || ""}
+          ${video.category || ""}
+          ${video.description || ""}
+        `);
 
 
       return searchableText
@@ -309,13 +335,11 @@ function renderVideos() {
 
   const mostViewed =
     [...filtered]
-
       .sort(
         (a, b) =>
           Number(b.views || 0) -
           Number(a.views || 0)
       )
-
       .slice(0, 8);
 
 
@@ -346,7 +370,7 @@ function renderVideos() {
 
 
   /* =========================
-     TRENDING OUTPUT
+     MOST VIEWED OUTPUT
   ========================== */
 
   if (trendingContainer) {
@@ -420,31 +444,55 @@ function renderCategories(
   }
 
 
-  const categories = [
+  const categoryMap =
+    new Map();
 
-    ...new Set(
 
-      allVideos.map(
-        video =>
-          video.category || "Other"
-      )
+  allVideos.forEach(video => {
 
-    )
+    const raw =
+      String(
+        video.category || "Other"
+      ).trim();
 
-  ]
-    .sort(
-      (a, b) =>
-        a.localeCompare(b)
-    );
+
+    if (!raw) {
+
+      return;
+
+    }
+
+
+    const key =
+      normalize(raw);
+
+
+    if (!categoryMap.has(key)) {
+
+      categoryMap.set(
+        key,
+        raw
+      );
+
+    }
+
+  });
+
+
+  const categories =
+    [...categoryMap.values()]
+      .sort(
+        (a, b) =>
+          a.localeCompare(b)
+      );
 
 
   const filteredCategories =
     categories.filter(
       category =>
-        category
-          .toLowerCase()
+        normalize(category)
           .includes(
-            searchText.toLowerCase()
+            normalize(searchText)
           )
     );
 
@@ -452,49 +500,53 @@ function renderCategories(
   let html = `
 
     <button
-      class="catItem ${
+      class="categoryItem ${
         activeCategory === "All"
           ? "active"
           : ""
       }"
-      data-cat="All">
-
+      data-cat="All"
+      type="button"
+    >
       All
-
     </button>
 
   `;
 
 
-  html += filteredCategories
+  html +=
+    filteredCategories
+      .map(category => {
 
-    .map(category => {
-
-      const safeCategory =
-        esc(category);
-
-      return `
-
-        <button
-          class="catItem ${
-            activeCategory === category
-              ? "active"
-              : ""
-          }"
-          data-cat="${safeCategory}">
-
-          ${safeCategory}
-
-        </button>
-
-      `;
-
-    })
-
-    .join("");
+        const safeCategory =
+          esc(category);
 
 
-  categoryBox.innerHTML = html;
+        return `
+
+          <button
+            class="categoryItem ${
+              normalize(
+                activeCategory
+              ) ===
+              normalize(category)
+                ? "active"
+                : ""
+            }"
+            data-cat="${safeCategory}"
+            type="button"
+          >
+            ${safeCategory}
+          </button>
+
+        `;
+
+      })
+      .join("");
+
+
+  categoryBox.innerHTML =
+    html;
 
 
   categoryBox
@@ -508,16 +560,12 @@ function renderCategories(
         () => {
 
           activeCategory =
-            button.dataset.cat;
+            button.dataset.cat ||
+            "All";
 
 
-          const categoryPanel =
-            document.querySelector(
-              "#cats"
-            );
-
-
-          categoryPanel
+          document
+            .querySelector("#cats")
             ?.classList
             .remove("show");
 
@@ -526,9 +574,11 @@ function renderCategories(
 
 
           renderCategories(
-            document.querySelector(
-              "#categorySearch"
-            )?.value || ""
+            document
+              .querySelector(
+                "#categorySearch"
+              )
+              ?.value || ""
           );
 
 
@@ -597,7 +647,9 @@ document
     () => {
 
       document
-        .querySelector("#mobileMenu")
+        .querySelector(
+          "#mobileMenu"
+        )
         ?.classList
         .toggle("show");
 
@@ -638,8 +690,30 @@ document
    SEARCH
 ========================= */
 
-document
-  .querySelector("#search")
+const searchInput =
+  document.querySelector(
+    "#search"
+  );
+
+
+/* Restore search text */
+
+if (searchInput) {
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  searchInput.value =
+    params.get("search") || "";
+
+}
+
+
+/* Search on Enter */
+
+searchInput
   ?.addEventListener(
     "keydown",
     event => {
@@ -660,7 +734,9 @@ document
       if (value) {
 
         window.location.href =
-          `index.html?search=${encodeURIComponent(value)}`;
+          `index.html?search=${encodeURIComponent(
+            value
+          )}`;
 
       } else {
 
@@ -671,6 +747,33 @@ document
 
     }
   );
+
+
+/* =========================
+   CLOSE MOBILE MENU
+========================= */
+
+document
+  .querySelectorAll(
+    "#mobileMenu a"
+  )
+  .forEach(link => {
+
+    link.addEventListener(
+      "click",
+      () => {
+
+        document
+          .querySelector(
+            "#mobileMenu"
+          )
+          ?.classList
+          .remove("show");
+
+      }
+    );
+
+  });
 
 
 /* =========================
