@@ -1,33 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0">
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <meta
-    name="description"
-    content="Watch videos on DesiVexa - 18+ video platform.">
+  <title>Video — DesiVexa</title>
 
-  <title>Watch Video - DesiVexa</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="ads.css">
 
-  <link
-    rel="stylesheet"
-    href="style.css">
-
-  <link
-    rel="stylesheet"
-    href="ads.css">
 </head>
 
 <body>
 
-  <!-- =========================
-       HEADER
-  ========================== -->
-
+  <!-- HEADER -->
   <header class="dvHeader">
 
     <div class="dvHeaderInner">
@@ -36,13 +27,14 @@
         id="menuBtn"
         class="headerIcon"
         type="button"
-        aria-label="Menu">
+      >
         ☰
       </button>
 
       <a
         href="index.html"
-        class="dvLogo">
+        class="dvLogo"
+      >
         Desi<span>Vexa</span>
       </a>
 
@@ -50,37 +42,35 @@
         id="searchBtn"
         class="headerIcon"
         type="button"
-        aria-label="Search">
+      >
         ⌕
       </button>
 
     </div>
 
-
-    <!-- SEARCH -->
-
     <div
       id="searchBox"
-      class="dvSearchBox">
+      class="dvSearchBox"
+    >
 
       <input
         id="search"
         type="search"
         placeholder="Search videos..."
-        autocomplete="off">
+        autocomplete="off"
+      >
 
     </div>
 
   </header>
 
 
-  <!-- =========================
-       MOBILE MENU
-  ========================== -->
+  <!-- MOBILE MENU -->
 
   <div
     id="mobileMenu"
-    class="mobileMenu">
+    class="mobileMenu"
+  >
 
     <a href="index.html">
       Home
@@ -94,83 +84,79 @@
       Latest
     </a>
 
-    <a href="index.html#categories">
-      Categories
-    </a>
-
   </div>
 
 
-  <!-- =========================
-       MAIN
-  ========================== -->
+  <main class="dvMain">
 
-  <main class="dvMain wrap">
-
-
-    <!-- TOP AD -->
+    <!-- =================================
+         JUICYADS 1128314
+         308 x 286
+    ================================== -->
 
     <div
-      class="dvAdSlot dvAdWide"
-      data-juicy-ad="wide">
+      class="dvAdSlot"
+      style="
+        width:100%;
+        max-width:308px;
+        min-height:286px;
+        margin:15px auto 20px;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+      "
+    >
+
+      <!-- JuicyAds v3.0 -->
+
+      <script
+        type="text/javascript"
+        data-cfasync="false"
+        async
+        src="https://poweredby.jads.co/js/jads.js">
+      </script>
+
+      <ins
+        id="1128314"
+        data-width="308"
+        data-height="286">
+      </ins>
+
+      <script
+        type="text/javascript"
+        data-cfasync="false"
+        async
+      >
+        (adsbyjuicy = window.adsbyjuicy || []).push({
+          'adzone': 1128314
+        });
+      </script>
+
+      <!-- JuicyAds END -->
+
     </div>
 
 
-    <!-- VIDEO CONTENT -->
+    <!-- =================================
+         VIDEO
+    ================================== -->
 
-    <div id="page">
-
-      <p class="muted">
-        Loading video...
-      </p>
-
-    </div>
-
-
-    <!-- BANNER AD -->
-
-    <div
-      class="dvAdSlot dvAdBanner"
-      data-juicy-ad="banner">
-    </div>
-
-
-    <!-- COMPACT AD -->
-
-    <div
-      class="dvAdSlot dvAdCompact"
-      data-juicy-ad="compact">
-    </div>
+    <main
+      class="wrap videoPage"
+      id="page"
+    >
+      Loading video...
+    </main>
 
 
   </main>
 
 
-  <!-- =========================
-       VIDEO JS
-  ========================== -->
+  <!-- VIDEO JS -->
 
   <script
     type="module"
-    src="video.js?v=21">
-  </script>
-
-
-  <!-- =========================
-       JUICYADS
-  ========================== -->
-
-  <script type="module">
-
-    import {
-      initJuicyAds
-    } from "./ads.js";
-
-    initJuicyAds({
-      float: true,
-      native: true
-    });
-
+    src="video.js?v=22">
   </script>
 
 
