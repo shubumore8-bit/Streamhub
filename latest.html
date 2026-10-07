@@ -1,21 +1,27 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
 
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
 
   <meta
     name="viewport"
-    content="width=device-width,initial-scale=1"
-  >
+    content="width=device-width, initial-scale=1.0">
 
-  <title>Latest Videos — DesiVexa</title>
+  <meta
+    name="description"
+    content="Latest videos on DesiVexa - 18+ video platform.">
+
+  <title>Latest Videos - DesiVexa</title>
 
   <link
     rel="stylesheet"
-    href="style.css"
-  >
+    href="style.css">
+
+  <link
+    rel="stylesheet"
+    href="ads.css">
 
 </head>
 
@@ -23,611 +29,558 @@
 <body>
 
 
-<!-- ================= HEADER ================= -->
+  <!-- =========================
+       HEADER
+  ========================== -->
 
-<header class="dvHeader">
+  <header class="dvHeader">
 
-  <div class="dvHeaderInner">
+    <div class="dvHeaderInner">
 
-    <!-- MENU -->
+      <button
+        id="menuBtn"
+        class="headerIcon"
+        type="button"
+        aria-label="Menu">
 
-    <button
-      class="headerIcon"
-      id="menuBtn"
-      type="button"
-      aria-label="Menu"
-    >
-      ☰
-    </button>
+        ☰
 
+      </button>
 
-    <!-- LOGO -->
-
-    <a
-      href="index.html"
-      class="dvLogo"
-    >
-      Desi<span>Vexa</span>
-    </a>
-
-
-    <!-- SEARCH -->
-
-    <button
-      class="headerIcon"
-      id="searchBtn"
-      type="button"
-      aria-label="Search"
-    >
-      ⌕
-    </button>
-
-  </div>
-
-
-  <!-- SEARCH BOX -->
-
-  <div
-    class="dvSearchBox"
-    id="searchBox"
-  >
-
-    <input
-      id="search"
-      type="search"
-      placeholder="Search videos..."
-      autocomplete="off"
-    >
-
-    <span>⌕</span>
-
-  </div>
-
-</header>
-
-
-
-<!-- ================= MOBILE MENU ================= -->
-
-<div
-  class="mobileMenu"
-  id="mobileMenu"
->
-
-  <a href="index.html">
-    Home
-  </a>
-
-  <a href="most-viewed.html">
-    Most Viewed
-  </a>
-
-  <a href="latest.html">
-    Latest
-  </a>
-
-</div>
-
-
-
-<!-- ================= MAIN ================= -->
-
-<main class="dvMain">
-
-  <section class="dvSection">
-
-
-    <!-- SECTION TITLE -->
-
-    <div class="dvSectionTitle pageSectionTitle">
 
       <a
         href="index.html"
-        class="sectionBack"
-      >
-        ‹
+        class="dvLogo">
+
+        Desi<span>Vexa</span>
+
       </a>
 
-      <span>
-        ›
-      </span>
 
-      <h1>
-        Latest Videos
-      </h1>
+      <button
+        id="searchBtn"
+        class="headerIcon"
+        type="button"
+        aria-label="Search">
+
+        ⌕
+
+      </button>
 
     </div>
 
 
-    <!-- VIDEOS -->
+    <!-- SEARCH -->
 
     <div
-      id="videos"
-      class="dvGrid"
-    ></div>
+      id="searchBox"
+      class="dvSearchBox">
 
-  </section>
+      <input
+        id="search"
+        type="search"
+        placeholder="Search videos..."
+        autocomplete="off">
 
-</main>
+    </div>
 
+  </header>
 
 
-<!-- ================= FOOTER ================= -->
 
-<footer>
+  <!-- =========================
+       MOBILE MENU
+  ========================== -->
 
-  <p>
-    © DesiVexa
-  </p>
+  <div
+    id="mobileMenu"
+    class="mobileMenu">
 
-</footer>
-
-
-
-<!-- ================= JAVASCRIPT ================= -->
-
-<script type="module">
-
-import { createClient }
-from "https://esm.sh/@supabase/supabase-js@2";
-
-
-import {
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-}
-from "./config.js";
-
-
-
-/* ================================================
-   SUPABASE
-================================================ */
-
-const supabase =
-  createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
-
-
-
-/* ================================================
-   ELEMENT
-================================================ */
-
-const videosEl =
-  document.querySelector("#videos");
-
-
-
-/* ================================================
-   ESCAPE HTML
-================================================ */
-
-function esc(value) {
-
-  return String(value ?? "")
-    .replace(
-      /[&<>"']/g,
-      character => {
-
-        return {
-
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;"
-
-        }[character];
-
-      }
-    );
-
-}
-
-
-
-/* ================================================
-   VIDEO CARD
-================================================ */
-
-function videoCard(video) {
-
-
-  const id =
-    encodeURIComponent(
-      video.id
-    );
-
-
-  const title =
-    esc(
-      video.title ||
-      "Untitled video"
-    );
-
-
-  const category =
-    esc(
-      video.category ||
-      "Other"
-    );
-
-
-  const views =
-    Number(
-      video.views || 0
-    ).toLocaleString();
-
-
-
-  /* THUMBNAIL */
-
-  const thumbnail =
-    video.thumbnail_url
-      ? `
-        <img
-          src="${esc(video.thumbnail_url)}"
-          alt="${title}"
-          loading="lazy"
-          onerror="this.style.display='none'"
-        >
-      `
-      : "";
-
-
-
-  return `
-
-    <a
-      class="card"
-      href="video.html?id=${id}"
-    >
-
-      <div class="thumb">
-
-        ${thumbnail}
-
-
-        <!-- DARK OVERLAY -->
-
-        <div class="thumbOverlay"></div>
-
-
-        <!-- PLAY BUTTON -->
-
-        <div class="playCircle">
-          ▶
-        </div>
-
-
-        <!-- VIEWS -->
-
-        <div class="cardViews">
-          ${views} views
-        </div>
-
-      </div>
-
-
-      <!-- CARD BODY -->
-
-      <div class="body">
-
-        <h3>
-          ${title}
-        </h3>
-
-
-        <div class="cardMeta">
-
-          <span>
-            ${category}
-          </span>
-
-          <span>
-            ${views} views
-          </span>
-
-        </div>
-
-      </div>
-
+    <a href="index.html">
+      Home
     </a>
 
-  `;
+    <a href="most-viewed.html">
+      Most Viewed
+    </a>
 
-}
+    <a href="latest.html">
+      Latest
+    </a>
+
+    <a href="index.html#categories">
+      Categories
+    </a>
+
+  </div>
 
 
 
-/* ================================================
-   LOAD LATEST VIDEOS
-================================================ */
+  <!-- =========================
+       MAIN
+  ========================== -->
 
-async function load() {
+  <main class="dvMain">
 
 
-  /* LOADING */
+    <!-- TOP AD -->
 
-  videosEl.innerHTML = `
+    <div
+      class="dvAdSlot dvAdWide"
+      data-juicy-ad="wide">
+    </div>
 
-    <p class="muted">
-      Loading videos...
+
+
+    <!-- PAGE TITLE -->
+
+    <div class="dvSectionTitle">
+
+      <div>
+
+        <span class="sectionLabel">
+          NEW
+        </span>
+
+        <h2>
+          Latest Videos
+        </h2>
+
+      </div>
+
+
+      <a href="index.html">
+        Home
+      </a>
+
+    </div>
+
+
+
+    <!-- VIDEO LIST -->
+
+    <div
+      id="latestVideos"
+      class="dvGrid">
+
+      <p class="muted">
+        Loading videos...
+      </p>
+
+    </div>
+
+
+
+    <!-- COMPACT AD -->
+
+    <div
+      class="dvAdSlot dvAdCompact"
+      data-juicy-ad="compact">
+    </div>
+
+
+
+    <!-- BANNER AD -->
+
+    <div
+      class="dvAdSlot dvAdBanner"
+      data-juicy-ad="banner">
+    </div>
+
+
+  </main>
+
+
+
+  <!-- =========================
+       FOOTER
+  ========================== -->
+
+  <footer>
+
+    <div class="footerLogo">
+
+      Desi<span>Vexa</span>
+
+    </div>
+
+
+    <p>
+      18+ only · All content must be
+      lawful and consensual.
     </p>
 
-  `;
+
+    <a href="legal.html">
+      Terms & Privacy
+    </a>
+
+  </footer>
 
 
 
-  try {
+  <!-- =========================
+       LATEST PAGE SCRIPT
+  ========================== -->
+
+  <script type="module">
+
+    import {
+      createClient
+    } from
+      "https://esm.sh/@supabase/supabase-js@2";
 
 
-    /* ============================================
-       GET PUBLISHED VIDEOS
-    ============================================ */
+    import {
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    } from "./config.js";
 
-    const {
-      data,
-      error
-    } = await supabase
 
-      .from("videos")
+    const supabase =
+      createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
 
-      .select("*")
 
-      .eq(
-        "published",
-        true
-      )
+    const container =
+      document.querySelector(
+        "#latestVideos"
+      );
 
-      .order(
-        "created_at",
-        {
-          ascending: false
+
+    /* =========================
+       ESCAPE HTML
+    ========================== */
+
+    function esc(value) {
+
+      return String(value ?? "")
+        .replace(
+          /[&<>"']/g,
+          char => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+          }[char])
+        );
+
+    }
+
+
+    /* =========================
+       VIDEO CARD
+    ========================== */
+
+    function card(video) {
+
+      const title =
+        esc(
+          video.title ||
+          "Untitled video"
+        );
+
+
+      const category =
+        esc(
+          video.category ||
+          "Other"
+        );
+
+
+      const views =
+        Number(
+          video.views || 0
+        ).toLocaleString();
+
+
+      const thumbnail =
+        video.thumbnail_url
+
+          ? `
+            <img
+              src="${esc(
+                video.thumbnail_url
+              )}"
+              alt="${title}"
+              loading="lazy"
+              decoding="async">
+          `
+
+          : `
+            <div class="noThumb">
+              DESIVEXA
+            </div>
+          `;
+
+
+      return `
+
+        <a
+          class="card"
+          href="video.html?id=${encodeURIComponent(
+            video.id
+          )}">
+
+
+          <div class="thumb">
+
+            ${thumbnail}
+
+
+            <div class="thumbOverlay">
+            </div>
+
+
+            <div class="playCircle">
+              ▶
+            </div>
+
+
+            <div class="cardViews">
+              ${views} views
+            </div>
+
+          </div>
+
+
+          <div class="body">
+
+            <h3>
+              ${title}
+            </h3>
+
+
+            <div class="cardMeta">
+
+              <span>
+                ${category}
+              </span>
+
+              <span>
+                ${views} views
+              </span>
+
+            </div>
+
+          </div>
+
+
+        </a>
+
+      `;
+
+    }
+
+
+    /* =========================
+       LOAD LATEST
+    ========================== */
+
+    async function loadLatest() {
+
+      const {
+        data,
+        error
+      } = await supabase
+
+        .from("videos")
+
+        .select(`
+          id,
+          title,
+          category,
+          thumbnail_url,
+          views,
+          created_at
+        `)
+
+        .eq(
+          "published",
+          true
+        )
+
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        )
+
+        .limit(30);
+
+
+      if (error) {
+
+        console.error(
+          "Latest videos:",
+          error
+        );
+
+
+        container.innerHTML = `
+
+          <p class="muted">
+            Could not load videos.
+          </p>
+
+        `;
+
+        return;
+
+      }
+
+
+      if (
+        !data ||
+        !data.length
+      ) {
+
+        container.innerHTML = `
+
+          <p class="muted">
+            No videos available.
+          </p>
+
+        `;
+
+        return;
+
+      }
+
+
+      container.innerHTML =
+        data
+          .map(card)
+          .join("");
+
+    }
+
+
+    /* =========================
+       MENU
+    ========================== */
+
+    document
+      .querySelector("#menuBtn")
+      ?.addEventListener(
+        "click",
+        () => {
+
+          document
+            .querySelector(
+              "#mobileMenu"
+            )
+            ?.classList
+            .toggle("show");
+
         }
       );
 
 
+    /* =========================
+       SEARCH BUTTON
+    ========================== */
 
-    /* ============================================
-       DATABASE ERROR
-    ============================================ */
+    document
+      .querySelector("#searchBtn")
+      ?.addEventListener(
+        "click",
+        () => {
 
-    if (error) {
+          const box =
+            document.querySelector(
+              "#searchBox"
+            );
 
-      console.error(
-        "Supabase error:",
-        error
+
+          box
+            ?.classList
+            .toggle("show");
+
+
+          box
+            ?.querySelector("input")
+            ?.focus();
+
+        }
       );
 
 
-      videosEl.innerHTML = `
+    /* =========================
+       SEARCH
+    ========================== */
 
-        <div class="videoError">
+    document
+      .querySelector("#search")
+      ?.addEventListener(
+        "keydown",
+        event => {
 
-          <h3>
-            Could not load videos
-          </h3>
+          if (
+            event.key !== "Enter"
+          ) {
 
-          <p>
-            Please try again later.
-          </p>
+            return;
 
-        </div>
+          }
 
-      `;
 
-      return;
+          const query =
+            event.target.value.trim();
 
-    }
 
+          if (query) {
 
+            window.location.href =
+              `index.html?search=${encodeURIComponent(
+                query
+              )}`;
 
-    /* ============================================
-       NO VIDEOS
-    ============================================ */
+          } else {
 
-    if (
-      !data ||
-      !data.length
-    ) {
+            window.location.href =
+              "index.html";
 
-      videosEl.innerHTML = `
+          }
 
-        <div class="videoError">
+        }
+      );
 
-          <h3>
-            No videos available
-          </h3>
 
-          <p>
-            Add published videos from
-            the admin panel.
-          </p>
+    /* =========================
+       START
+    ========================== */
 
-        </div>
+    loadLatest();
 
-      `;
+  </script>
 
-      return;
 
-    }
 
+  <!-- =========================
+       JUICYADS
+  ========================== -->
 
+  <script type="module">
 
-    /* ============================================
-       SHOW VIDEOS
-    ============================================ */
+    import {
+      initJuicyAds
+    } from "./ads.js";
 
-    videosEl.innerHTML =
-      data
-        .map(videoCard)
-        .join("");
 
+    initJuicyAds({
 
-  }
+      float: true,
 
+      native: true
 
-  /* ==============================================
-     GENERAL ERROR
-  ============================================== */
+    });
 
-  catch (error) {
-
-    console.error(
-      "Latest page error:",
-      error
-    );
-
-
-    videosEl.innerHTML = `
-
-      <div class="videoError">
-
-        <h3>
-          Something went wrong
-        </h3>
-
-        <p>
-          Please try again later.
-        </p>
-
-      </div>
-
-    `;
-
-  }
-
-}
-
-
-
-/* ================================================
-   START
-================================================ */
-
-load();
-
-
-
-/* ================================================
-   MOBILE MENU
-================================================ */
-
-const menuBtn =
-  document.querySelector(
-    "#menuBtn"
-  );
-
-
-const mobileMenu =
-  document.querySelector(
-    "#mobileMenu"
-  );
-
-
-menuBtn?.addEventListener(
-  "click",
-  () => {
-
-    mobileMenu?.classList.toggle(
-      "show"
-    );
-
-  }
-);
-
-
-
-/* ================================================
-   SEARCH BUTTON
-================================================ */
-
-const searchBtn =
-  document.querySelector(
-    "#searchBtn"
-  );
-
-
-const searchBox =
-  document.querySelector(
-    "#searchBox"
-  );
-
-
-searchBtn?.addEventListener(
-  "click",
-  () => {
-
-
-    searchBox?.classList.toggle(
-      "show"
-    );
-
-
-    if (
-      searchBox?.classList.contains(
-        "show"
-      )
-    ) {
-
-      document
-        .querySelector(
-          "#search"
-        )
-        ?.focus();
-
-    }
-
-  }
-);
-
-
-
-/* ================================================
-   SEARCH
-================================================ */
-
-document
-  .querySelector("#search")
-  ?.addEventListener(
-    "keydown",
-    event => {
-
-
-      if (
-        event.key !== "Enter"
-      ) {
-
-        return;
-
-      }
-
-
-      event.preventDefault();
-
-
-      const value =
-        event.target.value.trim();
-
-
-      if (!value) {
-
-        return;
-
-      }
-
-
-      location.href =
-        `index.html?search=${encodeURIComponent(value)}`;
-
-    }
-  );
-
-</script>
+  </script>
 
 
 </body>
