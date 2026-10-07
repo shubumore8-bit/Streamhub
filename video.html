@@ -13,7 +13,6 @@
 
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="ads.css">
-
 </head>
 
 <body>
@@ -26,23 +25,20 @@
       <button
         id="menuBtn"
         class="headerIcon"
-        type="button"
-      >
+        type="button">
         ☰
       </button>
 
       <a
         href="index.html"
-        class="dvLogo"
-      >
+        class="dvLogo">
         Desi<span>Vexa</span>
       </a>
 
       <button
         id="searchBtn"
         class="headerIcon"
-        type="button"
-      >
+        type="button">
         ⌕
       </button>
 
@@ -50,15 +46,13 @@
 
     <div
       id="searchBox"
-      class="dvSearchBox"
-    >
+      class="dvSearchBox">
 
       <input
         id="search"
         type="search"
         placeholder="Search videos..."
-        autocomplete="off"
-      >
+        autocomplete="off">
 
     </div>
 
@@ -68,8 +62,7 @@
   <!-- MOBILE MENU -->
   <div
     id="mobileMenu"
-    class="mobileMenu"
-  >
+    class="mobileMenu">
 
     <a href="index.html">
       Home
@@ -88,7 +81,11 @@
 
   <main class="dvMain">
 
-    <!-- JUICYADS 1128314 -->
+    <!-- =================================
+         JUICYADS 1128314
+         308 x 286
+    ================================== -->
+
     <div
       class="dvAdSlot"
       style="
@@ -99,8 +96,7 @@
         display:flex;
         justify-content:center;
         align-items:center;
-      "
-    >
+      ">
 
       <script
         type="text/javascript"
@@ -118,8 +114,7 @@
       <script
         type="text/javascript"
         data-cfasync="false"
-        async
-      >
+        async>
         (adsbyjuicy = window.adsbyjuicy || []).push({
           'adzone': 1128314
         });
@@ -128,24 +123,75 @@
     </div>
 
 
-    <!-- VIDEO PAGE -->
+    <!-- =================================
+         VIDEO CONTENT
+    ================================== -->
+
     <section
       class="wrap videoPage"
-      id="page"
-    >
+      id="page">
 
-      <p class="muted">
+      <!-- Video JS yahan sirf videoContent ko replace karega -->
+
+      <div id="videoContent">
         Loading video...
-      </p>
+      </div>
+
+
+      <!-- =================================
+           JUICYADS 1128309
+           108 x 140
+      ================================== -->
+
+      <div
+        class="dvAdSlot dvAdSmall"
+        style="
+          width:100%;
+          min-height:140px;
+          margin:25px auto;
+          display:flex;
+          justify-content:center;
+          align-items:center;
+        ">
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async
+          src="https://poweredby.jads.co/js/jads.js">
+        </script>
+
+        <ins
+          id="1128309"
+          data-width="108"
+          data-height="140">
+        </ins>
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async>
+          (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone': 1128309
+          });
+        </script>
+
+      </div>
+
+
+      <!-- MORE VIDEOS -->
+
+      <div id="randomVideos"></div>
 
     </section>
 
   </main>
 
 
+  <!-- VIDEO JS -->
   <script
     type="module"
-    src="video.js?v=23">
+    src="video.js?v=24">
   </script>
 
 </body>
