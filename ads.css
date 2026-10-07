@@ -1,0 +1,203 @@
+/* =====================================================
+   DESIVEXA - JUICYADS STYLE
+===================================================== */
+
+
+/* =========================
+   COMMON AD SLOT
+========================= */
+
+.dvAdSlot {
+
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin: 16px auto;
+
+  overflow: hidden;
+
+  text-align: center;
+
+  clear: both;
+
+}
+
+
+/* =========================
+   JUICYADS INS
+========================= */
+
+.dvAdSlot ins {
+
+  display: block;
+
+  max-width: 100%;
+
+}
+
+
+/* =========================
+   774 x 290
+   WIDE AD
+========================= */
+
+.dvAdWide {
+
+  width: 100%;
+
+  max-width: 774px;
+
+  min-height: 70px;
+
+}
+
+
+/* =========================
+   308 x 286
+   BANNER AD
+========================= */
+
+.dvAdBanner {
+
+  width: 100%;
+
+  max-width: 308px;
+
+  min-height: 20px;
+
+}
+
+
+/* =========================
+   108 x 140
+   SMALL AD
+========================= */
+
+.dvAdSmall {
+
+  width: 100%;
+
+  max-width: 108px;
+
+  min-height: 20px;
+
+}
+
+
+/* =========================
+   300 x 100
+   COMPACT AD
+========================= */
+
+.dvAdCompact {
+
+  width: 100%;
+
+  max-width: 300px;
+
+  min-height: 20px;
+
+}
+
+
+/* =========================
+   VIDEO PAGE ADS
+========================= */
+
+.videoWatch .dvAdSlot {
+
+  position: relative;
+
+  margin-top: 16px;
+
+  margin-bottom: 16px;
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+  .dvAdSlot {
+
+    margin:
+      12px auto;
+
+    padding:
+      0 4px;
+
+  }
+
+
+  .dvAdWide {
+
+    max-width: 100%;
+
+    min-height: 50px;
+
+  }
+
+
+  .dvAdBanner {
+
+    max-width: 308px;
+
+  }
+
+
+  .dvAdCompact {
+
+    max-width: 300px;
+
+  }
+
+
+  .dvAdSmall {
+
+    max-width: 108px;
+
+  }
+
+}
+
+
+/* =========================
+   PREVENT AD OVERFLOW
+========================= */
+
+.dvAdSlot iframe {
+
+  max-width: 100%;
+
+}
+
+
+/* =========================
+   VIDEO PAGE
+========================= */
+
+.videoWatch .dvAdSlot {
+
+  overflow: hidden;
+
+  text-align: center;
+
+}
+
+
+/* =========================
+   EMPTY AD AREA
+========================= */
+
+.dvAdSlot:empty {
+
+  min-height: 0;
+
+}
