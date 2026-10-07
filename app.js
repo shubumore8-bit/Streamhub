@@ -33,7 +33,6 @@ document
     );
 
     ageGate?.remove();
-
   });
 
 
@@ -56,39 +55,23 @@ function esc(value) {
 
 
 /* =========================
-   NORMALIZE
-========================= */
-
-function normalize(value) {
-
-  return String(value ?? "")
-    .trim()
-    .toLowerCase();
-
-}
-
-
-/* =========================
    VIDEO CARD
 ========================= */
 
 function createCard(video) {
 
-  const id = encodeURIComponent(
-    video.id
-  );
+  const id =
+    encodeURIComponent(video.id);
 
-  const title = esc(
-    video.title || "Untitled video"
-  );
+  const title =
+    esc(video.title || "Untitled video");
 
-  const category = esc(
-    video.category || "Other"
-  );
+  const category =
+    esc(video.category || "Other");
 
-  const views = Number(
-    video.views || 0
-  ).toLocaleString();
+  const views =
+    Number(video.views || 0)
+      .toLocaleString();
 
   let thumbnail = "";
 
@@ -99,8 +82,7 @@ function createCard(video) {
         src="${esc(video.thumbnail_url)}"
         alt="${title}"
         loading="lazy"
-        decoding="async"
-      >
+        decoding="async">
     `;
 
   } else {
@@ -113,11 +95,11 @@ function createCard(video) {
 
   }
 
+
   return `
     <a
       class="card"
-      href="video.html?id=${id}"
-    >
+      href="video.html?id=${id}">
 
       <div class="thumb">
 
@@ -134,6 +116,7 @@ function createCard(video) {
         </div>
 
       </div>
+
 
       <div class="body">
 
@@ -157,7 +140,6 @@ function createCard(video) {
 
     </a>
   `;
-
 }
 
 
@@ -211,10 +193,7 @@ async function loadVideos() {
       created_at
     `)
 
-    .eq(
-      "published",
-      true
-    )
+    .eq("published", true)
 
     .order(
       "created_at",
@@ -222,7 +201,6 @@ async function loadVideos() {
         ascending: false
       }
     )
-
     .limit(40);
 
 
@@ -244,7 +222,6 @@ async function loadVideos() {
 
     }
 
-
     if (trendingContainer) {
 
       trendingContainer.innerHTML = "";
@@ -258,11 +235,66 @@ async function loadVideos() {
 
   allVideos = data || [];
 
+  renderFeatured(
+    [...allVideos].sort(
+      (a, b) =>
+        Number(b.views || 0) -
+        Number(a.views || 0)
+    )[0]
+  );
 
   renderVideos();
 
   renderCategories();
 
+}
+
+
+/* =========================
+   FEATURED VIDEO
+========================= */
+
+function renderFeatured(video) {
+
+  const box = document.querySelector("#featuredVideo");
+
+  if (!box) return;
+
+  if (!video) {
+    box.innerHTML = `
+      <div class="featuredEmpty">
+        No featured video available yet.
+      </div>
+    `;
+    return;
+  }
+
+  const id = encodeURIComponent(video.id);
+  const title = esc(video.title || "Featured video");
+  const category = esc(video.category || "Other");
+  const views = Number(video.views || 0).toLocaleString();
+
+  const image = video.thumbnail_url
+    ? `<img src="${esc(video.thumbnail_url)}" alt="${title}" loading="eager" decoding="async">`
+    : `<div class="featuredNoThumb">DESIVEXA</div>`;
+
+  box.innerHTML = `
+    <a class="featuredCard" href="video.html?id=${id}">
+      <div class="featuredThumb">
+        ${image}
+        <div class="featuredShade"></div>
+        <span class="featuredBadge">FEATURED</span>
+        <span class="featuredPlay">▶</span>
+        <span class="featuredViews">${views} views</span>
+      </div>
+
+      <div class="featuredInfo">
+        <span class="featuredCategory">${category}</span>
+        <h2>${title}</h2>
+        <span class="featuredWatch">Watch now →</span>
+      </div>
+    </a>
+  `;
 }
 
 
@@ -279,34 +311,29 @@ function renderVideos() {
 
 
   const searchQuery =
-    normalize(
+    (
       params.get("search") || ""
-    );
+    )
+      .trim()
+      .toLowerCase();
 
 
   let filtered =
     allVideos.filter(video => {
 
-      const videoCategory =
-        normalize(
-          video.category || "Other"
-        );
+      const category =
+        video.category || "Other";
 
-
-      /* CATEGORY FILTER */
 
       if (
         activeCategory !== "All" &&
-        videoCategory !==
-          normalize(activeCategory)
+        category !== activeCategory
       ) {
 
         return false;
 
       }
 
-
-      /* SEARCH FILTER */
 
       if (!searchQuery) {
 
@@ -315,12 +342,15 @@ function renderVideos() {
       }
 
 
-      const searchableText =
-        normalize(`
-          ${video.title || ""}
-          ${video.category || ""}
-          ${video.description || ""}
-        `);
+      const searchableText = `
+
+        ${video.title || ""}
+
+        ${video.category || ""}
+
+        ${video.description || ""}
+
+      `.toLowerCase();
 
 
       return searchableText
@@ -335,11 +365,13 @@ function renderVideos() {
 
   const mostViewed =
     [...filtered]
+
       .sort(
         (a, b) =>
           Number(b.views || 0) -
           Number(a.views || 0)
       )
+
       .slice(0, 8);
 
 
@@ -370,7 +402,7 @@ function renderVideos() {
 
 
   /* =========================
-     MOST VIEWED OUTPUT
+     TRENDING OUTPUT
   ========================== */
 
   if (trendingContainer) {
@@ -444,55 +476,31 @@ function renderCategories(
   }
 
 
-  const categoryMap =
-    new Map();
+  const categories = [
 
+    ...new Set(
 
-  allVideos.forEach(video => {
+      allVideos.map(
+        video =>
+          video.category || "Other"
+      )
 
-    const raw =
-      String(
-        video.category || "Other"
-      ).trim();
+    )
 
-
-    if (!raw) {
-
-      return;
-
-    }
-
-
-    const key =
-      normalize(raw);
-
-
-    if (!categoryMap.has(key)) {
-
-      categoryMap.set(
-        key,
-        raw
-      );
-
-    }
-
-  });
-
-
-  const categories =
-    [...categoryMap.values()]
-      .sort(
-        (a, b) =>
-          a.localeCompare(b)
-      );
+  ]
+    .sort(
+      (a, b) =>
+        a.localeCompare(b)
+    );
 
 
   const filteredCategories =
     categories.filter(
       category =>
-        normalize(category)
+        category
+          .toLowerCase()
           .includes(
-            normalize(searchText)
+            searchText.toLowerCase()
           )
     );
 
@@ -500,53 +508,49 @@ function renderCategories(
   let html = `
 
     <button
-      class="categoryItem ${
+      class="catItem ${
         activeCategory === "All"
           ? "active"
           : ""
       }"
-      data-cat="All"
-      type="button"
-    >
+      data-cat="All">
+
       All
+
     </button>
 
   `;
 
 
-  html +=
-    filteredCategories
-      .map(category => {
+  html += filteredCategories
 
-        const safeCategory =
-          esc(category);
+    .map(category => {
 
+      const safeCategory =
+        esc(category);
 
-        return `
+      return `
 
-          <button
-            class="categoryItem ${
-              normalize(
-                activeCategory
-              ) ===
-              normalize(category)
-                ? "active"
-                : ""
-            }"
-            data-cat="${safeCategory}"
-            type="button"
-          >
-            ${safeCategory}
-          </button>
+        <button
+          class="catItem ${
+            activeCategory === category
+              ? "active"
+              : ""
+          }"
+          data-cat="${safeCategory}">
 
-        `;
+          ${safeCategory}
 
-      })
-      .join("");
+        </button>
+
+      `;
+
+    })
+
+    .join("");
 
 
-  categoryBox.innerHTML =
-    html;
+  categoryBox.innerHTML = html;
 
 
   categoryBox
@@ -560,12 +564,16 @@ function renderCategories(
         () => {
 
           activeCategory =
-            button.dataset.cat ||
-            "All";
+            button.dataset.cat;
 
 
-          document
-            .querySelector("#cats")
+          const categoryPanel =
+            document.querySelector(
+              "#cats"
+            );
+
+
+          categoryPanel
             ?.classList
             .remove("show");
 
@@ -574,11 +582,9 @@ function renderCategories(
 
 
           renderCategories(
-            document
-              .querySelector(
-                "#categorySearch"
-              )
-              ?.value || ""
+            document.querySelector(
+              "#categorySearch"
+            )?.value || ""
           );
 
 
@@ -647,9 +653,7 @@ document
     () => {
 
       document
-        .querySelector(
-          "#mobileMenu"
-        )
+        .querySelector("#mobileMenu")
         ?.classList
         .toggle("show");
 
@@ -690,30 +694,8 @@ document
    SEARCH
 ========================= */
 
-const searchInput =
-  document.querySelector(
-    "#search"
-  );
-
-
-/* Restore search text */
-
-if (searchInput) {
-
-  const params =
-    new URLSearchParams(
-      window.location.search
-    );
-
-  searchInput.value =
-    params.get("search") || "";
-
-}
-
-
-/* Search on Enter */
-
-searchInput
+document
+  .querySelector("#search")
   ?.addEventListener(
     "keydown",
     event => {
@@ -734,9 +716,7 @@ searchInput
       if (value) {
 
         window.location.href =
-          `index.html?search=${encodeURIComponent(
-            value
-          )}`;
+          `index.html?search=${encodeURIComponent(value)}`;
 
       } else {
 
@@ -747,33 +727,6 @@ searchInput
 
     }
   );
-
-
-/* =========================
-   CLOSE MOBILE MENU
-========================= */
-
-document
-  .querySelectorAll(
-    "#mobileMenu a"
-  )
-  .forEach(link => {
-
-    link.addEventListener(
-      "click",
-      () => {
-
-        document
-          .querySelector(
-            "#mobileMenu"
-          )
-          ?.classList
-          .remove("show");
-
-      }
-    );
-
-  });
 
 
 /* =========================
