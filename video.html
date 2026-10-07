@@ -1,66 +1,178 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8">
 
-  <title>Video — DesiVexa</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="ads.css">
+  <meta
+    name="description"
+    content="Watch videos on DesiVexa - 18+ video platform.">
+
+  <title>Watch Video - DesiVexa</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css">
+
+  <link
+    rel="stylesheet"
+    href="ads.css">
 </head>
 
 <body>
 
-<header>
-  <a href="index.html" class="logo">
-    Desi<span>Vexa</span>
-  </a>
+  <!-- =========================
+       HEADER
+  ========================== -->
 
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="admin.html">Admin</a>
-  </nav>
-</header>
+  <header class="dvHeader">
 
-<main class="wrap videoPage" id="page">
+    <div class="dvHeaderInner">
 
-  <!-- VIDEO CONTENT -->
-  <div class="videoWatch">
+      <button
+        id="menuBtn"
+        class="headerIcon"
+        type="button"
+        aria-label="Menu">
+        ☰
+      </button>
 
-    <!-- Video page ad -->
-    <div class="dvAdSlot dvAdWide"
-         data-juicy-ad="wide"></div>
+      <a
+        href="index.html"
+        class="dvLogo">
+        Desi<span>Vexa</span>
+      </a>
 
-    <!-- Video/player will be inserted by video.js -->
-    <div id="videoContainer">
-      Loading video...
+      <button
+        id="searchBtn"
+        class="headerIcon"
+        type="button"
+        aria-label="Search">
+        ⌕
+      </button>
+
     </div>
 
-    <!-- Banner ad -->
-    <div class="dvAdSlot dvAdBanner"
-         data-juicy-ad="banner"></div>
 
-    <!-- Compact ad -->
-    <div class="dvAdSlot dvAdCompact"
-         data-juicy-ad="compact"></div>
+    <!-- SEARCH -->
+
+    <div
+      id="searchBox"
+      class="dvSearchBox">
+
+      <input
+        id="search"
+        type="search"
+        placeholder="Search videos..."
+        autocomplete="off">
+
+    </div>
+
+  </header>
+
+
+  <!-- =========================
+       MOBILE MENU
+  ========================== -->
+
+  <div
+    id="mobileMenu"
+    class="mobileMenu">
+
+    <a href="index.html">
+      Home
+    </a>
+
+    <a href="most-viewed.html">
+      Most Viewed
+    </a>
+
+    <a href="latest.html">
+      Latest
+    </a>
+
+    <a href="index.html#categories">
+      Categories
+    </a>
 
   </div>
 
-</main>
 
-<!-- Your existing video system -->
-<script type="module" src="video.js?v=4"></script>
+  <!-- =========================
+       MAIN
+  ========================== -->
 
-<!-- JuicyAds -->
-<script type="module">
-  import { initJuicyAds } from "./ads.js";
+  <main class="dvMain wrap">
 
-  initJuicyAds({
-    float: true,
-    native: true
-  });
-</script>
+
+    <!-- TOP AD -->
+
+    <div
+      class="dvAdSlot dvAdWide"
+      data-juicy-ad="wide">
+    </div>
+
+
+    <!-- VIDEO CONTENT -->
+
+    <div id="page">
+
+      <p class="muted">
+        Loading video...
+      </p>
+
+    </div>
+
+
+    <!-- BANNER AD -->
+
+    <div
+      class="dvAdSlot dvAdBanner"
+      data-juicy-ad="banner">
+    </div>
+
+
+    <!-- COMPACT AD -->
+
+    <div
+      class="dvAdSlot dvAdCompact"
+      data-juicy-ad="compact">
+    </div>
+
+
+  </main>
+
+
+  <!-- =========================
+       VIDEO JS
+  ========================== -->
+
+  <script
+    type="module"
+    src="video.js?v=21">
+  </script>
+
+
+  <!-- =========================
+       JUICYADS
+  ========================== -->
+
+  <script type="module">
+
+    import {
+      initJuicyAds
+    } from "./ads.js";
+
+    initJuicyAds({
+      float: true,
+      native: true
+    });
+
+  </script>
+
 
 </body>
-  </html>
+</html>
