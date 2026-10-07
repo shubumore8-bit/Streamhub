@@ -2,165 +2,191 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="description" content="DesiVexa - 18+ video platform">
 
-  <meta
-    name="description"
-    content="DesiVexa - 18+ video platform"
-  >
+  <meta name="6a97888e-site-verification"
+        content="cdfc6e06389c2153c30b80c3449ad95c">
 
-  <!-- ExoClick verification -->
-  <meta
-    name="6a97888e-site-verification"
-    content="cdfc6e06389c2153c30b80c3449ad95c"
-  >
-
-  <!-- JuicyAds verification -->
-  <meta
-    name="juicyads-site-verification"
-    content="97df17e7b5112caab5770e66ce197265"
-  >
+  <meta name="juicyads-site-verification"
+        content="97df17e7b5112caab5770e66ce197265">
 
   <title>DesiVexa - 18+ Videos</title>
+
+  <link rel="preconnect" href="https://poweredby.jads.co">
+  <link rel="dns-prefetch" href="//poweredby.jads.co">
 
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="ads.css">
 
   <style>
-    /* AGE GATE */
-    .gatebox {
-      width: min(430px, 92%);
-      padding: 30px;
-      text-align: center;
-      background: #121212;
-      border: 1px solid #303030;
-      border-radius: 14px;
-      box-shadow: 0 10px 40px rgba(0,0,0,.5);
-    }
+    /* MOBILE — DESKTOP STYLE / 3 COLUMNS */
 
-    .gateLogo {
-      font-size: 30px;
-      font-weight: 900;
-      margin-bottom: 12px;
-    }
-
-    .gateLogo span {
-      color: #e50914;
-    }
-
-    .adultBadge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 55px;
-      height: 55px;
-      margin-bottom: 12px;
-      border-radius: 50%;
-      background: #e50914;
-      color: #fff;
-      font-weight: 900;
-      font-size: 18px;
-    }
-
-    .gatebox h2 {
-      margin: 8px 0;
-    }
-
-    .gatebox p {
-      color: #aaa;
-      line-height: 1.5;
-    }
-
-    .gatebox .btn {
-      margin-top: 10px;
-      padding: 12px 20px;
-      border: 0;
-      border-radius: 8px;
-      background: #e50914;
-      color: #fff;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    /* CATEGORY BUTTONS */
-    .catItem {
-      border: 1px solid #303030;
-      border-radius: 999px;
-      padding: 9px 14px;
-      background: #181818;
-      color: #ddd;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .catItem:hover,
-    .catItem.active {
-      background: #e50914;
-      border-color: #e50914;
-      color: #fff;
-    }
-
-    /* MOBILE - NO HORIZONTAL SCROLL */
-    @media (max-width: 600px) {
+    @media (max-width:699px){
 
       html,
-      body {
-        width: 100%;
-        max-width: 100%;
-        overflow-x: hidden;
+      body{
+        width:100% !important;
+        max-width:100% !important;
+        overflow-x:hidden !important;
       }
 
-      .dvMain {
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-        padding: 14px 8px 35px;
+      .dvMain{
+        width:100% !important;
+        max-width:1280px !important;
+        margin:0 auto !important;
+        padding:18px 10px 45px !important;
       }
 
-      .dvGrid {
-        display: grid !important;
+      .dvHeaderInner{
+        width:100% !important;
+        max-width:1280px !important;
+        min-height:62px !important;
+        padding:0 12px !important;
+      }
+
+      .dvLogo{
+        font-size:24px !important;
+      }
+
+      .headerIcon{
+        width:42px !important;
+        height:42px !important;
+        font-size:23px !important;
+      }
+
+      /* Desktop-style hero */
+
+      .premiumHero{
         grid-template-columns:
-          repeat(4, minmax(0, 1fr)) !important;
-        gap: 6px !important;
-        width: 100%;
+          minmax(0,1fr)
+          minmax(0,1.15fr) !important;
+
+        gap:14px !important;
+        min-height:250px !important;
+        padding:18px !important;
+        border-radius:14px !important;
       }
 
-      .card {
-        width: 100%;
-        min-width: 0;
+      .premiumHero h1{
+        font-size:clamp(24px,7vw,38px) !important;
+        letter-spacing:-1.2px !important;
       }
 
-      .card .body {
-        padding: 5px;
+      .premiumHero p{
+        font-size:12px !important;
+        line-height:1.45 !important;
       }
 
-      .card h3 {
-        font-size: 10px !important;
-        line-height: 1.2;
+      .heroButton{
+        padding:10px 13px !important;
+        font-size:12px !important;
       }
 
-      .cardMeta {
-        font-size: 8px !important;
+      .featuredThumb{
+        aspect-ratio:16/9 !important;
       }
 
-      .playCircle {
-        width: 30px;
-        height: 30px;
-        font-size: 12px;
+      .featuredInfo{
+        padding:9px !important;
       }
 
-      .cardViews {
-        font-size: 8px;
-        padding: 3px 4px;
+      .featuredInfo h2{
+        font-size:14px !important;
       }
 
-      .dvSectionTitle h2 {
-        font-size: 18px !important;
+      /* Categories */
+
+      #categoryItems,
+      .categoryItems{
+        flex-wrap:wrap !important;
+        gap:6px !important;
+      }
+
+      .categoryItem,
+      .catItem{
+        padding:8px 12px !important;
+        font-size:12px !important;
+      }
+
+      /* VIDEO GRID — 3 COLUMNS */
+
+      .dvGrid{
+        display:grid !important;
+
+        grid-template-columns:
+          repeat(3,minmax(0,1fr)) !important;
+
+        gap:10px !important;
+
+        width:100% !important;
+      }
+
+      .card{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:100% !important;
+
+        border-radius:9px !important;
+
+        overflow:hidden !important;
+      }
+
+      .thumb{
+        width:100% !important;
+        aspect-ratio:16/9 !important;
+        overflow:hidden !important;
+      }
+
+      .thumb img{
+        width:100% !important;
+        height:100% !important;
+        object-fit:cover !important;
+      }
+
+      .card .body{
+        padding:8px !important;
+      }
+
+      .card h3{
+        font-size:11px !important;
+        line-height:1.25 !important;
+      }
+
+      .cardMeta{
+        font-size:9px !important;
+      }
+
+      .playCircle{
+        width:34px !important;
+        height:34px !important;
+        font-size:12px !important;
+      }
+
+      .cardViews{
+        font-size:8px !important;
+        padding:3px 4px !important;
+      }
+
+      .dvSectionTitle{
+        margin:25px 0 14px !important;
+      }
+
+      .dvSectionTitle h2{
+        font-size:22px !important;
+      }
+
+      .dvAdSlot{
+        width:100% !important;
+        max-width:100% !important;
+        overflow:hidden !important;
+      }
+
+      footer{
+        width:100% !important;
+        max-width:100% !important;
+        overflow:hidden !important;
       }
     }
   </style>
@@ -168,40 +194,68 @@
 
 <body>
 
-  <!-- ================= AGE GATE ================= -->
+  <!-- AGE GATE -->
 
   <div id="ageGate" class="gate">
 
-    <div class="gatebox">
+    <div class="gatebox"
+      style="
+        width:min(430px,100%);
+        padding:28px;
+        text-align:center;
+        background:#121212;
+        border:1px solid #303030;
+        border-radius:14px;
+        box-shadow:0 8px 30px rgba(0,0,0,.35);
+      ">
 
-      <div class="gateLogo">
-        Desi<span>Vexa</span>
+      <div style="
+        font-size:28px;
+        font-weight:900;
+      ">
+        Desi<span style="color:#ff1744;">Vexa</span>
       </div>
 
-      <div class="adultBadge">
+      <div style="
+        display:inline-block;
+        margin:14px 0;
+        padding:6px 10px;
+        border-radius:7px;
+        background:#ff1744;
+        color:#fff;
+        font-weight:900;
+      ">
         18+
       </div>
 
       <h2>Adults Only</h2>
 
       <p>
-        You must be 18 years or older to enter this website.
+        You must be 18 years or older
+        to enter this website.
       </p>
 
       <button
         id="enter"
-        class="btn"
         type="button"
+        style="
+          padding:12px 18px;
+          border:0;
+          border-radius:8px;
+          background:#e50914;
+          color:#fff;
+          cursor:pointer;
+          font-weight:700;
+        "
       >
         I am 18+ - Enter
       </button>
 
     </div>
-
   </div>
 
 
-  <!-- ================= HEADER ================= -->
+  <!-- HEADER -->
 
   <header class="dvHeader">
 
@@ -211,15 +265,13 @@
         id="menuBtn"
         class="headerIcon"
         type="button"
-        aria-label="Menu"
-      >
+        aria-label="Menu">
         ☰
       </button>
 
       <a
         href="index.html"
-        class="dvLogo"
-      >
+        class="dvLogo">
         Desi<span>Vexa</span>
       </a>
 
@@ -227,8 +279,7 @@
         id="searchBtn"
         class="headerIcon"
         type="button"
-        aria-label="Search"
-      >
+        aria-label="Search">
         ⌕
       </button>
 
@@ -239,27 +290,24 @@
 
     <div
       id="searchBox"
-      class="dvSearchBox"
-    >
+      class="dvSearchBox">
 
       <input
         id="search"
         type="search"
         placeholder="Search videos..."
-        autocomplete="off"
-      >
+        autocomplete="off">
 
     </div>
 
   </header>
 
 
-  <!-- ================= MENU ================= -->
+  <!-- MOBILE MENU -->
 
   <div
     id="mobileMenu"
-    class="mobileMenu"
-  >
+    class="mobileMenu">
 
     <a href="index.html">
       Home
@@ -280,60 +328,78 @@
   </div>
 
 
-  <!-- ================= MAIN ================= -->
+  <!-- MAIN -->
 
   <main class="dvMain">
 
 
-    <!-- HERO -->
+    <!-- PREMIUM HERO -->
 
-    <section class="hero">
+    <section class="premiumHero">
 
-      <span class="eyebrow">
-        18+ VIDEO PLATFORM
-      </span>
+      <div class="heroCopy">
 
-      <h1>
-        Discover videos.
-        <br>
-        <span>Watch more.</span>
-      </h1>
+        <span class="eyebrow">
+          DESIVEXA • 18+ VIDEO PLATFORM
+        </span>
 
-      <p>
-        Browse the latest videos and discover something new.
-      </p>
+        <h1>
+          Discover videos.<br>
+          <span>Watch what you like.</span>
+        </h1>
+
+        <p>
+          Explore trending and latest videos
+          in a cleaner, faster and mobile-friendly layout.
+        </p>
+
+        <a
+          class="heroButton"
+          href="#latest">
+          ▶ Explore Videos
+        </a>
+
+      </div>
+
+
+      <div
+        id="featuredVideo"
+        class="featuredVideo">
+
+        <div class="featuredLoading">
+          Loading featured video...
+        </div>
+
+      </div>
 
     </section>
 
 
-    <!-- ================= CATEGORIES ================= -->
+    <!-- CATEGORIES -->
 
     <section
       class="dvSection"
-      id="categories"
-    >
+      id="categories">
 
       <div class="toolbar">
 
         <button
           id="categoryBtn"
           class="categoryBtn"
-          type="button"
-        >
+          type="button">
           ☰ Categories
         </button>
 
+
         <div
           id="cats"
-          class="categoryList"
-        >
+          class="categoryList">
 
           <input
             id="categorySearch"
             type="search"
             placeholder="Search categories..."
-            autocomplete="off"
-          >
+            autocomplete="off">
 
           <div id="categoryItems"></div>
 
@@ -344,7 +410,8 @@
 
       <!-- JUICYADS WIDE -->
 
-      <div class="dvAdSlot dvAdWide">
+      <div
+        class="dvAdSlot dvAdWide">
 
         <script
           type="text/javascript"
@@ -363,14 +430,15 @@
           type="text/javascript"
           data-cfasync="false"
           async>
-          (adsbyjuicy = window.adsbyjuicy || [])
-            .push({'adzone':1128310});
+          (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone':1128310
+          });
         </script>
 
       </div>
 
 
-      <!-- ================= MOST VIEWED ================= -->
+      <!-- MOST VIEWED -->
 
       <div class="dvSectionTitle">
 
@@ -395,13 +463,14 @@
 
       <div
         id="trendingVideos"
-        class="dvGrid"
-      ></div>
+        class="dvGrid">
+      </div>
 
 
       <!-- JUICYADS COMPACT -->
 
-      <div class="dvAdSlot dvAdCompact">
+      <div
+        class="dvAdSlot dvAdCompact">
 
         <script
           type="text/javascript"
@@ -420,16 +489,19 @@
           type="text/javascript"
           data-cfasync="false"
           async>
-          (adsbyjuicy = window.adsbyjuicy || [])
-            .push({'adzone':1128312});
+          (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone':1128312
+          });
         </script>
 
       </div>
 
 
-      <!-- ================= LATEST ================= -->
+      <!-- LATEST -->
 
-      <div class="dvSectionTitle latestHeading">
+      <div
+        id="latest"
+        class="dvSectionTitle latestHeading">
 
         <div>
 
@@ -452,13 +524,14 @@
 
       <div
         id="videos"
-        class="dvGrid"
-      ></div>
+        class="dvGrid">
+      </div>
 
 
       <!-- JUICYADS BANNER -->
 
-      <div class="dvAdSlot dvAdBanner">
+      <div
+        class="dvAdSlot dvAdBanner">
 
         <script
           type="text/javascript"
@@ -477,8 +550,9 @@
           type="text/javascript"
           data-cfasync="false"
           async>
-          (adsbyjuicy = window.adsbyjuicy || [])
-            .push({'adzone':1128301});
+          (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone':1128301
+          });
         </script>
 
       </div>
@@ -486,7 +560,8 @@
 
       <!-- JUICYADS SMALL -->
 
-      <div class="dvAdSlot dvAdSmall">
+      <div
+        class="dvAdSlot dvAdSmall">
 
         <script
           type="text/javascript"
@@ -505,8 +580,9 @@
           type="text/javascript"
           data-cfasync="false"
           async>
-          (adsbyjuicy = window.adsbyjuicy || [])
-            .push({'adzone':1128309});
+          (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone':1128309
+          });
         </script>
 
       </div>
@@ -516,7 +592,7 @@
   </main>
 
 
-  <!-- ================= FOOTER ================= -->
+  <!-- FOOTER -->
 
   <footer>
 
@@ -529,13 +605,13 @@
     </p>
 
     <a href="legal.html">
-      Terms & Privacy
+      Terms &amp; Privacy
     </a>
 
   </footer>
 
 
-  <!-- ================= APP JS ================= -->
+  <!-- APP JS -->
 
   <script
     type="module"
@@ -543,9 +619,9 @@
   </script>
 
 
-  <!-- ================= FLOAT JUICYADS ================= -->
+  <!-- JUICYADS FLOAT -->
 
-  <script>
+  <script type="text/javascript">
     juicy_adzone = '1128307';
   </script>
 
@@ -556,7 +632,7 @@
   </script>
 
 
-  <!-- ================= NATIVE JUICYADS ================= -->
+  <!-- JUICYADS NATIVE -->
 
   <script
     type="text/javascript"
@@ -567,4 +643,4 @@
   </script>
 
 </body>
-</html>
+        </html>
