@@ -3,35 +3,142 @@
 <head>
   <meta charset="UTF-8">
 
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <meta name="description"
-        content="DesiVexa - 18+ video platform">
+  <meta
+    name="description"
+    content="DesiVexa - 18+ video platform"
+  >
 
   <!-- ExoClick verification -->
-  <meta name="6a97888e-site-verification"
-        content="cdfc6e06389c2153c30b80c3449ad95c">
+  <meta
+    name="6a97888e-site-verification"
+    content="cdfc6e06389c2153c30b80c3449ad95c"
+  >
 
   <!-- JuicyAds verification -->
-  <meta name="juicyads-site-verification"
-        content="97df17e7b5112caab5770e66ce197265">
+  <meta
+    name="juicyads-site-verification"
+    content="97df17e7b5112caab5770e66ce197265"
+  >
 
   <title>DesiVexa - 18+ Videos</title>
 
-  <!-- Main CSS -->
   <link rel="stylesheet" href="style.css">
-
-  <!-- Ad CSS -->
   <link rel="stylesheet" href="ads.css">
 
+  <style>
+    /* Small homepage safety fixes */
+    .hero{
+      padding:24px 0 18px;
+    }
+
+    .hero h1{
+      margin:8px 0 10px;
+    }
+
+    .hero p{
+      color:#aaa;
+      max-width:620px;
+      line-height:1.5;
+    }
+
+    .gatebox{
+      width:min(430px,100%);
+      padding:28px;
+      text-align:center;
+      background:#121212;
+      border:1px solid #303030;
+      border-radius:14px;
+      box-shadow:0 8px 30px rgba(0,0,0,.45);
+    }
+
+    .gatebox h2{
+      margin:12px 0 8px;
+    }
+
+    .gatebox p{
+      color:#aaa;
+      line-height:1.5;
+    }
+
+    .adultBadge{
+      width:54px;
+      height:54px;
+      margin:0 auto;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      background:#e50914;
+      color:#fff;
+      font-weight:900;
+      font-size:18px;
+    }
+
+    .gateLogo{
+      margin-bottom:15px;
+      font-size:28px;
+      font-weight:900;
+    }
+
+    .gateLogo span{
+      color:#e50914;
+    }
+
+    .btn{
+      width:100%;
+      padding:13px 18px;
+      border:0;
+      border-radius:9px;
+      background:#e50914;
+      color:#fff;
+      cursor:pointer;
+      font-weight:800;
+    }
+
+    .btn:hover{
+      background:#ff1b25;
+    }
+
+    .catItem{
+      border:1px solid #303030;
+      border-radius:999px;
+      padding:9px 14px;
+      background:#181818;
+      color:#ddd;
+      cursor:pointer;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .catItem:hover{
+      background:#252525;
+      color:#fff;
+    }
+
+    .catItem.active{
+      background:#e50914;
+      border-color:#e50914;
+      color:#fff;
+    }
+
+    .emptyState{
+      grid-column:1/-1;
+      padding:30px 15px;
+      text-align:center;
+      color:#999;
+    }
+  </style>
 </head>
 
 <body>
 
-  <!-- =================================================
+  <!-- =========================
        AGE GATE
-  ================================================== -->
+  ========================== -->
 
   <div id="ageGate" class="gate">
 
@@ -55,7 +162,8 @@
       <button
         id="enter"
         class="btn"
-        type="button">
+        type="button"
+      >
         I am 18+ - Enter
       </button>
 
@@ -64,68 +172,69 @@
   </div>
 
 
-  <!-- =================================================
+  <!-- =========================
        HEADER
-  ================================================== -->
+  ========================== -->
 
   <header class="dvHeader">
 
     <div class="dvHeaderInner">
 
-      <!-- MENU -->
       <button
         id="menuBtn"
         class="headerIcon"
         type="button"
-        aria-label="Menu">
+        aria-label="Open menu"
+      >
         ☰
       </button>
 
-
-      <!-- LOGO -->
       <a
         href="index.html"
-        class="dvLogo">
+        class="dvLogo"
+      >
         Desi<span>Vexa</span>
       </a>
 
-
-      <!-- SEARCH -->
       <button
         id="searchBtn"
         class="headerIcon"
         type="button"
-        aria-label="Search">
+        aria-label="Search"
+      >
         ⌕
       </button>
 
     </div>
 
 
-    <!-- SEARCH BOX -->
+    <!-- SEARCH -->
 
     <div
       id="searchBox"
-      class="dvSearchBox">
+      class="dvSearchBox"
+    >
 
       <input
         id="search"
         type="search"
         placeholder="Search videos..."
-        autocomplete="off">
+        autocomplete="off"
+      >
 
     </div>
 
   </header>
 
 
-  <!-- =================================================
+  <!-- =========================
        MOBILE MENU
-  ================================================== -->
+  ========================== -->
 
   <div
     id="mobileMenu"
-    class="mobileMenu">
+    class="mobileMenu"
+  >
 
     <a href="index.html">
       Home
@@ -146,16 +255,13 @@
   </div>
 
 
-  <!-- =================================================
+  <!-- =========================
        MAIN
-  ================================================== -->
+  ========================== -->
 
   <main class="dvMain">
 
-
-    <!-- =================================================
-         HERO
-    ================================================== -->
+    <!-- HERO -->
 
     <section class="hero">
 
@@ -176,37 +282,38 @@
     </section>
 
 
-    <!-- =================================================
+    <!-- =========================
          CATEGORIES
-    ================================================== -->
+    ========================== -->
 
     <section
       class="dvSection"
-      id="categories">
-
+      id="categories"
+    >
 
       <div class="toolbar">
 
         <button
           id="categoryBtn"
           class="categoryBtn"
-          type="button">
-
+          type="button"
+        >
           ☰ Categories
-
         </button>
 
 
         <div
           id="cats"
-          class="categoryList">
+          class="categoryList"
+        >
 
           <input
             id="categorySearch"
+            class="categorySearch"
             type="search"
             placeholder="Search categories..."
-            autocomplete="off">
-
+            autocomplete="off"
+          >
 
           <div id="categoryItems"></div>
 
@@ -215,10 +322,10 @@
       </div>
 
 
-      <!-- =================================================
-           JUICYADS WIDE
+      <!-- =========================
+           WIDE AD
            Zone 1128310
-      ================================================== -->
+      ========================== -->
 
       <div class="dvAdSlot dvAdWide">
 
@@ -226,30 +333,31 @@
           type="text/javascript"
           data-cfasync="false"
           async
-          src="https://poweredby.jads.co/js/jads.js">
-        </script>
+          src="https://poweredby.jads.co/js/jads.js"
+        ></script>
 
         <ins
           id="1128310"
           data-width="774"
-          data-height="290">
-        </ins>
+          data-height="290"
+        ></ins>
 
         <script
           type="text/javascript"
           data-cfasync="false"
-          async>
+          async
+        >
           (adsbyjuicy = window.adsbyjuicy || []).push({
-            'adzone': 1128310
+            'adzone':1128310
           });
         </script>
 
       </div>
 
 
-      <!-- =================================================
+      <!-- =========================
            MOST VIEWED
-      ================================================== -->
+      ========================== -->
 
       <div class="dvSectionTitle">
 
@@ -265,7 +373,6 @@
 
         </div>
 
-
         <a href="most-viewed.html">
           View all ›
         </a>
@@ -275,14 +382,14 @@
 
       <div
         id="trendingVideos"
-        class="dvGrid">
-      </div>
+        class="dvGrid"
+      ></div>
 
 
-      <!-- =================================================
-           JUICYADS COMPACT
+      <!-- =========================
+           COMPACT AD
            Zone 1128312
-      ================================================== -->
+      ========================== -->
 
       <div class="dvAdSlot dvAdCompact">
 
@@ -290,33 +397,33 @@
           type="text/javascript"
           data-cfasync="false"
           async
-          src="https://poweredby.jads.co/js/jads.js">
-        </script>
+          src="https://poweredby.jads.co/js/jads.js"
+        ></script>
 
         <ins
           id="1128312"
           data-width="300"
-          data-height="100">
-        </ins>
+          data-height="100"
+        ></ins>
 
         <script
           type="text/javascript"
           data-cfasync="false"
-          async>
+          async
+        >
           (adsbyjuicy = window.adsbyjuicy || []).push({
-            'adzone': 1128312
+            'adzone':1128312
           });
         </script>
 
       </div>
 
 
-      <!-- =================================================
+      <!-- =========================
            LATEST VIDEOS
-      ================================================== -->
+      ========================== -->
 
-      <div
-        class="dvSectionTitle latestHeading">
+      <div class="dvSectionTitle latestHeading">
 
         <div>
 
@@ -330,7 +437,6 @@
 
         </div>
 
-
         <a href="latest.html">
           View all ›
         </a>
@@ -340,14 +446,14 @@
 
       <div
         id="videos"
-        class="dvGrid">
-      </div>
+        class="dvGrid"
+      ></div>
 
 
-      <!-- =================================================
-           JUICYADS BANNER
+      <!-- =========================
+           BANNER AD
            Zone 1128301
-      ================================================== -->
+      ========================== -->
 
       <div class="dvAdSlot dvAdBanner">
 
@@ -355,31 +461,32 @@
           type="text/javascript"
           data-cfasync="false"
           async
-          src="https://poweredby.jads.co/js/jads.js">
-        </script>
+          src="https://poweredby.jads.co/js/jads.js"
+        ></script>
 
         <ins
           id="1128301"
           data-width="308"
-          data-height="286">
-        </ins>
+          data-height="286"
+        ></ins>
 
         <script
           type="text/javascript"
           data-cfasync="false"
-          async>
+          async
+        >
           (adsbyjuicy = window.adsbyjuicy || []).push({
-            'adzone': 1128301
+            'adzone':1128301
           });
         </script>
 
       </div>
 
 
-      <!-- =================================================
-           JUICYADS SMALL
+      <!-- =========================
+           SMALL AD
            Zone 1128309
-      ================================================== -->
+      ========================== -->
 
       <div class="dvAdSlot dvAdSmall">
 
@@ -387,35 +494,35 @@
           type="text/javascript"
           data-cfasync="false"
           async
-          src="https://poweredby.jads.co/js/jads.js">
-        </script>
+          src="https://poweredby.jads.co/js/jads.js"
+        ></script>
 
         <ins
           id="1128309"
           data-width="108"
-          data-height="140">
-        </ins>
+          data-height="140"
+        ></ins>
 
         <script
           type="text/javascript"
           data-cfasync="false"
-          async>
+          async
+        >
           (adsbyjuicy = window.adsbyjuicy || []).push({
-            'adzone': 1128309
+            'adzone':1128309
           });
         </script>
 
       </div>
-
 
     </section>
 
   </main>
 
 
-  <!-- =================================================
+  <!-- =========================
        FOOTER
-  ================================================== -->
+  ========================== -->
 
   <footer>
 
@@ -435,20 +542,20 @@
   </footer>
 
 
-  <!-- =================================================
-       APP JS
-  ================================================== -->
+  <!-- =========================
+       APP
+  ========================== -->
 
   <script
     type="module"
-    src="app.js?v=21">
-  </script>
+    src="app.js?v=22"
+  ></script>
 
 
-  <!-- =================================================
+  <!-- =========================
        JUICYADS FLOAT
        Zone 1128307
-  ================================================== -->
+  ========================== -->
 
   <script type="text/javascript">
     juicy_adzone = '1128307';
@@ -457,23 +564,22 @@
   <script
     type="text/javascript"
     src="https://poweredby.jads.co/js/jfc.js"
-    charset="utf-8">
-  </script>
+    charset="utf-8"
+  ></script>
 
 
-  <!-- =================================================
+  <!-- =========================
        JUICYADS NATIVE
        Zone 1128313
-  ================================================== -->
+  ========================== -->
 
   <script
     type="text/javascript"
     data-id="juicyads-native-ads"
     data-ad-zone="1128313"
     data-targets="a"
-    src="https://js.juicyads.com/juicyads.native-ads.min.js">
-  </script>
-
+    src="https://js.juicyads.com/juicyads.native-ads.min.js"
+  ></script>
 
 </body>
-</html>
+  </html>
