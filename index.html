@@ -1,478 +1,112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <meta name="description" content="DesiVexa - Discover trending, latest and recommended videos">
+  <title>DesiVexa — Home</title>
 
-  <title>DesiVexa - Home</title>
-
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="ads.css">
+  <link rel="stylesheet" href="style.css?v=42">
 
   <style>
-    * {
-      box-sizing: border-box;
+    .homeWrap {
+      max-width:1100px;
+      margin:auto;
+      padding:12px 10px 90px;
     }
 
-    html,
-    body {
-      margin: 0;
-      width: 100%;
-      max-width: 100%;
-      overflow-x: hidden;
-      background: #080808;
-      color: #fff;
+    .homeTop {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:18px;
     }
 
-    body {
-      padding-bottom: 72px;
+    .homeLogo {
+      font-size:25px;
+      font-weight:800;
+      color:white;
     }
 
-    .dvMain {
-      width: 100%;
-      max-width: 1280px;
-      margin: auto;
-      padding: 18px 14px 50px;
+    .homeLogo span {
+      color:#e00000;
     }
 
-    /* HEADER */
-
-    .dvHeader {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: rgba(8,8,8,.96);
-      border-bottom: 1px solid #242424;
-      backdrop-filter: blur(12px);
+    .homeLinks {
+      display:flex;
+      gap:7px;
     }
 
-    .dvHeaderInner {
-      width: 100%;
-      max-width: 1280px;
-      min-height: 64px;
-      margin: auto;
-      padding: 0 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+    .homeLinks a {
+      color:white;
+      background:#e00000;
+      padding:8px 11px;
+      border-radius:7px;
+      text-decoration:none;
+      font-size:12px;
+      font-weight:600;
     }
 
-    .dvLogo {
-      text-decoration: none;
-      color: #fff;
-      font-size: 25px;
-      font-weight: 900;
-      letter-spacing: -1px;
+    .sectionTitle {
+      color:white;
+      font-size:20px;
+      margin:22px 0 12px;
     }
 
-    .dvLogo span,
-    .footerLogo span {
-      color: #ff1744;
+    .videoGrid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
     }
 
-    .headerIcon {
-      width: 42px;
-      height: 42px;
-      border: 1px solid #303030;
-      border-radius: 10px;
-      background: #141414;
-      color: #fff;
-      font-size: 21px;
-      cursor: pointer;
-    }
-
-    .dvSearchBox {
-      display: none;
-      max-width: 700px;
-      margin: 0 auto;
-      padding: 0 14px 12px;
-    }
-
-    .dvSearchBox.active {
-      display: block;
-    }
-
-    .dvSearchBox input,
-    #categorySearch {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid #333;
-      outline: none;
-      background: #151515;
-      color: #fff;
-    }
-
-    /* MENU */
-
-    .mobileMenu {
-      display: none;
-      position: fixed;
-      top: 64px;
-      left: 12px;
-      right: 12px;
-      z-index: 999;
-      background: #111;
-      border: 1px solid #2c2c2c;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    .mobileMenu.active {
-      display: block;
-    }
-
-    .mobileMenu a {
-      display: block;
-      padding: 14px 16px;
-      color: #fff;
-      text-decoration: none;
-      border-bottom: 1px solid #242424;
-    }
-
-    .mobileMenu a:hover {
-      background: #1d1d1d;
-    }
-
-    /* HERO */
-
-    .premiumHero {
-      display: grid;
-      grid-template-columns: 1fr 1.15fr;
-      gap: 16px;
-      min-height: 280px;
-      margin-bottom: 24px;
-      padding: 20px;
-      border: 1px solid #292929;
-      border-radius: 16px;
-      background:
-        radial-gradient(circle at 90% 20%, rgba(229,9,20,.18), transparent 35%),
-        linear-gradient(135deg,#151515,#0b0b0b);
-    }
-
-    .heroCopy {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .eyebrow,
-    .sectionLabel {
-      color: #ff1744;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1.4px;
-    }
-
-    .premiumHero h1 {
-      margin: 10px 0;
-      font-size: clamp(28px,5vw,52px);
-      line-height: 1.02;
-      letter-spacing: -2px;
-    }
-
-    .premiumHero h1 span {
-      color: #ff1744;
-    }
-
-    .premiumHero p {
-      max-width: 500px;
-      color: #aaa;
-      line-height: 1.55;
-      font-size: 14px;
-    }
-
-    .heroButton {
-      display: inline-block;
-      width: fit-content;
-      margin-top: 8px;
-      padding: 11px 16px;
-      border-radius: 9px;
-      background: #e50914;
-      color: #fff;
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .featuredVideo {
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .featuredLoading {
-      color: #888;
-      font-size: 13px;
-    }
-
-    /* CATEGORY */
-
-    .toolbar {
-      margin-bottom: 18px;
-    }
-
-    .categoryBtn {
-      padding: 10px 14px;
-      border: 1px solid #303030;
-      border-radius: 9px;
-      background: #151515;
-      color: #fff;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .categoryList {
-      display: none;
-      margin-top: 10px;
-    }
-
-    .categoryList.active {
-      display: block;
-    }
-
-    #categoryItems {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-top: 9px;
-    }
-
-    .categoryItem,
-    .catItem {
-      padding: 8px 12px;
-      border-radius: 20px;
-      background: #181818;
-      border: 1px solid #2b2b2b;
-      color: #ccc;
-      font-size: 12px;
-    }
-
-    /* SECTION */
-
-    .dvSectionTitle {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 15px;
-      margin: 30px 0 14px;
-    }
-
-    .dvSectionTitle h2 {
-      margin: 4px 0 0;
-      font-size: 24px;
-      letter-spacing: -.6px;
-    }
-
-    .dvSectionTitle a {
-      color: #aaa;
-      text-decoration: none;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-
-    .dvSectionTitle a:hover {
-      color: #fff;
-    }
-
-    /* VIDEO GRID */
-
-    .dvGrid {
-      display: grid;
-      grid-template-columns: repeat(4,minmax(0,1fr));
-      gap: 14px;
-    }
-
-    .card {
-      width: 100%;
-      min-width: 0;
-      overflow: hidden;
-      border: 1px solid #252525;
-      border-radius: 11px;
-      background: #111;
-      transition: transform .15s ease,border-color .15s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
-      border-color: #444;
+    .videoCard {
+      display:block;
+      min-width:0;
+      color:white;
+      text-decoration:none;
     }
 
     .thumb {
-      width: 100%;
-      aspect-ratio: 16/9;
-      overflow: hidden;
-      background: #181818;
+      width:100%;
+      aspect-ratio:16/9;
+      object-fit:cover;
+      display:block;
+      border-radius:8px;
+      background:#171717;
     }
 
-    .thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+    .noThumb {
+      width:100%;
+      aspect-ratio:16/9;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#171717;
+      border-radius:8px;
+      font-size:28px;
     }
 
-    .card .body {
-      padding: 9px;
+    .videoTitle {
+      margin-top:6px;
+      font-size:14px;
+      font-weight:600;
+      line-height:1.3;
     }
 
-    .card h3 {
-      margin: 0;
-      color: #fff;
-      font-size: 13px;
-      line-height: 1.35;
-    }
-
-    .cardMeta {
-      margin-top: 5px;
-      color: #777;
-      font-size: 10px;
-    }
-
-    /* ADS */
-
-    .dvAdSlot {
-      width: 100%;
-      max-width: 100%;
-      overflow: hidden;
-      margin: 20px auto;
-      text-align: center;
-    }
-
-    /* FOOTER */
-
-    footer {
-      padding: 35px 15px 90px;
-      text-align: center;
-      border-top: 1px solid #222;
-      color: #777;
-    }
-
-    .footerLogo {
-      font-size: 23px;
-      font-weight: 900;
-      color: #fff;
-    }
-
-    footer p {
-      font-size: 11px;
-    }
-
-    footer a {
-      color: #aaa;
-      font-size: 12px;
-    }
-
-    /* BOTTOM NAV */
-
-    .bottomNav {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 1100;
-      height: 64px;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      background: rgba(12,12,12,.98);
-      border-top: 1px solid #292929;
-      backdrop-filter: blur(12px);
-    }
-
-    .bottomNav a {
-      min-width: 60px;
-      text-align: center;
-      color: #777;
-      text-decoration: none;
-      font-size: 10px;
-    }
-
-    .bottomNav a.active {
-      color: #ff1744;
-    }
-
-    .bottomNav .navIcon {
-      display: block;
-      margin-bottom: 3px;
-      font-size: 20px;
-    }
-
-    /* MOBILE */
-
-    @media (max-width:699px) {
-
-      .dvMain {
-        padding: 12px 10px 40px;
-      }
-
-      .premiumHero {
-        grid-template-columns: 1fr;
-        min-height: auto;
-        gap: 14px;
-        padding: 16px;
-        border-radius: 13px;
-      }
-
-      .premiumHero h1 {
-        font-size: clamp(25px,8vw,38px);
-        letter-spacing: -1.2px;
-      }
-
-      .premiumHero p {
-        font-size: 12px;
-      }
-
-      .featuredVideo {
-        min-height: 170px;
-      }
-
-      .dvGrid {
-        grid-template-columns: repeat(3,minmax(0,1fr));
-        gap: 9px;
-      }
-
-      .card {
-        border-radius: 8px;
-      }
-
-      .card .body {
-        padding: 7px;
-      }
-
-      .card h3 {
-        font-size: 10px;
-        line-height: 1.25;
-      }
-
-      .cardMeta {
-        font-size: 8px;
-      }
-
-      .dvSectionTitle {
-        margin: 24px 0 12px;
-      }
-
-      .dvSectionTitle h2 {
-        font-size: 20px;
-      }
-
-      .dvSectionTitle a {
-        font-size: 10px;
-      }
+    .videoMeta {
+      color:#888;
+      font-size:11px;
+      margin-top:4px;
     }
 
     @media (max-width:380px) {
-      .dvGrid {
-        gap: 7px;
+      .videoGrid {
+        gap:8px;
       }
 
-      .card h3 {
-        font-size: 9px;
+      .videoTitle {
+        font-size:13px;
       }
     }
   </style>
@@ -480,302 +114,236 @@
 
 <body>
 
-  <!-- AGE GATE -->
-  <div id="ageGate" class="gate">
-    <div class="gatebox">
-      <div style="font-size:28px;font-weight:900">
-        Desi<span style="color:#ff1744">Vexa</span>
-      </div>
+<main class="homeWrap">
 
-      <div style="
-        display:inline-block;
-        margin:14px 0;
-        padding:6px 10px;
-        border-radius:7px;
-        background:#ff1744;
-        color:#fff;
-        font-weight:900;
-      ">18+</div>
+  <div class="homeTop">
 
-      <h2>Adults Only</h2>
-
-      <p>You must be 18 years or older to enter this website.</p>
-
-      <button id="enter" type="button">
-        I am 18+ - Enter
-      </button>
-    </div>
-  </div>
-
-
-  <!-- HEADER -->
-  <header class="dvHeader">
-
-    <div class="dvHeaderInner">
-
-      <button
-        id="menuBtn"
-        class="headerIcon"
-        type="button"
-        aria-label="Menu">
-        ☰
-      </button>
-
-      <a href="index.html" class="dvLogo">
-        Desi<span>Vexa</span>
-      </a>
-
-      <button
-        id="searchBtn"
-        class="headerIcon"
-        type="button"
-        aria-label="Search">
-        ⌕
-      </button>
-
-    </div>
-
-    <div id="searchBox" class="dvSearchBox">
-      <input
-        id="search"
-        type="search"
-        placeholder="Search videos..."
-        autocomplete="off">
-    </div>
-
-  </header>
-
-
-  <!-- MENU -->
-  <div id="mobileMenu" class="mobileMenu">
-
-    <a href="index.html">Home</a>
-
-    <a href="trending.html">Most Viewed</a>
-
-    <a href="new.html">Latest</a>
-
-    <a href="recommended.html">Recommended</a>
-
-    <a href="#categories">Categories</a>
-
-  </div>
-
-
-  <!-- MAIN -->
-  <main class="dvMain">
-
-    <!-- HERO -->
-    <section class="premiumHero">
-
-      <div class="heroCopy">
-
-        <span class="eyebrow">
-          DESIVEXA • 18+ VIDEO PLATFORM
-        </span>
-
-        <h1>
-          Discover videos.<br>
-          <span>Watch what you like.</span>
-        </h1>
-
-        <p>
-          Explore trending, latest and recommended
-          videos in a fast mobile-friendly experience.
-        </p>
-
-        <a class="heroButton" href="#latest">
-          ▶ Explore Videos
-        </a>
-
-      </div>
-
-      <div id="featuredVideo" class="featuredVideo">
-        <div class="featuredLoading">
-          Loading featured video...
-        </div>
-      </div>
-
-    </section>
-
-
-    <!-- CATEGORIES -->
-    <section
-      class="dvSection"
-      id="categories">
-
-      <div class="toolbar">
-
-        <button
-          id="categoryBtn"
-          class="categoryBtn"
-          type="button">
-          ☰ Categories
-        </button>
-
-        <div id="cats" class="categoryList">
-
-          <input
-            id="categorySearch"
-            type="search"
-            placeholder="Search categories..."
-            autocomplete="off">
-
-          <div id="categoryItems"></div>
-
-        </div>
-
-      </div>
-
-
-      <!-- TRENDING -->
-      <div class="dvSectionTitle">
-
-        <div>
-          <span class="sectionLabel">
-            TRENDING
-          </span>
-
-          <h2>Trending Videos</h2>
-        </div>
-
-        <a href="trending.html">
-          View all ›
-        </a>
-
-      </div>
-
-      <div
-        id="trendingVideos"
-        class="dvGrid">
-      </div>
-
-
-      <!-- LATEST -->
-      <div
-        id="latest"
-        class="dvSectionTitle latestHeading">
-
-        <div>
-          <span class="sectionLabel">
-            NEW
-          </span>
-
-          <h2>Latest Videos</h2>
-        </div>
-
-        <a href="new.html">
-          View all ›
-        </a>
-
-      </div>
-
-      <div
-        id="videos"
-        class="dvGrid">
-      </div>
-
-
-      <!-- RECOMMENDED -->
-      <div class="dvSectionTitle">
-
-        <div>
-          <span class="sectionLabel">
-            FOR YOU
-          </span>
-
-          <h2>Recommended Videos</h2>
-        </div>
-
-        <a href="recommended.html">
-          View all ›
-        </a>
-
-      </div>
-
-      <div
-        id="recommendations"
-        class="dvGrid">
-      </div>
-
-
-      <!-- RANDOM -->
-      <div class="dvSectionTitle">
-
-        <div>
-          <span class="sectionLabel">
-            DISCOVER
-          </span>
-
-          <h2>Random Videos</h2>
-        </div>
-
-      </div>
-
-      <div
-        id="randomVideos"
-        class="dvGrid">
-      </div>
-
-    </section>
-
-  </main>
-
-
-  <!-- FOOTER -->
-  <footer>
-
-    <div class="footerLogo">
+    <div class="homeLogo">
       Desi<span>Vexa</span>
     </div>
 
-    <p>
-      18+ only · All content must be lawful and consensual.
+    <div class="homeLinks">
+      <a href="new.html">Latest</a>
+      <a href="recommended.html">Recommended</a>
+    </div>
+
+  </div>
+
+
+  <!-- LATEST -->
+
+  <h2 class="sectionTitle">
+    Latest Videos
+  </h2>
+
+  <div
+    id="latestVideos"
+    class="videoGrid"
+  >
+    <p style="color:#888;">
+      Loading...
     </p>
-
-    <a href="legal.html">
-      Terms &amp; Privacy
-    </a>
-
-  </footer>
+  </div>
 
 
-  <!-- BOTTOM NAV -->
-  <nav class="bottomNav">
+  <!-- RECOMMENDED -->
 
-    <a href="index.html" class="active">
-      <span class="navIcon">⌂</span>
-      Home
-    </a>
+  <h2 class="sectionTitle">
+    Recommended
+  </h2>
 
-    <a href="new.html">
-      <span class="navIcon">▣</span>
-      Latest
-    </a>
+  <div
+    id="recommendedVideos"
+    class="videoGrid"
+  >
+    <p style="color:#888;">
+      Loading...
+    </p>
+  </div>
 
-    <a href="trending.html">
-      <span class="navIcon">🔥</span>
-      Trending
-    </a>
-
-    <a href="recommended.html">
-      <span class="navIcon">★</span>
-      Recommended
-    </a>
-
-    <a href="legal.html">
-      <span class="navIcon">●</span>
-      Profile
-    </a>
-
-  </nav>
+</main>
 
 
-  <!-- APP -->
-  <script
-    type="module"
-    src="app.js?v=32">
-  </script>
+<script type="module">
+
+import { createClient }
+from "https://esm.sh/@supabase/supabase-js@2";
+
+import {
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+} from "./config.js";
+
+const supabase = createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+const latestBox =
+  document.getElementById("latestVideos");
+
+const recommendedBox =
+  document.getElementById("recommendedVideos");
+
+
+loadLatest();
+loadRecommended();
+
+
+async function loadLatest() {
+
+  const result = await supabase
+    .from("videos")
+    .select(`
+      id,
+      title,
+      category,
+      thumbnail_url,
+      views,
+      created_at
+    `)
+    .eq("published", true)
+    .order("created_at", {
+      ascending:false
+    })
+    .limit(20);
+
+  if (result.error) {
+
+    console.error(result.error);
+
+    latestBox.innerHTML = `
+      <p style="color:#888;">
+        Unable to load latest videos.
+      </p>
+    `;
+
+    return;
+  }
+
+  renderVideos(
+    latestBox,
+    result.data || []
+  );
+}
+
+
+async function loadRecommended() {
+
+  const result = await supabase
+    .from("videos")
+    .select(`
+      id,
+      title,
+      category,
+      thumbnail_url,
+      views,
+      created_at
+    `)
+    .eq("published", true)
+    .order("views", {
+      ascending:false
+    })
+    .order("created_at", {
+      ascending:false
+    })
+    .limit(20);
+
+  if (result.error) {
+
+    console.error(result.error);
+
+    recommendedBox.innerHTML = `
+      <p style="color:#888;">
+        Unable to load recommended videos.
+      </p>
+    `;
+
+    return;
+  }
+
+  renderVideos(
+    recommendedBox,
+    result.data || []
+  );
+}
+
+
+function renderVideos(box, videos) {
+
+  if (!videos.length) {
+
+    box.innerHTML = `
+      <p style="color:#888;">
+        No videos available.
+      </p>
+    `;
+
+    return;
+  }
+
+  box.innerHTML =
+    videos.map(video => {
+
+      const id =
+        encodeURIComponent(video.id);
+
+      return `
+        <a
+          class="videoCard"
+          href="video.html?id=${id}"
+        >
+
+          ${
+            video.thumbnail_url
+              ? `
+                <img
+                  class="thumb"
+                  src="${escapeHTML(video.thumbnail_url)}"
+                  loading="lazy"
+                  alt=""
+                >
+              `
+              : `
+                <div class="noThumb">
+                  ▶
+                </div>
+              `
+          }
+
+          <div class="videoTitle">
+            ${escapeHTML(
+              video.title || "Untitled"
+            )}
+          </div>
+
+          <div class="videoMeta">
+            ${escapeHTML(
+              video.category || "Video"
+            )}
+            ·
+            ${Number(video.views || 0)}
+            views
+          </div>
+
+        </a>
+      `;
+
+    }).join("");
+}
+
+
+function escapeHTML(value) {
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+</script>
 
 </body>
 </html>
