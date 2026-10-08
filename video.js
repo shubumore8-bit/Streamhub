@@ -915,13 +915,14 @@ async function addComment() {
   try {
 
     const result =
-      await supabase
-        .from("video_comments")
-        .insert({
-          video_id: videoId,
-          visitor_id: visitorId,
-          comment: comment
-        });
+  await supabase
+    .from("video_comments")
+    .insert({
+      video_id: videoId,
+      visitor_id: visitorId,
+      body: comment,
+      comment: comment
+    });
 
 
     /*
