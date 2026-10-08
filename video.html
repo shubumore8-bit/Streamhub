@@ -1945,92 +1945,51 @@ async function loadComments(){
    POST COMMENT
 ========================= */
 
-commentBtn.onclick =
-async function(){
+commentBtn.onclick = async function(){
 
-  const text =
-    commentInput.value.trim();
-
+  const text = commentInput.value.trim();
 
   if(!text){
-
-    alert(
-      "Please write a comment."
-    );
-
+    alert("Please write a comment.");
     return;
-
   }
-
-
-  if(text.length > 500){
-
-    alert(
-      "Comment is too long."
-    );
-
-    return;
-
-  }
-
 
   commentBtn.disabled = true;
+  commentBtn.textContent = "Posting...";
 
-  commentBtn.textContent =
-    "Posting...";
-
-
-  const {
-    error
-  } = await supabase
-
+  const { data, error } = await supabase
     .from("comments")
-
     .insert({
+      video_id: String(videoId),
+      comment: text
+    })
+    .select();
 
-      video_id:
-        String(videoId),
-
-      comment:
-        text
-
-    });
-
+  console.log("COMMENT DATA:", data);
+  console.log("COMMENT ERROR:", error);
 
   if(error){
 
-    console.error(
-      "Comment insert error:",
-      error
-    );
-
-
     alert(
-      "Comment post nahi ho paya."
+      "COMMENT ERROR:\n\n" +
+      error.message +
+      "\n\nCode: " +
+      (error.code || "N/A")
     );
-
 
     commentBtn.disabled = false;
-
-    commentBtn.textContent =
-      "Post";
-
+    commentBtn.textContent = "Post";
     return;
-
   }
-
 
   commentInput.value = "";
 
+  alert("Comment successfully post ho gaya!");
 
   commentBtn.disabled = false;
-
-  commentBtn.textContent =
-    "Post";
-
+  commentBtn.textContent = "Post";
 
   await loadComments();
-
 };
 
 
