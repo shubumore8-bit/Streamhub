@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Admin Upload - DesiVexa</title>
+
+  <style>
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    body{
+      background:#090909;
+      color:#fff;
+      font-family:Arial,sans-serif;
+      min-height:100vh;
+    }
+
+    header{
+      height:60px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-bottom:1px solid #222;
+      background:#0d0d0d;
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+
+    .logo{
+      color:#e50914;
+      font-size:24px;
+      font-weight:800;
+    }
+
+    .container{
+      width:92%;
+      max-width:600px;
+      margin:30px auto;
+    }
+
+    .box{
+      background:#111;
+      border:1px solid #242424;
+      border-radius:14px;
+      padding:22px;
+    }
+
+    h1{
+      font-size:22px;
+      margin-bottom:6px;
+    }
+
+    .sub{
+      color:#999;
+      font-size:14px;
+      margin-bottom:25px;
+    }
+
+    label{
+      display:block;
+      font-size:14px;
+      margin:17px 0 7px;
+      color:#ddd;
+    }
+
+    input,
+    textarea,
+    select{
+      width:100%;
+      background:#181818;
+      color:#fff;
+      border:1px solid #333;
+      border-radius:9px;
+      padding:13px;
+      outline:none;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus{
+      border-color:#e50914;
+    }
+
+    textarea{
+      min-height:110px;
+      resize:vertical;
+    }
+
+    .btn{
+      width:100%;
+      margin-top:22px;
+      padding:14px;
+      border:0;
+      border-radius:9px;
+      background:#e50914;
+      color:#fff;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    .btn:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+
+    .status{
+      margin-top:18px;
+      padding:12px;
+      border-radius:8px;
+      background:#181818;
+      color:#bbb;
+      font-size:14px;
+      display:none;
+    }
+
+    .logout{
+      margin-top:12px;
+      background:#222;
+    }
+
+    .hidden{
+      display:none;
+    }
+
+    .login-box{
+      margin-top:70px;
+    }
+
+    .error{
+      color:#ff5555;
+    }
+
+    .success{
+      color:#45e06f;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">DesiVexa</div>
+</header>
+
+<div class="container">
+
+  <!-- LOGIN -->
+  <div id="loginBox" class="box login-box">
+
+    <h1>Admin Login</h1>
+
+    <div class="sub">
+      Login to access the upload panel.
+    </div>
+
+    <label>Email</label>
+    <input
+      id="email"
+      type="email"
+      placeholder="Admin email"
+      autocomplete="email"
+    >
+
+    <label>Password</label>
+    <input
+      id="password"
+      type="password"
+      placeholder="Password"
+      autocomplete="current-password"
+    >
+
+    <button id="loginBtn" class="btn">
+      Login
+    </button>
+
+    <div id="loginStatus" class="status"></div>
+
+  </div>
+
+
+  <!-- UPLOAD PANEL -->
+  <div id="uploadBox" class="box hidden">
+
+    <h1>Upload Video</h1>
+
+    <div class="sub">
+      Admin panel
+    </div>
+
+    <label>Video Title</label>
+    <input
+      id="title"
+      type="text"
+      placeholder="Enter video title"
+    >
+
+    <label>Category</label>
+    <input
+      id="category"
+      type="text"
+      placeholder="Enter category"
+    >
+
+    <label>Description</label>
+    <textarea
+      id="description"
+      placeholder="Enter video description"
+    ></textarea>
+
+    <label>Thumbnail</label>
+    <input
+      id="thumbnail"
+      type="file"
+      accept="image/*"
+    >
+
+    <label>Video</label>
+    <input
+      id="video"
+      type="file"
+      accept="video/*"
+    >
+
+    <button id="uploadBtn" class="btn">
+      Upload Video
+    </button>
+
+    <div id="uploadStatus" class="status"></div>
+
+    <button id="logoutBtn" class="btn logout">
+      Logout
+    </button>
+
+  </div>
+
+</div>
+
+
+<script type="module">
+
+import { createClient }
+  from "https://esm.sh/@supabase/supabase-js@2";
+
+import {
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+} from "./config.js";
+
+
+const supabase =
+  createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+
+const loginBox =
+  document.getElementById("loginBox");
+
+const uploadBox =
+  document.getElementById("uploadBox");
+
+const loginBtn =
+  document.getElementById("loginBtn");
+
+const logoutBtn =
+  document.getElementById("logoutBtn");
+
+const loginStatus =
+  document.getElementById("loginStatus");
+
+const uploadStatus =
+  document.getElementById("uploadStatus");
+
+
+function showLogin(){
+
+  loginBox.classList.remove("hidden");
+  uploadBox.classList.add("hidden");
+
+}
+
+
+function showUpload(){
+
+  loginBox.classList.add("hidden");
+  uploadBox.classList.remove("hidden");
+
+}
+
+
+function status(element,message,type=""){
+
+  element.style.display="block";
+  element.className="status " + type;
+  element.textContent=message;
+
+}
+
+
+async function checkSession(){
+
+  const {
+    data:{
+      session
+    }
+  } =
+  await supabase.auth.getSession();
+
+  if(session){
+
+    showUpload();
+
+  }else{
+
+    showLogin();
+
+  }
+
+}
+
+
+loginBtn.addEventListener(
+  "click",
+  async function(){
+
+    const email =
+      document.getElementById("email").value.trim();
+
+    const password =
+      document.getElementById("password").value;
+
+    if(!email || !password){
+
+      status(
+        loginStatus,
+        "Email aur password enter karo.",
+        "error"
+      );
+
+      return;
+    }
+
+    loginBtn.disabled=true;
+    loginBtn.textContent="Logging in...";
+
+    const {
+      error
+    } =
+    await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    loginBtn.disabled=false;
+    loginBtn.textContent="Login";
+
+    if(error){
+
+      status(
+        loginStatus,
+        error.message,
+        "error"
+      );
+
+      return;
+    }
+
+    status(
+      loginStatus,
+      "Login successful.",
+      "success"
+    );
+
+    showUpload();
+
+  }
+);
+
+
+logoutBtn.addEventListener(
+  "click",
+  async function(){
+
+    await supabase.auth.signOut();
+
+    showLogin();
+
+  }
+);
+
+
+supabase.auth.onAuthStateChange(
+  function(event,session){
+
+    if(session){
+
+      showUpload();
+
+    }else{
+
+      showLogin();
+
+    }
+
+  }
+);
+
+
+checkSession();
+
+</script>
+
+</body>
+</html>
