@@ -1,576 +1,380 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
-import {
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-} from "./config.js";
-
-
-/* =========================
-   SUPABASE
-========================= */
-
-const supabase = createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
-
-
-const videoContent =
-  document.querySelector("#videoContent");
-
-const randomVideos =
-  document.querySelector("#randomVideos");
-
-
-/* =========================
-   ESCAPE HTML
-========================= */
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const page = document.querySelector("#page");
 
 function esc(value) {
-
-  return String(value ?? "")
-    .replace(/[&<>"']/g, char => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    }[char]));
-
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[c]));
 }
-
-
-/* =========================
-   AGE CHECK
-========================= */
-
-function checkAge() {
-
-  if (
-    localStorage.getItem(
-      "desivexa_age_verified"
-    ) === "1"
-  ) {
-
-    return true;
-
-  }
-
-
-  const accepted = confirm(
-    "18+ ONLY\n\n" +
-    "You must be 18 years or older " +
-    "to access this website."
-  );
-
-
-  if (!accepted) {
-
-    window.location.href =
-      "index.html";
-
-    return false;
-
-  }
-
-
-  localStorage.setItem(
-    "desivexa_age_verified",
-    "1"
-  );
-
-
-  return true;
-
-}
-
-
-/* =========================
-   GET VIDEO ID
-========================= */
 
 function getVideoId() {
-
-  const params =
-    new URLSearchParams(
-      window.location.search
-    );
-
-  return params.get("id");
-
+  return new URLSearchParams(location.search).get("id");
 }
 
+function showError(title, message = "") {
+  if (!page) return;
 
-/* =========================
-   VIDEO CARD
-========================= */
+  page.innerHTML = `
+    <div class="videoError">
+      <h2>${esc(title)}</h2>
+      ${message ? `<p>${esc(message)}</p>` : ""}
+      <a href="index.html">← Back to videos</a>
+    </div>
+  `;
+}
+
+function checkAge() {
+  if (localStorage.getItem("desivexa_age_verified") === "1") {
+    return true;
+  }
+
+  const ok = confirm(
+    "18+ ONLY\n\nYou must be 18 years or older to access this website."
+  );
+
+  if (!ok) {
+    location.href = "index.html";
+    return false;
+  }
+
+  localStorage.setItem("desivexa_age_verified", "1");
+  return true;
+}
 
 function createVideoCard(video) {
+  const id = encodeURIComponent(video.id);
+  const title = esc(video.title || "Untitled video");
+  const category = esc(video.category || "Other");
+  const views = Number(video.views || 0).toLocaleString();
 
-  const title =
-    esc(
-      video.title ||
-      "Untitled video"
-    );
-
-
-  const category =
-    esc(
-      video.category ||
-      "Other"
-    );
-
-
-  const views =
-    Number(
-      video.views || 0
-    ).toLocaleString();
-
-
-  let thumbnail = "";
-
-
-  if (video.thumbnail_url) {
-
-    thumbnail = `
-      <img
-        src="${esc(video.thumbnail_url)}"
-        alt="${title}"
-        loading="lazy"
-        decoding="async">
-    `;
-
-  } else {
-
-    thumbnail = `
-      <div class="noThumb">
-        DESIVEXA
-      </div>
-    `;
-
-  }
-
+  const thumb = video.thumbnail_url
+    ? `<img src="${esc(video.thumbnail_url)}"
+            alt="${title}"
+            loading="lazy"
+            decoding="async">`
+    : `<div class="noThumb">DESIVEXA</div>`;
 
   return `
-    <a
-      class="card"
-      href="video.html?id=${encodeURIComponent(video.id)}">
-
+    <a class="card" href="video.html?id=${id}">
       <div class="thumb">
-
-        ${thumbnail}
-
+        ${thumb}
         <div class="thumbOverlay"></div>
-
-        <div class="playCircle">
-          ▶
-        </div>
-
-        <div class="cardViews">
-          ${views} views
-        </div>
-
+        <div class="playCircle">▶</div>
+        <div class="cardViews">${views} views</div>
       </div>
-
 
       <div class="body">
-
-        <h3>
-          ${title}
-        </h3>
+        <h3>${title}</h3>
 
         <div class="cardMeta">
-
-          <span>
-            ${category}
-          </span>
-
-          <span>
-            ${views} views
-          </span>
-
+          <span>${category}</span>
+          <span>${views} views</span>
         </div>
-
       </div>
-
     </a>
   `;
-
 }
-
-
-/* =========================
-   LOAD MORE VIDEOS
-========================= */
 
 async function loadMoreVideos(currentId) {
+  const box = document.querySelector("#randomVideos");
 
-  if (!randomVideos) {
-    return;
-  }
+  if (!box) return;
 
-
-  const {
-    data,
-    error
-  } = await supabase
-
-    .from("videos")
-
-    .select(`
-      id,
-      title,
-      category,
-      thumbnail_url,
-      views,
-      created_at
-    `)
-
-    .eq(
-      "published",
-      true
-    )
-
-    .neq(
-      "id",
-      currentId
-    )
-
-    .order(
-      "created_at",
-      {
+  try {
+    const { data, error } = await supabase
+      .from("videos")
+      .select(`
+        id,
+        title,
+        category,
+        thumbnail_url,
+        views,
+        created_at
+      `)
+      .eq("published", true)
+      .neq("id", currentId)
+      .order("created_at", {
         ascending: false
-      }
-    )
+      })
+      .limit(8);
 
-    .limit(8);
+    if (error) throw error;
 
+    if (!data || data.length === 0) {
+      box.innerHTML = "";
+      return;
+    }
 
-  if (
-    error ||
-    !data ||
-    !data.length
-  ) {
-
-    randomVideos.innerHTML = "";
-
-    return;
-
-  }
-
-
-  randomVideos.innerHTML = `
-
-    <div class="dvSectionTitle">
-
-      <div>
-
-        <span class="sectionLabel">
-          MORE
-        </span>
-
-        <h2>
-          More Videos
-        </h2>
-
+    box.innerHTML = `
+      <div class="dvSectionTitle">
+        <div>
+          <span class="sectionLabel">MORE</span>
+          <h2>More Videos</h2>
+        </div>
       </div>
 
-    </div>
+      <div class="dvGrid">
+        ${data.map(createVideoCard).join("")}
+      </div>
+    `;
 
-
-    <div class="dvGrid">
-
-      ${data
-        .map(createVideoCard)
-        .join("")}
-
-    </div>
-
-  `;
-
+  } catch (error) {
+    console.warn("More videos error:", error);
+    box.innerHTML = "";
+  }
 }
-
-
-/* =========================
-   LOAD VIDEO
-========================= */
 
 async function loadVideo() {
 
-  if (!checkAge()) {
-    return;
-  }
+  if (!page) return;
 
+  if (!checkAge()) return;
 
-  const videoId =
-    getVideoId();
-
+  const videoId = getVideoId();
 
   if (!videoId) {
-
-    videoContent.innerHTML = `
-
-      <div class="videoError">
-
-        <h2>
-          Video not found
-        </h2>
-
-        <a href="index.html">
-          Go Home
-        </a>
-
-      </div>
-
-    `;
-
+    showError(
+      "Video not found",
+      "No video ID was provided."
+    );
     return;
-
   }
 
+  page.innerHTML = `
+    <p class="muted">
+      Loading video...
+    </p>
+  `;
 
-  /* =========================
-     GET VIDEO
-  ========================== */
+  // 12 second safety timeout
+  const timeout = setTimeout(() => {
 
-  const {
-    data: video,
-    error
-  } = await supabase
+    if (page.querySelector(".muted")) {
 
-    .from("videos")
+      showError(
+        "Video loading timed out",
+        "Please refresh the page and try again."
+      );
 
-    .select(`
-      id,
-      title,
-      category,
-      description,
-      video_url,
-      thumbnail_url,
-      views,
-      created_at
-    `)
+    }
 
-    .eq(
-      "id",
-      videoId
-    )
+  }, 12000);
 
-    .eq(
-      "published",
-      true
-    )
+  try {
 
-    .maybeSingle();
-
-
-  if (error) {
-
-    console.error(
-      "Video loading error:",
+    const {
+      data: video,
       error
-    );
+    } = await supabase
 
+      .from("videos")
 
-    videoContent.innerHTML = `
+      .select(`
+        id,
+        title,
+        category,
+        description,
+        video_url,
+        thumbnail_url,
+        views,
+        created_at
+      `)
 
-      <div class="videoError">
+      .eq("id", videoId)
 
-        <h2>
-          Could not load video
-        </h2>
+      .eq("published", true)
 
-        <p>
-          Please try again later.
-        </p>
+      .maybeSingle();
 
-        <a href="index.html">
-          Go Home
-        </a>
+    clearTimeout(timeout);
 
-      </div>
+    if (error) {
 
-    `;
+      console.error(
+        "Supabase video error:",
+        error
+      );
 
-    return;
+      showError(
+        "Could not load video",
+        error.message || "Database error"
+      );
 
-  }
+      return;
+    }
 
+    if (!video) {
 
-  if (
-    !video ||
-    !video.video_url
-  ) {
+      showError(
+        "Video not found",
+        "This video may be unpublished or removed."
+      );
 
-    videoContent.innerHTML = `
+      return;
+    }
 
-      <div class="videoError">
+    if (!video.video_url) {
 
-        <h2>
-          Video unavailable
-        </h2>
+      showError(
+        "Video unavailable",
+        "This video does not have a video URL."
+      );
 
-        <a href="index.html">
-          Go Home
-        </a>
+      return;
+    }
 
-      </div>
+    const title =
+      esc(video.title || "Untitled video");
 
-    `;
+    const category =
+      esc(video.category || "Other");
 
-    return;
+    const description =
+      esc(video.description || "");
 
-  }
+    const videoUrl =
+      esc(video.video_url);
 
+    const views =
+      Number(video.views || 0)
+      .toLocaleString();
 
-  /* =========================
-     VIDEO DATA
-  ========================== */
+    const poster =
+      video.thumbnail_url
+        ? `poster="${esc(video.thumbnail_url)}"`
+        : "";
 
-  const title =
-    esc(
-      video.title ||
-      "Untitled video"
-    );
+    page.innerHTML = `
 
+      <section class="videoWatch">
 
-  const category =
-    esc(
-      video.category ||
-      "Other"
-    );
+        <div class="videoPlayerWrap">
 
+          <video
+            id="player"
+            controls
+            playsinline
+            preload="metadata"
+            ${poster}>
 
-  const description =
-    esc(
-      video.description ||
-      ""
-    );
+            <source
+              src="${videoUrl}"
+              type="video/mp4">
 
+            Your browser does not support
+            HTML5 video.
 
-  const views =
-    Number(
-      video.views || 0
-    ).toLocaleString();
-
-
-  const poster =
-    video.thumbnail_url
-      ? `poster="${esc(
-          video.thumbnail_url
-        )}"`
-      : "";
-
-
-  /* =========================
-     VIDEO HTML
-  ========================== */
-
-  videoContent.innerHTML = `
-
-    <section class="videoWatch">
-
-
-      <!-- VIDEO PLAYER -->
-
-      <div class="videoPlayerWrap">
-
-        <video
-          id="player"
-          controls
-          playsinline
-          preload="metadata"
-          ${poster}>
-
-          <source
-            src="${esc(video.video_url)}"
-            type="video/mp4">
-
-          Your browser does not support
-          HTML5 video.
-
-        </video>
-
-      </div>
-
-
-      <!-- VIDEO INFORMATION -->
-
-      <div class="videoInfo">
-
-        <h1>
-          ${title}
-        </h1>
-
-
-        <div class="videoMeta">
-
-          <span>
-            ${category}
-          </span>
-
-          <span>
-            ${views} views
-          </span>
+          </video>
 
         </div>
 
 
-        ${
-          description
-            ? `
-              <p class="videoDescription">
-                ${description}
-              </p>
-            `
-            : ""
+        <div class="videoInfo">
+
+          <h1>
+            ${title}
+          </h1>
+
+          <div class="videoMeta">
+
+            <span>
+              ${category}
+            </span>
+
+            <span>
+              ${views} views
+            </span>
+
+          </div>
+
+          ${
+            description
+              ? `
+                <p class="videoDescription">
+                  ${description}
+                </p>
+              `
+              : ""
+          }
+
+        </div>
+
+
+        <div
+          class="dvAdSlot dvAdSmall"
+          data-juicy-ad="small">
+        </div>
+
+
+        <div id="randomVideos"></div>
+
+      </section>
+
+    `;
+
+
+    // View counter
+    supabase
+
+      .rpc(
+        "increment_video_views",
+        {
+          video_id: video.id
+        }
+      )
+
+      .then(({ error }) => {
+
+        if (error) {
+          console.warn(
+            "View counter error:",
+            error
+          );
         }
 
-      </div>
+      })
 
-    </section>
+      .catch(error => {
 
-  `;
+        console.warn(
+          "View counter error:",
+          error
+        );
+
+      });
 
 
-  /* =========================
-     COUNT VIEW
-  ========================== */
+    // More videos
+    loadMoreVideos(video.id);
 
-  try {
-
-    await supabase.rpc(
-      "increment_video_views",
-      {
-        video_id: video.id
-      }
-    );
 
   } catch (error) {
 
-    console.warn(
-      "View counter error:",
+    clearTimeout(timeout);
+
+    console.error(
+      "Video page error:",
       error
     );
 
+    showError(
+      "Something went wrong",
+      error?.message ||
+      "Please try again."
+    );
+
   }
-
-
-  /* =========================
-     LOAD MORE
-  ========================== */
-
-  await loadMoreVideos(
-    video.id
-  );
-
 }
 
 
-/* =========================
-   MENU
-========================= */
+/* MENU */
 
 document
   .querySelector("#menuBtn")
@@ -587,9 +391,7 @@ document
   );
 
 
-/* =========================
-   SEARCH BUTTON
-========================= */
+/* SEARCH BUTTON */
 
 document
   .querySelector("#searchBtn")
@@ -597,18 +399,14 @@ document
     "click",
     () => {
 
-      const searchBox =
+      const box =
         document.querySelector(
           "#searchBox"
         );
 
+      box?.classList.toggle("show");
 
-      searchBox
-        ?.classList
-        .toggle("show");
-
-
-      searchBox
+      box
         ?.querySelector("input")
         ?.focus();
 
@@ -616,9 +414,7 @@ document
   );
 
 
-/* =========================
-   SEARCH
-========================= */
+/* SEARCH */
 
 document
   .querySelector("#search")
@@ -626,27 +422,21 @@ document
     "keydown",
     event => {
 
-      if (
-        event.key !== "Enter"
-      ) {
+      if (event.key !== "Enter") {
         return;
       }
-
 
       const query =
         event.target.value.trim();
 
-
       if (query) {
 
-        window.location.href =
-          `index.html?search=${encodeURIComponent(
-            query
-          )}`;
+        location.href =
+          `index.html?search=${encodeURIComponent(query)}`;
 
       } else {
 
-        window.location.href =
+        location.href =
           "index.html";
 
       }
@@ -655,8 +445,19 @@ document
   );
 
 
-/* =========================
-   START
-========================= */
+/* START */
 
-loadVideo();
+if (
+  document.readyState === "loading"
+) {
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    loadVideo
+  );
+
+} else {
+
+  loadVideo();
+
+}
