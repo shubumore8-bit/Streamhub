@@ -4,8 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="description"
-        content="DesiVexa - Trending, New and Recommended videos">
+  <meta
+    name="description"
+    content="DesiVexa - Discover trending, latest and recommended videos."
+  >
+
+  <meta name="theme-color" content="#02070d">
 
   <title>DesiVexa - Home</title>
 
@@ -21,9 +25,9 @@
     }
 
     body {
-      font-family: Arial, Helvetica, sans-serif;
       background: #02070d;
       color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
       min-height: 100vh;
     }
 
@@ -51,7 +55,7 @@
       margin: auto;
       min-height: 100vh;
       background: #06111a;
-      padding-bottom: 90px;
+      padding-bottom: 85px;
     }
 
     /* =========================
@@ -59,34 +63,41 @@
     ========================= */
 
     .header {
-      height: 72px;
+      height: 68px;
       display: grid;
-      grid-template-columns: 55px 1fr 110px;
+      grid-template-columns: 52px 1fr 52px;
       align-items: center;
-      padding: 0 18px;
+      padding: 0 14px;
       background: #030b12;
-      border-bottom: 1px solid #182631;
+      border-bottom: 1px solid #172733;
       position: sticky;
       top: 0;
       z-index: 1000;
     }
 
     .menu-btn,
-    .icon-btn {
-      background: none;
+    .search-btn {
+      width: 42px;
+      height: 42px;
       border: 0;
-      color: white;
-      font-size: 30px;
-      width: 45px;
-      height: 45px;
+      background: transparent;
+      color: #fff;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+    }
+
+    .menu-btn {
+      font-size: 29px;
+    }
+
+    .search-btn {
+      font-size: 25px;
     }
 
     .logo {
       text-align: center;
-      font-size: 30px;
+      font-size: 29px;
       font-weight: 900;
       letter-spacing: -1px;
     }
@@ -95,19 +106,21 @@
       color: #ff1744;
     }
 
-    .header-right {
-      display: flex;
-      justify-content: flex-end;
-      gap: 4px;
-    }
-
-    .icon-btn {
-      font-size: 27px;
-    }
-
     /* =========================
        SIDE MENU
     ========================= */
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .65);
+      z-index: 1500;
+      display: none;
+    }
+
+    .overlay.show {
+      display: block;
+    }
 
     .side-menu {
       position: fixed;
@@ -116,28 +129,28 @@
       width: 280px;
       height: 100vh;
       background: #07131d;
-      z-index: 2000;
-      transition: .25s ease;
       border-right: 1px solid #243440;
-      box-shadow: 10px 0 30px rgba(0,0,0,.45);
+      z-index: 2000;
+      transition: left .25s ease;
+      box-shadow: 10px 0 30px rgba(0,0,0,.5);
     }
 
-    .side-menu.active {
+    .side-menu.show {
       left: 0;
     }
 
     .menu-header {
-      height: 72px;
+      height: 68px;
+      padding: 0 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 20px;
-      border-bottom: 1px solid #243440;
+      border-bottom: 1px solid #1d303d;
     }
 
     .menu-logo {
       font-size: 24px;
-      font-weight: 800;
+      font-weight: 900;
     }
 
     .menu-logo span {
@@ -145,10 +158,10 @@
     }
 
     .close-menu {
-      background: none;
       border: 0;
+      background: transparent;
       color: white;
-      font-size: 30px;
+      font-size: 31px;
     }
 
     .menu-list {
@@ -157,55 +170,44 @@
 
     .menu-item {
       width: 100%;
-      padding: 15px;
-      margin-bottom: 8px;
-      background: #0b1b27;
-      border: 1px solid #172c3b;
-      border-radius: 12px;
+      border: 1px solid #1b3140;
+      background: #0a1a26;
       color: white;
+      padding: 14px;
+      margin-bottom: 9px;
+      border-radius: 11px;
       text-align: left;
-      font-size: 16px;
+      font-size: 15px;
     }
 
     .menu-item:hover {
       background: #ff1744;
-    }
-
-    .menu-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.65);
-      z-index: 1500;
-      display: none;
-    }
-
-    .menu-overlay.active {
-      display: block;
+      border-color: #ff1744;
     }
 
     /* =========================
        SEARCH
     ========================= */
 
-    .search-box {
+    .search-area {
       display: none;
-      padding: 12px 18px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #182b38;
       background: #06111a;
-      border-bottom: 1px solid #172936;
     }
 
-    .search-box.active {
+    .search-area.show {
       display: block;
     }
 
     .search-input {
       width: 100%;
-      height: 46px;
-      border: 1px solid #2a3c4a;
-      background: #0a1823;
-      color: white;
-      border-radius: 12px;
-      padding: 0 15px;
+      height: 45px;
+      padding: 0 14px;
+      border-radius: 11px;
+      border: 1px solid #28404f;
+      background: #0a1924;
+      color: #fff;
       outline: none;
     }
 
@@ -214,38 +216,38 @@
     }
 
     /* =========================
-       TOP BANNER
+       BANNER
     ========================= */
 
     .top-banner {
-      margin: 18px;
-      min-height: 74px;
+      margin: 15px 14px;
+      min-height: 68px;
+      padding: 10px 13px;
       border: 1px solid #ff1744;
       border-radius: 12px;
       background: linear-gradient(
         90deg,
         #160914,
-        #25101a,
-        #120b12
+        #24101a,
+        #100b12
       );
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 16px;
-      gap: 15px;
+      gap: 10px;
     }
 
     .banner-text {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
     }
 
-    .banner-button {
-      border: 0;
-      border-radius: 22px;
+    .banner-btn {
       background: #ff1744;
       color: white;
-      padding: 11px 18px;
+      border: 0;
+      border-radius: 22px;
+      padding: 10px 15px;
       font-weight: 700;
       white-space: nowrap;
     }
@@ -256,9 +258,9 @@
 
     .categories {
       display: flex;
-      gap: 10px;
+      gap: 9px;
       overflow-x: auto;
-      padding: 0 18px 8px;
+      padding: 0 14px 7px;
       scrollbar-width: none;
     }
 
@@ -266,48 +268,44 @@
       display: none;
     }
 
-    .category {
+    .category-btn {
       flex: 0 0 auto;
+      padding: 9px 17px;
+      border-radius: 10px;
       border: 1px solid #20394a;
       background: #0b1c2a;
-      color: #dce5ed;
-      border-radius: 11px;
-      padding: 10px 19px;
+      color: #dbe5ed;
+      font-size: 13px;
       font-weight: 600;
     }
 
-    .category.active,
-    .category:hover {
+    .category-btn.active {
       background: #ff1744;
       border-color: #ff1744;
       color: white;
     }
 
     /* =========================
-       SECTIONS
+       SECTION
     ========================= */
 
     .section {
-      padding: 15px 18px 0;
+      padding: 12px 14px 0;
     }
 
-    .section-header {
+    .section-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin: 12px 0 14px;
+      margin: 12px 0 13px;
     }
 
     .section-title {
       display: flex;
       align-items: center;
-      gap: 9px;
-      font-size: 23px;
+      gap: 8px;
+      font-size: 21px;
       font-weight: 800;
-    }
-
-    .section-title .emoji {
-      font-size: 25px;
     }
 
     .view-all {
@@ -315,7 +313,7 @@
       background: transparent;
       color: #ff1744;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     /* =========================
@@ -325,7 +323,7 @@
     .video-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
+      gap: 19px;
     }
 
     .video-card {
@@ -333,83 +331,78 @@
       cursor: pointer;
     }
 
-    .thumbnail {
+    .thumb {
+      position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
-      position: relative;
-      overflow: hidden;
+      background: #0a1822;
       border-radius: 9px;
-      background: #0b1822;
+      overflow: hidden;
     }
 
-    .thumbnail img {
+    .thumb img {
       width: 100%;
       height: 100%;
-      display: block;
       object-fit: cover;
+      display: block;
       transition: transform .25s ease;
     }
 
-    .video-card:hover .thumbnail img {
+    .video-card:hover .thumb img {
       transform: scale(1.04);
     }
 
-    .play-icon {
+    .play {
       position: absolute;
-      left: 9px;
-      bottom: 9px;
-      width: 32px;
-      height: 32px;
+      left: 8px;
+      bottom: 8px;
+      width: 31px;
+      height: 31px;
       border-radius: 50%;
-      background: rgba(0,0,0,.7);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
+      background: rgba(0,0,0,.75);
+      font-size: 13px;
     }
 
     .duration {
       position: absolute;
       right: 7px;
       bottom: 7px;
-      background: rgba(0,0,0,.82);
       padding: 4px 6px;
       border-radius: 5px;
-      font-size: 12px;
+      background: rgba(0,0,0,.82);
+      font-size: 11px;
       font-weight: 700;
     }
 
     .video-title {
-      margin-top: 8px;
-      font-size: 15px;
-      line-height: 1.3;
+      margin-top: 7px;
+      font-size: 14px;
       font-weight: 700;
-      min-height: 39px;
+      line-height: 1.35;
+      min-height: 38px;
     }
 
     .tag {
       display: inline-block;
-      margin-top: 7px;
-      padding: 5px 10px;
-      border-radius: 20px;
+      margin-top: 6px;
+      padding: 4px 9px;
+      border-radius: 18px;
       background: #ff1744;
-      color: white;
-      font-size: 11px;
+      color: #fff;
+      font-size: 10px;
       font-weight: 800;
     }
 
-    .video-info {
-      margin-top: 7px;
+    .video-meta {
+      margin-top: 6px;
       color: #aebdca;
-      font-size: 12px;
+      font-size: 11px;
       display: flex;
-      gap: 7px;
-      align-items: center;
       flex-wrap: wrap;
-    }
-
-    .dot {
-      opacity: .6;
+      gap: 6px;
     }
 
     /* =========================
@@ -419,17 +412,35 @@
     .random-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 13px;
+      gap: 12px;
     }
 
     .random-grid .video-title {
-      font-size: 13px;
       min-height: auto;
+      font-size: 12px;
     }
 
     .random-grid .tag,
-    .random-grid .video-info {
+    .random-grid .video-meta {
       display: none;
+    }
+
+    /* =========================
+       LOADING
+    ========================= */
+
+    .loading {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px 10px;
+      color: #9aaab7;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 35px 10px;
+      color: #8b9aa6;
     }
 
     /* =========================
@@ -441,35 +452,22 @@
       justify-content: center;
       align-items: center;
       gap: 7px;
-      margin: 22px 0 8px;
+      padding: 22px 0 5px;
       flex-wrap: wrap;
     }
 
     .page-btn {
-      min-width: 38px;
-      height: 38px;
-      border-radius: 9px;
-      border: 1px solid #24394a;
+      min-width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid #243b4c;
       background: #0b1b28;
-      color: white;
-      padding: 0 11px;
+      color: #fff;
     }
 
-    .page-btn.active,
-    .page-btn:hover {
+    .page-btn.active {
       background: #ff1744;
       border-color: #ff1744;
-    }
-
-    /* =========================
-       EMPTY
-    ========================= */
-
-    .empty {
-      text-align: center;
-      color: #8293a1;
-      padding: 35px 10px;
-      display: none;
     }
 
     /* =========================
@@ -483,60 +481,37 @@
       transform: translateX(-50%);
       width: 100%;
       max-width: 1100px;
-      height: 72px;
+      height: 70px;
       background: rgba(3,11,18,.97);
-      border-top: 1px solid #1b2b38;
+      border-top: 1px solid #1b2d3a;
+      z-index: 1200;
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      z-index: 1200;
       backdrop-filter: blur(12px);
     }
 
-    .nav-item {
+    .nav-btn {
       border: 0;
       background: transparent;
-      color: #aebdca;
+      color: #9eafbd;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 4px;
-      font-size: 11px;
+      font-size: 10px;
     }
 
     .nav-icon {
-      font-size: 22px;
+      font-size: 21px;
     }
 
-    .nav-item.active {
+    .nav-btn.active {
       color: #ff1744;
     }
 
     /* =========================
-       DESKTOP
-    ========================= */
-
-    @media (min-width: 901px) {
-
-      .bottom-nav {
-        position: static;
-        transform: none;
-        margin-top: 30px;
-        max-width: none;
-        border: 0;
-      }
-
-      .app {
-        padding-bottom: 0;
-      }
-
-      .header {
-        border-radius: 0;
-      }
-    }
-
-    /* =========================
-       TABLET
+       MOBILE
     ========================= */
 
     @media (max-width: 900px) {
@@ -550,68 +525,11 @@
       }
     }
 
-    /* =========================
-       MOBILE
-    ========================= */
-
     @media (max-width: 600px) {
-
-      .header {
-        height: 66px;
-        grid-template-columns: 48px 1fr 92px;
-        padding: 0 12px;
-      }
-
-      .logo {
-        font-size: 27px;
-      }
-
-      .menu-btn {
-        font-size: 27px;
-      }
-
-      .icon-btn {
-        font-size: 24px;
-      }
-
-      .top-banner {
-        margin: 14px 14px 16px;
-        min-height: 67px;
-        padding: 10px 12px;
-      }
-
-      .banner-text {
-        font-size: 13px;
-      }
-
-      .banner-button {
-        font-size: 12px;
-        padding: 9px 13px;
-      }
-
-      .section {
-        padding: 13px 14px 0;
-      }
-
-      .section-title {
-        font-size: 20px;
-      }
-
-      .view-all {
-        font-size: 13px;
-      }
 
       .video-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 18px 12px;
-      }
-
-      .video-title {
-        font-size: 14px;
-      }
-
-      .video-info {
-        font-size: 11px;
+        gap: 17px 11px;
       }
 
       .random-grid {
@@ -619,58 +537,40 @@
         gap: 10px;
       }
 
-      .random-grid .video-title {
-        font-size: 12px;
-      }
-
-      .categories {
-        padding-left: 14px;
-        padding-right: 14px;
-      }
-
-      .category {
-        padding: 9px 16px;
+      .video-title {
         font-size: 13px;
       }
-    }
 
-    /* =========================
-       SMALL PHONE
-    ========================= */
+      .section-title {
+        font-size: 20px;
+      }
+    }
 
     @media (max-width: 390px) {
 
       .logo {
-        font-size: 24px;
+        font-size: 25px;
       }
 
       .header {
-        grid-template-columns: 45px 1fr 80px;
-      }
-
-      .top-banner {
-        gap: 8px;
+        grid-template-columns: 48px 1fr 48px;
       }
 
       .banner-text {
         font-size: 11px;
       }
 
-      .banner-button {
-        padding: 8px 10px;
+      .banner-btn {
         font-size: 11px;
-      }
-
-      .video-grid {
-        gap: 15px 9px;
-      }
-
-      .video-title {
-        font-size: 13px;
+        padding: 8px 10px;
       }
 
       .random-grid {
         grid-template-columns: repeat(2, 1fr);
+      }
+
+      .video-title {
+        font-size: 12px;
       }
     }
   </style>
@@ -678,49 +578,43 @@
 
 <body>
 
-  <div class="app">
+  <div class="app" id="home">
 
-    <!-- ================= HEADER ================= -->
-
+    <!-- HEADER -->
     <header class="header">
 
       <button
         class="menu-btn"
         id="menuBtn"
-        aria-label="Open menu">
+        aria-label="Menu">
         ☰
       </button>
 
-      <a href="#" class="logo">
+      <a href="index.html" class="logo">
         Desi<span>Vexa</span>
       </a>
 
-      <div class="header-right">
-
-        <button
-          class="icon-btn"
-          id="searchBtn"
-          aria-label="Search">
-          🔍
-        </button>
-
-        <button
-          class="icon-btn"
-          onclick="showProfile()"
-          aria-label="Profile">
-          👤
-        </button>
-
-      </div>
+      <button
+        class="search-btn"
+        id="searchBtn"
+        aria-label="Search">
+        🔍
+      </button>
 
     </header>
 
 
-    <!-- ================= SIDE MENU ================= -->
+    <!-- SIDE MENU OVERLAY -->
+    <div
+      class="overlay"
+      id="overlay">
+    </div>
 
-    <div class="menu-overlay" id="menuOverlay"></div>
 
-    <aside class="side-menu" id="sideMenu">
+    <!-- SIDE MENU -->
+    <aside
+      class="side-menu"
+      id="sideMenu">
 
       <div class="menu-header">
 
@@ -728,7 +622,9 @@
           Desi<span>Vexa</span>
         </div>
 
-        <button class="close-menu" id="closeMenu">
+        <button
+          class="close-menu"
+          id="closeMenu">
           ×
         </button>
 
@@ -738,44 +634,38 @@
 
         <button
           class="menu-item"
-          onclick="scrollToSection('home')">
+          onclick="goHome()">
           🏠 Home
         </button>
 
         <button
           class="menu-item"
-          onclick="scrollToSection('trending')">
+          onclick="scrollToId('trending')">
           🔥 Trending
         </button>
 
         <button
           class="menu-item"
-          onclick="scrollToSection('newVideos')">
-          ⭐ New Videos
+          onclick="scrollToId('latest')">
+          ⭐ Latest
         </button>
 
         <button
           class="menu-item"
-          onclick="scrollToSection('recommended')">
+          onclick="scrollToId('recommended')">
           👤 Recommended
         </button>
 
         <button
           class="menu-item"
-          onclick="scrollToSection('random')">
-          🎲 Random Videos
+          onclick="scrollToId('random')">
+          🎲 Random
         </button>
 
         <button
           class="menu-item"
-          onclick="showCategories()">
-          📂 Categories
-        </button>
-
-        <button
-          class="menu-item"
-          onclick="showProfile()">
-          👤 Profile
+          onclick="showLogin()">
+          🔐 Login
         </button>
 
       </div>
@@ -783,88 +673,102 @@
     </aside>
 
 
-    <!-- ================= SEARCH ================= -->
-
-    <div class="search-box" id="searchBox">
+    <!-- SEARCH -->
+    <div
+      class="search-area"
+      id="searchArea">
 
       <input
-        type="search"
-        id="searchInput"
         class="search-input"
+        id="searchInput"
+        type="search"
         placeholder="Search videos..."
         autocomplete="off">
 
     </div>
 
 
-    <!-- ================= TOP BANNER ================= -->
-
+    <!-- TOP BANNER -->
     <section class="top-banner">
 
       <div class="banner-text">
-        ⭐ Discover Trending Videos
+        ⭐ Discover Latest Videos
       </div>
 
       <button
-        class="banner-button"
-        onclick="scrollToSection('trending')">
+        class="banner-btn"
+        onclick="scrollToId('latest')">
         Explore
       </button>
 
     </section>
 
 
-    <!-- ================= CATEGORIES ================= -->
+    <!-- CATEGORIES -->
+    <nav
+      class="categories"
+      id="categories">
 
-    <nav class="categories" id="categories">
-
-      <button class="category active" data-category="All">
+      <button
+        class="category-btn active"
+        data-category="All">
         All
       </button>
 
-      <button class="category" data-category="Travel">
+      <button
+        class="category-btn"
+        data-category="Travel">
         Travel
       </button>
 
-      <button class="category" data-category="Food">
+      <button
+        class="category-btn"
+        data-category="Food">
         Food
       </button>
 
-      <button class="category" data-category="Fitness">
+      <button
+        class="category-btn"
+        data-category="Fitness">
         Fitness
       </button>
 
-      <button class="category" data-category="Tech">
+      <button
+        class="category-btn"
+        data-category="Tech">
         Tech
       </button>
 
-      <button class="category" data-category="Lifestyle">
+      <button
+        class="category-btn"
+        data-category="Lifestyle">
         Lifestyle
       </button>
 
-      <button class="category" data-category="More">
-        More⌄
+      <button
+        class="category-btn"
+        data-category="Other">
+        Other
       </button>
 
     </nav>
 
 
-    <!-- ================= TRENDING ================= -->
-
+    <!-- TRENDING -->
     <section
       class="section"
       id="trending">
 
-      <div class="section-header">
+      <div class="section-head">
 
         <h2 class="section-title">
-          <span class="emoji">🔥</span>
+          <span>🔥</span>
           Trending Videos
         </h2>
 
         <button
           class="view-all"
-          onclick="showAll('Trending')">
+          onclick="showAll('trending')">
           View All →
         </button>
 
@@ -873,27 +777,31 @@
       <div
         class="video-grid"
         id="trendingGrid">
+
+        <div class="loading">
+          Loading videos...
+        </div>
+
       </div>
 
     </section>
 
 
-    <!-- ================= NEW ================= -->
-
+    <!-- LATEST -->
     <section
       class="section"
-      id="newVideos">
+      id="latest">
 
-      <div class="section-header">
+      <div class="section-head">
 
         <h2 class="section-title">
-          <span class="emoji">⭐</span>
+          <span>⭐</span>
           New Videos
         </h2>
 
         <button
           class="view-all"
-          onclick="showAll('New')">
+          onclick="showAll('latest')">
           View All →
         </button>
 
@@ -901,28 +809,32 @@
 
       <div
         class="video-grid"
-        id="newGrid">
+        id="latestGrid">
+
+        <div class="loading">
+          Loading videos...
+        </div>
+
       </div>
 
     </section>
 
 
-    <!-- ================= RECOMMENDED ================= -->
-
+    <!-- RECOMMENDED -->
     <section
       class="section"
       id="recommended">
 
-      <div class="section-header">
+      <div class="section-head">
 
         <h2 class="section-title">
-          <span class="emoji">👤</span>
+          <span>👤</span>
           Recommended Videos
         </h2>
 
         <button
           class="view-all"
-          onclick="showAll('Recommended')">
+          onclick="showAll('recommended')">
           View All →
         </button>
 
@@ -931,27 +843,31 @@
       <div
         class="video-grid"
         id="recommendedGrid">
+
+        <div class="loading">
+          Loading videos...
+        </div>
+
       </div>
 
     </section>
 
 
-    <!-- ================= RANDOM ================= -->
-
+    <!-- RANDOM -->
     <section
       class="section"
       id="random">
 
-      <div class="section-header">
+      <div class="section-head">
 
         <h2 class="section-title">
-          <span class="emoji">🎲</span>
+          <span>🎲</span>
           Random Videos
         </h2>
 
         <button
           class="view-all"
-          onclick="showAll('Random')">
+          onclick="showAll('random')">
           View All →
         </button>
 
@@ -960,6 +876,11 @@
       <div
         class="random-grid"
         id="randomGrid">
+
+        <div class="loading">
+          Loading videos...
+        </div>
+
       </div>
 
       <div
@@ -970,20 +891,12 @@
     </section>
 
 
-    <div
-      class="empty"
-      id="emptyMessage">
-      No videos found.
-    </div>
-
-
-    <!-- ================= BOTTOM NAV ================= -->
-
+    <!-- BOTTOM NAV -->
     <nav class="bottom-nav">
 
       <button
-        class="nav-item active"
-        onclick="scrollToSection('home')">
+        class="nav-btn active"
+        onclick="goHome()">
 
         <span class="nav-icon">🏠</span>
         <span>Home</span>
@@ -991,8 +904,8 @@
       </button>
 
       <button
-        class="nav-item"
-        onclick="scrollToSection('newVideos')">
+        class="nav-btn"
+        onclick="scrollToId('latest')">
 
         <span class="nav-icon">🕐</span>
         <span>Latest</span>
@@ -1000,8 +913,8 @@
       </button>
 
       <button
-        class="nav-item"
-        onclick="scrollToSection('trending')">
+        class="nav-btn"
+        onclick="scrollToId('trending')">
 
         <span class="nav-icon">🔥</span>
         <span>Trending</span>
@@ -1009,8 +922,8 @@
       </button>
 
       <button
-        class="nav-item"
-        onclick="scrollToSection('recommended')">
+        class="nav-btn"
+        onclick="scrollToId('recommended')">
 
         <span class="nav-icon">▦</span>
         <span>Recommended</span>
@@ -1018,8 +931,8 @@
       </button>
 
       <button
-        class="nav-item"
-        onclick="showProfile()">
+        class="nav-btn"
+        onclick="showLogin()">
 
         <span class="nav-icon">👤</span>
         <span>Profile</span>
@@ -1031,242 +944,67 @@
   </div>
 
 
-  <script>
+  <!-- SUPABASE -->
+  <script type="module">
 
-    /* ======================================
-       DEMO VIDEO DATA
-    ====================================== */
+    import { createClient }
+      from "https://esm.sh/@supabase/supabase-js@2";
 
-    const trendingVideos = [
-
-      {
-        title: "Amazing Mountain Trip",
-        category: "Travel",
-        views: "245K",
-        time: "2 days ago",
-        duration: "12:48",
-        image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80"
-      },
-
-      {
-        title: "Street Food Tour",
-        category: "Food",
-        views: "187K",
-        time: "1 day ago",
-        duration: "10:32",
-        image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80"
-      },
-
-      {
-        title: "Best Home Workout",
-        category: "Fitness",
-        views: "156K",
-        time: "3 days ago",
-        duration: "15:20",
-        image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=900&q=80"
-      },
-
-      {
-        title: "New Smartphone Review",
-        category: "Tech",
-        views: "98K",
-        time: "4 days ago",
-        duration: "10:12",
-        image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=900&q=80"
-      }
-
-    ];
+    import {
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    } from "./config.js";
 
 
-    const newVideos = [
-
-      {
-        title: "Beautiful Village Travel",
-        category: "Travel",
-        views: "56K",
-        time: "5 hours ago",
-        duration: "09:15",
-        image: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=900&q=80"
-      },
-
-      {
-        title: "Easy Cooking Recipe",
-        category: "Food",
-        views: "92K",
-        time: "8 hours ago",
-        duration: "14:27",
-        image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=900&q=80"
-      },
-
-      {
-        title: "Morning Fitness Routine",
-        category: "Fitness",
-        views: "32K",
-        time: "10 hours ago",
-        duration: "07:45",
-        image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80"
-      },
-
-      {
-        title: "Latest Laptop Review",
-        category: "Tech",
-        views: "89K",
-        time: "12 hours ago",
-        duration: "12:08",
-        image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=900&q=80"
-      }
-
-    ];
+    const supabase =
+      createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
 
 
-    const recommendedVideos = [
+    let allVideos = [];
 
-      {
-        title: "Top 10 Travel Places",
-        category: "Travel",
-        views: "134K",
-        time: "1 day ago",
-        duration: "11:52",
-        image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80"
-      },
+    let activeCategory = "All";
 
-      {
-        title: "Best Indian Recipes",
-        category: "Food",
-        views: "76K",
-        time: "2 days ago",
-        duration: "08:36",
-        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=900&q=80"
-      },
+    let randomPage = 1;
 
-      {
-        title: "Full Body Workout",
-        category: "Fitness",
-        views: "61K",
-        time: "2 days ago",
-        duration: "13:40",
-        image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80"
-      },
-
-      {
-        title: "Useful AI Tools",
-        category: "Tech",
-        views: "102K",
-        time: "3 days ago",
-        duration: "09:25",
-        image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=900&q=80"
-      }
-
-    ];
+    const randomPerPage = 6;
 
 
-    const randomVideos = [
+    /* =========================
+       ELEMENTS
+    ========================= */
 
-      {
-        title: "Beautiful Beach",
-        category: "Travel",
-        duration: "07:42",
-        image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=700&q=80"
-      },
+    const trendingGrid =
+      document.getElementById("trendingGrid");
 
-      {
-        title: "Healthy Breakfast",
-        category: "Food",
-        duration: "10:15",
-        image: "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=700&q=80"
-      },
+    const latestGrid =
+      document.getElementById("latestGrid");
 
-      {
-        title: "Outdoor Workout",
-        category: "Fitness",
-        duration: "09:28",
-        image: "https://images.unsplash.com/photo-1558611848-73f7eb4001a1?auto=format&fit=crop&w=700&q=80"
-      },
+    const recommendedGrid =
+      document.getElementById("recommendedGrid");
 
-      {
-        title: "City Travel Guide",
-        category: "Travel",
-        duration: "14:20",
-        image: "https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=700&q=80"
-      },
+    const randomGrid =
+      document.getElementById("randomGrid");
 
-      {
-        title: "New Camera Review",
-        category: "Tech",
-        duration: "08:50",
-        image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=700&q=80"
-      },
+    const pagination =
+      document.getElementById("pagination");
 
-      {
-        title: "Simple Dinner Recipe",
-        category: "Food",
-        duration: "06:32",
-        image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80"
-      }
+    const searchArea =
+      document.getElementById("searchArea");
 
-    ];
+    const searchInput =
+      document.getElementById("searchInput");
 
 
-    /* ======================================
-       CREATE VIDEO CARD
-    ====================================== */
+    /* =========================
+       ESCAPE HTML
+    ========================= */
 
-    function createCard(video) {
+    function escapeHTML(value) {
 
-      return `
-        <article
-          class="video-card"
-          data-title="${video.title.toLowerCase()}"
-          data-category="${video.category.toLowerCase()}"
-          onclick="openVideo('${escapeText(video.title)}')">
-
-          <div class="thumbnail">
-
-            <img
-              src="${video.image}"
-              alt="${escapeText(video.title)}"
-              loading="lazy">
-
-            <div class="play-icon">
-              ▶
-            </div>
-
-            <div class="duration">
-              ${video.duration}
-            </div>
-
-          </div>
-
-          <div class="video-title">
-            ${escapeText(video.title)}
-          </div>
-
-          <span class="tag">
-            ${escapeText(video.category)}
-          </span>
-
-          ${
-            video.views
-            ?
-            `
-              <div class="video-info">
-                <span>◉ ${video.views} views</span>
-                <span class="dot">•</span>
-                <span>${video.time}</span>
-              </div>
-            `
-            :
-            ""
-          }
-
-        </article>
-      `;
-    }
-
-
-    function escapeText(text) {
-
-      return String(text)
+      return String(value ?? "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
@@ -1276,60 +1014,553 @@
     }
 
 
-    /* ======================================
-       RENDER
-    ====================================== */
+    /* =========================
+       FORMAT VIEWS
+    ========================= */
 
-    function renderVideos() {
+    function formatViews(value) {
 
-      document.getElementById("trendingGrid").innerHTML =
-        trendingVideos.map(createCard).join("");
+      const views =
+        Number(value || 0);
 
-      document.getElementById("newGrid").innerHTML =
-        newVideos.map(createCard).join("");
+      if (views >= 1000000) {
+        return (
+          (views / 1000000)
+            .toFixed(1)
+            .replace(".0", "") +
+          "M"
+        );
+      }
 
-      document.getElementById("recommendedGrid").innerHTML =
-        recommendedVideos.map(createCard).join("");
+      if (views >= 1000) {
+        return (
+          (views / 1000)
+            .toFixed(1)
+            .replace(".0", "") +
+          "K"
+        );
+      }
+
+      return String(views);
+
+    }
+
+
+    /* =========================
+       TIME
+    ========================= */
+
+    function timeAgo(dateString) {
+
+      if (!dateString) {
+        return "";
+      }
+
+      const date =
+        new Date(dateString);
+
+      const now =
+        new Date();
+
+      const seconds =
+        Math.floor(
+          (now - date) / 1000
+        );
+
+      if (seconds < 60) {
+        return "just now";
+      }
+
+      const minutes =
+        Math.floor(seconds / 60);
+
+      if (minutes < 60) {
+        return minutes + "m ago";
+      }
+
+      const hours =
+        Math.floor(minutes / 60);
+
+      if (hours < 24) {
+        return hours + "h ago";
+      }
+
+      const days =
+        Math.floor(hours / 24);
+
+      if (days < 30) {
+        return days + "d ago";
+      }
+
+      const months =
+        Math.floor(days / 30);
+
+      if (months < 12) {
+        return months + "mo ago";
+      }
+
+      const years =
+        Math.floor(months / 12);
+
+      return years + "y ago";
+
+    }
+
+
+    /* =========================
+       VIDEO CARD
+    ========================= */
+
+    function createCard(video, compact = false) {
+
+      const id =
+        encodeURIComponent(
+          String(video.id)
+        );
+
+      const title =
+        escapeHTML(
+          video.title || "Untitled Video"
+        );
+
+      const category =
+        escapeHTML(
+          video.category || "Other"
+        );
+
+      const description =
+        escapeHTML(
+          video.description || ""
+        );
+
+      const thumbnail =
+        video.thumbnail_url ||
+        createFallbackThumbnail(
+          video.title || "DesiVexa"
+        );
+
+      const views =
+        formatViews(video.views);
+
+      const ago =
+        timeAgo(video.created_at);
+
+      return `
+        <article
+          class="video-card"
+          data-title="${title.toLowerCase()}"
+          data-category="${category.toLowerCase()}"
+          data-description="${description.toLowerCase()}"
+          onclick="openVideo('${id}')">
+
+          <div class="thumb">
+
+            <img
+              src="${escapeHTML(thumbnail)}"
+              alt="${title}"
+              loading="lazy"
+              onerror="this.src='${createFallbackThumbnail("DesiVexa")}'">
+
+            <div class="play">
+              ▶
+            </div>
+
+            ${
+              compact
+              ? ""
+              : `
+                <div class="duration">
+                  HD
+                </div>
+              `
+            }
+
+          </div>
+
+          <div class="video-title">
+            ${title}
+          </div>
+
+          <span class="tag">
+            ${category}
+          </span>
+
+          ${
+            compact
+            ? ""
+            : `
+              <div class="video-meta">
+                <span>◉ ${views} views</span>
+                <span>•</span>
+                <span>${ago}</span>
+              </div>
+            `
+          }
+
+        </article>
+      `;
+
+    }
+
+
+    /* =========================
+       FALLBACK THUMBNAIL
+    ========================= */
+
+    function createFallbackThumbnail(text) {
+
+      const safe =
+        String(text || "DesiVexa")
+          .slice(0, 28);
+
+      const svg = `
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="800"
+          height="450">
+
+          <rect
+            width="100%"
+            height="100%"
+            fill="#101d28"/>
+
+          <text
+            x="50%"
+            y="50%"
+            dominant-baseline="middle"
+            text-anchor="middle"
+            fill="#ff1744"
+            font-size="42"
+            font-family="Arial"
+            font-weight="bold">
+            ${safe.replace(/[<>&'"]/g, "")}
+          </text>
+
+        </svg>
+      `;
+
+      return "data:image/svg+xml;charset=UTF-8," +
+        encodeURIComponent(svg);
+
+    }
+
+
+    /* =========================
+       LOAD VIDEOS
+    ========================= */
+
+    async function loadVideos() {
+
+      trendingGrid.innerHTML =
+        `<div class="loading">Loading videos...</div>`;
+
+      latestGrid.innerHTML =
+        `<div class="loading">Loading videos...</div>`;
+
+      recommendedGrid.innerHTML =
+        `<div class="loading">Loading videos...</div>`;
+
+      randomGrid.innerHTML =
+        `<div class="loading">Loading videos...</div>`;
+
+
+      const {
+        data,
+        error
+      } = await supabase
+
+        .from("videos")
+
+        .select(
+          "id,title,category,description,thumbnail_url,video_url,views,created_at"
+        )
+
+        .eq(
+          "published",
+          true
+        )
+
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        )
+
+        .limit(200);
+
+
+      if (error) {
+
+        console.error(
+          "Supabase error:",
+          error
+        );
+
+        const message =
+          `<div class="empty">
+             Videos load nahi ho paaye.
+           </div>`;
+
+        trendingGrid.innerHTML = message;
+        latestGrid.innerHTML = message;
+        recommendedGrid.innerHTML = message;
+        randomGrid.innerHTML = message;
+
+        return;
+      }
+
+
+      allVideos =
+        Array.isArray(data)
+          ? data
+          : [];
+
+
+      renderAll();
+
+    }
+
+
+    /* =========================
+       FILTER
+    ========================= */
+
+    function filteredVideos() {
+
+      const query =
+        searchInput.value
+          .trim()
+          .toLowerCase();
+
+
+      return allVideos.filter(video => {
+
+        const category =
+          video.category ||
+          "Other";
+
+        if (
+          activeCategory !== "All" &&
+          category !== activeCategory
+        ) {
+          return false;
+        }
+
+
+        if (!query) {
+          return true;
+        }
+
+
+        const searchable = `
+
+          ${video.title || ""}
+
+          ${video.category || ""}
+
+          ${video.description || ""}
+
+        `.toLowerCase();
+
+
+        return searchable.includes(query);
+
+      });
+
+    }
+
+
+    /* =========================
+       RENDER ALL
+    ========================= */
+
+    function renderAll() {
+
+      const videos =
+        filteredVideos();
+
+
+      /* TRENDING */
+
+      const trending =
+        [...videos]
+
+          .sort(
+            (a, b) =>
+              Number(b.views || 0) -
+              Number(a.views || 0)
+          )
+
+          .slice(0, 8);
+
+
+      trendingGrid.innerHTML =
+        trending.length
+
+          ? trending
+              .map(video => createCard(video))
+              .join("")
+
+          : `<div class="empty">
+               No trending videos found.
+             </div>`;
+
+
+      /* LATEST */
+
+      const latest =
+        [...videos]
+
+          .sort(
+            (a, b) =>
+              new Date(b.created_at) -
+              new Date(a.created_at)
+          )
+
+          .slice(0, 8);
+
+
+      latestGrid.innerHTML =
+        latest.length
+
+          ? latest
+              .map(video => createCard(video))
+              .join("")
+
+          : `<div class="empty">
+               No new videos found.
+             </div>`;
+
+
+      /* RECOMMENDED */
+
+      const recommended =
+        [...videos]
+
+          .sort(
+            (a, b) =>
+              Number(b.views || 0) -
+              Number(a.views || 0)
+          )
+
+          .slice(0, 8);
+
+
+      recommendedGrid.innerHTML =
+        recommended.length
+
+          ? recommended
+              .map(video => createCard(video))
+              .join("")
+
+          : `<div class="empty">
+               No recommended videos found.
+             </div>`;
+
+
+      /* RANDOM */
+
+      const random =
+        [...videos];
+
+      random.sort(
+        () => Math.random() - 0.5
+      );
+
+      randomVideos =
+        random;
+
+      randomPage = 1;
 
       renderRandom();
 
     }
 
 
-    /* ======================================
-       RANDOM PAGINATION
-    ====================================== */
+    /* =========================
+       RANDOM VIDEOS
+    ========================= */
 
-    let randomPage = 1;
-
-    const randomPerPage = 3;
+    let randomVideos = [];
 
 
     function renderRandom() {
 
+      const totalPages =
+        Math.max(
+          1,
+          Math.ceil(
+            randomVideos.length /
+            randomPerPage
+          )
+        );
+
+
+      if (
+        randomPage >
+        totalPages
+      ) {
+        randomPage = totalPages;
+      }
+
+
       const start =
-        (randomPage - 1) * randomPerPage;
+        (randomPage - 1) *
+        randomPerPage;
+
 
       const end =
-        start + randomPerPage;
+        start +
+        randomPerPage;
 
-      const videos =
-        randomVideos.slice(start, end);
 
-      document.getElementById("randomGrid").innerHTML =
-        videos.map(createCard).join("");
+      const current =
+        randomVideos.slice(
+          start,
+          end
+        );
 
-      renderPagination();
+
+      randomGrid.innerHTML =
+        current.length
+
+          ? current
+              .map(video =>
+                createCard(video, true)
+              )
+              .join("")
+
+          : `<div class="empty">
+               No random videos found.
+             </div>`;
+
+
+      renderPagination(totalPages);
 
     }
 
 
-    function renderPagination() {
+    /* =========================
+       PAGINATION
+    ========================= */
 
-      const totalPages =
-        Math.ceil(randomVideos.length / randomPerPage);
+    function renderPagination(totalPages) {
+
+      if (
+        randomVideos.length <=
+        randomPerPage
+      ) {
+
+        pagination.innerHTML = "";
+
+        return;
+
+      }
+
 
       let html = "";
+
 
       if (randomPage > 1) {
 
@@ -1343,6 +1574,7 @@
 
       }
 
+
       for (
         let i = 1;
         i <= totalPages;
@@ -1351,7 +1583,11 @@
 
         html += `
           <button
-            class="page-btn ${i === randomPage ? "active" : ""}"
+            class="page-btn ${
+              i === randomPage
+                ? "active"
+                : ""
+            }"
             onclick="changeRandomPage(${i})">
             ${i}
           </button>
@@ -1359,7 +1595,11 @@
 
       }
 
-      if (randomPage < totalPages) {
+
+      if (
+        randomPage <
+        totalPages
+      ) {
 
         html += `
           <button
@@ -1371,243 +1611,289 @@
 
       }
 
-      document.getElementById("pagination").innerHTML =
+
+      pagination.innerHTML =
         html;
 
     }
 
 
-    function changeRandomPage(page) {
+    window.changeRandomPage =
+      function(page) {
 
-      randomPage = page;
+        randomPage = page;
 
-      renderRandom();
+        renderRandom();
 
-      document.getElementById("random")
-        .scrollIntoView({
-          behavior: "smooth"
-        });
+        document
+          .getElementById("random")
+          .scrollIntoView({
+            behavior: "smooth"
+          });
 
-    }
+      };
 
 
-    /* ======================================
+    /* =========================
+       OPEN VIDEO
+    ========================= */
+
+    window.openVideo =
+      function(encodedId) {
+
+        const id =
+          decodeURIComponent(
+            encodedId
+          );
+
+        window.location.href =
+          "video.html?id=" +
+          encodeURIComponent(id);
+
+      };
+
+
+    /* =========================
        SEARCH
-    ====================================== */
-
-    const searchBtn =
-      document.getElementById("searchBtn");
-
-    const searchBox =
-      document.getElementById("searchBox");
-
-    const searchInput =
-      document.getElementById("searchInput");
-
-
-    searchBtn.addEventListener("click", () => {
-
-      searchBox.classList.toggle("active");
-
-      if (searchBox.classList.contains("active")) {
-        searchInput.focus();
-      }
-
-    });
-
-
-    searchInput.addEventListener("input", () => {
-
-      const query =
-        searchInput.value.toLowerCase().trim();
-
-      document
-        .querySelectorAll(".video-card")
-        .forEach(card => {
-
-          const title =
-            card.dataset.title || "";
-
-          const category =
-            card.dataset.category || "";
-
-          const match =
-            title.includes(query) ||
-            category.includes(query);
-
-          card.style.display =
-            match ? "" : "none";
-
-        });
-
-    });
-
-
-    /* ======================================
-       CATEGORY FILTER
-    ====================================== */
+    ========================= */
 
     document
-      .querySelectorAll(".category")
-      .forEach(button => {
+      .getElementById("searchBtn")
+      .addEventListener(
+        "click",
+        () => {
 
-        button.addEventListener("click", () => {
+          searchArea.classList.toggle(
+            "show"
+          );
 
-          document
-            .querySelectorAll(".category")
-            .forEach(btn =>
-              btn.classList.remove("active")
-            );
+          if (
+            searchArea.classList.contains(
+              "show"
+            )
+          ) {
 
-          button.classList.add("active");
+            searchInput.focus();
 
-          const selected =
-            button.dataset.category;
-
-          if (selected === "All" || selected === "More") {
-
-            document
-              .querySelectorAll(".video-card")
-              .forEach(card => {
-                card.style.display = "";
-              });
-
-            return;
           }
 
-          document
-            .querySelectorAll(".video-card")
-            .forEach(card => {
+        }
+      );
 
-              const category =
-                card.dataset.category || "";
 
-              card.style.display =
-                category === selected.toLowerCase()
-                ? ""
-                : "none";
+    searchInput.addEventListener(
+      "input",
+      () => {
 
-            });
+        renderAll();
 
-        });
+      }
+    );
+
+
+    /* =========================
+       CATEGORIES
+    ========================= */
+
+    document
+      .querySelectorAll(".category-btn")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            document
+              .querySelectorAll(
+                ".category-btn"
+              )
+              .forEach(btn =>
+                btn.classList.remove(
+                  "active"
+                )
+              );
+
+
+            button.classList.add(
+              "active"
+            );
+
+
+            activeCategory =
+              button.dataset.category;
+
+
+            renderAll();
+
+          }
+        );
 
       });
 
 
-    /* ======================================
+    /* =========================
        MENU
-    ====================================== */
+    ========================= */
 
     const menuBtn =
-      document.getElementById("menuBtn");
+      document.getElementById(
+        "menuBtn"
+      );
 
     const closeMenu =
-      document.getElementById("closeMenu");
+      document.getElementById(
+        "closeMenu"
+      );
 
     const sideMenu =
-      document.getElementById("sideMenu");
+      document.getElementById(
+        "sideMenu"
+      );
 
-    const menuOverlay =
-      document.getElementById("menuOverlay");
+    const overlay =
+      document.getElementById(
+        "overlay"
+      );
 
 
     function openMenu() {
 
-      sideMenu.classList.add("active");
+      sideMenu.classList.add(
+        "show"
+      );
 
-      menuOverlay.classList.add("active");
-
-    }
-
-
-    function hideMenu() {
-
-      sideMenu.classList.remove("active");
-
-      menuOverlay.classList.remove("active");
+      overlay.classList.add(
+        "show"
+      );
 
     }
 
 
-    menuBtn.addEventListener("click", openMenu);
+    function closeSideMenu() {
 
-    closeMenu.addEventListener("click", hideMenu);
+      sideMenu.classList.remove(
+        "show"
+      );
 
-    menuOverlay.addEventListener("click", hideMenu);
+      overlay.classList.remove(
+        "show"
+      );
+
+    }
 
 
-    /* ======================================
+    menuBtn.addEventListener(
+      "click",
+      openMenu
+    );
+
+
+    closeMenu.addEventListener(
+      "click",
+      closeSideMenu
+    );
+
+
+    overlay.addEventListener(
+      "click",
+      closeSideMenu
+    );
+
+
+    /* =========================
        SCROLL
-    ====================================== */
+    ========================= */
 
-    function scrollToSection(id) {
+    window.scrollToId =
+      function(id) {
 
-      hideMenu();
+        closeSideMenu();
 
-      const section =
-        document.getElementById(id);
+        const element =
+          document.getElementById(
+            id
+          );
 
-      if (section) {
+        if (element) {
 
-        section.scrollIntoView({
+          element.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+
+        }
+
+      };
+
+
+    window.goHome =
+      function() {
+
+        closeSideMenu();
+
+        window.scrollTo({
+          top: 0,
           behavior: "smooth"
         });
 
-      }
-
-    }
+      };
 
 
-    /* ======================================
-       OTHER BUTTONS
-    ====================================== */
+    /* =========================
+       LOGIN
+    ========================= */
 
-    function showProfile() {
+    window.showLogin =
+      function() {
 
-      alert(
-        "Profile page yahan connect ki ja sakti hai."
-      );
+        closeSideMenu();
 
-    }
+        alert(
+          "Login page ko baad mein Supabase Auth se connect kiya ja sakta hai."
+        );
 
-
-    function showCategories() {
-
-      hideMenu();
-
-      document
-        .getElementById("categories")
-        .scrollIntoView({
-          behavior: "smooth"
-        });
-
-    }
+      };
 
 
-    function showAll(sectionName) {
+    /* =========================
+       VIEW ALL
+    ========================= */
 
-      alert(
-        sectionName +
-        " videos ka full page yahan connect kiya ja sakta hai."
-      );
+    window.showAll =
+      function(section) {
 
-    }
+        const urls = {
+
+          trending:
+            "trending.html",
+
+          latest:
+            "new.html",
+
+          recommended:
+            "recommended.html",
+
+          random:
+            "new.html"
+
+        };
 
 
-    function openVideo(title) {
+        if (urls[section]) {
 
-      alert(
-        "Video open: " + title
-      );
+          window.location.href =
+            urls[section];
 
-    }
+        }
+
+      };
 
 
-    /* ======================================
-       INITIAL LOAD
-    ====================================== */
+    /* =========================
+       START
+    ========================= */
 
-    renderVideos();
+    loadVideos();
 
   </script>
 
