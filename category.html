@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Categories - DesiVexa</title>
 
   <style>
@@ -26,11 +27,11 @@
     header {
       height: 60px;
       background: #111;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid #242424;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 15px;
+      padding: 0 14px;
       position: sticky;
       top: 0;
       z-index: 100;
@@ -38,12 +39,12 @@
 
     .logo {
       color: #ff1744;
-      font-size: 23px;
+      font-size: 22px;
       font-weight: 800;
     }
 
-    .menu {
-      font-size: 25px;
+    .search-icon {
+      font-size: 22px;
       cursor: pointer;
     }
 
@@ -53,39 +54,106 @@
       padding: 18px 12px 40px;
     }
 
-    h1 {
-      font-size: 24px;
-      margin-bottom: 18px;
+    /* Categories button */
+
+    .categories-button {
+      width: 100%;
+      border: 1px solid #333;
+      background: #171717;
+      color: #fff;
+      border-radius: 8px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
-    .categories {
-      display: flex;
-      gap: 10px;
+    .categories-button span:last-child {
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    /* Search area */
+
+    .search-area {
+      display: none;
+      margin-top: 14px;
+    }
+
+    .search-area.show {
+      display: block;
+    }
+
+    .search-box {
+      width: 100%;
+      height: 48px;
+      border: 1px solid #333;
+      background: #151515;
+      color: #fff;
+      border-radius: 8px;
+      padding: 0 15px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .search-box:focus {
+      border-color: #e50935;
+    }
+
+    .search-help {
+      color: #777;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    /* Category suggestions */
+
+    .category-list {
+      display: none;
+      gap: 8px;
       overflow-x: auto;
-      padding-bottom: 12px;
-      margin-bottom: 20px;
+      margin-top: 12px;
+      padding-bottom: 5px;
       scrollbar-width: none;
     }
 
-    .categories::-webkit-scrollbar {
+    .category-list.show {
+      display: flex;
+    }
+
+    .category-list::-webkit-scrollbar {
       display: none;
     }
 
-    .category {
+    .category-chip {
       flex: 0 0 auto;
-      background: #171717;
-      border: 1px solid #292929;
+      padding: 9px 14px;
+      background: #181818;
+      border: 1px solid #303030;
       border-radius: 20px;
-      padding: 9px 16px;
-      font-size: 14px;
+      font-size: 13px;
+      cursor: pointer;
       color: #ddd;
     }
 
-    .category.active {
+    .category-chip:hover,
+    .category-chip.active {
       background: #e50935;
       border-color: #e50935;
       color: #fff;
     }
+
+    .result-title {
+      margin: 24px 0 14px;
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    /* Video grid */
 
     .video-grid {
       display: grid;
@@ -95,9 +163,9 @@
 
     .video-card {
       background: #151515;
+      border: 1px solid #222;
       border-radius: 8px;
       overflow: hidden;
-      border: 1px solid #222;
     }
 
     .thumb {
@@ -119,7 +187,7 @@
       position: absolute;
       right: 6px;
       bottom: 6px;
-      background: rgba(0,0,0,.8);
+      background: rgba(0,0,0,.85);
       padding: 3px 6px;
       border-radius: 4px;
       font-size: 11px;
@@ -131,8 +199,9 @@
 
     .video-title {
       font-size: 14px;
-      line-height: 1.35;
       font-weight: 600;
+      line-height: 1.35;
+
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -140,30 +209,40 @@
     }
 
     .meta {
+      margin-top: 6px;
       color: #888;
       font-size: 11px;
-      margin-top: 6px;
     }
+
+    /* No results */
+
+    .empty {
+      display: none;
+      text-align: center;
+      padding: 55px 10px;
+      color: #777;
+      font-size: 14px;
+    }
+
+    /* Pagination */
 
     .pagination {
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-wrap: wrap;
       gap: 7px;
       margin-top: 28px;
-      flex-wrap: wrap;
     }
 
     .page-btn {
       min-width: 38px;
       height: 38px;
-      padding: 0 10px;
-      border-radius: 6px;
       border: 1px solid #333;
       background: #171717;
       color: #fff;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 14px;
     }
 
     .page-btn.active {
@@ -173,13 +252,6 @@
 
     .page-btn:hover {
       background: #e50935;
-    }
-
-    .empty {
-      text-align: center;
-      color: #777;
-      padding: 50px 10px;
-      display: none;
     }
 
     @media (min-width: 700px) {
@@ -194,19 +266,67 @@
 
 <header>
   <a href="index.html" class="logo">DesiVexa</a>
-  <div class="menu">☰</div>
+
+  <div class="search-icon" id="topSearch">
+    🔍
+  </div>
 </header>
 
 <div class="container">
 
-  <h1>Categories</h1>
+  <!-- Categories button -->
 
-  <div class="categories">
-    <a href="category.html?cat=all" class="category active">All</a>
-    <a href="category.html?cat=popular" class="category">Popular</a>
-    <a href="category.html?cat=new" class="category">New</a>
-    <a href="category.html?cat=trending" class="category">Trending</a>
-    <a href="category.html?cat=featured" class="category">Featured</a>
+  <button class="categories-button" id="categoriesButton">
+    <span>Categories</span>
+    <span id="arrow">▼</span>
+  </button>
+
+  <!-- Search -->
+
+  <div class="search-area" id="searchArea">
+
+    <input
+      type="search"
+      id="searchInput"
+      class="search-box"
+      placeholder="Search videos or category..."
+      autocomplete="off"
+    >
+
+    <div class="search-help">
+      Video name ya category type karo.
+    </div>
+
+    <!-- Category suggestions -->
+
+    <div class="category-list" id="categoryList">
+
+      <button class="category-chip" data-category="all">
+        All
+      </button>
+
+      <button class="category-chip" data-category="popular">
+        Popular
+      </button>
+
+      <button class="category-chip" data-category="new">
+        New
+      </button>
+
+      <button class="category-chip" data-category="trending">
+        Trending
+      </button>
+
+      <button class="category-chip" data-category="featured">
+        Featured
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="result-title" id="resultTitle">
+    All Videos
   </div>
 
   <div id="videoGrid" class="video-grid"></div>
@@ -215,202 +335,555 @@
     No videos found.
   </div>
 
-  <div class="pagination">
+  <div class="pagination" id="pagination">
+
     <button class="page-btn active" data-page="1">1</button>
     <button class="page-btn" data-page="2">2</button>
     <button class="page-btn" data-page="3">3</button>
     <button class="page-btn" data-page="4">4</button>
     <button class="page-btn" data-page="5">5</button>
     <button class="page-btn" id="nextBtn">Next</button>
+
   </div>
 
 </div>
 
 <script>
+
   /*
-    Demo data.
-    Baad me isi jagah Supabase/API se real videos load kar sakte hain.
+    ==========================================
+    VIDEO DATA
+    ==========================================
+
+    title     = video ka naam
+    category  = category name
+    thumbnail = thumbnail image
+    id        = video.html me bheja jayega
   */
 
   const videos = [
+
     {
       id: "1",
-      title: "Featured Video 01",
+      title: "Popular Video 01",
+      category: "popular",
       thumbnail: "https://picsum.photos/600/340?random=101",
       views: "12K views",
       duration: "08:21"
     },
+
     {
       id: "2",
-      title: "Featured Video 02",
+      title: "Trending Video 02",
+      category: "trending",
       thumbnail: "https://picsum.photos/600/340?random=102",
       views: "9.8K views",
       duration: "12:10"
     },
+
     {
       id: "3",
-      title: "Featured Video 03",
+      title: "New Video 03",
+      category: "new",
       thumbnail: "https://picsum.photos/600/340?random=103",
       views: "8.2K views",
       duration: "06:42"
     },
+
     {
       id: "4",
       title: "Featured Video 04",
+      category: "featured",
       thumbnail: "https://picsum.photos/600/340?random=104",
       views: "7.4K views",
       duration: "10:05"
     },
+
     {
       id: "5",
-      title: "Featured Video 05",
+      title: "Popular Video 05",
+      category: "popular",
       thumbnail: "https://picsum.photos/600/340?random=105",
       views: "6.7K views",
       duration: "09:33"
     },
+
     {
       id: "6",
-      title: "Featured Video 06",
+      title: "Trending Video 06",
+      category: "trending",
       thumbnail: "https://picsum.photos/600/340?random=106",
       views: "5.9K views",
       duration: "07:18"
     },
+
     {
       id: "7",
-      title: "Featured Video 07",
+      title: "New Video 07",
+      category: "new",
       thumbnail: "https://picsum.photos/600/340?random=107",
       views: "5.1K views",
       duration: "11:24"
     },
+
     {
       id: "8",
       title: "Featured Video 08",
+      category: "featured",
       thumbnail: "https://picsum.photos/600/340?random=108",
       views: "4.8K views",
       duration: "05:56"
     },
+
     {
       id: "9",
-      title: "Featured Video 09",
+      title: "Popular Video 09",
+      category: "popular",
       thumbnail: "https://picsum.photos/600/340?random=109",
       views: "4.1K views",
       duration: "08:45"
     },
+
     {
       id: "10",
-      title: "Featured Video 10",
+      title: "Trending Video 10",
+      category: "trending",
       thumbnail: "https://picsum.photos/600/340?random=110",
       views: "3.9K views",
       duration: "13:02"
     },
+
     {
       id: "11",
-      title: "Featured Video 11",
+      title: "New Video 11",
+      category: "new",
       thumbnail: "https://picsum.photos/600/340?random=111",
       views: "3.4K views",
       duration: "09:12"
     },
+
     {
       id: "12",
       title: "Featured Video 12",
+      category: "featured",
       thumbnail: "https://picsum.photos/600/340?random=112",
       views: "2.8K views",
       duration: "06:31"
     }
+
   ];
 
-  const grid = document.getElementById("videoGrid");
+
+  const searchArea = document.getElementById("searchArea");
+  const searchInput = document.getElementById("searchInput");
+  const categoriesButton = document.getElementById("categoriesButton");
+  const categoryList = document.getElementById("categoryList");
+  const arrow = document.getElementById("arrow");
+
+  const videoGrid = document.getElementById("videoGrid");
   const empty = document.getElementById("empty");
+  const resultTitle = document.getElementById("resultTitle");
+  const pagination = document.getElementById("pagination");
+  const nextBtn = document.getElementById("nextBtn");
+
 
   const perPage = 8;
+
   let currentPage = 1;
 
-  function renderVideos(page) {
+  let currentCategory = "all";
 
-    currentPage = page;
+  let filteredVideos = [...videos];
 
-    grid.innerHTML = "";
 
-    const start = (page - 1) * perPage;
-    const end = start + perPage;
+  /*
+    ==========================================
+    OPEN / CLOSE SEARCH
+    ==========================================
+  */
 
-    const pageVideos = videos.slice(start, end);
+  function openSearch() {
 
-    if (!pageVideos.length) {
-      empty.style.display = "block";
-      return;
+    searchArea.classList.add("show");
+    categoryList.classList.add("show");
+
+    arrow.textContent = "▲";
+
+    setTimeout(() => {
+      searchInput.focus();
+    }, 100);
+
+  }
+
+
+  function closeSearch() {
+
+    searchArea.classList.remove("show");
+    categoryList.classList.remove("show");
+
+    arrow.textContent = "▼";
+
+  }
+
+
+  categoriesButton.addEventListener("click", () => {
+
+    if (searchArea.classList.contains("show")) {
+      closeSearch();
+    } else {
+      openSearch();
     }
+
+  });
+
+
+  document.getElementById("topSearch").addEventListener(
+    "click",
+    openSearch
+  );
+
+
+  /*
+    ==========================================
+    SEARCH FUNCTION
+    ==========================================
+  */
+
+  function applyFilter() {
+
+    const searchText =
+      searchInput.value
+        .trim()
+        .toLowerCase();
+
+
+    filteredVideos = videos.filter(video => {
+
+      const title =
+        String(video.title || "").toLowerCase();
+
+      const category =
+        String(video.category || "").toLowerCase();
+
+
+      const matchesSearch =
+        !searchText ||
+        title.includes(searchText) ||
+        category.includes(searchText);
+
+
+      const matchesCategory =
+        currentCategory === "all" ||
+        category === currentCategory;
+
+
+      return matchesSearch && matchesCategory;
+
+    });
+
+
+    currentPage = 1;
+
+    updateResultTitle();
+
+    renderVideos();
+
+  }
+
+
+  /*
+    Search while typing
+  */
+
+  searchInput.addEventListener("input", () => {
+
+    applyFilter();
+
+  });
+
+
+  /*
+    ==========================================
+    CATEGORY BUTTONS
+    ==========================================
+  */
+
+  document
+    .querySelectorAll(".category-chip")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        currentCategory =
+          button.dataset.category;
+
+
+        document
+          .querySelectorAll(".category-chip")
+          .forEach(btn => {
+            btn.classList.remove("active");
+          });
+
+
+        button.classList.add("active");
+
+
+        /*
+          Category select karne par
+          search box me category ka naam
+          automatically aa jayega.
+        */
+
+        if (currentCategory !== "all") {
+
+          searchInput.value =
+            currentCategory;
+
+        } else {
+
+          searchInput.value = "";
+
+        }
+
+
+        applyFilter();
+
+      });
+
+    });
+
+
+  /*
+    ==========================================
+    RESULT TITLE
+    ==========================================
+  */
+
+  function updateResultTitle() {
+
+    const count = filteredVideos.length;
+
+    const text =
+      searchInput.value.trim();
+
+
+    if (text) {
+
+      resultTitle.textContent =
+        `Results for "${text}" (${count})`;
+
+    } else if (currentCategory !== "all") {
+
+      resultTitle.textContent =
+        `${currentCategory} Videos (${count})`;
+
+    } else {
+
+      resultTitle.textContent =
+        `All Videos (${count})`;
+
+    }
+
+  }
+
+
+  /*
+    ==========================================
+    RENDER VIDEOS
+    ==========================================
+  */
+
+  function renderVideos() {
+
+    videoGrid.innerHTML = "";
+
+
+    const start =
+      (currentPage - 1) * perPage;
+
+    const end =
+      start + perPage;
+
+
+    const pageVideos =
+      filteredVideos.slice(start, end);
+
+
+    if (filteredVideos.length === 0) {
+
+      empty.style.display = "block";
+
+      pagination.style.display = "none";
+
+      return;
+
+    }
+
 
     empty.style.display = "none";
 
+    pagination.style.display = "flex";
+
+
     pageVideos.forEach(video => {
 
-      const card = document.createElement("a");
+      const card =
+        document.createElement("a");
 
-      card.className = "video-card";
 
-      /*
-        Video detail page.
-        Agar tumhare video.html me query parameter ka naam
-        alag hai to baad me isi line ko change kar denge.
-      */
-      card.href = "video.html?id=" + encodeURIComponent(video.id);
+      card.className =
+        "video-card";
+
+
+      card.href =
+        "video.html?id=" +
+        encodeURIComponent(video.id);
+
 
       card.innerHTML = `
+
         <div class="thumb">
+
           <img
             src="${video.thumbnail}"
             alt="${video.title}"
             loading="lazy"
           >
-          <span class="duration">${video.duration}</span>
+
+          <span class="duration">
+            ${video.duration}
+          </span>
+
         </div>
+
 
         <div class="video-info">
-          <div class="video-title">${video.title}</div>
-          <div class="meta">${video.views}</div>
+
+          <div class="video-title">
+            ${video.title}
+          </div>
+
+          <div class="meta">
+            ${video.views} • ${video.category}
+          </div>
+
         </div>
+
       `;
 
-      grid.appendChild(card);
+
+      videoGrid.appendChild(card);
+
     });
 
-    document.querySelectorAll(".page-btn[data-page]").forEach(btn => {
-      btn.classList.toggle(
-        "active",
-        Number(btn.dataset.page) === currentPage
-      );
-    });
+
+    updatePagination();
+
 
     window.scrollTo({
       top: 0,
       behavior: "smooth"
     });
+
   }
 
-  document.querySelectorAll(".page-btn[data-page]").forEach(btn => {
 
-    btn.addEventListener("click", () => {
+  /*
+    ==========================================
+    PAGINATION
+    ==========================================
+  */
 
-      const page = Number(btn.dataset.page);
+  function updatePagination() {
 
-      renderVideos(page);
+    const maxPage =
+      Math.max(
+        1,
+        Math.ceil(
+          filteredVideos.length / perPage
+        )
+      );
+
+
+    document
+      .querySelectorAll(".page-btn[data-page]")
+      .forEach(button => {
+
+        const page =
+          Number(button.dataset.page);
+
+
+        button.style.display =
+          page <= maxPage
+            ? "block"
+            : "none";
+
+
+        button.classList.toggle(
+          "active",
+          page === currentPage
+        );
+
+      });
+
+
+    nextBtn.style.display =
+      currentPage < maxPage
+        ? "block"
+        : "none";
+
+  }
+
+
+  document
+    .querySelectorAll(".page-btn[data-page]")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          currentPage =
+            Number(button.dataset.page);
+
+          renderVideos();
+
+        }
+      );
 
     });
 
-  });
 
-  document.getElementById("nextBtn").addEventListener("click", () => {
+  nextBtn.addEventListener(
+    "click",
+    () => {
 
-    const maxPage = Math.ceil(videos.length / perPage);
+      const maxPage =
+        Math.ceil(
+          filteredVideos.length / perPage
+        );
 
-    if (currentPage < maxPage) {
-      renderVideos(currentPage + 1);
+
+      if (currentPage < maxPage) {
+
+        currentPage++;
+
+        renderVideos();
+
+      }
+
     }
+  );
 
-  });
 
-  renderVideos(1);
+  /*
+    ==========================================
+    FIRST LOAD
+    ==========================================
+  */
+
+  renderVideos();
+
 </script>
 
 </body>
