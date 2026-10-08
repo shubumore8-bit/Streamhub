@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>DesiVexa — Video</title>
 
 <style>
+
 *{
   box-sizing:border-box;
   margin:0;
@@ -210,9 +214,11 @@ video{
   font-size:13px;
   font-weight:bold;
   line-height:1.35;
+
   display:-webkit-box;
   -webkit-line-clamp:2;
   -webkit-box-orient:vertical;
+
   overflow:hidden;
 }
 
@@ -220,6 +226,7 @@ video{
   margin-top:6px;
   color:#8d95a5;
   font-size:10px;
+
   display:flex;
   justify-content:space-between;
   gap:5px;
@@ -268,8 +275,11 @@ video{
   color:#ff667f;
 }
 
+/* COMMENTS */
+
 .comments{
-  margin-top:30px;
+  margin-top:35px;
+  padding-bottom:20px;
 }
 
 .commentForm{
@@ -281,11 +291,16 @@ video{
 .commentInput{
   flex:1;
   min-width:0;
+
   background:#0c111b;
   border:1px solid #242c3b;
+
   color:#fff;
+
   border-radius:8px;
+
   padding:11px;
+
   outline:none;
 }
 
@@ -297,8 +312,11 @@ video{
   border:0;
   background:#ff1744;
   color:#fff;
+
   border-radius:8px;
+
   padding:0 15px;
+
   cursor:pointer;
 }
 
@@ -309,8 +327,11 @@ video{
 .comment{
   background:#0c111b;
   border:1px solid #1a2130;
+
   border-radius:9px;
+
   padding:12px;
+
   margin-bottom:8px;
 }
 
@@ -322,8 +343,11 @@ video{
 
 .commentText{
   margin-top:5px;
+
   color:#c8cdd6;
+
   font-size:13px;
+
   line-height:1.5;
 }
 
@@ -333,12 +357,17 @@ video{
   font-size:13px;
 }
 
+
+/* MOBILE */
+
 @media(max-width:900px){
 
   .relatedGrid{
     grid-template-columns:repeat(3,1fr);
   }
+
 }
+
 
 @media(max-width:650px){
 
@@ -374,36 +403,88 @@ video{
   .commentBtn{
     height:42px;
   }
+
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <header>
 
-  <a href="index.html" class="homeBtn">
+  <a
+    href="index.html"
+    class="homeBtn">
+
     ← Home
+
   </a>
 
+
   <div class="logo">
+
     DesiVexa
+
   </div>
 
 </header>
 
 
+
 <div class="container">
+
 
   <!-- VIDEO -->
 
   <div id="videoArea">
 
     <div class="loading">
+
       Loading video...
+
     </div>
 
   </div>
+
+
+
+  <!-- RELATED VIDEOS -->
+
+  <div class="sectionTitle">
+
+    🎬 Related Videos
+
+  </div>
+
+
+  <div
+    id="relatedVideos"
+    class="relatedGrid">
+
+  </div>
+
+
+  <div
+    id="relatedMessage"
+    class="loading">
+
+    Loading related videos...
+
+  </div>
+
+
+  <!-- RELATED PAGINATION -->
+
+  <div
+    id="pagination"
+    class="pagination">
+
+  </div>
+
 
 
   <!-- COMMENTS -->
@@ -411,8 +492,11 @@ video{
   <div class="comments">
 
     <div class="sectionTitle">
+
       💬 Comments
+
     </div>
+
 
     <div class="commentForm">
 
@@ -424,19 +508,26 @@ video{
         placeholder="Write a comment..."
       >
 
+
       <button
         id="commentBtn"
-        class="commentBtn"
-      >
+        class="commentBtn">
+
         Post
+
       </button>
 
     </div>
 
-    <div id="commentList" class="commentList">
+
+    <div
+      id="commentList"
+      class="commentList">
 
       <div class="empty">
+
         Comments will appear here.
+
       </div>
 
     </div>
@@ -444,68 +535,20 @@ video{
   </div>
 
 
-  <!-- RELATED -->
-
-<div class="sectionTitle">
-  🎬 Related Videos
 </div>
 
-<div id="relatedVideos" class="relatedGrid"></div>
-
-<div id="relatedMessage" class="loading">
-  Loading related videos...
-</div>
-
-<div
-  id="pagination"
-  class="pagination"
-></div>
-
-
-<!-- COMMENTS -->
-
-<div class="comments">
-
-  <div class="sectionTitle">
-    💬 Comments
-  </div>
-
-  <div class="commentForm">
-
-    <input
-      id="commentInput"
-      class="commentInput"
-      type="text"
-      maxlength="500"
-      placeholder="Write a comment..."
-    >
-
-    <button
-      id="commentBtn"
-      class="commentBtn"
-    >
-      Post
-    </button>
-
-  </div>
-
-  <div id="commentList" class="commentList">
-
-    <div class="empty">
-      Comments will appear here.
-    </div>
-
-  </div>
-
-</div>
-
-</div>
 
 
 <script type="module">
 
+
+/* =========================
+   SUPABASE
+========================= */
+
 import { createClient }
 from "https://esm.sh/@supabase/supabase-js@2";
+
 
 import {
   SUPABASE_URL,
@@ -514,14 +557,23 @@ import {
 from "./config.js";
 
 
-const supabase = createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+const supabase =
+  createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
+
+
+/* =========================
+   URL
+========================= */
 
 const params =
-  new URLSearchParams(location.search);
+  new URLSearchParams(
+    location.search
+  );
+
 
 const videoId =
   params.get("id");
@@ -529,15 +581,22 @@ const videoId =
 
 const RELATED_PER_PAGE = 20;
 
+
 let currentRelatedPage =
-  parseInt(params.get("page")) || 1;
+  parseInt(
+    params.get("page")
+  ) || 1;
+
 
 if(currentRelatedPage < 1){
+
   currentRelatedPage = 1;
+
 }
 
 
 let currentVideo = null;
+
 
 
 /* =========================
@@ -547,80 +606,135 @@ let currentVideo = null;
 function escapeHtml(value){
 
   return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+
+    .replace(
+      /</g,
+      "&lt;"
+    )
+
+    .replace(
+      />/g,
+      "&gt;"
+    )
+
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
 }
+
 
 
 function fallbackImage(){
 
   return "data:image/svg+xml;charset=UTF-8," +
-  encodeURIComponent(`
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="640"
-      height="360"
-      viewBox="0 0 640 360">
 
-      <rect
+    encodeURIComponent(`
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
         width="640"
         height="360"
-        fill="#151b27"/>
+        viewBox="0 0 640 360">
 
-      <text
-        x="320"
-        y="185"
-        text-anchor="middle"
-        fill="#ff1744"
-        font-size="38"
-        font-family="Arial"
-        font-weight="bold">
+        <rect
+          width="640"
+          height="360"
+          fill="#151b27"/>
 
-        DesiVexa
+        <text
+          x="320"
+          y="185"
+          text-anchor="middle"
+          fill="#ff1744"
+          font-size="38"
+          font-family="Arial"
+          font-weight="bold">
 
-      </text>
+          DesiVexa
 
-    </svg>
-  `);
+        </text>
+
+      </svg>
+
+    `);
+
 }
+
 
 
 function timeAgo(date){
 
   if(!date) return "";
 
+
   const seconds =
     Math.floor(
-      (Date.now() -
-      new Date(date).getTime()) / 1000
+
+      (
+        Date.now() -
+        new Date(date).getTime()
+      ) / 1000
+
     );
 
+
   if(seconds < 60)
+
     return seconds + "s ago";
 
+
   const minutes =
-    Math.floor(seconds / 60);
+    Math.floor(
+      seconds / 60
+    );
+
 
   if(minutes < 60)
+
     return minutes + "m ago";
 
+
   const hours =
-    Math.floor(minutes / 60);
+    Math.floor(
+      minutes / 60
+    );
+
 
   if(hours < 24)
+
     return hours + "h ago";
 
+
   const days =
-    Math.floor(hours / 24);
+    Math.floor(
+      hours / 24
+    );
+
 
   if(days < 30)
+
     return days + "d ago";
 
-  return Math.floor(days / 30) + "mo ago";
+
+  return (
+    Math.floor(days / 30) +
+    "mo ago"
+  );
+
 }
+
 
 
 /* =========================
@@ -630,62 +744,93 @@ function timeAgo(date){
 async function loadVideo(){
 
   const area =
-    document.getElementById("videoArea");
+    document.getElementById(
+      "videoArea"
+    );
 
 
   if(!videoId){
 
     area.innerHTML = `
+
       <div class="error">
+
         Video not found.
+
       </div>
+
     `;
 
     return;
+
   }
 
 
-  const { data, error } =
-    await supabase
-      .from("videos")
-      .select(`
-        id,
-        title,
-        category,
-        description,
-        thumbnail_url,
-        video_url,
-        views,
-        created_at
-      `)
-      .eq("id", videoId)
-      .eq("published", true)
-      .maybeSingle();
+  const {
+    data,
+    error
+  } = await supabase
+
+    .from("videos")
+
+    .select(`
+      id,
+      title,
+      category,
+      description,
+      thumbnail_url,
+      video_url,
+      views,
+      created_at
+    `)
+
+    .eq(
+      "id",
+      videoId
+    )
+
+    .eq(
+      "published",
+      true
+    )
+
+    .maybeSingle();
 
 
   if(error){
 
     console.error(error);
 
+
     area.innerHTML = `
+
       <div class="error">
+
         Failed to load video.
+
       </div>
+
     `;
 
     return;
+
   }
 
 
   if(!data){
 
     area.innerHTML = `
+
       <div class="error">
+
         Video not found or unavailable.
+
       </div>
+
     `;
 
     return;
+
   }
 
 
@@ -694,18 +839,23 @@ async function loadVideo(){
 
   document.title =
     "DesiVexa — " +
-    (data.title || "Video");
+    (
+      data.title ||
+      "Video"
+    );
 
 
   const title =
     escapeHtml(
-      data.title || "Untitled"
+      data.title ||
+      "Untitled"
     );
 
 
   const category =
     escapeHtml(
-      data.category || "General"
+      data.category ||
+      "General"
     );
 
 
@@ -739,7 +889,9 @@ async function loadVideo(){
         poster="${escapeHtml(thumbnail)}">
 
         <source
-          src="${escapeHtml(data.video_url || "")}"
+          src="${escapeHtml(
+            data.video_url || ""
+          )}"
           type="video/mp4">
 
         Your browser does not support
@@ -753,31 +905,51 @@ async function loadVideo(){
     <div class="videoInfo">
 
       <div class="videoTitle">
+
         ${title}
+
       </div>
 
 
       <div class="videoMeta">
 
         <span class="category">
+
           ${category}
+
         </span>
 
+
         <span>
-          👁️ <span id="viewCount">
+
+          👁️
+
+          <span id="viewCount">
+
             ${views}
-          </span> views
+
+          </span>
+
+          views
+
         </span>
 
+
         <span>
+
           •
-          ${timeAgo(data.created_at)}
+
+          ${timeAgo(
+            data.created_at
+          )}
+
         </span>
 
       </div>
 
 
       <div class="actions">
+
 
         <button
           class="actionBtn"
@@ -805,6 +977,7 @@ async function loadVideo(){
 
         </button>
 
+
       </div>
 
 
@@ -821,13 +994,16 @@ async function loadVideo(){
 
   setupButtons();
 
+
   increaseView();
 
 
   loadRelatedVideos(
     data.category
   );
+
 }
+
 
 
 /* =========================
@@ -837,11 +1013,15 @@ async function loadVideo(){
 function setupButtons(){
 
   const likeBtn =
-    document.getElementById("likeBtn");
+    document.getElementById(
+      "likeBtn"
+    );
 
 
   const shareBtn =
-    document.getElementById("shareBtn");
+    document.getElementById(
+      "shareBtn"
+    );
 
 
   const commentScrollBtn =
@@ -852,10 +1032,15 @@ function setupButtons(){
 
   likeBtn.onclick = () => {
 
-    likeBtn.classList.toggle("liked");
+    likeBtn.classList.toggle(
+      "liked"
+    );
+
 
     if(
-      likeBtn.classList.contains("liked")
+      likeBtn.classList.contains(
+        "liked"
+      )
     ){
 
       likeBtn.textContent =
@@ -867,6 +1052,7 @@ function setupButtons(){
         "❤️ Like";
 
     }
+
   };
 
 
@@ -877,13 +1063,17 @@ function setupButtons(){
   commentScrollBtn.onclick = () => {
 
     document
-      .querySelector(".comments")
+      .querySelector(
+        ".comments"
+      )
       .scrollIntoView({
         behavior:"smooth"
       });
 
   };
+
 }
+
 
 
 /* =========================
@@ -903,6 +1093,7 @@ async function shareVideo(){
 
     url:
       location.href
+
   };
 
 
@@ -922,6 +1113,7 @@ async function shareVideo(){
         location.href
       );
 
+
       alert(
         "Video link copied!"
       );
@@ -933,7 +1125,9 @@ async function shareVideo(){
     console.log(error);
 
   }
+
 }
+
 
 
 /* =========================
@@ -945,22 +1139,19 @@ async function increaseView(){
   if(!videoId) return;
 
 
-  /*
-    Local protection:
-    same browser me same video
-    ko baar-baar count nahi karega.
-  */
-
   const key =
     "desivexa_view_" +
     videoId;
 
 
   if(
-    sessionStorage.getItem(key)
+    sessionStorage.getItem(
+      key
+    )
   ){
 
     return;
+
   }
 
 
@@ -970,33 +1161,55 @@ async function increaseView(){
   );
 
 
-  const { data, error } =
-    await supabase
-      .from("videos")
-      .select("views")
-      .eq("id", videoId)
-      .maybeSingle();
+  const {
+    data,
+    error
+  } = await supabase
+
+    .from("videos")
+
+    .select("views")
+
+    .eq(
+      "id",
+      videoId
+    )
+
+    .maybeSingle();
 
 
-  if(error || !data){
+  if(
+    error ||
+    !data
+  ){
 
     console.error(error);
 
     return;
+
   }
 
 
   const newViews =
-    Number(data.views || 0) + 1;
+    Number(
+      data.views || 0
+    ) + 1;
 
 
-  const { error:updateError } =
-    await supabase
-      .from("videos")
-      .update({
-        views:newViews
-      })
-      .eq("id",videoId);
+  const {
+    error:updateError
+  } = await supabase
+
+    .from("videos")
+
+    .update({
+      views:newViews
+    })
+
+    .eq(
+      "id",
+      videoId
+    );
 
 
   if(updateError){
@@ -1006,6 +1219,7 @@ async function increaseView(){
     );
 
     return;
+
   }
 
 
@@ -1021,7 +1235,9 @@ async function increaseView(){
       newViews.toLocaleString();
 
   }
+
 }
+
 
 
 /* =========================
@@ -1050,13 +1266,11 @@ async function loadRelatedVideos(
     );
 
 
-  /*
-    Pehle same category videos.
-  */
-
   let query =
     supabase
+
       .from("videos")
+
       .select(`
         id,
         title,
@@ -1067,8 +1281,16 @@ async function loadRelatedVideos(
         views,
         created_at
       `)
-      .eq("published",true)
-      .neq("id",videoId);
+
+      .eq(
+        "published",
+        true
+      )
+
+      .neq(
+        "id",
+        videoId
+      );
 
 
   if(category){
@@ -1082,13 +1304,19 @@ async function loadRelatedVideos(
   }
 
 
-  const { data:categoryVideos,
-          error:categoryError } =
-    await query
-      .order("created_at",{
+  const {
+    data:categoryVideos,
+    error:categoryError
+  } = await query
+
+    .order(
+      "created_at",
+      {
         ascending:false
-      })
-      .limit(200);
+      }
+    )
+
+    .limit(200);
 
 
   if(categoryError){
@@ -1105,37 +1333,55 @@ async function loadRelatedVideos(
 
 
   /*
-    Agar same category me enough
-    videos nahi hain, to baaki
-    published videos add karo.
+    Agar same category me
+    20 se kam videos hain,
+    to other videos add honge.
   */
 
   if(videos.length < 20){
 
-    const { data:otherVideos } =
-      await supabase
-        .from("videos")
-        .select(`
-          id,
-          title,
-          category,
-          description,
-          thumbnail_url,
-          video_url,
-          views,
-          created_at
-        `)
-        .eq("published",true)
-        .neq("id",videoId)
-        .order("views",{
+    const {
+      data:otherVideos
+    } = await supabase
+
+      .from("videos")
+
+      .select(`
+        id,
+        title,
+        category,
+        description,
+        thumbnail_url,
+        video_url,
+        views,
+        created_at
+      `)
+
+      .eq(
+        "published",
+        true
+      )
+
+      .neq(
+        "id",
+        videoId
+      )
+
+      .order(
+        "views",
+        {
           ascending:false
-        })
-        .limit(200);
+        }
+      )
+
+      .limit(200);
 
 
     const existing =
       new Set(
-        videos.map(v => v.id)
+        videos.map(
+          v => v.id
+        )
       );
 
 
@@ -1145,10 +1391,14 @@ async function loadRelatedVideos(
     ){
 
       if(
-        !existing.has(video.id)
+        !existing.has(
+          video.id
+        )
       ){
 
-        videos.push(video);
+        videos.push(
+          video
+        );
 
       }
 
@@ -1166,13 +1416,17 @@ async function loadRelatedVideos(
     message.textContent =
       "No related videos.";
 
+    pagination.innerHTML = "";
+
     return;
+
   }
 
 
   const totalPages =
     Math.ceil(
-      total / RELATED_PER_PAGE
+      total /
+      RELATED_PER_PAGE
     );
 
 
@@ -1187,14 +1441,17 @@ async function loadRelatedVideos(
 
 
   const from =
-    (currentRelatedPage - 1) *
+    (
+      currentRelatedPage - 1
+    ) *
     RELATED_PER_PAGE;
 
 
   const pageVideos =
     videos.slice(
       from,
-      from + RELATED_PER_PAGE
+      from +
+      RELATED_PER_PAGE
     );
 
 
@@ -1204,14 +1461,18 @@ async function loadRelatedVideos(
 
   box.innerHTML =
     pageVideos
-      .map(relatedCard)
+      .map(
+        relatedCard
+      )
       .join("");
 
 
   renderPagination(
     totalPages
   );
+
 }
+
 
 
 /* =========================
@@ -1222,13 +1483,15 @@ function relatedCard(video){
 
   const title =
     escapeHtml(
-      video.title || "Untitled"
+      video.title ||
+      "Untitled"
     );
 
 
   const category =
     escapeHtml(
-      video.category || "General"
+      video.category ||
+      "General"
     );
 
 
@@ -1248,46 +1511,69 @@ function relatedCard(video){
     <div
       class="card"
       onclick="openRelated(
-        '${encodeURIComponent(video.id)}'
+        '${encodeURIComponent(
+          video.id
+        )}'
       )">
+
 
       <div class="thumb">
 
+
         <img
-          src="${escapeHtml(thumbnail)}"
+          src="${escapeHtml(
+            thumbnail
+          )}"
           alt="${title}"
+
           onerror="
             this.onerror=null;
             this.src='${fallbackImage()}';
           "
         >
 
+
         <div class="play">
+
           ▶
+
         </div>
 
+
         <div class="hd">
+
           HD
+
         </div>
+
 
       </div>
 
 
       <div class="cardInfo">
 
+
         <div class="cardTitle">
+
           ${title}
+
         </div>
 
 
         <div class="cardMeta">
 
-          <span class="cardCategory">
+          <span
+            class="cardCategory">
+
             ${category}
+
           </span>
 
+
           <span>
+
             ${views} views
+
           </span>
 
         </div>
@@ -1296,20 +1582,30 @@ function relatedCard(video){
         <div class="cardMeta">
 
           <span>
+
             ${timeAgo(
               video.created_at
             )}
+
           </span>
 
         </div>
 
+
       </div>
+
 
     </div>
 
   `;
+
 }
 
+
+
+/* =========================
+   OPEN RELATED
+========================= */
 
 window.openRelated =
 function(id){
@@ -1321,6 +1617,7 @@ function(id){
     );
 
 };
+
 
 
 /* =========================
@@ -1340,7 +1637,9 @@ function renderPagination(
   pagination.innerHTML = "";
 
 
-  if(totalPages <= 1){
+  if(
+    totalPages <= 1
+  ){
 
     return;
 
@@ -1381,6 +1680,7 @@ function renderPagination(
   );
 
 
+
   let start =
     Math.max(
       1,
@@ -1408,9 +1708,10 @@ function renderPagination(
   }
 
 
+
   for(
-    let i=start;
-    i<=end;
+    let i = start;
+    i <= end;
     i++
   ){
 
@@ -1449,6 +1750,7 @@ function renderPagination(
   }
 
 
+
   const next =
     document.createElement(
       "button"
@@ -1483,8 +1785,14 @@ function renderPagination(
   pagination.appendChild(
     next
   );
+
 }
 
+
+
+/* =========================
+   GO RELATED PAGE
+========================= */
 
 function goRelatedPage(
   page
@@ -1499,6 +1807,7 @@ function goRelatedPage(
     page;
 
 }
+
 
 
 /* =========================
@@ -1517,6 +1826,7 @@ const commentInput =
   );
 
 
+
 commentBtn.onclick =
 async function(){
 
@@ -1531,21 +1841,22 @@ async function(){
     );
 
     return;
+
   }
 
 
   /*
-    Temporary local comment system.
-    Database comments ko baad me
-    Supabase table se connect karenge.
+    Temporary local comments.
   */
 
   const comments =
     JSON.parse(
+
       localStorage.getItem(
         "desivexa_comments_" +
         videoId
       ) || "[]"
+
     );
 
 
@@ -1553,7 +1864,9 @@ async function(){
 
     text:text,
 
-    date:new Date().toISOString()
+    date:
+      new Date()
+        .toISOString()
 
   });
 
@@ -1563,7 +1876,9 @@ async function(){
     "desivexa_comments_" +
     videoId,
 
-    JSON.stringify(comments)
+    JSON.stringify(
+      comments
+    )
 
   );
 
@@ -1572,8 +1887,14 @@ async function(){
 
 
   renderComments();
+
 };
 
+
+
+/* =========================
+   RENDER COMMENTS
+========================= */
 
 function renderComments(){
 
@@ -1585,10 +1906,12 @@ function renderComments(){
 
   const comments =
     JSON.parse(
+
       localStorage.getItem(
         "desivexa_comments_" +
         videoId
       ) || "[]"
+
     );
 
 
@@ -1597,36 +1920,52 @@ function renderComments(){
   ){
 
     list.innerHTML = `
+
       <div class="empty">
+
         No comments yet.
+
       </div>
+
     `;
 
     return;
+
   }
 
 
   list.innerHTML =
     comments
-      .map(comment => `
 
-        <div class="comment">
+      .map(
+        comment => `
 
-          <div class="commentName">
-            Guest
+          <div class="comment">
+
+            <div class="commentName">
+
+              Guest
+
+            </div>
+
+
+            <div class="commentText">
+
+              ${escapeHtml(
+                comment.text
+              )}
+
+            </div>
+
           </div>
 
-          <div class="commentText">
-            ${escapeHtml(
-              comment.text
-            )}
-          </div>
+        `
+      )
 
-        </div>
-
-      `)
       .join("");
+
 }
+
 
 
 /* =========================
@@ -1637,7 +1976,9 @@ renderComments();
 
 loadVideo();
 
+
 </script>
 
+
 </body>
-</html>
+  </html>
