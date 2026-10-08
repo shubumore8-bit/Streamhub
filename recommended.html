@@ -1,560 +1,339 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DesiVexa - Recommended</title>
-
-<style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
-
-body{
-  background:#080808;
-  color:#fff;
-  font-family:Arial,sans-serif;
-  padding-bottom:80px;
-}
-
-a{
-  text-decoration:none;
-  color:inherit;
-}
-
-header{
-  height:65px;
-  background:#111;
-  border-bottom:1px solid #292929;
-  display:flex;
-  align-items:center;
-  padding:0 5%;
-  gap:20px;
-  position:sticky;
-  top:0;
-  z-index:100;
-}
-
-.logo{
-  color:#e50914;
-  font-size:25px;
-  font-weight:900;
-}
-
-.search{
-  flex:1;
-  max-width:600px;
-  margin:auto;
-}
-
-.search input{
-  width:100%;
-  background:#1c1c1c;
-  border:1px solid #333;
-  color:#fff;
-  padding:12px 18px;
-  border-radius:25px;
-  outline:none;
-}
-
-.profile{
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  background:#e50914;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
-}
-
-.container{
-  width:90%;
-  max-width:1400px;
-  margin:25px auto;
-}
-
-.section-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:25px 0 15px;
-}
-
-.section-title h2{
-  font-size:23px;
-}
-
-.section-title span{
-  color:#aaa;
-  font-size:14px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:18px;
-}
-
-.card{
-  background:#121212;
-  border-radius:10px;
-  overflow:hidden;
-  border:1px solid #222;
-  transition:.2s;
-}
-
-.card:hover{
-  transform:translateY(-3px);
-  border-color:#e50914;
-}
-
-.thumb{
-  height:160px;
-  background:
-    linear-gradient(135deg,#260000,#151515,#400000);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-}
-
-.thumb span{
-  font-size:42px;
-  color:#e50914;
-}
-
-.badge{
-  position:absolute;
-  right:8px;
-  bottom:8px;
-  background:#000;
-  padding:4px 7px;
-  border-radius:4px;
-  font-size:11px;
-}
-
-.info{
-  padding:12px;
-}
-
-.title{
-  font-weight:bold;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.meta{
-  color:#888;
-  font-size:12px;
-  margin-top:7px;
-}
-
-.random-title{
-  margin-top:40px;
-}
-
-.pagination{
-  display:flex;
-  justify-content:center;
-  gap:8px;
-  margin:30px 0;
-  flex-wrap:wrap;
-}
-
-.pagination button{
-  background:#171717;
-  color:#fff;
-  border:1px solid #333;
-  padding:9px 14px;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-.pagination button:hover,
-.pagination button.active{
-  background:#e50914;
-  border-color:#e50914;
-}
-
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  height:65px;
-  background:#111;
-  border-top:1px solid #292929;
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-  z-index:200;
-}
-
-.bottom-nav a{
-  color:#aaa;
-  font-size:12px;
-  text-align:center;
-}
-
-.bottom-nav a.active{
-  color:#e50914;
-}
-
-.bottom-nav div{
-  font-size:20px;
-  margin-bottom:3px;
-}
-
-@media(max-width:900px){
-  .grid{
-    grid-template-columns:repeat(3,1fr);
-  }
-}
-
-@media(max-width:650px){
-  header{
-    padding:0 12px;
-    gap:10px;
-  }
-
-  .logo{
-    font-size:20px;
-  }
-
-  .search{
-    max-width:none;
-  }
-
-  .grid{
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-  }
-
-  .thumb{
-    height:115px;
-  }
-
-  .container{
-    width:94%;
-  }
-
-  .section-title h2{
-    font-size:19px;
-  }
-}
-
-@media(max-width:400px){
-  .grid{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .thumb{
-    height:105px;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<header>
-  <a href="index.html" class="logo">DesiVexa</a>
-
-  <div class="search">
-    <input
-      type="text"
-      placeholder="Search videos..."
-      onkeydown="searchVideo(event)"
-    >
-  </div>
-
-  <a href="profile.html" class="profile">P</a>
-</header>
-
-
-<main class="container">
-
-  <!-- RECOMMENDED -->
-  <section>
-    <div class="section-title">
-      <h2>Recommended Videos</h2>
-      <span>For You</span>
-    </div>
-
-    <div class="grid" id="recommendedGrid"></div>
-  </section>
-
-
-  <!-- RANDOM -->
-  <section class="random-title">
-
-    <div class="section-title">
-      <h2>Random Videos</h2>
-      <span>30 videos per page</span>
-    </div>
-
-    <div class="grid" id="randomGrid"></div>
-
-    <div class="pagination" id="pagination"></div>
-
-  </section>
-
-</main>
-
-
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-
-  <a href="index.html">
-    <div>⌂</div>
-    Home
-  </a>
-
-  <a href="new.html">
-    <div>★</div>
-    Latest
-  </a>
-
-  <a href="trending.html">
-    <div>🔥</div>
-    Trending
-  </a>
-
-  <a href="recommended.html" class="active">
-    <div>♥</div>
-    Recommended
-  </a>
-
-  <a href="profile.html">
-    <div>●</div>
-    Profile
-  </a>
-
-</nav>
-
-
-<script>
-
-/* =========================
-   RECOMMENDED VIDEOS
-========================= */
-
-const recommendedVideos = [];
-
-for(let i=1;i<=12;i++){
-
-  recommendedVideos.push({
-    id:300+i,
-    title:"Recommended Video "+i,
-    views:(i*1743)+" views",
-    duration:"10:"+String(i+5).padStart(2,"0")
-  });
-
-}
-
-
-/* =========================
-   RANDOM VIDEOS
-   150 TOTAL
-   30 PER PAGE
-========================= */
-
-const randomVideos = [];
-
-for(let i=1;i<=150;i++){
-
-  randomVideos.push({
-    id:1000+i,
-    title:"Random Video "+i,
-    views:(i*827)+" views",
-    duration:"8:"+String((i%59)+1).padStart(2,"0")
-  });
-
-}
-
-
-/* =========================
-   CREATE CARD
-========================= */
-
-function createCard(video){
-
-  return `
-    <a href="video.html?id=${video.id}" class="card">
-
-      <div class="thumb">
-        <span>▶</span>
-
-        <div class="badge">
-          ${video.duration}
-        </div>
-      </div>
-
-      <div class="info">
-
-        <div class="title">
-          ${video.title}
-        </div>
-
-        <div class="meta">
-          ${video.views}
-        </div>
-
-      </div>
-
-    </a>
-  `;
-}
-
-
-/* =========================
-   RENDER RECOMMENDED
-========================= */
-
-function renderRecommended(){
-
-  const grid=document.getElementById("recommendedGrid");
-
-  grid.innerHTML=
-    recommendedVideos
-      .map(createCard)
-      .join("");
-
-}
-
-
-/* =========================
-   RANDOM PAGINATION
-========================= */
-
-const perPage=30;
-let currentPage=1;
-
-function renderRandom(){
-
-  const grid=document.getElementById("randomGrid");
-
-  const start=(currentPage-1)*perPage;
-  const end=start+perPage;
-
-  const pageVideos=randomVideos.slice(start,end);
-
-  grid.innerHTML=
-    pageVideos
-      .map(createCard)
-      .join("");
-
-  renderPagination();
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
-
-}
-
-
-/* =========================
-   PAGINATION
-========================= */
-
-function renderPagination(){
-
-  const pagination=document.getElementById("pagination");
-
-  const totalPages=Math.ceil(
-    randomVideos.length/perPage
-  );
-
-  let html="";
-
-  html+=`
-    <button
-      onclick="changePage(${currentPage-1})"
-      ${currentPage===1?"disabled":""}>
-      Previous
-    </button>
-  `;
-
-  for(let i=1;i<=5;i++){
-
-    html+=`
-      <button
-        class="${i===currentPage?"active":""}"
-        onclick="changePage(${i})">
-        ${i}
-      </button>
-    `;
-
-  }
-
-  html+=`
-    <button
-      onclick="changePage(${currentPage+1})"
-      ${currentPage===totalPages?"disabled":""}>
-      Next
-    </button>
-  `;
-
-  pagination.innerHTML=html;
-
-}
-
-
-/* =========================
-   CHANGE PAGE
-========================= */
-
-function changePage(page){
-
-  const totalPages=Math.ceil(
-    randomVideos.length/perPage
-  );
-
-  if(page<1 || page>totalPages){
-    return;
-  }
-
-  currentPage=page;
-
-  renderRandom();
-
-}
-
-
-/* =========================
-   SEARCH
-========================= */
-
-function searchVideo(event){
-
-  if(event.key==="Enter"){
-
-    const value=event.target.value.trim();
-
-    if(value){
-
-      window.location.href=
-        "search.html?q="+
-        encodeURIComponent(value);
+<!DOCTYPE html><html lang="en"><head>  <meta charset="UTF-8"><meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+
+«»
+
+  <title>Recommended - DesiVexa</title>  <link rel="stylesheet" href="style.css?v=31">  <style>
+
+    body {
+      background: #0b0b0b;
+      color: #fff;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .page-wrap {
+      max-width: 1200px;
+      margin: auto;
+      padding: 18px 12px 90px;
+    }
+
+    .section-title {
+      font-size: 23px;
+      font-weight: 800;
+      margin: 12px 0 5px;
+    }
+
+    .section-subtitle {
+      color: #888;
+      font-size: 13px;
+      margin-bottom: 20px;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .video-card {
+      display: block;
+      text-decoration: none;
+      color: white;
+      background: #151515;
+      border: 1px solid #222;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .thumb {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      display: block;
+      background: #222;
+    }
+
+    .video-info {
+      padding: 8px;
+    }
+
+    .video-title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.35;
+
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+
+      overflow: hidden;
+    }
+
+    .video-meta {
+      color: #888;
+      font-size: 11px;
+      margin-top: 5px;
+    }
+
+    .loading,
+    .error,
+    .empty {
+      text-align: center;
+      padding: 40px 10px;
+      color: #999;
+    }
+
+    .error {
+      color: #ff5555;
+    }
+
+    @media (max-width: 600px) {
+
+      .video-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+      }
+
+      .video-info {
+        padding: 6px;
+      }
+
+      .video-title {
+        font-size: 11px;
+      }
+
+      .video-meta {
+        font-size: 9px;
+      }
 
     }
 
-  }
+  </style></head><body>  <main class="page-wrap"><h1 class="section-title">
+  ✨ Recommended Videos
+</h1>
 
-}
+<div class="section-subtitle">
+  Videos you may like
+</div>
+
+<div
+  id="recommendedVideos"
+  class="video-grid"
+>
+
+  <div class="loading">
+    Loading recommended videos...
+  </div>
+
+</div>
+
+  </main>  <script type="module">
+
+    import { createClient }
+      from "https://esm.sh/@supabase/supabase-js@2";
+
+    import {
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    } from "./config.js";
 
 
-/* START */
+    const supabase = createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
 
-renderRecommended();
-renderRandom();
 
-</script>
+    const container =
+      document.getElementById(
+        "recommendedVideos"
+      );
 
-</body>
-</html>
+
+    function escapeHTML(value) {
+
+      if (
+        value === null ||
+        value === undefined
+      ) {
+        return "";
+      }
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    function formatViews(views) {
+
+      const number =
+        Number(views || 0);
+
+
+      if (number >= 1000000) {
+
+        return (
+          number / 1000000
+        ).toFixed(1) + "M views";
+
+      }
+
+
+      if (number >= 1000) {
+
+        return (
+          number / 1000
+        ).toFixed(1) + "K views";
+
+      }
+
+
+      return number + " views";
+
+    }
+
+
+    function card(video) {
+
+      /*
+       * IMPORTANT:
+       * video.id Supabase ka real UUID hai.
+       */
+
+      const id =
+        encodeURIComponent(video.id);
+
+
+      const title =
+        escapeHTML(
+          video.title || "Untitled Video"
+        );
+
+
+      const category =
+        escapeHTML(
+          video.category || "Video"
+        );
+
+
+      const thumbnail =
+        video.thumbnail_url ||
+        "https://via.placeholder.com/640x360?text=DesiVexa";
+
+
+      return `
+
+        <a
+          class="video-card"
+          href="video.html?id=${id}"
+        >
+
+          <img
+            class="thumb"
+            src="${escapeHTML(thumbnail)}"
+            alt="${title}"
+            loading="lazy"
+            onerror="this.src='https://via.placeholder.com/640x360?text=DesiVexa'"
+          >
+
+          <div class="video-info">
+
+            <div class="video-title">
+              ${title}
+            </div>
+
+            <div class="video-meta">
+              ${category} · ${formatViews(video.views)}
+            </div>
+
+          </div>
+
+        </a>
+
+      `;
+
+    }
+
+
+    async function loadRecommended() {
+
+      container.innerHTML = `
+        <div class="loading">
+          Loading recommended videos...
+        </div>
+      `;
+
+
+      const {
+        data,
+        error
+      } = await supabase
+
+        .from("videos")
+
+        .select(
+          "id,title,category,description,thumbnail_url,video_url,views,created_at"
+        )
+
+        .eq("published", true)
+
+        .order("created_at", {
+          ascending: false
+        })
+
+        .limit(150);
+
+
+      if (error) {
+
+        console.error(error);
+
+        container.innerHTML = `
+          <div class="error">
+            Could not load recommended videos.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      if (!data || data.length === 0) {
+
+        container.innerHTML = `
+          <div class="empty">
+            No recommended videos available.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      /*
+       * Recent videos ko shuffle karke
+       * recommendations jaisa display kar rahe hain.
+       */
+
+      const shuffled =
+        [...data].sort(
+          () => Math.random() - 0.5
+        );
+
+
+      container.innerHTML =
+        shuffled.map(card).join("");
+
+    }
+
+
+    loadRecommended();
+
+  </script></body></html>
