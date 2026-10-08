@@ -3,9 +3,9 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>DesiVexa - Search Results</title>
+<title>DesiVexa - Search</title>
 
 <style>
 
@@ -27,13 +27,17 @@ a{
   text-decoration:none;
 }
 
+/* HEADER */
+
 header{
   height:65px;
   background:#111;
   border-bottom:1px solid #292929;
+
   display:flex;
   align-items:center;
-  gap:15px;
+
+  gap:12px;
   padding:0 5%;
 }
 
@@ -43,40 +47,55 @@ header{
   font-weight:900;
 }
 
-.search{
+.searchBox{
   flex:1;
   max-width:700px;
   margin:auto;
 }
 
-.search input{
+.searchBox input{
   width:100%;
+
   padding:12px 18px;
+
   border-radius:25px;
+
   border:1px solid #333;
+
   background:#1b1b1b;
+
   color:#fff;
+
   outline:none;
+
+  font-size:15px;
 }
 
-.search input:focus{
+.searchBox input:focus{
   border-color:#e50914;
 }
 
 .profile{
   width:40px;
   height:40px;
+
   border-radius:50%;
+
   background:#e50914;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   font-weight:bold;
 }
+
+/* MAIN */
 
 .container{
   width:92%;
   max-width:1400px;
+
   margin:25px auto;
 }
 
@@ -93,57 +112,82 @@ header{
   margin-top:7px;
 }
 
+/* GRID */
+
 .grid{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
+
+  grid-template-columns:
+    repeat(4,1fr);
+
   gap:18px;
 }
 
+/* CARD */
+
 .card{
   background:#121212;
+
   border:1px solid #222;
+
   border-radius:9px;
+
   overflow:hidden;
+
   transition:.2s;
 }
 
 .card:hover{
   transform:translateY(-3px);
+
   border-color:#e50914;
 }
 
+/* THUMBNAIL */
+
 .thumb{
   height:160px;
-  background:#151515;
+
+  background:
+    linear-gradient(
+      135deg,
+      #270000,
+      #151515,
+      #400000
+    );
+
   position:relative;
+
   overflow:hidden;
 }
 
 .thumb img{
   width:100%;
   height:100%;
+
   object-fit:cover;
+
   display:block;
 }
 
-.placeholder{
-  width:100%;
-  height:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:linear-gradient(
-    135deg,
-    #270000,
-    #151515,
-    #400000
-  );
+.play{
+  position:absolute;
+
+  left:50%;
+  top:50%;
+
+  transform:
+    translate(-50%,-50%);
+
+  color:#e50914;
+
+  font-size:40px;
+
+  text-shadow:
+    0 2px 10px #000;
 }
 
-.play{
-  color:#e50914;
-  font-size:42px;
-}
+/* INFO */
 
 .info{
   padding:12px;
@@ -151,79 +195,126 @@ header{
 
 .title{
   font-weight:bold;
+
   white-space:nowrap;
+
   overflow:hidden;
+
   text-overflow:ellipsis;
 }
 
 .meta{
   color:#888;
+
   font-size:12px;
+
   margin-top:7px;
 }
 
-.loading,
-.no-results,
-.error{
+/* MESSAGE */
+
+.message{
   grid-column:1/-1;
+
   background:#111;
+
   border:1px solid #292929;
+
   padding:40px 20px;
+
   border-radius:10px;
+
   text-align:center;
+
   color:#888;
 }
 
-.no-results h2,
-.error h2{
+.message h2{
   color:#fff;
+
+  margin-bottom:8px;
 }
+
+/* PAGINATION */
 
 .pagination{
   display:flex;
+
   justify-content:center;
+
+  align-items:center;
+
   gap:8px;
+
   flex-wrap:wrap;
+
   margin:30px 0;
 }
 
 .pagination button{
   background:#171717;
+
   border:1px solid #333;
+
   color:#fff;
+
   padding:9px 14px;
+
   border-radius:6px;
+
   cursor:pointer;
+
+  font-size:14px;
 }
 
-.pagination button:hover,
+.pagination button:hover{
+  background:#e50914;
+
+  border-color:#e50914;
+}
+
 .pagination button.active{
   background:#e50914;
+
   border-color:#e50914;
 }
 
 .pagination button:disabled{
   opacity:.35;
+
   cursor:not-allowed;
 }
 
+/* BOTTOM NAV */
+
 .bottom-nav{
   position:fixed;
+
   bottom:0;
   left:0;
+
   width:100%;
+
   height:65px;
+
   background:#111;
+
   border-top:1px solid #292929;
+
   display:flex;
+
   justify-content:space-around;
+
   align-items:center;
+
   z-index:100;
 }
 
 .bottom-nav a{
   color:#aaa;
+
   text-align:center;
+
   font-size:12px;
 }
 
@@ -233,16 +324,22 @@ header{
 
 .bottom-nav div{
   font-size:20px;
+
   margin-bottom:3px;
 }
+
+/* TABLET */
 
 @media(max-width:900px){
 
   .grid{
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:
+      repeat(3,1fr);
   }
 
 }
+
+/* MOBILE */
 
 @media(max-width:600px){
 
@@ -259,7 +356,9 @@ header{
   }
 
   .grid{
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:
+      repeat(2,1fr);
+
     gap:10px;
   }
 
@@ -275,7 +374,13 @@ header{
     font-size:14px;
   }
 
+  .meta{
+    font-size:11px;
+  }
+
 }
+
+/* SMALL MOBILE */
 
 @media(max-width:380px){
 
@@ -291,13 +396,21 @@ header{
 
 <body>
 
+
+<!-- HEADER -->
+
 <header>
 
-  <a href="index.html" class="logo">
+  <a
+    href="index.html"
+    class="logo">
+
     DesiVexa
+
   </a>
 
-  <div class="search">
+
+  <div class="searchBox">
 
     <input
       id="searchInput"
@@ -308,18 +421,27 @@ header{
 
   </div>
 
-  <a href="profile.html" class="profile">
+
+  <a
+    href="profile.html"
+    class="profile">
+
     P
+
   </a>
 
 </header>
 
 
+
+<!-- MAIN -->
+
 <main class="container">
+
 
   <div class="heading">
 
-    <h1 id="searchTitle">
+    <h1 id="pageTitle">
       Search Results
     </h1>
 
@@ -331,58 +453,98 @@ header{
 
 
   <div
-    class="grid"
-    id="resultsGrid">
+    id="videoGrid"
+    class="grid">
 
-    <div class="loading">
-      Searching videos...
+    <div class="message">
+
+      Loading videos...
+
     </div>
 
   </div>
 
 
   <div
-    class="pagination"
-    id="pagination">
+    id="pagination"
+    class="pagination">
   </div>
+
 
 </main>
 
 
+
+<!-- BOTTOM NAV -->
+
 <nav class="bottom-nav">
 
+
   <a href="index.html">
+
     <div>⌂</div>
+
     Home
+
   </a>
+
 
   <a href="new.html">
+
     <div>★</div>
+
     Latest
+
   </a>
 
-  <a href="trending.html">
+
+  <a
+    href="trending.html">
+
     <div>🔥</div>
+
     Trending
+
   </a>
 
-  <a href="recommended.html">
+
+  <a
+    href="recommended.html">
+
     <div>♥</div>
+
     Recommended
+
   </a>
 
-  <a href="profile.html">
+
+  <a
+    href="profile.html">
+
     <div>●</div>
+
     Profile
+
   </a>
+
 
 </nav>
 
 
+
 <script type="module">
 
-import { createClient }
-from "https://esm.sh/@supabase/supabase-js@2";
+
+/* =========================
+   SUPABASE
+========================= */
+
+import {
+  createClient
+}
+from
+"https://esm.sh/@supabase/supabase-js@2";
+
 
 import {
   SUPABASE_URL,
@@ -398,138 +560,193 @@ const supabase =
   );
 
 
+
 /* =========================
-   SEARCH NAME
+   URL SEARCH
 ========================= */
 
-const params =
+const urlParams =
   new URLSearchParams(
     window.location.search
   );
 
-let searchName =
-  params.get("q") || "";
 
-searchName =
-  searchName.trim();
+let search =
+  urlParams.get("q") || "";
 
 
-document.getElementById(
-  "searchInput"
-).value = searchName;
+search =
+  search.trim();
+
+
+let page =
+  parseInt(
+    urlParams.get("page") || "1"
+  );
+
+
+if(
+  isNaN(page) ||
+  page < 1
+){
+
+  page = 1;
+
+}
+
 
 
 /* =========================
    SETTINGS
 ========================= */
 
-const perPage = 20;
-
-let currentPage =
-  parseInt(
-    params.get("page") || "1",
-    10
-  );
-
-if(
-  !Number.isFinite(currentPage) ||
-  currentPage < 1
-){
-  currentPage = 1;
-}
-
+const PER_PAGE = 20;
 
 let videos = [];
 
 
+
 /* =========================
-   ESCAPE HTML
+   ELEMENTS
 ========================= */
 
-function escapeHtml(value){
+const input =
+  document.getElementById(
+    "searchInput"
+  );
 
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+
+const grid =
+  document.getElementById(
+    "videoGrid"
+  );
+
+
+const title =
+  document.getElementById(
+    "pageTitle"
+  );
+
+
+const count =
+  document.getElementById(
+    "resultCount"
+  );
+
+
+const pagination =
+  document.getElementById(
+    "pagination"
+  );
+
+
+
+/* =========================
+   INPUT
+========================= */
+
+input.value =
+  search;
+
+
+
+/* =========================
+   HTML ESCAPE
+========================= */
+
+function escapeHTML(text){
+
+  return String(text || "")
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
 
 }
 
 
+
 /* =========================
-   FORMAT VIEWS
+   VIEWS
 ========================= */
 
 function formatViews(value){
 
-  const views =
+  const number =
     Number(value) || 0;
 
-  if(views >= 1000000){
+
+  if(
+    number >= 1000000
+  ){
 
     return (
-      (views / 1000000)
+      (number / 1000000)
       .toFixed(1)
       .replace(".0","")
-      + "M"
+      +
+      "M"
     );
 
   }
 
-  if(views >= 1000){
+
+  if(
+    number >= 1000
+  ){
 
     return (
-      (views / 1000)
+      (number / 1000)
       .toFixed(1)
       .replace(".0","")
-      + "K"
+      +
+      "K"
     );
 
   }
 
-  return String(views);
+
+  return String(number);
 
 }
 
 
+
 /* =========================
-   LOAD SEARCH RESULTS
+   LOAD VIDEOS
 ========================= */
 
-async function loadSearchResults(){
-
-  const grid =
-    document.getElementById(
-      "resultsGrid"
-    );
-
-  const title =
-    document.getElementById(
-      "searchTitle"
-    );
-
-  const count =
-    document.getElementById(
-      "resultCount"
-    );
+async function loadVideos(){
 
 
   grid.innerHTML = `
-    <div class="loading">
-      Searching videos...
+
+    <div class="message">
+
+      Searching...
+
     </div>
+
   `;
 
 
-  /*
-    Agar naam nahi diya gaya
-    toh search page par
-    all published videos.
-  */
-
-  let queryBuilder =
+  let request =
     supabase
       .from("videos")
       .select(`
@@ -541,30 +758,46 @@ async function loadSearchResults(){
         views,
         created_at
       `)
-      .eq("published",true)
+      .eq(
+        "published",
+        true
+      )
       .order(
         "created_at",
-        {ascending:false}
+        {
+          ascending:false
+        }
       );
 
 
   /*
-    Search:
-    title OR category
+    SEARCH TITLE OR CATEGORY
   */
 
-  if(searchName){
+  if(search){
 
-    const cleanName =
-      searchName
-        .replace(/[%_]/g,"")
-        .replace(/,/g," ");
+    const cleanSearch =
+      search
+        .replace(
+          /[%_]/g,
+          ""
+        )
+        .replace(
+          /,/g,
+          " "
+        );
 
-    if(cleanName){
 
-      queryBuilder =
-        queryBuilder.or(
-          `title.ilike.%${cleanName}%,category.ilike.%${cleanName}%`
+    if(cleanSearch){
+
+      request =
+        request.or(
+          "title.ilike.%" +
+          cleanSearch +
+          "%," +
+          "category.ilike.%" +
+          cleanSearch +
+          "%"
         );
 
     }
@@ -576,37 +809,43 @@ async function loadSearchResults(){
     data,
     error
   } =
-    await queryBuilder;
+  await request;
 
 
   if(error){
 
     console.error(
-      "Search error:",
+      "SEARCH ERROR:",
       error
     );
 
-    title.textContent =
-      "Search Results";
-
-    count.textContent =
-      "Search failed";
 
     grid.innerHTML = `
 
-      <div class="error">
+      <div class="message">
 
         <h2>
-          Something went wrong
+          Search Error
         </h2>
 
-        <p style="margin-top:8px">
-          Please refresh the page.
+        <p>
+          ${escapeHTML(
+            error.message
+          )}
         </p>
 
       </div>
 
     `;
+
+
+    count.textContent =
+      "Unable to load videos";
+
+
+    pagination.innerHTML =
+      "";
+
 
     return;
 
@@ -617,22 +856,42 @@ async function loadSearchResults(){
     data || [];
 
 
+  render();
+
+}
+
+
+
+/* =========================
+   RENDER
+========================= */
+
+function render(){
+
+
   /*
-    Heading
+    TITLE
   */
 
-  if(searchName){
+  if(search){
 
     title.textContent =
-      `Results for "${searchName}"`;
+      'Results for "' +
+      search +
+      '"';
 
-  }else{
+  }
+  else{
 
     title.textContent =
       "All Videos";
 
   }
 
+
+  /*
+    COUNT
+  */
 
   count.textContent =
     videos.length +
@@ -643,73 +902,80 @@ async function loadSearchResults(){
     );
 
 
-  render();
 
-}
-
-
-/* =========================
-   RENDER
-========================= */
-
-function render(){
-
-  const grid =
-    document.getElementById(
-      "resultsGrid"
-    );
-
+  /*
+    NO RESULTS
+  */
 
   if(videos.length === 0){
 
     grid.innerHTML = `
 
-      <div
-        class="no-results">
+      <div class="message">
 
         <h2>
           No videos found
         </h2>
 
-        <p style="margin-top:8px">
-          No video matches
-          "${escapeHtml(searchName)}".
+        <p>
+          ${
+            search
+              ? 'No videos found for "' +
+                escapeHTML(search) +
+                '".'
+              : "There are no published videos yet."
+          }
         </p>
 
       </div>
 
     `;
 
-    document.getElementById(
-      "pagination"
-    ).innerHTML = "";
+
+    pagination.innerHTML =
+      "";
+
 
     return;
 
   }
 
 
+
+  /*
+    TOTAL PAGES
+  */
+
   const totalPages =
     Math.ceil(
       videos.length /
-      perPage
+      PER_PAGE
     );
 
 
-  if(currentPage > totalPages){
+  if(
+    page > totalPages
+  ){
 
-    currentPage =
+    page =
       totalPages;
 
   }
 
 
+
+  /*
+    CURRENT PAGE
+  */
+
   const start =
-    (currentPage - 1) *
-    perPage;
+    (page - 1) *
+    PER_PAGE;
+
 
   const end =
-    start + perPage;
+    start +
+    PER_PAGE;
 
 
   const pageVideos =
@@ -719,96 +985,124 @@ function render(){
     );
 
 
+
+  /*
+    CARDS
+  */
+
   grid.innerHTML =
     pageVideos
-      .map(video => {
+      .map(
+        video => {
 
-        const title =
-          escapeHtml(
-            video.title ||
-            "Untitled Video"
-          );
-
-        const category =
-          escapeHtml(
-            video.category ||
-            "Uncategorized"
-          );
-
-        const views =
-          formatViews(
-            video.views
-          );
+          const videoTitle =
+            escapeHTML(
+              video.title ||
+              "Untitled Video"
+            );
 
 
-        let thumbnail = `
+          const category =
+            escapeHTML(
+              video.category ||
+              "Uncategorized"
+            );
 
-          <div class="placeholder">
+
+          const views =
+            formatViews(
+              video.views
+            );
+
+
+          let thumbnailHTML = `
 
             <div class="play">
               ▶
             </div>
 
-          </div>
-
-        `;
+          `;
 
 
-        if(video.thumbnail_url){
+          if(
+            video.thumbnail_url
+          ){
 
-          thumbnail = `
+            thumbnailHTML = `
 
-            <img
-              src="${escapeHtml(video.thumbnail_url)}"
-              alt="${title}"
-              loading="lazy"
-              onerror="this.style.display='none'"
-            >
+              <img
+                src="${
+                  escapeHTML(
+                    video.thumbnail_url
+                  )
+                }"
+                alt="${videoTitle}"
+                loading="lazy"
+              >
+
+              <div class="play">
+                ▶
+              </div>
+
+            `;
+
+          }
+
+
+          return `
+
+            <a
+              class="card"
+              href="video.html?id=${
+                encodeURIComponent(
+                  video.id
+                )
+              }">
+
+
+              <div class="thumb">
+
+                ${thumbnailHTML}
+
+              </div>
+
+
+              <div class="info">
+
+                <div class="title">
+
+                  ${videoTitle}
+
+                </div>
+
+
+                <div class="meta">
+
+                  👁 ${views}
+
+                  •
+
+                  ${category}
+
+                </div>
+
+              </div>
+
+
+            </a>
 
           `;
 
         }
-
-
-        return `
-
-          <a
-            class="card"
-            href="video.html?id=${encodeURIComponent(video.id)}">
-
-            <div class="thumb">
-
-              ${thumbnail}
-
-            </div>
-
-            <div class="info">
-
-              <div class="title">
-                ${title}
-              </div>
-
-              <div class="meta">
-
-                👁 ${views}
-                •
-                ${category}
-
-              </div>
-
-            </div>
-
-          </a>
-
-        `;
-
-      })
+      )
       .join("");
+
 
 
   renderPagination();
 
 }
+
 
 
 /* =========================
@@ -817,22 +1111,20 @@ function render(){
 
 function renderPagination(){
 
-  const pagination =
-    document.getElementById(
-      "pagination"
-    );
-
 
   const totalPages =
     Math.ceil(
       videos.length /
-      perPage
+      PER_PAGE
     );
 
 
-  if(totalPages <= 1){
+  if(
+    totalPages <= 1
+  ){
 
-    pagination.innerHTML = "";
+    pagination.innerHTML =
+      "";
 
     return;
 
@@ -842,11 +1134,15 @@ function renderPagination(){
   let html = "";
 
 
+
+  /*
+    PREVIOUS
+  */
+
   html += `
 
     <button
-      onclick="changePage(${currentPage - 1})"
-      ${currentPage === 1 ? "disabled" : ""}>
+      id="previousButton">
 
       Previous
 
@@ -855,10 +1151,15 @@ function renderPagination(){
   `;
 
 
+
+  /*
+    PAGE NUMBERS
+  */
+
   let startPage =
     Math.max(
       1,
-      currentPage - 2
+      page - 2
     );
 
 
@@ -891,8 +1192,12 @@ function renderPagination(){
     html += `
 
       <button
-        class="${i === currentPage ? "active" : ""}"
-        onclick="changePage(${i})">
+        class="${
+          i === page
+          ? "active"
+          : ""
+        }"
+        data-page="${i}">
 
         ${i}
 
@@ -903,11 +1208,15 @@ function renderPagination(){
   }
 
 
+
+  /*
+    NEXT
+  */
+
   html += `
 
     <button
-      onclick="changePage(${currentPage + 1})"
-      ${currentPage === totalPages ? "disabled" : ""}>
+      id="nextButton">
 
       Next
 
@@ -919,35 +1228,100 @@ function renderPagination(){
   pagination.innerHTML =
     html;
 
-}
 
 
-/* =========================
-   CHANGE PAGE
-========================= */
+  /*
+    BUTTON EVENTS
+  */
 
-window.changePage =
-function(page){
-
-  const totalPages =
-    Math.ceil(
-      videos.length /
-      perPage
+  const previous =
+    document.getElementById(
+      "previousButton"
     );
 
 
-  if(
-    page < 1 ||
-    page > totalPages
-  ){
-
-    return;
-
-  }
+  const next =
+    document.getElementById(
+      "nextButton"
+    );
 
 
-  currentPage =
-    page;
+  previous.disabled =
+    page === 1;
+
+
+  next.disabled =
+    page === totalPages;
+
+
+
+  previous.onclick =
+    function(){
+
+      if(page > 1){
+
+        goToPage(
+          page - 1
+        );
+
+      }
+
+    };
+
+
+
+  next.onclick =
+    function(){
+
+      if(
+        page < totalPages
+      ){
+
+        goToPage(
+          page + 1
+        );
+
+      }
+
+    };
+
+
+
+  document
+    .querySelectorAll(
+      "[data-page]"
+    )
+    .forEach(
+      button => {
+
+        button.onclick =
+          function(){
+
+            goToPage(
+              Number(
+                this.dataset.page
+              )
+            );
+
+          };
+
+      }
+    );
+
+}
+
+
+
+/* =========================
+   GO TO PAGE
+========================= */
+
+function goToPage(
+  newPage
+){
+
+  page =
+    newPage;
 
 
   const url =
@@ -956,11 +1330,11 @@ function(page){
     );
 
 
-  if(searchName){
+  if(search){
 
     url.searchParams.set(
       "q",
-      searchName
+      search
     );
 
   }
@@ -968,7 +1342,7 @@ function(page){
 
   url.searchParams.set(
     "page",
-    currentPage
+    page
   );
 
 
@@ -987,16 +1361,15 @@ function(page){
     behavior:"smooth"
   });
 
-};
+}
+
 
 
 /* =========================
-   NEW SEARCH
+   SEARCH
 ========================= */
 
-document.getElementById(
-  "searchInput"
-).addEventListener(
+input.addEventListener(
   "keydown",
   function(event){
 
@@ -1025,17 +1398,20 @@ document.getElementById(
 
     window.location.href =
       "search.html?q=" +
-      encodeURIComponent(value);
+      encodeURIComponent(
+        value
+      );
 
   }
 );
+
 
 
 /* =========================
    START
 ========================= */
 
-loadSearchResults();
+loadVideos();
 
 </script>
 
