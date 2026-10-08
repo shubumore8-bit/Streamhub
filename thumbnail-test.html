@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thumbnail Test - DesiVexa</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #080808;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    h2 {
+      color: #e50914;
+    }
+
+    .box {
+      max-width: 600px;
+      margin: auto;
+    }
+
+    #status {
+      margin: 15px 0;
+      padding: 12px;
+      background: #151515;
+      border-radius: 8px;
+      color: #aaa;
+      word-break: break-word;
+    }
+
+    img {
+      width: 100%;
+      max-width: 600px;
+      display: block;
+      border-radius: 12px;
+      border: 1px solid #333;
+      background: #111;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+
+  <h2>DesiVexa Thumbnail Test</h2>
+
+  <div id="status">
+    Testing thumbnail...
+  </div>
+
+  <img id="thumb" alt="Thumbnail">
+
+</div>
+
+<script type="module">
+
+const SUPABASE_URL =
+  "https://mfrbbclweacgjqmyoiub.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "sb_publishable_jRZXjQ3LjkBlny5GeEHL0Q_vRGOk1BF";
+
+const FUNCTION_URL =
+  `${SUPABASE_URL}/functions/v1/get-video-media`;
+
+const VIDEO_ID =
+  "28d1a8b0-39f9-44a4-b6f7-24b021843fec";
+
+const statusBox =
+  document.getElementById("status");
+
+const thumb =
+  document.getElementById("thumb");
+
+async function testThumbnail() {
+
+  try {
+
+    statusBox.textContent =
+      "Calling get-video-media...";
+
+    const response = await fetch(FUNCTION_URL, {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+      },
+
+      body: JSON.stringify({
+        videoId: VIDEO_ID
+      })
+    });
+
+    const result = await response.json();
+
+    console.log("FUNCTION RESPONSE:", result);
+
+    if (!response.ok) {
+      throw new Error(
+        result.error || "Function request failed"
+      );
+    }
+
+    if (!result.thumbnailUrl) {
+      throw new Error(
+        "Function returned EMPTY thumbnailUrl"
+      );
+    }
+
+    statusBox.textContent =
+      "Thumbnail URL received successfully.";
+
+    thumb.src = result.thumbnailUrl;
+
+    thumb.onload = () => {
+      statusBox.textContent =
+        "✅ THUMBNAIL WORKING";
+    };
+
+    thumb.onerror = () => {
+      statusBox.textContent =
+        "❌ Thumbnail URL received, but image could not load.";
+    };
+
+  } catch (error) {
+
+    console.error(error);
+
+    statusBox.textContent =
+      "❌ ERROR: " + error.message;
+  }
+}
+
+testThumbnail();
+
+</script>
+
+</body>
+</html>
