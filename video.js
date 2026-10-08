@@ -1,458 +1,892 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+import { createClient }
+from "https://esm.sh/@supabase/supabase-js@2";
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const page = document.querySelector("#page");
+import {
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+} from "./config.js";
 
-const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({
-  "&":"&amp;",
-  "<":"&lt;",
-  ">":"&gt;",
-  '"':"&quot;",
-  "'":"&#39;"
-}[c]));
+const supabase = createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+);
 
-const getVideoId = () => new URLSearchParams(location.search).get("id");
+const page =
+document.getElementById("page");
 
-const visitorId = () => {
-  let v = localStorage.getItem("desivexa_visitor_id");
-  if (!v) {
-    v = crypto.randomUUID();
-    localStorage.setItem("desivexa_visitor_id", v);
-  }
-  return v;
-};
+const params =
+new URLSearchParams(
+window.location.search
+);
 
-function isUUID(value) {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+const videoId =
+params.get("id");
+
+const FALLBACK_THUMB =
+"https://via.placeholder.com/640x360?text=DesiVexa";
+
+function escapeHTML(value) {
+
+if (
+value === null ||
+value === undefined
+) {
+return "";
 }
 
-function age() {
-  if (localStorage.getItem("desivexa_age_verified") === "1") return true;
+return String(value)
+.replace(/&/g, "&")
+.replace(/</g, "<")
+.replace(/>/g, ">")
+.replace(/"/g, """)
+.replace(/'/g, "'");
 
-  const ok = confirm(
-    "18+ ONLY\n\nYou must be 18 years or older to access this website."
-  );
+}
 
-  if (!ok) {
-    location.href = "index.html";
-    return false;
-  }
+function isUUID(value) {
 
-  localStorage.setItem("desivexa_age_verified", "1");
-  return true;
+return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+.test(value);
+
+}
+
+function formatViews(views) {
+
+const number =
+Number(views || 0);
+
+if (number >= 1000000) {
+return (
+number / 1000000
+).toFixed(1) + "M";
+}
+
+if (number >= 1000) {
+return (
+number / 1000
+).toFixed(1) + "K";
+}
+
+return String(number);
+
 }
 
 function showError(title, message) {
-  page.innerHTML = `
-    <div class="videoError">
-      <h2>${esc(title)}</h2>
-      <p>${esc(message)}</p>
-      <a href="index.html">Go Home</a>
-    </div>
-  `;
+
+page.innerHTML = "<div class="error"> <h2>${escapeHTML(title)}</h2> <p>${escapeHTML(message)}</p> <a href="index.html">Go Home</a> </div>";
+
 }
 
-function card(v) {
-  const title = esc(v.title || "Untitled video");
-  const cat = esc(v.category || "Other");
-  const views = Number(v.views || 0).toLocaleString();
+/* -------------------------
+CHECK VIDEO ID
+------------------------- */
 
-  const thumb = v.thumbnail_url
-    ? `<img src="${esc(v.thumbnail_url)}" alt="${title}" loading="lazy">`
-    : `<div class="noThumb">DESIVEXA</div>`;
+if (!videoId) {
 
-  return `
-    <a class="card" href="video.html?id=${encodeURIComponent(v.id)}">
-      <div class="thumb">
-        ${thumb}
-        <div class="thumbOverlay"></div>
-        <div class="playCircle">▶</div>
-        <div class="cardViews">${views} views</div>
-      </div>
-      <div class="body">
-        <h3>${title}</h3>
-        <div class="cardMeta">
-          <span>${cat}</span>
-          <span>${views} views</span>
-        </div>
-      </div>
-    </a>
-  `;
+showError(
+"Video not found",
+"No video ID was provided."
+);
+
+} else if (!isUUID(videoId)) {
+
+showError(
+"Invalid video link",
+"This link does not contain a valid video ID."
+);
+
+} else {
+
+loadVideo();
+
 }
 
-async function related(current) {
-  const box = document.querySelector("#relatedVideos");
-  if (!box) return;
+/* -------------------------
+LOAD VIDEO
+------------------------- */
 
-  const { data, error } = await supabase
-    .from("videos")
-    .select("id,title,category,thumbnail_url,views,created_at")
-    .eq("published", true)
-    .neq("id", current)
-    .order("created_at", { ascending: false })
-    .limit(20);
+async function loadVideo() {
 
-  if (error || !data?.length) {
-    box.innerHTML = `<p class="muted">No related videos yet.</p>`;
-    return;
-  }
+const {
+data: video,
+error
+} = await supabase
 
-  box.innerHTML = `
-    <div class="dvSectionTitle">
-      <div>
-        <span class="sectionLabel">WATCH NEXT</span>
-        <h2>Related Videos</h2>
-      </div>
-    </div>
-    <div class="dvGrid">
-      ${data.map(card).join("")}
-    </div>
-  `;
+.from("videos")
+
+.select(`
+  id,
+  title,
+  category,
+  description,
+  thumbnail_url,
+  video_url,
+  views,
+  created_at
+`)
+
+.eq("id", videoId)
+
+.eq("published", true)
+
+.maybeSingle();
+
+if (error) {
+
+console.error(error);
+
+showError(
+  "Could not load video",
+  "There was a problem loading this video."
+);
+
+return;
+
 }
 
-async function social(video) {
-  const likeBtn = document.querySelector("#likeBtn");
-  const likeCount = document.querySelector("#likeCount");
-  const commentBtn = document.querySelector("#commentBtn");
-  const comments = document.querySelector("#comments");
-  const vid = visitorId();
+if (!video) {
 
-  async function refreshLikes() {
-    const { count } = await supabase
-      .from("video_likes")
-      .select("id", { count: "exact", head: true })
-      .eq("video_id", video.id);
+showError(
+  "Video not found",
+  "This video may have been removed or unpublished."
+);
 
-    if (likeCount) {
-      likeCount.textContent = Number(count || 0).toLocaleString();
-    }
+return;
 
-    const { data } = await supabase
-      .from("video_likes")
-      .select("id")
-      .eq("video_id", video.id)
-      .eq("visitor_id", vid)
-      .maybeSingle();
+}
 
-    if (likeBtn) {
-      likeBtn.classList.toggle("active", !!data);
-    }
-  }
+renderVideo(video);
 
-  let likeBusy = false;
+increaseViews(video.id);
 
-  likeBtn?.addEventListener("click", async () => {
-    if (likeBusy) return;
+loadRelated(video);
 
-    likeBusy = true;
-    likeBtn.disabled = true;
+loadComments(video.id);
 
-    try {
-      const { data } = await supabase
-        .from("video_likes")
-        .select("id")
-        .eq("video_id", video.id)
-        .eq("visitor_id", vid)
-        .maybeSingle();
+}
 
-      if (data) {
-        await supabase
-          .from("video_likes")
-          .delete()
-          .eq("id", data.id);
-      } else {
-        await supabase
-          .from("video_likes")
-          .insert({
-            video_id: video.id,
-            visitor_id: vid
-          });
-      }
+/* -------------------------
+RENDER VIDEO
+------------------------- */
 
-      await refreshLikes();
-    } catch (e) {
-      console.warn("Like error:", e);
-    } finally {
-      likeBusy = false;
-      likeBtn.disabled = false;
-    }
-  });
+function renderVideo(video) {
 
-  commentBtn?.addEventListener("click", () => {
+const title =
+escapeHTML(
+video.title || "Untitled Video"
+);
+
+const category =
+escapeHTML(
+video.category || "Video"
+);
+
+const description =
+escapeHTML(
+video.description || ""
+);
+
+const videoURL =
+video.video_url || "";
+
+if (!videoURL) {
+
+page.innerHTML = `
+  <div class="error">
+    Video file is not available.
+  </div>
+`;
+
+return;
+
+}
+
+page.innerHTML = `
+
+<div class="player">
+
+  <video
+    id="mainVideo"
+    controls
+    playsinline
+    preload="metadata"
+    poster="${escapeHTML(
+      video.thumbnail_url || FALLBACK_THUMB
+    )}"
+  >
+
+    <source
+      src="${escapeHTML(videoURL)}"
+      type="video/mp4"
+    >
+
+    Your browser does not support video playback.
+
+  </video>
+
+</div>
+
+
+<h1 class="video-title">
+  ${title}
+</h1>
+
+
+<div class="video-meta">
+  ${category}
+  ·
+  ${formatViews(video.views)} views
+</div>
+
+
+<div class="actions">
+
+  <button
+    id="likeBtn"
+    class="action-btn"
+  >
+    ❤️ Like
+  </button>
+
+  <button
+    id="commentBtn"
+    class="action-btn"
+  >
+    💬 Comments
+  </button>
+
+  <button
+    id="shareBtn"
+    class="action-btn"
+  >
+    🔗 Share
+  </button>
+
+</div>
+
+
+${
+  description
+    ? `
+      <div class="description">
+        ${description}
+      </div>
+    `
+    : ""
+}
+
+
+<section
+  id="commentsSection"
+  class="comments-box"
+>
+
+  <div class="comments-title">
+    Comments
+  </div>
+
+  <form
+    id="commentForm"
+    class="comment-form"
+  >
+
+    <input
+      id="commentInput"
+      type="text"
+      maxlength="500"
+      placeholder="Write a comment..."
+      autocomplete="off"
+      required
+    >
+
+    <button type="submit">
+      Post
+    </button>
+
+  </form>
+
+  <div id="commentsList">
+    <div class="loading">
+      Loading comments...
+    </div>
+  </div>
+
+</section>
+
+
+<section class="related">
+
+  <div class="related-title">
+    Related Videos
+  </div>
+
+  <div
+    id="relatedGrid"
+    class="related-grid"
+  >
+
+    <div class="loading">
+      Loading related videos...
+    </div>
+
+  </div>
+
+</section>
+
+`;
+
+document
+.getElementById("commentBtn")
+?.addEventListener(
+"click",
+() => {
+
     document
-      .querySelector("#commentSection")
-      ?.scrollIntoView({ behavior: "smooth" });
-  });
+      .getElementById("commentsSection")
+      ?.scrollIntoView({
+        behavior: "smooth"
+      });
 
-  async function loadComments() {
-    if (!comments) return;
-
-    const { data, error } = await supabase
-      .from("video_comments")
-      .select("display_name,body,created_at")
-      .eq("video_id", video.id)
-      .eq("approved", true)
-      .order("created_at", { ascending: false })
-      .limit(50);
-
-    if (error) {
-      comments.innerHTML =
-        `<p class="muted">Comments are not available yet.</p>`;
-      return;
-    }
-
-    comments.innerHTML = data?.length
-      ? data.map(c => `
-          <div class="comment">
-            <strong>${esc(c.display_name || "User")}</strong>
-            <p>${esc(c.body)}</p>
-          </div>
-        `).join("")
-      : `<p class="muted">No comments yet.</p>`;
   }
+);
 
-  document.querySelector("#commentForm")?.addEventListener("submit", async e => {
-    e.preventDefault();
+document
+.getElementById("shareBtn")
+?.addEventListener(
+"click",
+shareVideo
+);
 
-    const form = e.target;
-    const submit = form.querySelector("button[type=submit]");
-    const name =
-      document.querySelector("#commentName")?.value.trim() || "User";
-    const body =
-      document.querySelector("#commentText")?.value.trim();
+document
+.getElementById("likeBtn")
+?.addEventListener(
+"click",
+likeVideo
+);
 
-    if (!body) return;
+document
+.getElementById("commentForm")
+?.addEventListener(
+"submit",
+postComment
+);
 
-    if (submit) {
-      submit.disabled = true;
-      submit.textContent = "Submitting...";
-    }
-
-    try {
-      const { error } = await supabase
-        .from("video_comments")
-        .insert({
-          video_id: video.id,
-          visitor_id: vid,
-          display_name: name.slice(0, 60),
-          body: body.slice(0, 2000),
-          approved: false
-        });
-
-      if (error) {
-        console.error(error);
-        alert("Comment could not be submitted.");
-        return;
-      }
-
-      form.reset();
-      alert("Comment submitted for review.");
-      await loadComments();
-
-    } finally {
-      if (submit) {
-        submit.disabled = false;
-        submit.textContent = "Post Comment";
-      }
-    }
-  });
-
-  refreshLikes();
-  loadComments();
 }
 
-async function load() {
-  if (!age()) return;
+/* -------------------------
+VIEWS
+------------------------- */
 
-  const videoId = getVideoId();
+async function increaseViews(id) {
 
-  if (!videoId) {
-    showError("Video not found", "No video ID was provided.");
-    return;
-  }
+try {
 
-  // IMPORTANT: videos.id is a UUID column.
-  if (!isUUID(videoId)) {
-    showError(
-      "Invalid video link",
-      "This link does not contain a valid video ID."
-    );
-    return;
-  }
+const {
+  data: current,
+  error: readError
+} = await supabase
 
-  const { data: video, error: e } = await supabase
-    .from("videos")
-    .select(
-      "id,title,category,description,video_url,thumbnail_url,views,created_at"
-    )
-    .eq("id", videoId)
-    .eq("published", true)
-    .maybeSingle();
+  .from("videos")
 
-  if (e) {
-    console.error(e);
-    showError("Could not load video", e.message);
-    return;
-  }
+  .select("views")
 
-  if (!video) {
-    showError(
-      "Video unavailable",
-      "This video does not exist or is not published."
-    );
-    return;
-  }
+  .eq("id", id)
 
-  if (!video.video_url) {
-    showError(
-      "Video unavailable",
-      "This video has no video file URL."
-    );
-    return;
-  }
+  .maybeSingle();
 
-  const title = esc(video.title || "Untitled video");
-  const cat = esc(video.category || "Other");
-  const desc = esc(video.description || "");
-  const views = Number(video.views || 0).toLocaleString();
-  const poster = video.thumbnail_url
-    ? `poster="${esc(video.thumbnail_url)}"`
-    : "";
 
-  page.innerHTML = `
-    <section class="videoWatch">
-
-      <div class="videoPlayerWrap">
-        <video
-          id="player"
-          controls
-          playsinline
-          preload="metadata"
-          ${poster}
-        >
-          <source
-            src="${esc(video.video_url)}"
-            type="video/mp4"
-          >
-          Your browser does not support HTML5 video.
-        </video>
-      </div>
-
-      <div class="videoInfo">
-        <h1>${title}</h1>
-
-        <div class="videoMeta">
-          <span>${cat}</span>
-          <span>${views} views</span>
-        </div>
-
-        ${desc
-          ? `<p class="videoDescription">${desc}</p>`
-          : ""}
-
-        <div class="videoActions">
-          <button type="button" id="likeBtn">
-            ❤ <span id="likeCount">0</span>
-          </button>
-
-          <button type="button" id="commentBtn">
-            💬 Comment
-          </button>
-
-          <button type="button" id="shareBtn">
-            Share
-          </button>
-
-          <button type="button" id="copyBtn">
-            Copy Link
-          </button>
-        </div>
-
-        <span class="videoTag">${cat}</span>
-      </div>
-
-      <div class="dvAdSlot midAd"></div>
-
-      <section id="commentSection" class="commentSection">
-
-        <div class="dvSectionTitle">
-          <div>
-            <span class="sectionLabel">COMMUNITY</span>
-            <h2>Comments</h2>
-          </div>
-        </div>
-
-        <form id="commentForm" class="commentForm">
-          <input
-            id="commentName"
-            maxlength="60"
-            placeholder="Your name"
-            required
-          >
-
-          <textarea
-            id="commentText"
-            maxlength="2000"
-            rows="4"
-            placeholder="Write a comment..."
-            required
-          ></textarea>
-
-          <button type="submit">
-            Post Comment
-          </button>
-        </form>
-
-        <div id="comments"></div>
-
-      </section>
-
-      <div id="relatedVideos"></div>
-
-    </section>
-  `;
-
-  document.querySelector("#shareBtn")?.addEventListener(
-    "click",
-    async () => {
-      try {
-        if (navigator.share) {
-          await navigator.share({
-            title: video.title || "DesiVexa",
-            url: location.href
-          });
-        } else {
-          await navigator.clipboard.writeText(location.href);
-          alert("Video link copied.");
-        }
-      } catch {}
-    }
-  );
-
-  document.querySelector("#copyBtn")?.addEventListener(
-    "click",
-    async () => {
-      try {
-        await navigator.clipboard.writeText(location.href);
-        alert("Video link copied.");
-      } catch {
-        prompt("Copy this link:", location.href);
-      }
-    }
-  );
-
-  try {
-    await supabase.rpc(
-      "increment_video_views",
-      { video_id: video.id }
-    );
-  } catch (e) {
-    console.warn("View counter:", e);
-  }
-
-  await social(video);
-  await related(video.id);
+if (readError || !current) {
+  return;
 }
 
-load();
+
+const newViews =
+  Number(current.views || 0) + 1;
+
+
+await supabase
+
+  .from("videos")
+
+  .update({
+    views: newViews
+  })
+
+  .eq("id", id);
+
+} catch (error) {
+
+console.error(
+  "View update error:",
+  error
+);
+
+}
+
+}
+
+/* -------------------------
+LIKE
+------------------------- */
+
+function likeVideo() {
+
+const button =
+document.getElementById(
+"likeBtn"
+);
+
+if (!button) return;
+
+button.textContent =
+"❤️ Liked";
+
+button.disabled = true;
+
+}
+
+/* -------------------------
+SHARE
+------------------------- */
+
+async function shareVideo() {
+
+const url =
+window.location.href;
+
+try {
+
+if (
+  navigator.share
+) {
+
+  await navigator.share({
+    title: document.title,
+    url
+  });
+
+  return;
+}
+
+
+await navigator.clipboard.writeText(
+  url
+);
+
+
+alert(
+  "Video link copied!"
+);
+
+} catch (error) {
+
+console.error(
+  "Share error:",
+  error
+);
+
+}
+
+}
+
+/* -------------------------
+RELATED VIDEOS
+------------------------- */
+
+async function loadRelated(video) {
+
+const grid =
+document.getElementById(
+"relatedGrid"
+);
+
+if (!grid) return;
+
+let query =
+supabase
+
+  .from("videos")
+
+  .select(`
+    id,
+    title,
+    category,
+    thumbnail_url,
+    views,
+    created_at
+  `)
+
+  .eq("published", true)
+
+  .neq("id", video.id);
+
+if (video.category) {
+
+query =
+  query.eq(
+    "category",
+    video.category
+  );
+
+}
+
+const {
+data,
+error
+} = await query
+
+.order("created_at", {
+  ascending: false
+})
+
+.limit(20);
+
+if (error) {
+
+console.error(error);
+
+grid.innerHTML = `
+  <div class="error">
+    Could not load related videos.
+  </div>
+`;
+
+return;
+
+}
+
+let videos =
+data || [];
+
+/*
+
+* Agar same category me kam videos hain,
+* to baaki latest videos le aao.
+  */
+
+if (videos.length < 20) {
+
+const {
+  data: extra
+} = await supabase
+
+  .from("videos")
+
+  .select(`
+    id,
+    title,
+    category,
+    thumbnail_url,
+    views,
+    created_at
+  `)
+
+  .eq("published", true)
+
+  .neq("id", video.id)
+
+  .order("created_at", {
+    ascending: false
+  })
+
+  .limit(20);
+
+
+if (extra) {
+
+  const existing =
+    new Set(
+      videos.map(
+        item => item.id
+      )
+    );
+
+
+  for (const item of extra) {
+
+    if (
+      !existing.has(item.id)
+    ) {
+
+      videos.push(item);
+
+      existing.add(item.id);
+
+    }
+
+  }
+
+}
+
+}
+
+videos =
+videos.slice(0, 20);
+
+if (!videos.length) {
+
+grid.innerHTML = `
+  <div class="empty">
+    No related videos available.
+  </div>
+`;
+
+return;
+
+}
+
+grid.innerHTML =
+videos
+.map(relatedCard)
+.join("");
+
+}
+
+function relatedCard(video) {
+
+const id =
+encodeURIComponent(
+video.id
+);
+
+const title =
+escapeHTML(
+video.title || "Untitled Video"
+);
+
+const thumbnail =
+video.thumbnail_url ||
+FALLBACK_THUMB;
+
+return `
+
+<a
+  class="related-card"
+  href="video.html?id=${id}"
+>
+
+  <img
+    src="${escapeHTML(thumbnail)}"
+    alt="${title}"
+    loading="lazy"
+    onerror="this.src='${FALLBACK_THUMB}'"
+  >
+
+  <div class="related-info">
+
+    <div class="related-name">
+      ${title}
+    </div>
+
+  </div>
+
+</a>
+
+`;
+
+}
+
+/* -------------------------
+COMMENTS
+------------------------- */
+
+async function loadComments(videoId) {
+
+const list =
+document.getElementById(
+"commentsList"
+);
+
+if (!list) return;
+
+/*
+
+* This assumes a comments table with:
+* id
+* video_id
+* name
+* comment
+* created_at
+  */
+
+const {
+data,
+error
+} = await supabase
+
+.from("comments")
+
+.select(`
+  id,
+  video_id,
+  name,
+  comment,
+  created_at
+`)
+
+.eq("video_id", videoId)
+
+.order("created_at", {
+  ascending: false
+})
+
+.limit(100);
+
+if (error) {
+
+console.error(
+  "Comments error:",
+  error
+);
+
+
+list.innerHTML = `
+  <div class="empty">
+    Comments are currently unavailable.
+  </div>
+`;
+
+return;
+
+}
+
+if (!data || data.length === 0) {
+
+list.innerHTML = `
+  <div class="empty">
+    No comments yet. Be the first!
+  </div>
+`;
+
+return;
+
+}
+
+list.innerHTML =
+data
+.map(commentCard)
+.join("");
+
+}
+
+function commentCard(comment) {
+
+const name =
+escapeHTML(
+comment.name || "Anonymous"
+);
+
+const text =
+escapeHTML(
+comment.comment || ""
+);
+
+return `
+
+<div class="comment">
+
+  <div class="comment-name">
+    ${name}
+  </div>
+
+  <div class="comment-text">
+    ${text}
+  </div>
+
+</div>
+
+`;
+
+}
+
+/* -------------------------
+POST COMMENT
+------------------------- */
+
+async function postComment(event) {
+
+event.preventDefault();
+
+const input =
+document.getElementById(
+"commentInput"
+);
+
+const button =
+event.target.querySelector(
+"button"
+);
+
+if (!input) return;
+
+const commentText =
+input.value.trim();
+
+if (!commentText) return;
+
+if (commentText.length > 500) {
+
+alert(
+  "Comment is too long."
+);
+
+return;
+
+}
+
+button.disabled = true;
+
+button.textContent =
+"Posting...";
+
+/*
+
+* Anonymous comments.
+  */
+
+const {
+error
+} = await supabase
+
+.from("comments")
+
+.insert({
+
+  video_id: videoId,
+
+  name: "Anonymous",
+
+  comment: commentText
+
+});
+
+if (error) {
+
+console.error(error);
+
+
+alert(
+  "Could not post comment."
+);
+
+button.disabled = false;
+
+button.textContent =
+  "Post";
+
+return;
+
+}
+
+input.value = "";
+
+button.disabled = false;
+
+button.textContent =
+"Post";
+
+await loadComments(
+videoId
+);
+
+}
