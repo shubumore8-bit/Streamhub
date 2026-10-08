@@ -1035,9 +1035,9 @@ authorized content involving adults.
 
 <script type="module">
 
-/* =========================
+/* ======================================================
    SUPABASE
-========================= */
+====================================================== */
 
 import {
   createClient
@@ -1060,9 +1060,17 @@ const supabase =
   );
 
 
-/* =========================
+/* ======================================================
+   MEDIA FUNCTION
+====================================================== */
+
+const MEDIA_FUNCTION =
+  `${SUPABASE_URL}/functions/v1/get-video-media`;
+
+
+/* ======================================================
    SETTINGS
-========================= */
+====================================================== */
 
 const RANDOM_PER_PAGE = 16;
 
@@ -1072,7 +1080,9 @@ let randomPage =
     parseInt(
       new URLSearchParams(
         location.search
-      ).get("randomPage") || "1"
+      ).get(
+        "randomPage"
+      ) || "1"
     )
   );
 
@@ -1081,9 +1091,18 @@ let allVideos = [];
 let randomVideos = [];
 
 
-/* =========================
+/*
+  Signed thumbnail cache.
+  Isse same video ke thumbnail ke liye
+  baar-baar request nahi jayegi.
+*/
+const thumbnailCache =
+  new Map();
+
+
+/* ======================================================
    ELEMENTS
-========================= */
+====================================================== */
 
 const menuButton =
   document.getElementById(
@@ -1116,51 +1135,60 @@ const categoriesBox =
   );
 
 
-/* =========================
+/* ======================================================
    MENU
-========================= */
+====================================================== */
 
-menuButton.addEventListener(
-  "click",
-  () => {
+if(menuButton){
 
-    mobileMenu.classList.toggle(
-      "open"
-    );
+  menuButton.addEventListener(
+    "click",
+    () => {
 
-  }
-);
-
-
-/* =========================
-   SEARCH TOGGLE
-========================= */
-
-searchButton.addEventListener(
-  "click",
-  () => {
-
-    searchBox.classList.toggle(
-      "show"
-    );
-
-    if(
-      searchBox.classList.contains(
-        "show"
-      )
-    ){
-
-      searchInput.focus();
+      mobileMenu.classList.toggle(
+        "open"
+      );
 
     }
+  );
 
-  }
-);
+}
 
 
-/* =========================
+/* ======================================================
+   SEARCH TOGGLE
+====================================================== */
+
+if(searchButton){
+
+  searchButton.addEventListener(
+    "click",
+    () => {
+
+      searchBox.classList.toggle(
+        "show"
+      );
+
+
+      if(
+        searchBox.classList.contains(
+          "show"
+        )
+      ){
+
+        searchInput.focus();
+
+      }
+
+    }
+  );
+
+}
+
+
+/* ======================================================
    ESCAPE HTML
-========================= */
+====================================================== */
 
 function escapeHTML(value){
 
@@ -1196,49 +1224,65 @@ function escapeHTML(value){
 }
 
 
-/* =========================
+/* ======================================================
    FORMAT VIEWS
-========================= */
+====================================================== */
 
 function formatViews(value){
 
   const n =
-    Number(value || 0);
+    Number(
+      value || 0
+    );
 
-  if(n >= 1000000){
+
+  if(
+    n >= 1000000
+  ){
 
     return (
       n / 1000000
     )
     .toFixed(1)
-    .replace(".0","") + "M";
+    .replace(
+      ".0",
+      ""
+    ) + "M";
 
   }
 
-  if(n >= 1000){
+
+  if(
+    n >= 1000
+  ){
 
     return (
       n / 1000
     )
     .toFixed(1)
-    .replace(".0","") + "K";
+    .replace(
+      ".0",
+      ""
+    ) + "K";
 
   }
+
 
   return String(n);
 
 }
 
 
-/* =========================
+/* ======================================================
    TIME AGO
-========================= */
+====================================================== */
 
 function timeAgo(date){
 
   if(!date){
     return "";
   }
+
 
   const seconds =
     Math.floor(
@@ -1248,80 +1292,115 @@ function timeAgo(date){
       ) / 1000
     );
 
-  if(seconds < 60){
+
+  if(
+    seconds < 60
+  ){
+
     return "just now";
+
   }
+
 
   const minutes =
     Math.floor(
       seconds / 60
     );
 
-  if(minutes < 60){
-    return minutes + "m ago";
+
+  if(
+    minutes < 60
+  ){
+
+    return (
+      minutes +
+      "m ago"
+    );
+
   }
+
 
   const hours =
     Math.floor(
       minutes / 60
     );
 
-  if(hours < 24){
-    return hours + "h ago";
+
+  if(
+    hours < 24
+  ){
+
+    return (
+      hours +
+      "h ago"
+    );
+
   }
+
 
   const days =
     Math.floor(
       hours / 24
     );
 
-  if(days < 30){
-    return days + "d ago";
+
+  if(
+    days < 30
+  ){
+
+    return (
+      days +
+      "d ago"
+    );
+
   }
+
 
   return (
     Math.floor(
       days / 30
-    ) + "mo ago"
+    ) +
+    "mo ago"
   );
 
 }
 
 
-/* =========================
+/* ======================================================
    FALLBACK THUMBNAIL
-========================= */
+====================================================== */
 
 function fallbackThumbnail(){
 
   const svg = `
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="800"
-    height="450"
-  >
-
-    <rect
-      width="100%"
-      height="100%"
-      fill="#101d28"
-    />
-
-    <text
-      x="50%"
-      y="50%"
-      text-anchor="middle"
-      dominant-baseline="middle"
-      fill="#ff1744"
-      font-size="48"
-      font-family="Arial"
-      font-weight="bold"
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="800"
+      height="450"
     >
-      DesiVexa
-    </text>
 
-  </svg>
+      <rect
+        width="100%"
+        height="100%"
+        fill="#101d28"
+      />
+
+      <text
+        x="50%"
+        y="50%"
+        text-anchor="middle"
+        dominant-baseline="middle"
+        fill="#ff1744"
+        font-size="48"
+        font-family="Arial"
+        font-weight="bold"
+      >
+        DesiVexa
+      </text>
+
+    </svg>
   `;
+
 
   return (
     "data:image/svg+xml;charset=UTF-8," +
@@ -1331,100 +1410,300 @@ function fallbackThumbnail(){
 }
 
 
-/* =========================
-   VIDEO CARD
-========================= */
+/* ======================================================
+   GET SIGNED THUMBNAIL
+====================================================== */
 
-function videoCard(video){
+async function getThumbnail(
+  videoId
+){
+
+  /*
+    Cache me already hai
+  */
+  if(
+    thumbnailCache.has(
+      videoId
+    )
+  ){
+
+    return thumbnailCache.get(
+      videoId
+    );
+
+  }
+
+
+  try{
+
+    const response =
+      await fetch(
+        MEDIA_FUNCTION,
+        {
+          method:
+            "POST",
+
+          headers:{
+            "Content-Type":
+              "application/json",
+
+            "apikey":
+              SUPABASE_ANON_KEY,
+
+            "Authorization":
+              `Bearer ${SUPABASE_ANON_KEY}`
+          },
+
+          body:
+            JSON.stringify({
+              videoId:
+                videoId
+            })
+        }
+      );
+
+
+    const text =
+      await response.text();
+
+
+    let result = {};
+
+
+    try{
+
+      result =
+        JSON.parse(
+          text
+        );
+
+    }catch{
+
+      result = {
+        error:
+          text
+      };
+
+    }
+
+
+    if(
+      !response.ok
+    ){
+
+      throw new Error(
+        result.error ||
+        `Media request failed (${response.status})`
+      );
+
+    }
+
+
+    const thumbnailUrl =
+      result.thumbnailUrl ||
+      "";
+
+
+    thumbnailCache.set(
+      videoId,
+      thumbnailUrl
+    );
+
+
+    return thumbnailUrl;
+
+
+  }catch(error){
+
+    console.error(
+      "THUMBNAIL ERROR:",
+      videoId,
+      error
+    );
+
+
+    thumbnailCache.set(
+      videoId,
+      ""
+    );
+
+
+    return "";
+
+  }
+
+}
+
+
+/* ======================================================
+   PREPARE THUMBNAILS
+====================================================== */
+
+async function prepareThumbnails(
+  videos
+){
+
+  if(
+    !videos ||
+    videos.length === 0
+  ){
+
+    return;
+
+  }
+
+
+  await Promise.all(
+    videos.map(
+      async video => {
+
+        if(
+          video._thumbnailReady
+        ){
+
+          return;
+
+        }
+
+
+        if(
+          !video.thumbnail_url
+        ){
+
+          video._thumbnailUrl =
+            "";
+
+          video._thumbnailReady =
+            true;
+
+          return;
+
+        }
+
+
+        video._thumbnailUrl =
+          await getThumbnail(
+            video.id
+          );
+
+
+        video._thumbnailReady =
+          true;
+
+      }
+    )
+  );
+
+}
+
+
+/* ======================================================
+   VIDEO CARD
+====================================================== */
+
+function videoCard(
+  video
+){
 
   const id =
     encodeURIComponent(
-      String(video.id)
+      String(
+        video.id
+      )
     );
+
+
+  const thumbnail =
+    video._thumbnailUrl ||
+    fallbackThumbnail();
+
 
   return `
 
-  <article
-    class="videoCard"
-    onclick="openVideo('${id}')"
-  >
+    <article
+      class="videoCard"
+      onclick="openVideo('${id}')"
+    >
 
-    <div class="videoThumb">
+      <div class="videoThumb">
 
-      <img
-        src="${
-          escapeHTML(
-            video.thumbnail_url ||
-            fallbackThumbnail()
-          )
-        }"
-        alt="${
-          escapeHTML(
+        <img
+          src="${escapeHTML(
+            thumbnail
+          )}"
+          alt="${escapeHTML(
             video.title ||
             "Video"
-          )
-        }"
-        loading="lazy"
-      >
+          )}"
+          loading="lazy"
+        >
 
-      <div class="playIcon">
-        ▶
+
+        <div class="playIcon">
+          ▶
+        </div>
+
+
+        <div class="hdBadge">
+          HD
+        </div>
+
       </div>
 
-      <div class="hdBadge">
-        HD
-      </div>
 
-    </div>
+      <div class="videoTitle">
 
-    <div class="videoTitle">
-      ${
-        escapeHTML(
+        ${escapeHTML(
           video.title ||
           "Untitled Video"
-        )
-      }
-    </div>
+        )}
 
-    <span class="videoCategory">
-      ${
-        escapeHTML(
+      </div>
+
+
+      <span class="videoCategory">
+
+        ${escapeHTML(
           video.category ||
           "Other"
-        )
-      }
-    </span>
+        )}
 
-    <div class="videoMeta">
-      ◉ ${
-        formatViews(
+      </span>
+
+
+      <div class="videoMeta">
+
+        ◉
+        ${formatViews(
           video.views
-        )
-      } views
-      ·
-      ${
-        timeAgo(
+        )}
+        views
+        ·
+        ${timeAgo(
           video.created_at
-        )
-      }
-    </div>
+        )}
 
-  </article>
+      </div>
+
+    </article>
 
   `;
 
 }
 
 
-/* =========================
+/* ======================================================
    OPEN VIDEO
-========================= */
+====================================================== */
 
 window.openVideo =
 function(id){
 
   const videoId =
-    decodeURIComponent(id);
+    decodeURIComponent(
+      id
+    );
+
 
   location.href =
     "video.html?id=" +
@@ -1435,18 +1714,26 @@ function(id){
 };
 
 
-/* =========================
+/* ======================================================
    SHUFFLE
-========================= */
+====================================================== */
 
-function shuffle(array){
+function shuffle(
+  array
+){
 
   const arr =
-    [...array];
+    [
+      ...array
+    ];
+
 
   for(
-    let i = arr.length - 1;
+    let i =
+      arr.length - 1;
+
     i > 0;
+
     i--
   ){
 
@@ -1455,6 +1742,7 @@ function shuffle(array){
         Math.random() *
         (i + 1)
       );
+
 
     [
       arr[i],
@@ -1467,45 +1755,81 @@ function shuffle(array){
 
   }
 
+
   return arr;
 
 }
 
 
-/* =========================
+/* ======================================================
    EMPTY
-========================= */
+====================================================== */
 
 function emptyMessage(){
 
   return `
+
     <div class="emptyVideos">
+
       No videos found.
+
     </div>
+
   `;
 
 }
 
 
-/* =========================
-   RENDER SECTIONS
-========================= */
+/* ======================================================
+   LOADING
+====================================================== */
 
-function renderSections(
+function loadingMessage(){
+
+  return `
+
+    <div class="loadingVideos">
+
+      Loading thumbnails...
+
+    </div>
+
+  `;
+
+}
+
+
+/* ======================================================
+   RENDER MAIN SECTIONS
+====================================================== */
+
+async function renderSections(
   videos = allVideos
 ){
 
   const trending =
-    [...videos]
+    [
+      ...videos
+    ]
     .sort(
       (a,b) =>
-        Number(b.views || 0) -
-        Number(a.views || 0)
+        Number(
+          b.views || 0
+        ) -
+        Number(
+          a.views || 0
+        )
     )
-    .slice(0,4);
+    .slice(
+      0,
+      4
+    );
+
 
   const latest =
-    [...videos]
+    [
+      ...videos
+    ]
     .sort(
       (a,b) =>
         new Date(
@@ -1515,20 +1839,36 @@ function renderSections(
           a.created_at
         )
     )
-    .slice(0,4);
+    .slice(
+      0,
+      4
+    );
+
 
   const recommended =
-    [...videos]
+    [
+      ...videos
+    ]
     .sort(
       (a,b) => {
 
         const diff =
-          Number(b.views || 0) -
-          Number(a.views || 0);
+          Number(
+            b.views || 0
+          ) -
+          Number(
+            a.views || 0
+          );
 
-        if(diff !== 0){
+
+        if(
+          diff !== 0
+        ){
+
           return diff;
+
         }
+
 
         return (
           new Date(
@@ -1541,46 +1881,111 @@ function renderSections(
 
       }
     )
-    .slice(0,4);
+    .slice(
+      0,
+      4
+    );
 
 
-  document.getElementById(
-    "trendingVideos"
-  ).innerHTML =
-    trending.length
-      ? trending
-          .map(videoCard)
-          .join("")
-      : emptyMessage();
+  /*
+    Sab sections ke unique videos
+    ke thumbnails ek saath prepare
+  */
+
+  const uniqueVideos =
+    [
+      ...new Map(
+        [
+          ...trending,
+          ...latest,
+          ...recommended
+        ]
+        .map(
+          video => [
+            video.id,
+            video
+          ]
+        )
+      ).values()
+    ];
 
 
-  document.getElementById(
-    "newVideos"
-  ).innerHTML =
-    latest.length
-      ? latest
-          .map(videoCard)
-          .join("")
-      : emptyMessage();
+  await prepareThumbnails(
+    uniqueVideos
+  );
 
 
-  document.getElementById(
-    "recommendedVideos"
-  ).innerHTML =
-    recommended.length
-      ? recommended
-          .map(videoCard)
-          .join("")
-      : emptyMessage();
+  const trendingBox =
+    document.getElementById(
+      "trendingVideos"
+    );
+
+  const newBox =
+    document.getElementById(
+      "newVideos"
+    );
+
+  const recommendedBox =
+    document.getElementById(
+      "recommendedVideos"
+    );
+
+
+  if(
+    trendingBox
+  ){
+
+    trendingBox.innerHTML =
+      trending.length
+        ? trending
+            .map(
+              videoCard
+            )
+            .join("")
+        : emptyMessage();
+
+  }
+
+
+  if(
+    newBox
+  ){
+
+    newBox.innerHTML =
+      latest.length
+        ? latest
+            .map(
+              videoCard
+            )
+            .join("")
+        : emptyMessage();
+
+  }
+
+
+  if(
+    recommendedBox
+  ){
+
+    recommendedBox.innerHTML =
+      recommended.length
+        ? recommended
+            .map(
+              videoCard
+            )
+            .join("")
+        : emptyMessage();
+
+  }
 
 }
 
 
-/* =========================
+/* ======================================================
    RANDOM VIDEOS
-========================= */
+====================================================== */
 
-function renderRandomVideos(){
+async function renderRandomVideos(){
 
   const container =
     document.getElementById(
@@ -1592,6 +1997,16 @@ function renderRandomVideos(){
       "randomPagination"
     );
 
+
+  if(
+    !container
+  ){
+
+    return;
+
+  }
+
+
   const totalPages =
     Math.ceil(
       randomVideos.length /
@@ -1600,18 +2015,21 @@ function renderRandomVideos(){
 
 
   if(
-    randomPage > totalPages &&
+    randomPage >
+      totalPages &&
     totalPages > 0
   ){
 
-    randomPage = 1;
+    randomPage =
+      1;
 
   }
 
 
   const start =
     (
-      randomPage - 1
+      randomPage -
+      1
     ) *
     RANDOM_PER_PAGE;
 
@@ -1619,16 +2037,45 @@ function renderRandomVideos(){
   const current =
     randomVideos.slice(
       start,
-      start + RANDOM_PER_PAGE
+      start +
+      RANDOM_PER_PAGE
     );
 
 
+  if(
+    current.length === 0
+  ){
+
+    container.innerHTML =
+      emptyMessage();
+
+
+    renderRandomPagination(
+      totalPages,
+      pagination
+    );
+
+
+    return;
+
+  }
+
+
   container.innerHTML =
-    current.length
-      ? current
-          .map(videoCard)
-          .join("")
-      : emptyMessage();
+    loadingMessage();
+
+
+  await prepareThumbnails(
+    current
+  );
+
+
+  container.innerHTML =
+    current
+      .map(
+        videoCard
+      )
+      .join("");
 
 
   renderRandomPagination(
@@ -1639,29 +2086,38 @@ function renderRandomVideos(){
 }
 
 
-/* =========================
+/* ======================================================
    RANDOM PAGINATION
-========================= */
+====================================================== */
 
 function renderRandomPagination(
   totalPages,
   container
 ){
 
-  if(!container){
-    return;
-  }
-
-  if(totalPages <= 1){
-
-    container.innerHTML = "";
+  if(
+    !container
+  ){
 
     return;
 
   }
 
 
-  let html = "";
+  if(
+    totalPages <= 1
+  ){
+
+    container.innerHTML =
+      "";
+
+    return;
+
+  }
+
+
+  let html =
+    "";
 
 
   html += `
@@ -1689,6 +2145,7 @@ function renderRandomPagination(
       randomPage - 2
     );
 
+
   let end =
     Math.min(
       totalPages,
@@ -1696,9 +2153,12 @@ function renderRandomPagination(
     );
 
 
-  if(randomPage <= 3){
+  if(
+    randomPage <= 3
+  ){
 
-    start = 1;
+    start =
+      1;
 
     end =
       Math.min(
@@ -1720,7 +2180,8 @@ function renderRandomPagination(
         totalPages - 4
       );
 
-    end = totalPages;
+    end =
+      totalPages;
 
   }
 
@@ -1757,7 +2218,8 @@ function renderRandomPagination(
     <button
       class="randomPageBtn"
       ${
-        randomPage >= totalPages
+        randomPage >=
+        totalPages
           ? "disabled"
           : ""
       }
@@ -1777,12 +2239,12 @@ function renderRandomPagination(
 }
 
 
-/* =========================
+/* ======================================================
    CHANGE RANDOM PAGE
-========================= */
+====================================================== */
 
 window.changeRandomPage =
-function(page){
+async function(page){
 
   const totalPages =
     Math.ceil(
@@ -1801,7 +2263,8 @@ function(page){
   }
 
 
-  randomPage = page;
+  randomPage =
+    page;
 
 
   const url =
@@ -1810,7 +2273,9 @@ function(page){
     );
 
 
-  if(randomPage === 1){
+  if(
+    randomPage === 1
+  ){
 
     url.searchParams.delete(
       "randomPage"
@@ -1833,7 +2298,7 @@ function(page){
   );
 
 
-  renderRandomVideos();
+  await renderRandomVideos();
 
 
   document
@@ -1841,18 +2306,29 @@ function(page){
       "randomSection"
     )
     ?.scrollIntoView({
-      behavior:"smooth",
-      block:"start"
+      behavior:
+        "smooth",
+      block:
+        "start"
     });
 
 };
 
 
-/* =========================
+/* ======================================================
    CATEGORIES
-========================= */
+====================================================== */
 
 function renderCategories(){
+
+  if(
+    !categoriesBox
+  ){
+
+    return;
+
+  }
+
 
   const categories =
     [
@@ -1861,23 +2337,31 @@ function renderCategories(){
           .map(
             video =>
               String(
-                video.category || ""
+                video.category ||
+                ""
               ).trim()
           )
-          .filter(Boolean)
+          .filter(
+            Boolean
+          )
       )
     ]
-    .slice(0,20);
+    .slice(
+      0,
+      20
+    );
 
 
   categoriesBox.innerHTML =
     `
+
       <button
         class="category active"
         data-category="all"
       >
         All
       </button>
+
     `;
 
 
@@ -1888,13 +2372,13 @@ function renderCategories(){
 
         <button
           class="category"
-          data-category="${
-            escapeHTML(category)
-          }"
+          data-category="${escapeHTML(
+            category
+          )}"
         >
-          ${
-            escapeHTML(category)
-          }
+          ${escapeHTML(
+            category
+          )}
         </button>
 
       `;
@@ -1912,7 +2396,7 @@ function renderCategories(){
 
         button.addEventListener(
           "click",
-          () => {
+          async () => {
 
             document
               .querySelectorAll(
@@ -1944,12 +2428,14 @@ function renderCategories(){
                 : allVideos.filter(
                     video =>
                       String(
-                        video.category || ""
-                      ) === category
+                        video.category ||
+                        ""
+                      ) ===
+                      category
                   );
 
 
-            renderSections(
+            await renderSections(
               filtered
             );
 
@@ -1960,10 +2446,11 @@ function renderCategories(){
               );
 
 
-            randomPage = 1;
+            randomPage =
+              1;
 
 
-            renderRandomVideos();
+            await renderRandomVideos();
 
           }
         );
@@ -1974,49 +2461,60 @@ function renderCategories(){
 }
 
 
-/* =========================
-   SEARCH → SEARCH PAGE
-========================= */
+/* ======================================================
+   SEARCH
+====================================================== */
 
-searchInput.addEventListener(
-  "keydown",
-  function(event){
+if(
+  searchInput
+){
 
-    if(
-      event.key !== "Enter"
-    ){
-      return;
+  searchInput.addEventListener(
+    "keydown",
+    function(event){
+
+      if(
+        event.key !==
+        "Enter"
+      ){
+
+        return;
+
+      }
+
+
+      event.preventDefault();
+
+
+      const query =
+        searchInput.value.trim();
+
+
+      if(
+        !query
+      ){
+
+        return;
+
+      }
+
+
+      window.location.href =
+        "search.html?q=" +
+        encodeURIComponent(
+          query
+        ) +
+        "&page=1";
+
     }
+  );
+
+}
 
 
-    event.preventDefault();
-
-
-    const query =
-      searchInput.value.trim();
-
-
-    if(!query){
-
-      return;
-
-    }
-
-
-    window.location.href =
-      "search.html?q=" +
-      encodeURIComponent(
-        query
-      ) +
-      "&page=1";
-
-  }
-);
-
-
-/* =========================
+/* ======================================================
    LOAD VIDEOS
-========================= */
+====================================================== */
 
 async function loadVideos(){
 
@@ -2048,29 +2546,31 @@ async function loadVideos(){
       error
     } =
       await supabase
-
-        .from("videos")
-
+        .from(
+          "videos"
+        )
         .select(
           "id,title,category,description,thumbnail_url,video_url,views,created_at"
         )
-
         .eq(
           "published",
           true
         )
-
         .order(
           "created_at",
           {
-            ascending:false
+            ascending:
+              false
           }
         )
+        .limit(
+          200
+        );
 
-        .limit(200);
 
-
-    if(error){
+    if(
+      error
+    ){
 
       throw error;
 
@@ -2081,13 +2581,25 @@ async function loadVideos(){
       data || [];
 
 
-    renderSections(
+    /*
+      Main sections
+    */
+
+    await renderSections(
       allVideos
     );
 
 
+    /*
+      Categories
+    */
+
     renderCategories();
 
+
+    /*
+      Random
+    */
 
     randomVideos =
       shuffle(
@@ -2095,7 +2607,7 @@ async function loadVideos(){
       );
 
 
-    renderRandomVideos();
+    await renderRandomVideos();
 
 
   }catch(error){
@@ -2109,10 +2621,23 @@ async function loadVideos(){
     boxes.forEach(
       box => {
 
+        if(
+          !box
+        ){
+
+          return;
+
+        }
+
+
         box.innerHTML = `
+
           <div class="emptyVideos">
+
             Videos load nahi ho paaye.
+
           </div>
+
         `;
 
       }
@@ -2123,26 +2648,28 @@ async function loadVideos(){
 }
 
 
-/* =========================
+/* ======================================================
    START
-========================= */
+====================================================== */
 
 loadVideos();
 
 
-/* =========================
+/* ======================================================
    BACK / FORWARD
-========================= */
+====================================================== */
 
 window.addEventListener(
   "popstate",
-  () => {
+  async () => {
 
     const page =
       parseInt(
         new URLSearchParams(
           location.search
-        ).get("randomPage") || "1"
+        ).get(
+          "randomPage"
+        ) || "1"
       );
 
 
@@ -2153,7 +2680,7 @@ window.addEventListener(
       );
 
 
-    renderRandomVideos();
+    await renderRandomVideos();
 
   }
 );
