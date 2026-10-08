@@ -2,12 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-  <meta name="description"
-        content="DesiVexa - 18+ video platform">
+  <meta name="description" content="DesiVexa - 18+ video platform">
 
   <!-- ExoClick verification -->
   <meta name="6a97888e-site-verification"
@@ -24,8 +21,7 @@
 
   <style>
     /* =====================================================
-       DESIVEXA - COMPACT MOBILE VIDEO SITE
-       Eporner-inspired structure, original branding
+       DESIVEXA MOBILE — 2 COLUMNS
     ===================================================== */
 
     *{
@@ -36,11 +32,11 @@
     body{
       margin:0;
       padding:0;
-      background:#000;
-      color:#fff;
       width:100%;
       max-width:100%;
       overflow-x:hidden;
+      background:#000;
+      color:#fff;
       font-family:Arial,Helvetica,sans-serif;
     }
 
@@ -57,6 +53,7 @@
     input{
       font:inherit;
     }
+
 
     /* =====================================================
        AGE GATE
@@ -75,17 +72,16 @@
 
     .gatebox{
       width:min(420px,100%);
+      padding:28px 20px;
+      text-align:center;
       background:#111;
       border:1px solid #333;
       border-radius:8px;
-      padding:28px 20px;
-      text-align:center;
     }
 
     .gateLogo{
       font-size:34px;
       font-weight:900;
-      color:#fff;
     }
 
     .gateLogo span{
@@ -101,52 +97,48 @@
       font-weight:900;
     }
 
-    .gatebox h2{
-      margin:8px 0;
-    }
-
     .gatebox p{
       color:#aaa;
-      line-height:1.5;
     }
 
     .btn{
+      padding:12px 20px;
       border:0;
+      border-radius:4px;
       background:#e00000;
       color:#fff;
-      padding:12px 20px;
-      border-radius:4px;
       font-weight:700;
       cursor:pointer;
     }
+
 
     /* =====================================================
        HEADER
     ===================================================== */
 
     .dvHeader{
-      background:#c90000;
-      border-bottom:2px solid #4d0000;
       position:relative;
       z-index:1000;
+      background:#c90000;
+      border-bottom:2px solid #4d0000;
     }
 
     .dvHeaderInner{
-      height:64px;
       width:100%;
       max-width:1100px;
+      height:62px;
       margin:auto;
-      padding:0 10px;
+      padding:0 8px;
 
       display:grid;
-      grid-template-columns:52px 1fr 52px;
+      grid-template-columns:48px 1fr 48px;
       align-items:center;
-      gap:8px;
+      gap:5px;
     }
 
     .headerIcon{
-      width:42px;
-      height:42px;
+      width:40px;
+      height:40px;
 
       display:flex;
       align-items:center;
@@ -156,17 +148,16 @@
       border:1px solid #650000;
       color:#fff;
 
-      font-size:25px;
+      font-size:22px;
       cursor:pointer;
     }
 
     .dvLogo{
       text-align:center;
-      font-size:29px;
-      line-height:1;
+      color:#050505;
+      font-size:27px;
       font-weight:900;
       letter-spacing:-1.5px;
-      color:#050505;
       text-transform:uppercase;
     }
 
@@ -174,13 +165,14 @@
       color:#000;
     }
 
+
     /* =====================================================
        SEARCH
     ===================================================== */
 
     .dvSearchBox{
       display:none;
-      padding:8px 10px;
+      padding:8px;
       background:#090909;
       border-bottom:1px solid #333;
     }
@@ -191,18 +183,17 @@
 
     .dvSearchBox input{
       width:100%;
-      height:42px;
-      padding:0 13px;
-      border:1px solid #777;
+      height:40px;
+      padding:0 12px;
+
       background:#151515;
+      border:1px solid #555;
+      border-radius:3px;
+
       color:#fff;
       outline:none;
-      border-radius:3px;
     }
 
-    .dvSearchBox input::placeholder{
-      color:#888;
-    }
 
     /* =====================================================
        MENU
@@ -211,11 +202,12 @@
     .mobileMenu{
       display:none;
       position:absolute;
-      top:64px;
+      top:62px;
       left:0;
       right:0;
-      z-index:2000;
-      background:#101010;
+      z-index:3000;
+
+      background:#111;
       border-bottom:2px solid #c90000;
     }
 
@@ -225,15 +217,11 @@
 
     .mobileMenu a{
       display:block;
-      padding:14px 18px;
+      padding:14px 16px;
       border-bottom:1px solid #292929;
       color:#ddd;
     }
 
-    .mobileMenu a:hover{
-      background:#1b1b1b;
-      color:#fff;
-    }
 
     /* =====================================================
        MAIN
@@ -243,35 +231,40 @@
       width:100%;
       max-width:1100px;
       margin:0 auto;
-      padding:0 10px 35px;
+      padding:0 6px 35px;
     }
 
+
     /* =====================================================
-       TOP SEARCH / CATEGORY BAR
+       CATEGORY
     ===================================================== */
 
     .toolbar{
-      margin-top:8px;
+      margin-top:7px;
     }
 
     .categoryBtn{
       width:100%;
-      min-height:42px;
+      min-height:40px;
+
+      padding:0 11px;
+
       background:#151515;
       border:1px solid #444;
+      border-radius:2px;
+
       color:#fff;
       text-align:left;
-      padding:0 12px;
       cursor:pointer;
-      border-radius:2px;
     }
 
     .categoryList{
       display:none;
-      margin-top:5px;
+      margin-top:4px;
+      padding:7px;
+
       background:#101010;
       border:1px solid #333;
-      padding:7px;
     }
 
     .categoryList.open{
@@ -280,12 +273,14 @@
 
     #categorySearch{
       width:100%;
-      height:38px;
-      background:#050505;
-      color:#fff;
-      border:1px solid #555;
-      padding:0 10px;
+      height:37px;
       margin-bottom:7px;
+      padding:0 9px;
+
+      background:#050505;
+      border:1px solid #555;
+
+      color:#fff;
       outline:none;
     }
 
@@ -296,44 +291,45 @@
     }
 
     .catItem{
-      display:inline-block;
       padding:7px 9px;
       background:#414141;
       color:#ddd;
       border-radius:3px;
-      font-size:12px;
+      font-size:11px;
     }
 
+
     /* =====================================================
-       AD
+       ADS
     ===================================================== */
 
     .dvAdSlot{
       width:100%;
       overflow:hidden;
       text-align:center;
-      margin:8px 0;
       background:#111;
+      margin:7px 0;
     }
 
     .dvAdWide{
-      min-height:80px;
+      min-height:70px;
     }
 
     .dvAdCompact{
-      min-height:50px;
+      min-height:45px;
     }
 
     .dvAdBanner{
-      min-height:80px;
+      min-height:70px;
     }
 
     .dvAdSmall{
       min-height:40px;
     }
 
+
     /* =====================================================
-       SECTION HEADER
+       SECTION HEADINGS
     ===================================================== */
 
     .dvSectionTitle{
@@ -341,27 +337,19 @@
       align-items:center;
       justify-content:space-between;
 
-      margin:9px 0 4px;
-      padding:5px 7px;
+      margin:8px 0 4px;
+      padding:5px 6px;
 
       background:linear-gradient(#1b1b1b,#050505);
       border-left:3px solid #777;
       border-bottom:1px solid #333;
     }
 
-    .dvSectionTitle > div{
-      min-width:0;
-    }
-
-    .sectionLabel{
-      display:none;
-    }
-
     .dvSectionTitle h2{
       margin:0;
-      font-size:19px;
-      line-height:1.2;
+      font-size:18px;
       font-weight:400;
+      line-height:1.2;
     }
 
     .dvSectionTitle h2::before{
@@ -371,24 +359,32 @@
 
     .dvSectionTitle a{
       color:#aaa;
-      font-size:11px;
-      white-space:nowrap;
+      font-size:10px;
     }
 
+    .sectionLabel{
+      display:none;
+    }
+
+
     /* =====================================================
-       VIDEO GRID
+       VIDEO GRID — 2 COLUMNS
     ===================================================== */
 
     .dvGrid{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:3px;
       width:100%;
+      display:grid;
+
+      /* MOBILE = 2 COLUMNS */
+      grid-template-columns:repeat(2,minmax(0,1fr));
+
+      gap:3px;
     }
 
     .dvGrid .card{
       min-width:0;
       overflow:hidden;
+
       background:#090909;
       border:0;
       border-radius:0;
@@ -410,11 +406,12 @@
     }
 
     .dvGrid .body{
-      padding:3px 4px 6px;
+      padding:4px 5px 7px;
     }
 
     .dvGrid .card h3{
       margin:0;
+
       color:#ddd;
       font-size:11px;
       font-weight:400;
@@ -430,21 +427,23 @@
       margin-top:3px;
       color:#777;
       font-size:8px;
+
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
     }
 
     .dvGrid .playCircle{
-      width:28px!important;
-      height:28px!important;
-      font-size:11px!important;
+      width:28px !important;
+      height:28px !important;
+      font-size:11px !important;
     }
 
     .dvGrid .cardViews{
-      font-size:8px!important;
-      padding:2px 3px!important;
+      font-size:8px !important;
+      padding:2px 3px !important;
     }
+
 
     /* =====================================================
        DESKTOP
@@ -458,11 +457,6 @@
 
       .dvMain{
         padding:10px 12px 50px;
-      }
-
-      .categoryBtn{
-        width:auto;
-        min-width:180px;
       }
 
       .dvGrid{
@@ -479,12 +473,14 @@
       }
 
       .dvSectionTitle h2{
-        font-size:22px;
+        font-size:21px;
       }
+
     }
 
+
     /* =====================================================
-       VERY SMALL PHONES
+       VERY SMALL MOBILE
     ===================================================== */
 
     @media(max-width:360px){
@@ -495,8 +491,9 @@
       }
 
       .headerIcon{
-        width:38px;
-        height:38px;
+        width:37px;
+        height:37px;
+        font-size:20px;
       }
 
       .dvLogo{
@@ -504,26 +501,24 @@
       }
 
       .dvMain{
-        padding-left:5px;
-        padding-right:5px;
+        padding-left:4px;
+        padding-right:4px;
       }
 
       .dvGrid{
         gap:2px;
       }
 
-      .dvGrid .body{
-        padding:2px 3px 5px;
-      }
-
       .dvGrid .card h3{
-        font-size:9px;
+        font-size:10px;
       }
 
       .dvGrid .cardMeta{
         font-size:7px;
       }
+
     }
+
 
     /* =====================================================
        FOOTER
@@ -531,8 +526,9 @@
 
     footer{
       margin-top:15px;
-      padding:25px 15px;
+      padding:24px 12px;
       text-align:center;
+
       background:#080808;
       border-top:1px solid #292929;
     }
@@ -562,6 +558,7 @@
 
 <body>
 
+
   <!-- =====================================================
        AGE GATE
   ====================================================== -->
@@ -589,7 +586,9 @@
         id="enter"
         class="btn"
         type="button">
+
         I am 18+ - Enter
+
       </button>
 
     </div>
@@ -608,25 +607,29 @@
       <button
         id="menuBtn"
         class="headerIcon"
-        type="button"
-        aria-label="Menu">
+        type="button">
+
         ☰
+
       </button>
 
 
       <a
         href="index.html"
         class="dvLogo">
+
         DESI<span>VEXA</span>
+
       </a>
 
 
       <button
         id="searchBtn"
         class="headerIcon"
-        type="button"
-        aria-label="Search">
+        type="button">
+
         🔍
+
       </button>
 
     </div>
@@ -685,13 +688,12 @@
   <main class="dvMain">
 
 
-    <!-- ===================================================
-         CATEGORY / SEARCH
-    ==================================================== -->
-
     <section
       class="dvSection"
       id="categories">
+
+
+      <!-- CATEGORY -->
 
       <div class="toolbar">
 
@@ -723,7 +725,7 @@
 
 
       <!-- =================================================
-           WIDE AD - 1128310
+           WIDE AD — 1128310
       ================================================== -->
 
       <div class="dvAdSlot dvAdWide">
@@ -754,7 +756,7 @@
 
 
       <!-- =================================================
-           BEST / MOST VIEWED
+           BEST HD
       ================================================== -->
 
       <div class="dvSectionTitle">
@@ -781,7 +783,7 @@
 
 
       <!-- =================================================
-           COMPACT AD - 1128312
+           COMPACT AD — 1128312
       ================================================== -->
 
       <div class="dvAdSlot dvAdCompact">
@@ -812,38 +814,10 @@
 
 
       <!-- =================================================
-           RECOMMENDATIONS
-      ================================================== -->
-
-      <div class="dvSectionTitle">
-
-        <div>
-
-          <h2>
-            Recommendations For You
-          </h2>
-
-        </div>
-
-        <a href="latest.html">
-          View all
-        </a>
-
-      </div>
-
-
-      <div
-        id="recommendations"
-        class="dvGrid">
-      </div>
-
-
-      <!-- =================================================
            LATEST
       ================================================== -->
 
-      <div
-        class="dvSectionTitle latestHeading">
+      <div class="dvSectionTitle">
 
         <div>
 
@@ -867,7 +841,7 @@
 
 
       <!-- =================================================
-           BANNER AD - 1128301
+           BANNER AD — 1128301
       ================================================== -->
 
       <div class="dvAdSlot dvAdBanner">
@@ -898,7 +872,7 @@
 
 
       <!-- =================================================
-           SMALL AD - 1128309
+           SMALL AD — 1128309
       ================================================== -->
 
       <div class="dvAdSlot dvAdSmall">
@@ -954,17 +928,17 @@
 
 
   <!-- =====================================================
-       APP
-    ====================================================== -->
+       APP JS
+  ====================================================== -->
 
   <script
     type="module"
-    src="app.js?v=40">
+    src="app.js?v=41">
   </script>
 
 
   <!-- =====================================================
-       JUICYADS FLOAT - 1128307
+       JUICYADS FLOAT — 1128307
   ====================================================== -->
 
   <script type="text/javascript">
@@ -979,7 +953,7 @@
 
 
   <!-- =====================================================
-       JUICYADS NATIVE - 1128313
+       JUICYADS NATIVE — 1128313
   ====================================================== -->
 
   <script
@@ -992,9 +966,7 @@
 
 
   <!-- =====================================================
-       CATEGORY / SEARCH FALLBACK
-       Keeps the page functional even if app.js does not
-       control these UI elements.
+       UI CONTROLS
   ====================================================== -->
 
   <script>
@@ -1021,6 +993,8 @@
       document.getElementById("search");
 
 
+    /* MENU */
+
     if(menuBtn){
 
       menuBtn.addEventListener("click", function(){
@@ -1031,6 +1005,8 @@
 
     }
 
+
+    /* SEARCH */
 
     if(searchBtn){
 
@@ -1055,6 +1031,8 @@
     }
 
 
+    /* CATEGORY */
+
     if(categoryBtn){
 
       categoryBtn.addEventListener("click", function(){
@@ -1065,6 +1043,8 @@
 
     }
 
+
+    /* SEARCH ENTER */
 
     if(search){
 
@@ -1088,21 +1068,6 @@
       });
 
     }
-
-
-    document.addEventListener("click", function(e){
-
-      if(
-        mobileMenu &&
-        !mobileMenu.contains(e.target) &&
-        !menuBtn.contains(e.target)
-      ){
-
-        mobileMenu.classList.remove("open");
-
-      }
-
-    });
 
   </script>
 
