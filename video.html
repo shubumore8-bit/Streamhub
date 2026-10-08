@@ -1,605 +1,827 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="strict-origin-when-cross-origin">
-
-<title>Video — DesiVexa</title>
-
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="ads.css">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DesiVexa - Video</title>
 
 <style>
 *{
   box-sizing:border-box;
+  margin:0;
+  padding:0;
 }
 
-html,
 body{
-  margin:0;
-  background:#050505;
+  background:#080808;
   color:#fff;
   font-family:Arial,sans-serif;
+  padding-bottom:80px;
 }
 
-body{
-  overflow-x:hidden;
+a{
+  color:inherit;
+  text-decoration:none;
 }
 
-
-/* HEADER */
-
-.dvHeader{
+header{
+  height:65px;
+  background:#111;
+  border-bottom:1px solid #292929;
+  display:flex;
+  align-items:center;
+  gap:15px;
+  padding:0 5%;
   position:sticky;
   top:0;
   z-index:100;
-  background:#b40000;
-  border-bottom:1px solid #650000;
 }
 
-.dvHeaderInner{
-  height:54px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 12px;
-  max-width:1100px;
+.logo{
+  color:#e50914;
+  font-size:24px;
+  font-weight:900;
+}
+
+.search{
+  flex:1;
+  max-width:600px;
   margin:auto;
 }
 
-.headerIcon{
+.search input{
+  width:100%;
+  padding:11px 17px;
+  border-radius:25px;
+  border:1px solid #333;
+  background:#1b1b1b;
+  color:#fff;
+  outline:none;
+}
+
+.profile{
   width:40px;
   height:40px;
-  border:0;
-  background:transparent;
-  color:#fff;
-  font-size:25px;
-  cursor:pointer;
-}
-
-.dvLogo{
-  color:#fff;
-  text-decoration:none;
-  font-size:23px;
-  font-weight:800;
-  letter-spacing:.3px;
-}
-
-.dvLogo span{
-  color:#ffb0b0;
-}
-
-
-/* SEARCH */
-
-.dvSearchBox{
-  display:none;
-  max-width:700px;
-  margin:auto;
-  padding:8px 12px;
-  background:#8d0000;
-}
-
-.dvSearchBox.show{
-  display:block;
-}
-
-.dvSearchBox input{
-  width:100%;
-  height:40px;
-  border:0;
-  border-radius:5px;
-  padding:0 12px;
-  background:#fff;
-  color:#111;
-  font-size:15px;
-}
-
-
-/* MENU */
-
-.mobileMenu{
-  display:none;
-  background:#151515;
-  border-bottom:1px solid #333;
-}
-
-.mobileMenu.show{
-  display:block;
-}
-
-.mobileMenu a{
-  display:block;
-  padding:12px 15px;
-  color:#fff;
-  text-decoration:none;
-  border-bottom:1px solid #292929;
-}
-
-
-/* MAIN */
-
-.dvMain{
-  max-width:1050px;
-  margin:auto;
-  padding:10px 10px 35px;
-}
-
-.videoPage{
-  width:100%;
-  max-width:1000px;
-  margin:auto;
-}
-
-
-/* TOP AD */
-
-.topAd{
-  width:100%;
-  min-height:286px;
+  border-radius:50%;
+  background:#e50914;
   display:flex;
+  align-items:center;
   justify-content:center;
-  align-items:center;
-  margin:4px auto 12px;
-  overflow:hidden;
+  font-weight:bold;
 }
 
+.container{
+  width:92%;
+  max-width:1200px;
+  margin:25px auto;
+}
 
-/* VIDEO */
-
-.videoPlayerWrap{
-  position:relative;
+.player{
   width:100%;
+  aspect-ratio:16/9;
   background:#000;
-  border:1px solid #2c2c2c;
-  border-radius:8px;
+  border-radius:10px;
   overflow:hidden;
-  box-shadow:0 2px 12px #000;
+  border:1px solid #252525;
 }
 
-.videoPlayerWrap video{
+.player video{
+  width:100%;
+  height:100%;
   display:block;
-  width:100%;
-  height:auto;
-  max-height:76vh;
   background:#000;
 }
 
-
-/* VIDEO INFO */
-
-.videoInfo{
-  padding:12px 2px 4px;
+.video-info{
+  padding:18px 0;
 }
 
-.videoTitle{
-  font-size:21px;
-  line-height:1.25;
-  margin:0 0 9px;
-  font-weight:700;
+.video-title{
+  font-size:25px;
+  font-weight:bold;
+  margin-bottom:10px;
 }
 
-.videoMeta{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-}
-
-.videoMeta span{
-  background:#171717;
-  border:1px solid #303030;
-  border-radius:5px;
-  padding:7px 10px;
-  color:#ddd;
-  font-size:13px;
-}
-
-.videoDescription{
-  color:#aaa;
-  font-size:13px;
-  line-height:1.45;
-  margin:10px 0;
-}
-
-
-/* BUTTONS */
-
-.actionBar{
-  display:flex;
-  gap:7px;
-  flex-wrap:wrap;
-  margin:9px 0 12px;
-}
-
-.actionBtn{
-  background:#171717;
-  color:#fff;
-  border:1px solid #333;
-  border-radius:5px;
-  padding:9px 14px;
+.meta{
+  color:#999;
   font-size:14px;
+  margin-bottom:15px;
+}
+
+.description{
+  color:#bbb;
+  line-height:1.6;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin:18px 0;
+  flex-wrap:wrap;
+}
+
+.action{
+  background:#171717;
+  border:1px solid #333;
+  color:#fff;
+  padding:11px 18px;
+  border-radius:7px;
   cursor:pointer;
 }
 
-.actionBtn:active{
-  background:#272727;
+.action:hover{
+  border-color:#e50914;
 }
 
+.action.like.active{
+  background:#e50914;
+  border-color:#e50914;
+}
 
-/* CREATOR */
-
-.creatorRow{
+.ad{
+  min-height:80px;
+  background:#111;
+  border:1px dashed #333;
+  border-radius:8px;
   display:flex;
   align-items:center;
-  justify-content:space-between;
+  justify-content:center;
+  color:#666;
+  margin:20px 0;
+}
+
+.section-title{
+  margin:30px 0 15px;
+  font-size:21px;
+}
+
+.related-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+}
+
+.card{
+  background:#121212;
+  border:1px solid #222;
+  border-radius:9px;
+  overflow:hidden;
+}
+
+.card:hover{
+  border-color:#e50914;
+}
+
+.thumb{
+  height:145px;
+  background:linear-gradient(135deg,#270000,#151515,#400000);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+
+.play{
+  color:#e50914;
+  font-size:40px;
+}
+
+.duration{
+  position:absolute;
+  right:7px;
+  bottom:7px;
+  background:#000;
+  padding:4px 6px;
+  font-size:11px;
+  border-radius:4px;
+}
+
+.card-info{
+  padding:10px;
+}
+
+.card-title{
+  font-weight:bold;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.card-meta{
+  color:#777;
+  font-size:12px;
+  margin-top:6px;
+}
+
+/* COMMENTS */
+
+.comments{
+  margin-top:35px;
+  scroll-margin-top:85px;
+}
+
+.comment-box{
+  display:flex;
   gap:10px;
-  background:#101010;
-  border:1px solid #242424;
-  border-radius:6px;
-  padding:9px 10px;
-  margin:8px 0 10px;
+  margin-bottom:20px;
 }
 
-.creatorName{
-  font-size:14px;
-  font-weight:700;
-}
-
-.subscribeBtn{
-  background:#d40000;
+.comment-box input{
+  flex:1;
+  background:#171717;
+  border:1px solid #333;
   color:#fff;
+  padding:12px;
+  border-radius:7px;
+  outline:none;
+}
+
+.comment-box button{
+  background:#e50914;
   border:0;
-  border-radius:4px;
-  padding:8px 13px;
-  font-weight:700;
+  color:#fff;
+  padding:0 18px;
+  border-radius:7px;
+  cursor:pointer;
 }
 
-
-/* TAGS */
-
-.tags{
-  margin:4px 0 12px;
+.comment{
+  background:#111;
+  border:1px solid #222;
+  border-radius:8px;
+  padding:13px;
+  margin-bottom:10px;
 }
 
-.videoTag{
-  display:inline-block;
-  background:#240909;
-  color:#ff7070;
-  border:1px solid #4d1616;
-  border-radius:4px;
-  padding:5px 8px;
-  margin:3px 4px 3px 0;
+.comment-user{
+  font-weight:bold;
+  margin-bottom:6px;
+}
+
+.comment-text{
+  color:#bbb;
+}
+
+.empty{
+  color:#777;
+  padding:20px 0;
+}
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:65px;
+  background:#111;
+  border-top:1px solid #292929;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  z-index:200;
+}
+
+.bottom-nav a{
+  color:#aaa;
+  text-align:center;
   font-size:12px;
 }
 
-
-/* MIDDLE AD */
-
-.midAd{
-  width:100%;
-  min-height:100px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  margin:8px auto 15px;
-  overflow:hidden;
+.bottom-nav a:hover{
+  color:#e50914;
 }
 
-
-/* MORE VIDEOS */
-
-.dvSectionTitle{
-  margin:16px 0 8px;
+.bottom-nav div{
+  font-size:20px;
+  margin-bottom:3px;
 }
 
-.dvSectionTitle h2{
-  margin:2px 0 0;
-  font-size:19px;
-}
+@media(max-width:850px){
 
-.sectionLabel{
-  font-size:10px;
-  color:#ff4a4a;
-  font-weight:800;
-  letter-spacing:1px;
-}
-
-#randomVideos .dvGrid{
-  display:grid !important;
-  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-  gap:6px !important;
-}
-
-#randomVideos .card{
-  min-width:0 !important;
-}
-
-#randomVideos .thumb{
-  width:100% !important;
-  aspect-ratio:16/10 !important;
-  overflow:hidden;
-}
-
-#randomVideos .thumb img{
-  width:100% !important;
-  height:100% !important;
-  object-fit:cover;
-}
-
-
-/* ERROR */
-
-.videoError{
-  text-align:center;
-  padding:30px 15px;
-  background:#111;
-  border:1px solid #292929;
-  border-radius:7px;
-}
-
-.videoError a{
-  display:inline-block;
-  margin-top:10px;
-  background:#d40000;
-  color:#fff;
-  text-decoration:none;
-  padding:9px 14px;
-  border-radius:5px;
-}
-
-
-/* DESKTOP */
-
-@media(min-width:700px){
-
-  .dvMain{
-    padding-left:15px;
-    padding-right:15px;
-  }
-
-  #randomVideos .dvGrid{
-    grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  .related-grid{
+    grid-template-columns:repeat(3,1fr);
   }
 
 }
 
+@media(max-width:600px){
 
-/* MOBILE */
-
-@media(max-width:699px){
-
-  .videoTitle{
-    font-size:19px;
+  header{
+    padding:0 12px;
   }
 
-  .videoPlayerWrap{
-    border-radius:7px;
+  .logo{
+    font-size:20px;
   }
 
-  .dvMain{
-    padding:6px 6px 30px;
+  .container{
+    width:94%;
+    margin-top:15px;
+  }
+
+  .video-title{
+    font-size:20px;
+  }
+
+  .related-grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+  }
+
+  .thumb{
+    height:110px;
+  }
+
+  .actions{
+    gap:7px;
+  }
+
+  .action{
+    padding:10px 14px;
+  }
+
+}
+
+@media(max-width:380px){
+
+  .search{
+    display:none;
   }
 
 }
 </style>
-
 </head>
-
 
 <body>
 
+<header>
 
-<!-- HEADER -->
+  <a href="index.html" class="logo">
+    DesiVexa
+  </a>
 
-<header class="dvHeader">
-
-  <div class="dvHeaderInner">
-
-    <button
-      id="menuBtn"
-      class="headerIcon"
-      type="button"
-    >
-      ☰
-    </button>
-
-
-    <a
-      href="index.html"
-      class="dvLogo"
-    >
-      Desi<span>Vexa</span>
-    </a>
-
-
-    <button
-      id="searchBtn"
-      class="headerIcon"
-      type="button"
-    >
-      ⌕
-    </button>
-
-  </div>
-
-
-  <!-- SEARCH -->
-
-  <div
-    id="searchBox"
-    class="dvSearchBox"
-  >
-
+  <div class="search">
     <input
-      id="search"
-      type="search"
+      type="text"
       placeholder="Search videos..."
-      autocomplete="off"
+      onkeydown="searchVideo(event)"
     >
-
   </div>
+
+  <a href="profile.html" class="profile">
+    P
+  </a>
 
 </header>
 
 
+<main class="container">
 
-<!-- MOBILE MENU -->
+  <!-- VIDEO PLAYER -->
 
-<div
-  id="mobileMenu"
-  class="mobileMenu"
->
+  <div class="player">
 
-  <a href="index.html">
-    Home
-  </a>
-
-  <a href="most-viewed.html">
-    Most Viewed
-  </a>
-
-  <a href="latest.html">
-    Latest
-  </a>
-
-</div>
-
-
-
-<main class="dvMain">
-
-
-  <!-- =================================
-       JUICYADS 1128314
-       308 x 286
-  ================================== -->
-
-  <div class="topAd">
-
-    <script
-      type="text/javascript"
-      data-cfasync="false"
-      async
-      src="https://poweredby.jads.co/js/jads.js">
-    </script>
-
-
-    <ins
-      id="1128314"
-      data-width="308"
-      data-height="286">
-    </ins>
-
-
-    <script
-      type="text/javascript"
-      data-cfasync="false"
-      async
+    <!-- Replace this demo source with your authorized video URL -->
+    <video
+      id="videoPlayer"
+      controls
+      playsinline
+      preload="metadata"
     >
+      <source
+        src=""
+        type="video/mp4"
+      >
 
-      (adsbyjuicy =
-        window.adsbyjuicy || [])
-        .push({
-          'adzone':1128314
-        });
-
-    </script>
+      Your browser does not support video playback.
+    </video>
 
   </div>
 
 
+  <!-- VIDEO INFORMATION -->
 
-  <!-- =================================
-       VIDEO PAGE
-  ================================== -->
+  <section class="video-info">
 
-  <main
-    id="page"
-    class="videoPage"
-  >
+    <h1
+      class="video-title"
+      id="videoTitle">
+      Loading Video...
+    </h1>
 
-    Loading video...
+    <div
+      class="meta"
+      id="videoMeta">
+      Loading...
+    </div>
 
-  </main>
+    <div
+      class="description"
+      id="videoDescription">
+      Video description will appear here.
+    </div>
 
+
+    <!-- LIKE + COMMENT -->
+
+    <div class="actions">
+
+      <button
+        class="action like"
+        id="likeButton"
+        onclick="toggleLike()">
+        ♥ Like
+      </button>
+
+      <button
+        class="action"
+        onclick="scrollToComments()">
+        💬 Comment
+      </button>
+
+      <button
+        class="action"
+        onclick="shareVideo()">
+        ↗ Share
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- AD -->
+
+  <div class="ad">
+    Advertisement
+  </div>
+
+
+  <!-- RELATED VIDEOS -->
+
+  <h2 class="section-title">
+    Related Videos
+  </h2>
+
+  <div
+    class="related-grid"
+    id="relatedGrid">
+  </div>
+
+
+  <!-- COMMENTS -->
+
+  <section
+    class="comments"
+    id="comments">
+
+    <h2 class="section-title">
+      Comments
+    </h2>
+
+    <div class="comment-box">
+
+      <input
+        id="commentInput"
+        type="text"
+        placeholder="Write a comment..."
+      >
+
+      <button onclick="addComment()">
+        Post
+      </button>
+
+    </div>
+
+    <div id="commentList">
+
+      <div class="comment">
+
+        <div class="comment-user">
+          User
+        </div>
+
+        <div class="comment-text">
+          Welcome to DesiVexa.
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
 
 </main>
 
 
+<!-- BOTTOM NAV -->
 
-<!-- VIDEO JS -->
+<nav class="bottom-nav">
 
-<script
-  type="module"
-  src="video.js?v=60">
-</script>
+  <a href="index.html">
+    <div>⌂</div>
+    Home
+  </a>
 
+  <a href="new.html">
+    <div>★</div>
+    Latest
+  </a>
+
+  <a href="trending.html">
+    <div>🔥</div>
+    Trending
+  </a>
+
+  <a href="recommended.html">
+    <div>♥</div>
+    Recommended
+  </a>
+
+  <a href="profile.html">
+    <div>●</div>
+    Profile
+  </a>
+
+</nav>
 
 
 <script>
 
-document
-  .getElementById("menuBtn")
-  ?.addEventListener(
-    "click",
-    () => {
+/* =========================
+   GET VIDEO ID
+========================= */
 
-      document
-        .getElementById("mobileMenu")
-        ?.classList
-        .toggle("show");
+const params = new URLSearchParams(
+  window.location.search
+);
+
+const videoId =
+  params.get("id") || "1";
+
+
+/* =========================
+   DEMO VIDEO DATA
+========================= */
+
+const video = {
+
+  id:videoId,
+
+  title:"DesiVexa Video "+videoId,
+
+  views:"12,450 views",
+
+  category:"Recommended",
+
+  description:
+    "Video description goes here. " +
+    "Replace this demo information with " +
+    "your actual authorized video data."
+
+};
+
+
+/* =========================
+   DISPLAY VIDEO
+========================= */
+
+document.getElementById("videoTitle")
+  .textContent=video.title;
+
+document.getElementById("videoMeta")
+  .textContent=
+    video.views+
+    " • "+
+    video.category;
+
+document.getElementById("videoDescription")
+  .textContent=video.description;
+
+
+/* =========================
+   RELATED VIDEOS
+   24 VIDEOS
+========================= */
+
+const related=[];
+
+for(let i=1;i<=24;i++){
+
+  related.push({
+
+    id:"related-"+i,
+
+    title:"Related Video "+i,
+
+    views:(i*921)+" views",
+
+    duration:
+      "9:"+
+      String((i%50)+5).padStart(2,"0")
+
+  });
+
+}
+
+
+function renderRelated(){
+
+  const grid=
+    document.getElementById(
+      "relatedGrid"
+    );
+
+  grid.innerHTML=
+    related.map(v=>`
+
+      <a
+        href="video.html?id=${v.id}"
+        class="card">
+
+        <div class="thumb">
+
+          <div class="play">
+            ▶
+          </div>
+
+          <div class="duration">
+            ${v.duration}
+          </div>
+
+        </div>
+
+        <div class="card-info">
+
+          <div class="card-title">
+            ${v.title}
+          </div>
+
+          <div class="card-meta">
+            ${v.views}
+          </div>
+
+        </div>
+
+      </a>
+
+    `).join("");
+
+}
+
+renderRelated();
+
+
+/* =========================
+   LIKE
+========================= */
+
+function toggleLike(){
+
+  const button=
+    document.getElementById(
+      "likeButton"
+    );
+
+  button.classList.toggle("active");
+
+}
+
+
+/* =========================
+   COMMENT SCROLL
+========================= */
+
+function scrollToComments(){
+
+  document
+    .getElementById("comments")
+    .scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+
+}
+
+
+/* =========================
+   ADD COMMENT
+========================= */
+
+function addComment(){
+
+  const input=
+    document.getElementById(
+      "commentInput"
+    );
+
+  const text=
+    input.value.trim();
+
+  if(!text){
+    return;
+  }
+
+  const list=
+    document.getElementById(
+      "commentList"
+    );
+
+  const comment=
+    document.createElement("div");
+
+  comment.className="comment";
+
+  comment.innerHTML=`
+
+    <div class="comment-user">
+      You
+    </div>
+
+    <div class="comment-text">
+      ${escapeHtml(text)}
+    </div>
+
+  `;
+
+  list.prepend(comment);
+
+  input.value="";
+
+}
+
+
+/* =========================
+   HTML ESCAPE
+========================= */
+
+function escapeHtml(text){
+
+  const div=
+    document.createElement("div");
+
+  div.textContent=text;
+
+  return div.innerHTML;
+
+}
+
+
+/* =========================
+   SHARE
+========================= */
+
+async function shareVideo(){
+
+  const url=
+    window.location.href;
+
+  if(navigator.share){
+
+    try{
+
+      await navigator.share({
+        title:video.title,
+        url:url
+      });
+
+    }catch(e){}
+
+  }else{
+
+    await navigator.clipboard.writeText(url);
+
+    alert("Video link copied!");
+
+  }
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+function searchVideo(event){
+
+  if(event.key==="Enter"){
+
+    const value=
+      event.target.value.trim();
+
+    if(value){
+
+      window.location.href=
+        "search.html?q="+
+        encodeURIComponent(value);
 
     }
-  );
 
+  }
 
-document
-  .getElementById("searchBtn")
-  ?.addEventListener(
-    "click",
-    () => {
-
-      const box =
-        document.getElementById(
-          "searchBox"
-        );
-
-      box?.classList.toggle(
-        "show"
-      );
-
-      box
-        ?.querySelector("input")
-        ?.focus();
-
-    }
-  );
-
-
-document
-  .getElementById("search")
-  ?.addEventListener(
-    "keydown",
-    e => {
-
-      if(e.key !== "Enter"){
-        return;
-      }
-
-      const q =
-        e.target.value.trim();
-
-      location.href =
-        q
-          ? `index.html?search=${encodeURIComponent(q)}`
-          : "index.html";
-
-    }
-  );
+}
 
 </script>
-
 
 </body>
 </html>
