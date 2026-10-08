@@ -446,20 +446,58 @@ video{
 
   <!-- RELATED -->
 
+<div class="sectionTitle">
+  🎬 Related Videos
+</div>
+
+<div id="relatedVideos" class="relatedGrid"></div>
+
+<div id="relatedMessage" class="loading">
+  Loading related videos...
+</div>
+
+<div
+  id="pagination"
+  class="pagination"
+></div>
+
+
+<!-- COMMENTS -->
+
+<div class="comments">
+
   <div class="sectionTitle">
-    🎬 Related Videos
+    💬 Comments
   </div>
 
-  <div id="relatedVideos" class="relatedGrid"></div>
+  <div class="commentForm">
 
-  <div id="relatedMessage" class="loading">
-    Loading related videos...
+    <input
+      id="commentInput"
+      class="commentInput"
+      type="text"
+      maxlength="500"
+      placeholder="Write a comment..."
+    >
+
+    <button
+      id="commentBtn"
+      class="commentBtn"
+    >
+      Post
+    </button>
+
   </div>
 
-  <div
-    id="pagination"
-    class="pagination"
-  ></div>
+  <div id="commentList" class="commentList">
+
+    <div class="empty">
+      Comments will appear here.
+    </div>
+
+  </div>
+
+</div>
 
 </div>
 
