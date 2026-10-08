@@ -24,10 +24,6 @@
 
 <style>
 
-/* =========================
-   RESET
-========================= */
-
 *{
   box-sizing:border-box;
   margin:0;
@@ -59,11 +55,6 @@ a{
   text-decoration:none;
 }
 
-
-/* =========================
-   MAIN
-========================= */
-
 .page{
   min-height:100vh;
   max-width:1200px;
@@ -72,10 +63,7 @@ a{
   padding-bottom:90px;
 }
 
-
-/* =========================
-   HEADER
-========================= */
+/* HEADER */
 
 .header{
   height:64px;
@@ -110,11 +98,6 @@ a{
   font-size:20px;
 }
 
-
-/* =========================
-   LOGO
-========================= */
-
 .logo{
   flex:1;
   text-align:center;
@@ -127,10 +110,7 @@ a{
   color:#ff1744;
 }
 
-
-/* =========================
-   MOBILE MENU
-========================= */
+/* MOBILE MENU */
 
 .mobileMenu{
   display:none;
@@ -163,10 +143,7 @@ a{
   background:#ff1744;
 }
 
-
-/* =========================
-   SEARCH BOX
-========================= */
+/* SEARCH */
 
 .searchBox{
   display:none;
@@ -194,10 +171,7 @@ a{
   color:#81919d;
 }
 
-
-/* =========================
-   HERO
-========================= */
+/* HERO */
 
 .hero{
   padding:20px 14px 10px;
@@ -230,10 +204,7 @@ a{
   line-height:1.5;
 }
 
-
-/* =========================
-   CATEGORIES BUTTON
-========================= */
+/* CATEGORY BUTTON */
 
 .categoriesButtonWrap{
   padding:10px 14px 0;
@@ -257,10 +228,7 @@ a{
   color:#ff1744;
 }
 
-
-/* =========================
-   CATEGORY PILLS
-========================= */
+/* CATEGORY PILLS */
 
 .categories{
   display:flex;
@@ -291,10 +259,7 @@ a{
   color:#fff;
 }
 
-
-/* =========================
-   SECTION
-========================= */
+/* SECTION */
 
 .section{
   padding:20px 14px 0;
@@ -318,10 +283,7 @@ a{
   font-weight:700;
 }
 
-
-/* =========================
-   VIDEO GRID
-========================= */
+/* GRID */
 
 .videoGrid{
   display:grid;
@@ -329,10 +291,7 @@ a{
   gap:18px;
 }
 
-
-/* =========================
-   CARD
-========================= */
+/* CARD */
 
 .videoCard{
   min-width:0;
@@ -360,10 +319,7 @@ a{
   transform:scale(1.03);
 }
 
-
-/* =========================
-   PLAY
-========================= */
+/* PLAY */
 
 .playIcon{
   position:absolute;
@@ -379,10 +335,7 @@ a{
   font-size:12px;
 }
 
-
-/* =========================
-   HD
-========================= */
+/* HD */
 
 .hdBadge{
   position:absolute;
@@ -395,10 +348,7 @@ a{
   font-weight:800;
 }
 
-
-/* =========================
-   TITLE
-========================= */
+/* TITLE */
 
 .videoTitle{
   margin-top:8px;
@@ -411,10 +361,7 @@ a{
   overflow:hidden;
 }
 
-
-/* =========================
-   CATEGORY
-========================= */
+/* CATEGORY */
 
 .videoCategory{
   display:inline-block;
@@ -426,10 +373,7 @@ a{
   font-weight:800;
 }
 
-
-/* =========================
-   META
-========================= */
+/* META */
 
 .videoMeta{
   color:#8496a3;
@@ -437,10 +381,7 @@ a{
   margin-top:6px;
 }
 
-
-/* =========================
-   LOADING / EMPTY
-========================= */
+/* LOADING */
 
 .loadingVideos,
 .emptyVideos{
@@ -450,10 +391,7 @@ a{
   color:#8798a5;
 }
 
-
-/* =========================
-   RANDOM PAGINATION
-========================= */
+/* PAGINATION */
 
 .randomPagination{
   display:flex;
@@ -486,10 +424,7 @@ a{
   cursor:not-allowed;
 }
 
-
-/* =========================
-   BOTTOM NAV
-========================= */
+/* BOTTOM NAV */
 
 .bottomNav{
   position:fixed;
@@ -530,10 +465,7 @@ a{
   color:#ff1744;
 }
 
-
-/* =========================
-   FOOTER
-========================= */
+/* FOOTER */
 
 .footer{
   text-align:center;
@@ -553,10 +485,7 @@ a{
   color:#ff1744;
 }
 
-
-/* =========================
-   RESPONSIVE
-========================= */
+/* RESPONSIVE */
 
 @media(max-width:900px){
 
@@ -565,7 +494,6 @@ a{
   }
 
 }
-
 
 @media(max-width:600px){
 
@@ -639,7 +567,6 @@ a{
 
 }
 
-
 @media(max-width:360px){
 
   .logo{
@@ -662,15 +589,9 @@ a{
 
 </head>
 
-
 <body>
 
 <div class="page">
-
-
-<!-- =========================
-     HEADER
-========================= -->
 
 <header class="header">
 
@@ -695,11 +616,6 @@ a{
 </button>
 
 </header>
-
-
-<!-- =========================
-     MOBILE MENU
-========================= -->
 
 <div
   class="mobileMenu"
@@ -728,11 +644,6 @@ a{
 
 </div>
 
-
-<!-- =========================
-     SEARCH
-========================= -->
-
 <div
   class="searchBox"
   id="searchBox"
@@ -747,11 +658,6 @@ a{
 >
 
 </div>
-
-
-<!-- =========================
-     HERO
-========================= -->
 
 <section class="hero">
 
@@ -768,11 +674,6 @@ Discover latest, trending, recommended and random videos.
 </div>
 
 </section>
-
-
-<!-- =========================
-     CATEGORIES BUTTON
-========================= -->
 
 <div class="categoriesButtonWrap">
 
@@ -793,11 +694,6 @@ Search →
 
 </div>
 
-
-<!-- =========================
-     CATEGORY PILLS
-========================= -->
-
 <div
   class="categories"
   id="categories"
@@ -807,15 +703,10 @@ Search →
   class="category active"
   data-category="all"
 >
-  All
+All
 </button>
 
 </div>
-
-
-<!-- =========================
-     TRENDING
-========================= -->
 
 <section
   class="section"
@@ -837,7 +728,6 @@ View All →
 
 </div>
 
-
 <div
   class="videoGrid"
   id="trendingVideos"
@@ -850,11 +740,6 @@ Loading videos...
 </div>
 
 </section>
-
-
-<!-- =========================
-     NEW
-========================= -->
 
 <section
   class="section"
@@ -876,7 +761,6 @@ View All →
 
 </div>
 
-
 <div
   class="videoGrid"
   id="newVideos"
@@ -889,11 +773,6 @@ Loading videos...
 </div>
 
 </section>
-
-
-<!-- =========================
-     RECOMMENDED
-========================= -->
 
 <section
   class="section"
@@ -915,7 +794,6 @@ View All →
 
 </div>
 
-
 <div
   class="videoGrid"
   id="recommendedVideos"
@@ -928,11 +806,6 @@ Loading videos...
 </div>
 
 </section>
-
-
-<!-- =========================
-     RANDOM
-========================= -->
 
 <section
   class="section"
@@ -947,7 +820,6 @@ Loading videos...
 
 </div>
 
-
 <div
   class="videoGrid"
   id="randomVideos"
@@ -959,18 +831,12 @@ Loading random videos...
 
 </div>
 
-
 <div
   class="randomPagination"
   id="randomPagination"
 ></div>
 
 </section>
-
-
-<!-- =========================
-     FOOTER
-========================= -->
 
 <footer class="footer">
 
@@ -986,11 +852,6 @@ authorized content involving adults.
 </footer>
 
 </div>
-
-
-<!-- =========================
-     BOTTOM NAV
-========================= -->
 
 <nav class="bottomNav">
 
@@ -1032,7 +893,6 @@ authorized content involving adults.
 
 </nav>
 
-
 <script type="module">
 
 /* ======================================================
@@ -1051,7 +911,6 @@ import {
 }
 from
 "./config.js";
-
 
 const supabase =
   createClient(
@@ -1091,11 +950,10 @@ let allVideos = [];
 let randomVideos = [];
 
 
-/*
-  Signed thumbnail cache.
-  Isse same video ke thumbnail ke liye
-  baar-baar request nahi jayegi.
-*/
+/* ======================================================
+   THUMBNAIL CACHE
+====================================================== */
+
 const thumbnailCache =
   new Map();
 
@@ -1156,7 +1014,7 @@ if(menuButton){
 
 
 /* ======================================================
-   SEARCH TOGGLE
+   SEARCH
 ====================================================== */
 
 if(searchButton){
@@ -1168,7 +1026,6 @@ if(searchButton){
       searchBox.classList.toggle(
         "show"
       );
-
 
       if(
         searchBox.classList.contains(
@@ -1195,27 +1052,22 @@ function escapeHTML(value){
   return String(
     value ?? ""
   )
-
   .replace(
     /&/g,
     "&amp;"
   )
-
   .replace(
     /</g,
     "&lt;"
   )
-
   .replace(
     />/g,
     "&gt;"
   )
-
   .replace(
     /"/g,
     "&quot;"
   )
-
   .replace(
     /'/g,
     "&#039;"
@@ -1235,10 +1087,7 @@ function formatViews(value){
       value || 0
     );
 
-
-  if(
-    n >= 1000000
-  ){
+  if(n >= 1000000){
 
     return (
       n / 1000000
@@ -1251,10 +1100,7 @@ function formatViews(value){
 
   }
 
-
-  if(
-    n >= 1000
-  ){
+  if(n >= 1000){
 
     return (
       n / 1000
@@ -1266,7 +1112,6 @@ function formatViews(value){
     ) + "K";
 
   }
-
 
   return String(n);
 
@@ -1283,7 +1128,6 @@ function timeAgo(date){
     return "";
   }
 
-
   const seconds =
     Math.floor(
       (
@@ -1292,115 +1136,80 @@ function timeAgo(date){
       ) / 1000
     );
 
-
-  if(
-    seconds < 60
-  ){
-
+  if(seconds < 60){
     return "just now";
-
   }
-
 
   const minutes =
     Math.floor(
       seconds / 60
     );
 
-
-  if(
-    minutes < 60
-  ){
-
-    return (
-      minutes +
-      "m ago"
-    );
-
+  if(minutes < 60){
+    return `${minutes}m ago`;
   }
-
 
   const hours =
     Math.floor(
       minutes / 60
     );
 
-
-  if(
-    hours < 24
-  ){
-
-    return (
-      hours +
-      "h ago"
-    );
-
+  if(hours < 24){
+    return `${hours}h ago`;
   }
-
 
   const days =
     Math.floor(
       hours / 24
     );
 
-
-  if(
-    days < 30
-  ){
-
-    return (
-      days +
-      "d ago"
-    );
-
+  if(days < 30){
+    return `${days}d ago`;
   }
-
 
   return (
     Math.floor(
       days / 30
-    ) +
-    "mo ago"
+    ) + "mo ago"
   );
 
 }
 
 
 /* ======================================================
-   FALLBACK THUMBNAIL
+   FALLBACK
 ====================================================== */
 
 function fallbackThumbnail(){
 
   const svg = `
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="800"
-      height="450"
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="800"
+    height="450"
+  >
+
+    <rect
+      width="100%"
+      height="100%"
+      fill="#101d28"
+    />
+
+    <text
+      x="50%"
+      y="50%"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      fill="#ff1744"
+      font-size="48"
+      font-family="Arial"
+      font-weight="bold"
     >
+      DesiVexa
+    </text>
 
-      <rect
-        width="100%"
-        height="100%"
-        fill="#101d28"
-      />
-
-      <text
-        x="50%"
-        y="50%"
-        text-anchor="middle"
-        dominant-baseline="middle"
-        fill="#ff1744"
-        font-size="48"
-        font-family="Arial"
-        font-weight="bold"
-      >
-        DesiVexa
-      </text>
-
-    </svg>
+  </svg>
   `;
-
 
   return (
     "data:image/svg+xml;charset=UTF-8," +
@@ -1411,16 +1220,15 @@ function fallbackThumbnail(){
 
 
 /* ======================================================
-   GET SIGNED THUMBNAIL
+   GET THUMBNAIL
 ====================================================== */
 
-async function getThumbnail(
-  videoId
-){
+async function getThumbnail(videoId){
 
-  /*
-    Cache me already hai
-  */
+  if(!videoId){
+    return "";
+  }
+
   if(
     thumbnailCache.has(
       videoId
@@ -1432,7 +1240,6 @@ async function getThumbnail(
     );
 
   }
-
 
   try{
 
@@ -1467,8 +1274,7 @@ async function getThumbnail(
       await response.text();
 
 
-    let result = {};
-
+    let result;
 
     try{
 
@@ -1487,14 +1293,19 @@ async function getThumbnail(
     }
 
 
-    if(
-      !response.ok
-    ){
+    if(!response.ok){
 
-      throw new Error(
-        result.error ||
-        `Media request failed (${response.status})`
+      console.error(
+        "Media function error:",
+        result
       );
+
+      thumbnailCache.set(
+        videoId,
+        ""
+      );
+
+      return "";
 
     }
 
@@ -1516,17 +1327,15 @@ async function getThumbnail(
   }catch(error){
 
     console.error(
-      "THUMBNAIL ERROR:",
+      "Thumbnail request failed:",
       videoId,
       error
     );
-
 
     thumbnailCache.set(
       videoId,
       ""
     );
-
 
     return "";
 
@@ -1539,9 +1348,7 @@ async function getThumbnail(
    PREPARE THUMBNAILS
 ====================================================== */
 
-async function prepareThumbnails(
-  videos
-){
+async function prepareThumbnails(videos){
 
   if(
     !videos ||
@@ -1553,6 +1360,15 @@ async function prepareThumbnails(
   }
 
 
+  /*
+    IMPORTANT FIX:
+    thumbnail_url empty/null ho tab bhi
+    Edge Function ko call kiya jayega.
+    
+    Function video.id ke through
+    database se thumbnail_url khud read karta hai.
+  */
+
   await Promise.all(
     videos.map(
       async video => {
@@ -1560,21 +1376,6 @@ async function prepareThumbnails(
         if(
           video._thumbnailReady
         ){
-
-          return;
-
-        }
-
-
-        if(
-          !video.thumbnail_url
-        ){
-
-          video._thumbnailUrl =
-            "";
-
-          video._thumbnailReady =
-            true;
 
           return;
 
@@ -1598,12 +1399,25 @@ async function prepareThumbnails(
 
 
 /* ======================================================
+   IMAGE FALLBACK
+====================================================== */
+
+window.thumbnailError =
+function(img){
+
+  img.onerror = null;
+
+  img.src =
+    fallbackThumbnail();
+
+};
+
+
+/* ======================================================
    VIDEO CARD
 ====================================================== */
 
-function videoCard(
-  video
-){
+function videoCard(video){
 
   const id =
     encodeURIComponent(
@@ -1636,20 +1450,18 @@ function videoCard(
             "Video"
           )}"
           loading="lazy"
+          onerror="thumbnailError(this)"
         >
-
 
         <div class="playIcon">
           ▶
         </div>
-
 
         <div class="hdBadge">
           HD
         </div>
 
       </div>
-
 
       <div class="videoTitle">
 
@@ -1660,7 +1472,6 @@ function videoCard(
 
       </div>
 
-
       <span class="videoCategory">
 
         ${escapeHTML(
@@ -1669,7 +1480,6 @@ function videoCard(
         )}
 
       </span>
-
 
       <div class="videoMeta">
 
@@ -1704,7 +1514,6 @@ function(id){
       id
     );
 
-
   location.href =
     "video.html?id=" +
     encodeURIComponent(
@@ -1718,15 +1527,11 @@ function(id){
    SHUFFLE
 ====================================================== */
 
-function shuffle(
-  array
-){
+function shuffle(array){
 
-  const arr =
-    [
-      ...array
-    ];
-
+  const arr = [
+    ...array
+  ];
 
   for(
     let i =
@@ -1743,7 +1548,6 @@ function shuffle(
         (i + 1)
       );
 
-
     [
       arr[i],
       arr[j]
@@ -1754,7 +1558,6 @@ function shuffle(
     ];
 
   }
-
 
   return arr;
 
@@ -1800,7 +1603,7 @@ function loadingMessage(){
 
 
 /* ======================================================
-   RENDER MAIN SECTIONS
+   RENDER SECTIONS
 ====================================================== */
 
 async function renderSections(
@@ -1860,15 +1663,9 @@ async function renderSections(
             a.views || 0
           );
 
-
-        if(
-          diff !== 0
-        ){
-
+        if(diff !== 0){
           return diff;
-
         }
-
 
         return (
           new Date(
@@ -1886,11 +1683,6 @@ async function renderSections(
       4
     );
 
-
-  /*
-    Sab sections ke unique videos
-    ke thumbnails ek saath prepare
-  */
 
   const uniqueVideos =
     [
@@ -1910,11 +1702,6 @@ async function renderSections(
     ];
 
 
-  await prepareThumbnails(
-    uniqueVideos
-  );
-
-
   const trendingBox =
     document.getElementById(
       "trendingVideos"
@@ -1931,48 +1718,61 @@ async function renderSections(
     );
 
 
-  if(
-    trendingBox
-  ){
+  if(trendingBox){
+    trendingBox.innerHTML =
+      loadingMessage();
+  }
+
+  if(newBox){
+    newBox.innerHTML =
+      loadingMessage();
+  }
+
+  if(recommendedBox){
+    recommendedBox.innerHTML =
+      loadingMessage();
+  }
+
+
+  /*
+    THUMBNAILS LOAD HERE
+  */
+
+  await prepareThumbnails(
+    uniqueVideos
+  );
+
+
+  if(trendingBox){
 
     trendingBox.innerHTML =
       trending.length
         ? trending
-            .map(
-              videoCard
-            )
+            .map(videoCard)
             .join("")
         : emptyMessage();
 
   }
 
 
-  if(
-    newBox
-  ){
+  if(newBox){
 
     newBox.innerHTML =
       latest.length
         ? latest
-            .map(
-              videoCard
-            )
+            .map(videoCard)
             .join("")
         : emptyMessage();
 
   }
 
 
-  if(
-    recommendedBox
-  ){
+  if(recommendedBox){
 
     recommendedBox.innerHTML =
       recommended.length
         ? recommended
-            .map(
-              videoCard
-            )
+            .map(videoCard)
             .join("")
         : emptyMessage();
 
@@ -1982,7 +1782,7 @@ async function renderSections(
 
 
 /* ======================================================
-   RANDOM VIDEOS
+   RANDOM
 ====================================================== */
 
 async function renderRandomVideos(){
@@ -1998,12 +1798,8 @@ async function renderRandomVideos(){
     );
 
 
-  if(
-    !container
-  ){
-
+  if(!container){
     return;
-
   }
 
 
@@ -2020,8 +1816,7 @@ async function renderRandomVideos(){
     totalPages > 0
   ){
 
-    randomPage =
-      1;
+    randomPage = 1;
 
   }
 
@@ -2042,19 +1837,15 @@ async function renderRandomVideos(){
     );
 
 
-  if(
-    current.length === 0
-  ){
+  if(current.length === 0){
 
     container.innerHTML =
       emptyMessage();
-
 
     renderRandomPagination(
       totalPages,
       pagination
     );
-
 
     return;
 
@@ -2072,9 +1863,7 @@ async function renderRandomVideos(){
 
   container.innerHTML =
     current
-      .map(
-        videoCard
-      )
+      .map(videoCard)
       .join("");
 
 
@@ -2095,18 +1884,12 @@ function renderRandomPagination(
   container
 ){
 
-  if(
-    !container
-  ){
-
+  if(!container){
     return;
-
   }
 
 
-  if(
-    totalPages <= 1
-  ){
+  if(totalPages <= 1){
 
     container.innerHTML =
       "";
@@ -2116,8 +1899,7 @@ function renderRandomPagination(
   }
 
 
-  let html =
-    "";
+  let html = "";
 
 
   html += `
@@ -2153,12 +1935,9 @@ function renderRandomPagination(
     );
 
 
-  if(
-    randomPage <= 3
-  ){
+  if(randomPage <= 3){
 
-    start =
-      1;
+    start = 1;
 
     end =
       Math.min(
@@ -2218,8 +1997,7 @@ function renderRandomPagination(
     <button
       class="randomPageBtn"
       ${
-        randomPage >=
-        totalPages
+        randomPage >= totalPages
           ? "disabled"
           : ""
       }
@@ -2273,9 +2051,7 @@ async function(page){
     );
 
 
-  if(
-    randomPage === 1
-  ){
+  if(randomPage === 1){
 
     url.searchParams.delete(
       "randomPage"
@@ -2306,10 +2082,8 @@ async function(page){
       "randomSection"
     )
     ?.scrollIntoView({
-      behavior:
-        "smooth",
-      block:
-        "start"
+      behavior:"smooth",
+      block:"start"
     });
 
 };
@@ -2321,12 +2095,8 @@ async function(page){
 
 function renderCategories(){
 
-  if(
-    !categoriesBox
-  ){
-
+  if(!categoriesBox){
     return;
-
   }
 
 
@@ -2341,9 +2111,7 @@ function renderCategories(){
                 ""
               ).trim()
           )
-          .filter(
-            Boolean
-          )
+          .filter(Boolean)
       )
     ]
     .slice(
@@ -2352,17 +2120,16 @@ function renderCategories(){
     );
 
 
-  categoriesBox.innerHTML =
-    `
+  categoriesBox.innerHTML = `
 
-      <button
-        class="category active"
-        data-category="all"
-      >
-        All
-      </button>
+    <button
+      class="category active"
+      data-category="all"
+    >
+      All
+    </button>
 
-    `;
+  `;
 
 
   categories.forEach(
@@ -2404,10 +2171,9 @@ function renderCategories(){
               )
               .forEach(
                 item =>
-                  item.classList
-                    .remove(
-                      "active"
-                    )
+                  item.classList.remove(
+                    "active"
+                  )
               );
 
 
@@ -2422,16 +2188,13 @@ function renderCategories(){
 
             const filtered =
               category === "all"
-
                 ? allVideos
-
                 : allVideos.filter(
                     video =>
                       String(
                         video.category ||
                         ""
-                      ) ===
-                      category
+                      ) === category
                   );
 
 
@@ -2446,8 +2209,7 @@ function renderCategories(){
               );
 
 
-            randomPage =
-              1;
+            randomPage = 1;
 
 
             await renderRandomVideos();
@@ -2465,9 +2227,7 @@ function renderCategories(){
    SEARCH
 ====================================================== */
 
-if(
-  searchInput
-){
+if(searchInput){
 
   searchInput.addEventListener(
     "keydown",
@@ -2490,12 +2250,8 @@ if(
         searchInput.value.trim();
 
 
-      if(
-        !query
-      ){
-
+      if(!query){
         return;
-
       }
 
 
@@ -2546,9 +2302,7 @@ async function loadVideos(){
       error
     } =
       await supabase
-        .from(
-          "videos"
-        )
+        .from("videos")
         .select(
           "id,title,category,description,thumbnail_url,video_url,views,created_at"
         )
@@ -2559,8 +2313,7 @@ async function loadVideos(){
         .order(
           "created_at",
           {
-            ascending:
-              false
+            ascending:false
           }
         )
         .limit(
@@ -2568,12 +2321,8 @@ async function loadVideos(){
         );
 
 
-    if(
-      error
-    ){
-
+    if(error){
       throw error;
-
     }
 
 
@@ -2621,12 +2370,8 @@ async function loadVideos(){
     boxes.forEach(
       box => {
 
-        if(
-          !box
-        ){
-
+        if(!box){
           return;
-
         }
 
 
