@@ -18,7 +18,6 @@ const supabase =
 const MEDIA_FUNCTION =
   `${SUPABASE_URL}/functions/v1/get-video-media`;
 
-
 const page =
   document.getElementById("page");
 
@@ -44,7 +43,6 @@ function getVideoId() {
   id =
     id.trim();
 
-  // Safety for accidental duplicate query
   if (id.includes("?")) {
     id =
       id.split("?")[0];
@@ -70,7 +68,7 @@ console.log(
 
 
 // =====================================================
-// UUID VALIDATION
+// UUID
 // =====================================================
 
 function isValidUUID(value) {
@@ -213,12 +211,6 @@ async function getMedia(id) {
     await response.text();
 
 
-  console.log(
-    "MEDIA STATUS:",
-    response.status
-  );
-
-
   let result;
 
   try {
@@ -355,6 +347,154 @@ function fallbackThumbnail(title) {
 
 
 // =====================================================
+// GET LIKE COUNT
+// =====================================================
+
+async function getLikeCount(id) {
+
+  try {
+
+    const {
+      count,
+      error
+    } =
+      await supabase
+        .from("video_likes")
+        .select(
+          "*",
+          {
+            count: "exact",
+            head: true
+          }
+        )
+        .eq(
+          "video_id",
+          id
+        );
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    return Number(
+      count || 0
+    );
+
+  } catch (error) {
+
+    console.log(
+      "LIKE COUNT ERROR:",
+      error
+    );
+
+    return 0;
+
+  }
+}
+
+
+// =====================================================
+// GET COMMENT COUNT
+// =====================================================
+
+async function getCommentCount(id) {
+
+  try {
+
+    const {
+      count,
+      error
+    } =
+      await supabase
+        .from("video_comments")
+        .select(
+          "*",
+          {
+            count: "exact",
+            head: true
+          }
+        )
+        .eq(
+          "video_id",
+          id
+        );
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    return Number(
+      count || 0
+    );
+
+  } catch (error) {
+
+    console.log(
+      "COMMENT COUNT ERROR:",
+      error
+    );
+
+    return 0;
+
+  }
+}
+
+
+// =====================================================
+// UPDATE COUNTS
+// =====================================================
+
+async function updateCounts(id) {
+
+  const [
+    likes,
+    comments
+  ] =
+    await Promise.all([
+      getLikeCount(id),
+      getCommentCount(id)
+    ]);
+
+
+  const likeCount =
+    document.getElementById(
+      "likeCount"
+    );
+
+  const commentCount =
+    document.getElementById(
+      "commentCount"
+    );
+
+
+  if (likeCount) {
+
+    likeCount.textContent =
+      likes;
+
+  }
+
+
+  if (commentCount) {
+
+    commentCount.textContent =
+      comments;
+
+  }
+
+
+  return {
+    likes,
+    comments
+  };
+}
+
+
+// =====================================================
 // LOAD VIDEO
 // =====================================================
 
@@ -397,7 +537,7 @@ async function loadVideo() {
   try {
 
     // -------------------------------------------------
-    // DATABASE
+    // DATABASE VIDEO
     // -------------------------------------------------
 
     const {
@@ -419,9 +559,11 @@ async function loadVideo() {
 
 
     if (videoError) {
+
       throw new Error(
         videoError.message
       );
+
     }
 
 
@@ -434,14 +576,8 @@ async function loadVideo() {
     }
 
 
-    console.log(
-      "VIDEO:",
-      video
-    );
-
-
     // -------------------------------------------------
-    // SIGNED VIDEO + THUMBNAIL
+    // MEDIA
     // -------------------------------------------------
 
     const media =
@@ -450,9 +586,22 @@ async function loadVideo() {
       );
 
 
+    // -------------------------------------------------
+    // RENDER
+    // -------------------------------------------------
+
     renderVideo(
       video,
       media
+    );
+
+
+    // -------------------------------------------------
+    // COUNTS
+    // -------------------------------------------------
+
+    updateCounts(
+      video.id
     );
 
 
@@ -485,7 +634,7 @@ async function loadVideo() {
 
 
     // -------------------------------------------------
-    // RANDOM VIDEOS
+    // RELATED
     // -------------------------------------------------
 
     loadRandomVideos(
@@ -512,7 +661,7 @@ async function loadVideo() {
 
 
 // =====================================================
-// RENDER VIDEO PAGE
+// RENDER VIDEO
 // =====================================================
 
 function renderVideo(
@@ -527,7 +676,8 @@ function renderVideo(
       padding:12px;
     ">
 
-      <!-- VIDEO PLAYER -->
+
+      <!-- VIDEO -->
 
       <div style="
         width:100%;
@@ -541,7 +691,6 @@ function renderVideo(
           controls
           playsinline
           preload="metadata"
-          poster=""
           style="
             display:block;
             width:100%;
@@ -565,7 +714,9 @@ function renderVideo(
           font-size:20px;
           line-height:1.4;
         ">
-          ${escapeHtml(video.title)}
+          ${escapeHtml(
+            video.title
+          )}
         </h1>
 
 
@@ -600,15 +751,18 @@ function renderVideo(
             border-radius:20px;
             font-size:13px;
           ">
-            ${Number(
-              video.views || 0
-            )} views
+            <span id="viewCount">
+              ${Number(
+                video.views || 0
+              )}
+            </span>
+            views
           </span>
 
         </div>
 
 
-        <!-- ACTION BUTTONS -->
+        <!-- ACTIONS -->
 
         <div style="
           display:grid;
@@ -618,12 +772,15 @@ function renderVideo(
           margin-bottom:20px;
         ">
 
+
+          <!-- LIKE -->
+
           <button
             id="likeBtn"
             type="button"
             style="
               min-width:0;
-              padding:11px 5px;
+              padding:10px 5px;
               background:#151515;
               border:1px solid #333;
               color:#fff;
@@ -631,16 +788,32 @@ function renderVideo(
               cursor:pointer;
             "
           >
-            ❤️ Like
+
+            <span>
+              ❤️ Like
+            </span>
+
+            <span
+              id="likeCount"
+              style="
+                color:#aaa;
+                margin-left:3px;
+              "
+            >
+              0
+            </span>
+
           </button>
 
+
+          <!-- COMMENTS -->
 
           <button
             id="commentScrollBtn"
             type="button"
             style="
               min-width:0;
-              padding:11px 5px;
+              padding:10px 5px;
               background:#151515;
               border:1px solid #333;
               color:#fff;
@@ -648,16 +821,32 @@ function renderVideo(
               cursor:pointer;
             "
           >
-            💬 Comments
+
+            <span>
+              💬 Comments
+            </span>
+
+            <span
+              id="commentCount"
+              style="
+                color:#aaa;
+                margin-left:3px;
+              "
+            >
+              0
+            </span>
+
           </button>
 
+
+          <!-- SHARE -->
 
           <button
             id="shareBtn"
             type="button"
             style="
               min-width:0;
-              padding:11px 5px;
+              padding:10px 5px;
               background:#151515;
               border:1px solid #333;
               color:#fff;
@@ -667,6 +856,7 @@ function renderVideo(
           >
             ↗ Share
           </button>
+
 
         </div>
 
@@ -732,7 +922,7 @@ function renderVideo(
         </section>
 
 
-        <!-- RANDOM VIDEOS -->
+        <!-- RELATED -->
 
         <section style="
           margin-top:35px;
@@ -761,12 +951,13 @@ function renderVideo(
               color:#777;
               grid-column:1/-1;
             ">
-              Loading...
+              Loading related videos...
             </div>
 
           </div>
 
         </section>
+
 
       </div>
 
@@ -808,36 +999,11 @@ function renderVideo(
 
     player.load();
 
-
-    player.addEventListener(
-      "loadedmetadata",
-      () => {
-
-        console.log(
-          "VIDEO READY"
-        );
-
-      }
-    );
-
-
-    player.addEventListener(
-      "error",
-      () => {
-
-        console.error(
-          "PLAYER ERROR:",
-          player.error
-        );
-
-      }
-    );
-
   }
 
 
   // ===================================================
-  // COMMENT SCROLL
+  // COMMENTS SCROLL
   // ===================================================
 
   const commentButton =
@@ -958,17 +1124,38 @@ async function increaseViews(
       ) + 1;
 
 
-    await supabase
-      .from("videos")
-      .update({
-        views:
-          newViews
-      })
-      .eq(
-        "id",
-        id
+    const {
+      error
+    } =
+      await supabase
+        .from("videos")
+        .update({
+          views:
+            newViews
+        })
+        .eq(
+          "id",
+          id
+        );
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    const viewCount =
+      document.getElementById(
+        "viewCount"
       );
 
+
+    if (viewCount) {
+
+      viewCount.textContent =
+        newViews;
+
+    }
 
   } catch (error) {
 
@@ -1053,11 +1240,15 @@ async function setupLikeButton(
     getVisitorId();
 
 
-  // Check existing like
+  // ---------------------------------------------------
+  // CHECK EXISTING LIKE
+  // ---------------------------------------------------
+
   try {
 
     const {
-      data
+      data,
+      error
     } =
       await supabase
         .from("video_likes")
@@ -1073,16 +1264,23 @@ async function setupLikeButton(
         .maybeSingle();
 
 
-    if (data) {
-
-      button.innerHTML =
-        "❤️ Liked";
-
-      button.style.borderColor =
-        "#e50914";
+    if (
+      !error &&
+      data
+    ) {
 
       button.dataset.liked =
         "true";
+
+
+      button.querySelector(
+        "span"
+      ).textContent =
+        "❤️ Liked";
+
+
+      button.style.borderColor =
+        "#e50914";
 
     } else {
 
@@ -1091,18 +1289,17 @@ async function setupLikeButton(
 
     }
 
-  } catch (error) {
-
-    console.log(
-      "LIKE CHECK ERROR:",
-      error
-    );
+  } catch {
 
     button.dataset.liked =
       "false";
 
   }
 
+
+  // ---------------------------------------------------
+  // CLICK
+  // ---------------------------------------------------
 
   button.addEventListener(
     "click",
@@ -1146,7 +1343,9 @@ async function setupLikeButton(
             "true";
 
 
-          button.innerHTML =
+          button.querySelector(
+            "span"
+          ).textContent =
             "❤️ Liked";
 
 
@@ -1181,12 +1380,33 @@ async function setupLikeButton(
             "false";
 
 
-          button.innerHTML =
+          button.querySelector(
+            "span"
+          ).textContent =
             "❤️ Like";
 
 
           button.style.borderColor =
             "#333";
+
+        }
+
+
+        // Update total
+        const count =
+          await getLikeCount(id);
+
+
+        const likeCount =
+          document.getElementById(
+            "likeCount"
+          );
+
+
+        if (likeCount) {
+
+          likeCount.textContent =
+            count;
 
         }
 
@@ -1312,7 +1532,6 @@ async function loadComments(
         submit.disabled =
           true;
 
-
         submit.textContent =
           "Posting...";
 
@@ -1356,6 +1575,27 @@ async function loadComments(
           );
 
 
+          // Update count
+          const count =
+            await getCommentCount(
+              id
+            );
+
+
+          const commentCount =
+            document.getElementById(
+              "commentCount"
+            );
+
+
+          if (commentCount) {
+
+            commentCount.textContent =
+              count;
+
+          }
+
+
         } catch (error) {
 
           console.error(
@@ -1383,7 +1623,7 @@ async function loadComments(
     );
 
 
-    // Enter key
+    // Enter to post
     input.addEventListener(
       "keydown",
       event => {
@@ -1543,7 +1783,7 @@ async function fetchComments(
 
 
 // =====================================================
-// RANDOM / RELATED VIDEOS
+// RELATED VIDEOS
 // =====================================================
 
 async function loadRandomVideos(
@@ -1606,7 +1846,7 @@ async function loadRandomVideos(
           color:#777;
           grid-column:1/-1;
         ">
-          No other videos found.
+          No related videos found.
         </div>
 
       `;
@@ -1615,14 +1855,15 @@ async function loadRandomVideos(
     }
 
 
-    // -------------------------------------------------
-    // Create cards immediately
-    // -------------------------------------------------
-
-    container.innerHTML = "";
+    container.innerHTML =
+      "";
 
 
-    const cards =
+    // ---------------------------------------------------
+    // CREATE ALL CARDS FIRST
+    // ---------------------------------------------------
+
+    const cardMap =
       new Map();
 
 
@@ -1650,6 +1891,7 @@ async function loadRandomVideos(
         border:1px solid #222;
         border-radius:9px;
         overflow:hidden;
+        min-width:0;
       `;
 
 
@@ -1657,6 +1899,7 @@ async function loadRandomVideos(
 
         <div style="
           position:relative;
+          width:100%;
           aspect-ratio:16/9;
           background:#181818;
           overflow:hidden;
@@ -1687,7 +1930,7 @@ async function loadRandomVideos(
                   position:absolute;
                   right:6px;
                   bottom:6px;
-                  background:rgba(0,0,0,.8);
+                  background:rgba(0,0,0,.85);
                   color:#fff;
                   padding:3px 5px;
                   border-radius:4px;
@@ -1710,6 +1953,7 @@ async function loadRandomVideos(
         ">
 
           <div style="
+            color:#fff;
             font-size:13px;
             font-weight:600;
             line-height:1.35;
@@ -1725,13 +1969,30 @@ async function loadRandomVideos(
 
 
           <div style="
+            display:flex;
+            gap:6px;
+            flex-wrap:wrap;
             color:#777;
             font-size:11px;
-            margin-top:5px;
+            margin-top:6px;
           ">
-            ${Number(
-              video.views || 0
-            )} views
+
+            <span>
+              ${escapeHtml(
+                video.category || "Other"
+              )}
+            </span>
+
+            <span>
+              •
+            </span>
+
+            <span>
+              ${Number(
+                video.views || 0
+              )} views
+            </span>
+
           </div>
 
         </div>
@@ -1744,7 +2005,7 @@ async function loadRandomVideos(
       );
 
 
-      cards.set(
+      cardMap.set(
         video.id,
         card
       );
@@ -1752,9 +2013,9 @@ async function loadRandomVideos(
     }
 
 
-    // -------------------------------------------------
-    // Load all thumbnails in parallel
-    // -------------------------------------------------
+    // ---------------------------------------------------
+    // LOAD THUMBNAILS IN PARALLEL
+    // ---------------------------------------------------
 
     await Promise.all(
 
@@ -1773,7 +2034,7 @@ async function loadRandomVideos(
 
 
           const card =
-            cards.get(
+            cardMap.get(
               video.id
             );
 
@@ -1805,7 +2066,7 @@ async function loadRandomVideos(
   } catch (error) {
 
     console.error(
-      "RANDOM VIDEOS ERROR:",
+      "RELATED VIDEOS ERROR:",
       error
     );
 
