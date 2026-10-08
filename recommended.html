@@ -1,339 +1,211 @@
-<!DOCTYPE html><html lang="en"><head>  <meta charset="UTF-8"><meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-«»
+  <title>DesiVexa — Recommended</title>
 
-  <title>Recommended - DesiVexa</title>  <link rel="stylesheet" href="style.css?v=31">  <style>
+  <link rel="stylesheet" href="style.css?v=41">
+</head>
 
-    body {
-      background: #0b0b0b;
-      color: #fff;
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
+<body>
 
-    .page-wrap {
-      max-width: 1200px;
-      margin: auto;
-      padding: 18px 12px 90px;
-    }
+<main class="dvMain">
 
-    .section-title {
-      font-size: 23px;
-      font-weight: 800;
-      margin: 12px 0 5px;
-    }
+  <div style="
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:15px;
+  ">
+    <h1 style="
+      color:white;
+      font-size:22px;
+      margin:0;
+    ">
+      Recommended
+    </h1>
 
-    .section-subtitle {
-      color: #888;
-      font-size: 13px;
-      margin-bottom: 20px;
-    }
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .video-card {
-      display: block;
-      text-decoration: none;
-      color: white;
-      background: #151515;
-      border: 1px solid #222;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .thumb {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      display: block;
-      background: #222;
-    }
-
-    .video-info {
-      padding: 8px;
-    }
-
-    .video-title {
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.35;
-
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-
-      overflow: hidden;
-    }
-
-    .video-meta {
-      color: #888;
-      font-size: 11px;
-      margin-top: 5px;
-    }
-
-    .loading,
-    .error,
-    .empty {
-      text-align: center;
-      padding: 40px 10px;
-      color: #999;
-    }
-
-    .error {
-      color: #ff5555;
-    }
-
-    @media (max-width: 600px) {
-
-      .video-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 7px;
-      }
-
-      .video-info {
-        padding: 6px;
-      }
-
-      .video-title {
-        font-size: 11px;
-      }
-
-      .video-meta {
-        font-size: 9px;
-      }
-
-    }
-
-  </style></head><body>  <main class="page-wrap"><h1 class="section-title">
-  ✨ Recommended Videos
-</h1>
-
-<div class="section-subtitle">
-  Videos you may like
-</div>
-
-<div
-  id="recommendedVideos"
-  class="video-grid"
->
-
-  <div class="loading">
-    Loading recommended videos...
+    <a
+      href="index.html"
+      style="
+        color:white;
+        background:#e00000;
+        padding:8px 12px;
+        border-radius:7px;
+        text-decoration:none;
+        font-size:13px;
+      "
+    >
+      Home
+    </a>
   </div>
 
-</div>
+  <div id="recommendedVideos" style="
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+  ">
+    <p style="color:#888;">
+      Loading recommended videos...
+    </p>
+  </div>
 
-  </main>  <script type="module">
+</main>
 
-    import { createClient }
-      from "https://esm.sh/@supabase/supabase-js@2";
+<script type="module">
 
-    import {
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    } from "./config.js";
+import { createClient }
+from "https://esm.sh/@supabase/supabase-js@2";
 
+import {
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+} from "./config.js";
 
-    const supabase = createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+const supabase = createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
+const box =
+  document.getElementById("recommendedVideos");
 
-    const container =
-      document.getElementById(
-        "recommendedVideos"
-      );
+loadRecommended();
 
+async function loadRecommended() {
 
-    function escapeHTML(value) {
+  const result = await supabase
+    .from("videos")
+    .select(`
+      id,
+      title,
+      category,
+      thumbnail_url,
+      views,
+      created_at
+    `)
+    .eq("published", true)
+    .order("views", {
+      ascending:false
+    })
+    .order("created_at", {
+      ascending:false
+    })
+    .limit(100);
 
-      if (
-        value === null ||
-        value === undefined
-      ) {
-        return "";
-      }
+  if (result.error) {
 
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    console.error(result.error);
 
-    }
+    box.innerHTML = `
+      <p style="color:#888;">
+        Unable to load recommended videos.
+      </p>
+    `;
 
+    return;
+  }
 
-    function formatViews(views) {
+  const videos = result.data || [];
 
-      const number =
-        Number(views || 0);
+  if (!videos.length) {
 
+    box.innerHTML = `
+      <p style="color:#888;">
+        No recommended videos available.
+      </p>
+    `;
 
-      if (number >= 1000000) {
+    return;
+  }
 
-        return (
-          number / 1000000
-        ).toFixed(1) + "M views";
+  box.innerHTML = videos.map(video => {
 
-      }
+    const id =
+      encodeURIComponent(video.id);
 
+    return `
+      <a
+        href="video.html?id=${id}"
+        style="
+          display:block;
+          color:white;
+          text-decoration:none;
+          min-width:0;
+        "
+      >
 
-      if (number >= 1000) {
+        ${
+          video.thumbnail_url
+            ? `
+              <img
+                src="${escapeHTML(video.thumbnail_url)}"
+                loading="lazy"
+                alt=""
+                style="
+                  width:100%;
+                  aspect-ratio:16/9;
+                  object-fit:cover;
+                  display:block;
+                  border-radius:8px;
+                  background:#171717;
+                "
+              >
+            `
+            : `
+              <div style="
+                width:100%;
+                aspect-ratio:16/9;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                background:#171717;
+                border-radius:8px;
+                font-size:28px;
+              ">
+                ▶
+              </div>
+            `
+        }
 
-        return (
-          number / 1000
-        ).toFixed(1) + "K views";
-
-      }
-
-
-      return number + " views";
-
-    }
-
-
-    function card(video) {
-
-      /*
-       * IMPORTANT:
-       * video.id Supabase ka real UUID hai.
-       */
-
-      const id =
-        encodeURIComponent(video.id);
-
-
-      const title =
-        escapeHTML(
-          video.title || "Untitled Video"
-        );
-
-
-      const category =
-        escapeHTML(
-          video.category || "Video"
-        );
-
-
-      const thumbnail =
-        video.thumbnail_url ||
-        "https://via.placeholder.com/640x360?text=DesiVexa";
-
-
-      return `
-
-        <a
-          class="video-card"
-          href="video.html?id=${id}"
-        >
-
-          <img
-            class="thumb"
-            src="${escapeHTML(thumbnail)}"
-            alt="${title}"
-            loading="lazy"
-            onerror="this.src='https://via.placeholder.com/640x360?text=DesiVexa'"
-          >
-
-          <div class="video-info">
-
-            <div class="video-title">
-              ${title}
-            </div>
-
-            <div class="video-meta">
-              ${category} · ${formatViews(video.views)}
-            </div>
-
-          </div>
-
-        </a>
-
-      `;
-
-    }
-
-
-    async function loadRecommended() {
-
-      container.innerHTML = `
-        <div class="loading">
-          Loading recommended videos...
+        <div style="
+          margin-top:6px;
+          font-size:14px;
+          font-weight:600;
+          line-height:1.3;
+        ">
+          ${escapeHTML(video.title || "Untitled")}
         </div>
-      `;
 
+        <div style="
+          color:#999;
+          font-size:11px;
+          margin-top:4px;
+        ">
+          ${escapeHTML(video.category || "Video")}
+          ·
+          ${Number(video.views || 0)} views
+        </div>
 
-      const {
-        data,
-        error
-      } = await supabase
+      </a>
+    `;
 
-        .from("videos")
+  }).join("");
+}
 
-        .select(
-          "id,title,category,description,thumbnail_url,video_url,views,created_at"
-        )
+function escapeHTML(value) {
 
-        .eq("published", true)
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
 
-        .order("created_at", {
-          ascending: false
-        })
+</script>
 
-        .limit(150);
-
-
-      if (error) {
-
-        console.error(error);
-
-        container.innerHTML = `
-          <div class="error">
-            Could not load recommended videos.
-          </div>
-        `;
-
-        return;
-      }
-
-
-      if (!data || data.length === 0) {
-
-        container.innerHTML = `
-          <div class="empty">
-            No recommended videos available.
-          </div>
-        `;
-
-        return;
-      }
-
-
-      /*
-       * Recent videos ko shuffle karke
-       * recommendations jaisa display kar rahe hain.
-       */
-
-      const shuffled =
-        [...data].sort(
-          () => Math.random() - 0.5
-        );
-
-
-      container.innerHTML =
-        shuffled.map(card).join("");
-
-    }
-
-
-    loadRecommended();
-
-  </script></body></html>
+</body>
+</html>
