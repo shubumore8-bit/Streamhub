@@ -1,332 +1,208 @@
-<!DOCTYPE html><html lang="en">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Latest Videos - DesiVexa</title>  <link rel="stylesheet" href="style.css?v=31">  <style>
-    body {
-      background: #0b0b0b;
-      color: #fff;
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    .page-wrap {
-      max-width: 1200px;
-      margin: auto;
-      padding: 18px 12px 90px;
-    }
+  <title>DesiVexa — Latest</title>
 
-    .page-title {
-      font-size: 24px;
-      font-weight: 800;
-      margin: 10px 0 5px;
-    }
+  <link rel="stylesheet" href="style.css?v=41">
+</head>
 
-    .page-subtitle {
-      color: #999;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
+<body>
 
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
+<main class="dvMain">
 
-    .video-card {
-      display: block;
-      text-decoration: none;
-      color: #fff;
-      background: #151515;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid #222;
-    }
+  <div style="
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:15px;
+  ">
+    <h1 style="
+      color:white;
+      font-size:22px;
+      margin:0;
+    ">
+      Latest Videos
+    </h1>
 
-    .thumb {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      display: block;
-      background: #222;
-    }
+    <a
+      href="index.html"
+      style="
+        color:white;
+        background:#e00000;
+        padding:8px 12px;
+        border-radius:7px;
+        text-decoration:none;
+        font-size:13px;
+      "
+    >
+      Home
+    </a>
+  </div>
 
-    .video-info {
-      padding: 8px;
-    }
+  <div id="latestVideos" style="
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+  ">
+    <p style="color:#888;">
+      Loading latest videos...
+    </p>
+  </div>
 
-    .video-title {
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.35;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
+</main>
 
-    .video-meta {
-      color: #888;
-      font-size: 11px;
-      margin-top: 5px;
-    }
+<script type="module">
 
-    .loading,
-    .error,
-    .empty {
-      text-align: center;
-      padding: 40px 10px;
-      color: #aaa;
-    }
+import { createClient }
+from "https://esm.sh/@supabase/supabase-js@2";
 
-    .error {
-      color: #ff5555;
-    }
+import {
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+} from "./config.js";
 
-    .pagination {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 25px;
-    }
+const supabase = createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
-    .pagination button {
-      border: 0;
-      background: #222;
-      color: #fff;
-      padding: 9px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+const box =
+  document.getElementById("latestVideos");
 
-    .pagination button.active {
-      background: #e50914;
-    }
+loadLatest();
 
-    @media (max-width: 600px) {
-      .video-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 7px;
-      }
+async function loadLatest() {
 
-      .video-info {
-        padding: 6px;
-      }
+  const result = await supabase
+    .from("videos")
+    .select(`
+      id,
+      title,
+      category,
+      thumbnail_url,
+      views,
+      created_at
+    `)
+    .eq("published", true)
+    .order("created_at", {
+      ascending:false
+    })
+    .limit(100);
 
-      .video-title {
-        font-size: 11px;
-      }
+  if (result.error) {
 
-      .video-meta {
-        font-size: 9px;
-      }
-    }
-  </style></head><body>  <main class="page-wrap"><h1 class="page-title">Latest Videos</h1>
+    console.error(result.error);
 
-<div class="page-subtitle">
-  Recently uploaded videos
-</div>
+    box.innerHTML = `
+      <p style="color:#888;">
+        Unable to load latest videos.
+      </p>
+    `;
 
-<div id="newVideos" class="video-grid">
-  <div class="loading">Loading videos...</div>
-</div>
+    return;
+  }
 
-<div id="pagination" class="pagination"></div>
+  const videos = result.data || [];
 
-  </main>  <script type="module">
+  if (!videos.length) {
 
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+    box.innerHTML = `
+      <p style="color:#888;">
+        No latest videos available.
+      </p>
+    `;
 
-    import {
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    } from "./config.js";
+    return;
+  }
 
-    const supabase = createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+  box.innerHTML = videos.map(video => {
 
-    const container = document.getElementById("newVideos");
-    const pagination = document.getElementById("pagination");
+    const id =
+      encodeURIComponent(video.id);
 
-    const perPage = 30;
+    return `
+      <a
+        href="video.html?id=${id}"
+        style="
+          display:block;
+          color:white;
+          text-decoration:none;
+          min-width:0;
+        "
+      >
 
-    let currentPage = 1;
-
-    function escapeHTML(value) {
-      if (value === null || value === undefined) return "";
-
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    function formatViews(views) {
-
-      const number = Number(views || 0);
-
-      if (number >= 1000000) {
-        return (number / 1000000).toFixed(1) + "M views";
-      }
-
-      if (number >= 1000) {
-        return (number / 1000).toFixed(1) + "K views";
-      }
-
-      return number + " views";
-    }
-
-    function card(video) {
-
-      const id = encodeURIComponent(video.id);
-
-      const title =
-        escapeHTML(video.title || "Untitled Video");
-
-      const category =
-        escapeHTML(video.category || "Video");
-
-      const thumbnail =
-        video.thumbnail_url ||
-        "https://via.placeholder.com/640x360?text=DesiVexa";
-
-      return `
-        <a class="video-card" href="video.html?id=${id}">
-
-          <img
-            class="thumb"
-            src="${escapeHTML(thumbnail)}"
-            alt="${title}"
-            loading="lazy"
-            onerror="this.src='https://via.placeholder.com/640x360?text=DesiVexa'"
-          >
-
-          <div class="video-info">
-
-            <div class="video-title">
-              ${title}
-            </div>
-
-            <div class="video-meta">
-              ${category} · ${formatViews(video.views)}
-            </div>
-
-          </div>
-
-        </a>
-      `;
-    }
-
-    function makePagination(total) {
-
-      pagination.innerHTML = "";
-
-      const totalPages =
-        Math.ceil(total / perPage);
-
-      if (totalPages <= 1) return;
-
-      for (
-        let page = 1;
-        page <= totalPages;
-        page++
-      ) {
-
-        const button =
-          document.createElement("button");
-
-        button.textContent = page;
-
-        if (page === currentPage) {
-          button.classList.add("active");
+        ${
+          video.thumbnail_url
+            ? `
+              <img
+                src="${escapeHTML(video.thumbnail_url)}"
+                loading="lazy"
+                alt=""
+                style="
+                  width:100%;
+                  aspect-ratio:16/9;
+                  object-fit:cover;
+                  display:block;
+                  border-radius:8px;
+                  background:#171717;
+                "
+              >
+            `
+            : `
+              <div style="
+                width:100%;
+                aspect-ratio:16/9;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                background:#171717;
+                border-radius:8px;
+                font-size:28px;
+              ">
+                ▶
+              </div>
+            `
         }
 
-        button.onclick = () => {
+        <div style="
+          margin-top:6px;
+          font-size:14px;
+          font-weight:600;
+          line-height:1.3;
+        ">
+          ${escapeHTML(video.title || "Untitled")}
+        </div>
 
-          currentPage = page;
+        <div style="
+          color:#999;
+          font-size:11px;
+          margin-top:4px;
+        ">
+          ${escapeHTML(video.category || "Video")}
+          ·
+          ${Number(video.views || 0)} views
+        </div>
 
-          loadVideos();
+      </a>
+    `;
 
-          window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-          });
+  }).join("");
+}
 
-        };
+function escapeHTML(value) {
 
-        pagination.appendChild(button);
-      }
-    }
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
 
-    async function loadVideos() {
+</script>
 
-      container.innerHTML =
-        `<div class="loading">Loading videos...</div>`;
-
-      const from =
-        (currentPage - 1) * perPage;
-
-      const to =
-        from + perPage - 1;
-
-      const {
-        data,
-        error,
-        count
-      } = await supabase
-
-        .from("videos")
-
-        .select(
-          "id,title,category,description,thumbnail_url,video_url,views,created_at",
-          { count: "exact" }
-        )
-
-        .eq("published", true)
-
-        .order("created_at", {
-          ascending: false
-        })
-
-        .range(from, to);
-
-      if (error) {
-
-        console.error(error);
-
-        container.innerHTML = `
-          <div class="error">
-            Could not load videos.
-          </div>
-        `;
-
-        return;
-      }
-
-      if (!data || data.length === 0) {
-
-        container.innerHTML = `
-          <div class="empty">
-            No videos available yet.
-          </div>
-        `;
-
-        pagination.innerHTML = "";
-
-        return;
-      }
-
-      container.innerHTML =
-        data.map(card).join("");
-
-      makePagination(count || data.length);
-    }
-
-    loadVideos();
-
-  </script></body>
+</body>
 </html>
