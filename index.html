@@ -2,526 +2,668 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="description" content="DesiVexa - 18+ video platform">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <!-- ExoClick verification -->
-  <meta name="6a97888e-site-verification"
-        content="cdfc6e06389c2153c30b80c3449ad95c">
-
-  <!-- JuicyAds verification -->
-  <meta name="juicyads-site-verification"
-        content="97df17e7b5112caab5770e66ce197265">
+  <meta
+    name="description"
+    content="DesiVexa - 18+ video platform"
+  >
 
   <title>DesiVexa - 18+ Videos</title>
 
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="ads.css">
+  <link rel="stylesheet" href="style.css?v=50">
 
   <style>
-    *{
-      box-sizing:border-box;
+    * {
+      box-sizing: border-box;
     }
 
     html,
-    body{
-      margin:0;
-      padding:0;
-      width:100%;
-      max-width:100%;
-      overflow-x:hidden;
-      background:#000;
-      color:#fff;
-      font-family:Arial,Helvetica,sans-serif;
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      background: #000;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
-    body{
-      min-height:100vh;
+    body {
+      overflow-x: hidden;
     }
 
-    a{
-      color:inherit;
-      text-decoration:none;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
     button,
-    input{
-      font:inherit;
+    input {
+      font: inherit;
     }
 
-    /* AGE GATE */
+    /* =========================
+       AGE GATE
+    ========================= */
 
-    .gate{
-      position:fixed;
-      inset:0;
-      z-index:99999;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-      background:#000;
+    #ageGate {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 20px;
+
+      background: #000;
     }
 
-    .gatebox{
-      width:min(420px,100%);
-      padding:28px 20px;
-      text-align:center;
-      background:#111;
-      border:1px solid #333;
-      border-radius:8px;
+    .ageBox {
+      width: min(420px, 100%);
+
+      padding: 30px 22px;
+
+      text-align: center;
+
+      background: #111;
+      border: 1px solid #292929;
+      border-radius: 10px;
     }
 
-    .gateLogo{
-      font-size:34px;
-      font-weight:900;
+    .ageLogo {
+      font-size: 34px;
+      font-weight: 900;
+      margin-bottom: 12px;
     }
 
-    .gateLogo span{
-      color:#e00000;
+    .ageLogo span {
+      color: #e00000;
     }
 
-    .adultBadge{
-      display:inline-block;
-      margin:15px 0 8px;
-      padding:5px 10px;
-      background:#d90000;
-      border-radius:3px;
-      font-weight:900;
+    .age18 {
+      display: inline-block;
+
+      margin-bottom: 10px;
+      padding: 5px 10px;
+
+      background: #d00000;
+      color: #fff;
+
+      border-radius: 4px;
+
+      font-size: 14px;
+      font-weight: 900;
     }
 
-    .gatebox p{
-      color:#aaa;
+    .ageBox h2 {
+      margin: 8px 0;
     }
 
-    .btn{
-      padding:12px 20px;
-      border:0;
-      border-radius:4px;
-      background:#e00000;
-      color:#fff;
-      font-weight:700;
-      cursor:pointer;
+    .ageBox p {
+      margin: 0 0 20px;
+      color: #999;
+      font-size: 14px;
     }
 
-    /* HEADER */
+    .enterBtn {
+      border: 0;
+      padding: 12px 22px;
 
-    .dvHeader{
-      position:relative;
-      z-index:1000;
-      background:#c90000;
-      border-bottom:2px solid #4d0000;
+      background: #d00000;
+      color: #fff;
+
+      border-radius: 5px;
+
+      font-weight: 700;
+      cursor: pointer;
     }
 
-    .dvHeaderInner{
-      width:100%;
-      max-width:1100px;
-      height:62px;
-      margin:auto;
-      padding:0 8px;
+    /* =========================
+       HEADER
+    ========================= */
 
-      display:grid;
-      grid-template-columns:48px 1fr 48px;
-      align-items:center;
-      gap:5px;
+    .topHeader {
+      position: sticky;
+      top: 0;
+      z-index: 5000;
+
+      height: 58px;
+
+      display: grid;
+      grid-template-columns: 50px 1fr 50px;
+      align-items: center;
+
+      padding: 0 6px;
+
+      background: #090909;
+      border-bottom: 1px solid #252525;
     }
 
-    .headerIcon{
-      width:40px;
-      height:40px;
+    .menuButton,
+    .searchButton {
+      width: 42px;
+      height: 42px;
 
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-      background:#b50000;
-      border:1px solid #650000;
-      color:#fff;
+      border: 0;
+      background: transparent;
 
-      font-size:22px;
-      cursor:pointer;
+      color: #fff;
+
+      font-size: 24px;
+
+      cursor: pointer;
     }
 
-    .dvLogo{
-      text-align:center;
-      color:#050505;
-      font-size:27px;
-      font-weight:900;
-      letter-spacing:-1.5px;
-      text-transform:uppercase;
+    .logo {
+      text-align: center;
+
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -1px;
     }
 
-    .dvLogo span{
-      color:#000;
+    .logo span {
+      color: #e00000;
     }
 
-    /* SEARCH */
+    /* =========================
+       SEARCH
+    ========================= */
 
-    .dvSearchBox{
-      display:none;
-      padding:8px;
-      background:#090909;
-      border-bottom:1px solid #333;
+    .searchPanel {
+      display: none;
+
+      padding: 8px;
+
+      background: #0b0b0b;
+      border-bottom: 1px solid #222;
     }
 
-    .dvSearchBox.open{
-      display:block;
+    .searchPanel.show {
+      display: block;
     }
 
-    .dvSearchBox input{
-      width:100%;
-      height:40px;
-      padding:0 12px;
+    .searchPanel input {
+      width: 100%;
+      height: 42px;
 
-      background:#151515;
-      border:1px solid #555;
-      border-radius:3px;
+      padding: 0 12px;
 
-      color:#fff;
-      outline:none;
+      background: #161616;
+      border: 1px solid #383838;
+
+      border-radius: 5px;
+
+      color: #fff;
+      outline: none;
     }
 
-    /* MENU */
+    /* =========================
+       SIDE MENU
+    ========================= */
 
-    .mobileMenu{
-      display:none;
-      position:absolute;
-      top:62px;
-      left:0;
-      right:0;
-      z-index:3000;
+    .sideOverlay {
+      display: none;
 
-      background:#111;
-      border-bottom:2px solid #c90000;
+      position: fixed;
+      inset: 0;
+
+      z-index: 8000;
+
+      background: rgba(0, 0, 0, .65);
     }
 
-    .mobileMenu.open{
-      display:block;
+    .sideOverlay.show {
+      display: block;
     }
 
-    .mobileMenu a{
-      display:block;
-      padding:14px 16px;
-      border-bottom:1px solid #292929;
-      color:#ddd;
+    .sideMenu {
+      position: fixed;
+      top: 0;
+      left: -290px;
+
+      width: 275px;
+      height: 100vh;
+
+      z-index: 9000;
+
+      padding-top: 15px;
+
+      background: #101010;
+
+      border-right: 1px solid #292929;
+
+      transition: left .25s ease;
     }
 
-    /* MAIN */
-
-    .dvMain{
-      width:100%;
-      max-width:1100px;
-      margin:0 auto;
-      padding:0 6px 35px;
+    .sideMenu.show {
+      left: 0;
     }
 
-    /* CATEGORY */
+    .sideLogo {
+      padding: 18px;
 
-    .toolbar{
-      margin-top:7px;
+      font-size: 25px;
+      font-weight: 900;
+
+      border-bottom: 1px solid #292929;
     }
 
-    .categoryBtn{
-      width:100%;
-      min-height:40px;
-
-      padding:0 11px;
-
-      background:#151515;
-      border:1px solid #444;
-      border-radius:2px;
-
-      color:#fff;
-      text-align:left;
-      cursor:pointer;
+    .sideLogo span {
+      color: #e00000;
     }
 
-    .categoryList{
-      display:none;
-      margin-top:4px;
-      padding:7px;
+    .closeMenu {
+      position: absolute;
+      top: 15px;
+      right: 14px;
 
-      background:#101010;
-      border:1px solid #333;
+      border: 0;
+      background: transparent;
+
+      color: #aaa;
+      font-size: 24px;
+
+      cursor: pointer;
     }
 
-    .categoryList.open{
-      display:block;
+    .menuLink {
+      display: block;
+
+      padding: 15px 18px;
+
+      color: #ddd;
+
+      border-bottom: 1px solid #202020;
     }
 
-    #categorySearch{
-      width:100%;
-      height:37px;
-      margin-bottom:7px;
-      padding:0 9px;
-
-      background:#050505;
-      border:1px solid #555;
-
-      color:#fff;
-      outline:none;
+    .menuLink:hover {
+      background: #1b1b1b;
     }
 
-    #categoryItems{
-      display:flex;
-      flex-wrap:wrap;
-      gap:5px;
+    /* =========================
+       MAIN
+    ========================= */
+
+    .main {
+      width: 100%;
+      max-width: 1100px;
+
+      margin: 0 auto;
+
+      padding: 0 7px 35px;
     }
 
-    .catItem{
-      padding:7px 9px;
-      background:#414141;
-      color:#ddd;
-      border-radius:3px;
-      font-size:11px;
+    /* =========================
+       HERO
+    ========================= */
+
+    .hero {
+      margin: 8px 0;
+
+      padding: 22px 16px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #171717,
+          #070707
+        );
+
+      border: 1px solid #222;
+      border-radius: 7px;
     }
 
-    /* ADS */
+    .heroSmall {
+      color: #777;
 
-    .dvAdSlot{
-      width:100%;
-      overflow:hidden;
-      text-align:center;
-      background:#111;
-      margin:7px 0;
+      font-size: 10px;
+      font-weight: 700;
+
+      letter-spacing: 1px;
     }
 
-    .dvAdWide{
-      min-height:70px;
+    .hero h1 {
+      margin: 7px 0;
+
+      font-size: 26px;
+      line-height: 1.1;
     }
 
-    .dvAdCompact{
-      min-height:45px;
+    .hero p {
+      margin: 0 0 15px;
+
+      color: #999;
+
+      font-size: 13px;
+      line-height: 1.5;
     }
 
-    .dvAdBanner{
-      min-height:70px;
+    .heroButton {
+      display: inline-block;
+
+      padding: 10px 15px;
+
+      background: #d00000;
+      color: #fff;
+
+      border-radius: 5px;
+
+      font-size: 13px;
+      font-weight: 700;
     }
 
-    .dvAdSmall{
-      min-height:40px;
+    /* =========================
+       CATEGORY
+    ========================= */
+
+    .categoryButton {
+      width: 100%;
+
+      margin: 8px 0;
+
+      padding: 11px;
+
+      background: #111;
+
+      border: 1px solid #292929;
+      border-radius: 5px;
+
+      color: #fff;
+
+      text-align: left;
+
+      cursor: pointer;
     }
 
-    /* SECTION HEADINGS */
+    .categoryBox {
+      display: none;
 
-    .dvSectionTitle{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
+      padding: 8px;
 
-      margin:8px 0 4px;
-      padding:5px 6px;
+      background: #101010;
 
-      background:linear-gradient(#1b1b1b,#050505);
-      border-left:3px solid #777;
-      border-bottom:1px solid #333;
+      border: 1px solid #292929;
+      border-radius: 5px;
     }
 
-    .dvSectionTitle h2{
-      margin:0;
-      font-size:18px;
-      font-weight:400;
-      line-height:1.2;
+    .categoryBox.show {
+      display: block;
     }
 
-    .dvSectionTitle h2::before{
-      content:"› ";
-      color:#aaa;
+    .categorySearch {
+      width: 100%;
+
+      height: 38px;
+
+      margin-bottom: 8px;
+
+      padding: 0 10px;
+
+      background: #050505;
+
+      border: 1px solid #333;
+
+      color: #fff;
+
+      border-radius: 4px;
+      outline: none;
     }
 
-    .dvSectionTitle a{
-      color:#aaa;
-      font-size:10px;
+    #categoryItems {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
     }
 
-    .sectionLabel{
-      display:none;
+    .categoryItem {
+      padding: 7px 9px;
+
+      background: #242424;
+
+      border-radius: 4px;
+
+      color: #ccc;
+
+      font-size: 11px;
     }
 
-    /* VIDEO GRID — 2 COLUMNS */
+    /* =========================
+       SECTION
+    ========================= */
 
-    .dvGrid{
-      width:100%;
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:3px;
+    .section {
+      margin-top: 13px;
     }
 
-    .dvGrid .card{
-      min-width:0;
-      overflow:hidden;
+    .sectionHeader {
+      display: flex;
 
-      background:#090909;
-      border:0;
-      border-radius:0;
+      align-items: center;
+      justify-content: space-between;
+
+      margin-bottom: 6px;
+
+      padding: 7px 4px;
+
+      border-bottom: 1px solid #252525;
     }
 
-    .dvGrid .thumb{
-      position:relative;
-      width:100%;
-      aspect-ratio:16/10;
-      overflow:hidden;
-      background:#222;
+    .sectionTitle {
+      margin: 0;
+
+      font-size: 19px;
+      font-weight: 700;
     }
 
-    .dvGrid .thumb img{
-      width:100%;
-      height:100%;
-      display:block;
-      object-fit:cover;
+    .sectionTitle span {
+      color: #e00000;
     }
 
-    .dvGrid .body{
-      padding:4px 5px 7px;
+    .viewAll {
+      color: #999;
+
+      font-size: 11px;
     }
 
-    .dvGrid .card h3{
-      margin:0;
+    /* =========================
+       VIDEO GRID
+    ========================= */
 
-      color:#ddd;
-      font-size:11px;
-      font-weight:400;
-      line-height:1.25;
+    .videoGrid {
+      display: grid;
 
-      display:-webkit-box;
-      -webkit-line-clamp:2;
-      -webkit-box-orient:vertical;
-      overflow:hidden;
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+      gap: 5px;
     }
 
-    .dvGrid .cardMeta{
-      margin-top:3px;
-      color:#777;
-      font-size:8px;
-
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+    .videoGrid > * {
+      min-width: 0;
     }
 
-    .dvGrid .playCircle{
-      width:28px !important;
-      height:28px !important;
-      font-size:11px !important;
+    /* Make cards created by app.js fit this design */
+
+    .videoGrid .card {
+      min-width: 0;
+      overflow: hidden;
+
+      background: #090909;
+
+      border: 1px solid #181818;
+      border-radius: 4px;
     }
 
-    .dvGrid .cardViews{
-      font-size:8px !important;
-      padding:2px 3px !important;
+    .videoGrid .thumb {
+      position: relative;
+
+      width: 100%;
+
+      aspect-ratio: 16 / 10;
+
+      overflow: hidden;
+
+      background: #181818;
     }
 
-    /* DESKTOP */
+    .videoGrid .thumb img {
+      width: 100%;
+      height: 100%;
 
-    @media(min-width:700px){
+      display: block;
 
-      .dvHeaderInner{
-        grid-template-columns:55px 1fr 55px;
+      object-fit: cover;
+    }
+
+    .videoGrid .body {
+      padding: 6px;
+    }
+
+    .videoGrid h3 {
+      margin: 0;
+
+      color: #ddd;
+
+      font-size: 11px;
+      line-height: 1.35;
+
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+
+      overflow: hidden;
+    }
+
+    .videoGrid .cardMeta {
+      margin-top: 4px;
+
+      color: #777;
+
+      font-size: 8px;
+    }
+
+    /* =========================
+       EMPTY / LOADING
+    ========================= */
+
+    .loading,
+    .empty {
+      grid-column: 1 / -1;
+
+      padding: 30px 10px;
+
+      text-align: center;
+
+      color: #777;
+
+      font-size: 13px;
+    }
+
+    /* =========================
+       FOOTER
+    ========================= */
+
+    footer {
+      padding: 28px 12px;
+
+      text-align: center;
+
+      background: #080808;
+
+      border-top: 1px solid #222;
+    }
+
+    .footerLogo {
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .footerLogo span {
+      color: #e00000;
+    }
+
+    footer p {
+      color: #777;
+      font-size: 11px;
+    }
+
+    footer a {
+      color: #aaa;
+      font-size: 12px;
+    }
+
+    /* =========================
+       DESKTOP
+    ========================= */
+
+    @media (min-width: 700px) {
+
+      .topHeader {
+        height: 64px;
+
+        grid-template-columns: 60px 1fr 60px;
       }
 
-      .dvMain{
-        padding:10px 12px 50px;
+      .logo {
+        font-size: 29px;
       }
 
-      .dvGrid{
-        grid-template-columns:repeat(4,minmax(0,1fr));
-        gap:7px;
+      .main {
+        padding: 12px 14px 50px;
       }
 
-      .dvGrid .card h3{
-        font-size:13px;
+      .videoGrid {
+        grid-template-columns:
+          repeat(4, minmax(0, 1fr));
+
+        gap: 8px;
       }
 
-      .dvGrid .cardMeta{
-        font-size:10px;
+      .videoGrid h3 {
+        font-size: 13px;
       }
 
-      .dvSectionTitle h2{
-        font-size:21px;
-      }
-    }
-
-    /* VERY SMALL MOBILE */
-
-    @media(max-width:360px){
-
-      .dvHeaderInner{
-        height:58px;
-        grid-template-columns:44px 1fr 44px;
+      .videoGrid .cardMeta {
+        font-size: 10px;
       }
 
-      .headerIcon{
-        width:37px;
-        height:37px;
-        font-size:20px;
+      .hero {
+        padding: 35px 28px;
       }
 
-      .dvLogo{
-        font-size:23px;
+      .hero h1 {
+        font-size: 36px;
       }
-
-      .dvMain{
-        padding-left:4px;
-        padding-right:4px;
-      }
-
-      .dvGrid{
-        gap:2px;
-      }
-
-      .dvGrid .card h3{
-        font-size:10px;
-      }
-
-      .dvGrid .cardMeta{
-        font-size:7px;
-      }
-    }
-
-    /* FOOTER */
-
-    footer{
-      margin-top:15px;
-      padding:24px 12px;
-      text-align:center;
-
-      background:#080808;
-      border-top:1px solid #292929;
-    }
-
-    .footerLogo{
-      font-size:25px;
-      font-weight:900;
-    }
-
-    .footerLogo span{
-      color:#e00000;
-    }
-
-    footer p{
-      color:#777;
-      font-size:11px;
-    }
-
-    footer a{
-      color:#aaa;
-      font-size:12px;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- AGE GATE -->
+  <!-- =========================
+       AGE GATE
+  ========================= -->
 
-  <div id="ageGate" class="gate">
+  <div id="ageGate">
 
-    <div class="gatebox">
+    <div class="ageBox">
 
-      <div class="gateLogo">
+      <div class="ageLogo">
         Desi<span>Vexa</span>
       </div>
 
-      <div class="adultBadge">
+      <div class="age18">
         18+
       </div>
 
@@ -534,7 +676,7 @@
 
       <button
         id="enter"
-        class="btn"
+        class="enterBtn"
         type="button">
 
         I am 18+ - Enter
@@ -545,270 +687,332 @@
 
   </div>
 
-  <!-- HEADER -->
+  <!-- =========================
+       HEADER
+  ========================= -->
 
-  <header class="dvHeader">
+  <header class="topHeader">
 
-    <div class="dvHeaderInner">
+    <button
+      id="menuBtn"
+      class="menuButton"
+      type="button"
+      aria-label="Open menu">
 
-      <button
-        id="menuBtn"
-        class="headerIcon"
-        type="button">
+      ☰
 
-        ☰
+    </button>
 
-      </button>
+    <a
+      href="index.html"
+      class="logo">
 
-      <a
-        href="index.html"
-        class="dvLogo">
+      DESI<span>VEXA</span>
 
-        DESI<span>VEXA</span>
+    </a>
 
-      </a>
+    <button
+      id="searchBtn"
+      class="searchButton"
+      type="button"
+      aria-label="Search">
 
-      <button
-        id="searchBtn"
-        class="headerIcon"
-        type="button">
+      ⌕
 
-        🔍
-
-      </button>
-
-    </div>
-
-    <div
-      id="searchBox"
-      class="dvSearchBox">
-
-      <input
-        id="search"
-        type="search"
-        placeholder="Find your favorite videos..."
-        autocomplete="off">
-
-    </div>
+    </button>
 
   </header>
 
-  <!-- MENU -->
+  <!-- SEARCH -->
 
   <div
-    id="mobileMenu"
-    class="mobileMenu">
+    id="searchPanel"
+    class="searchPanel">
 
-    <a href="index.html">
-      🏠 Home
-    </a>
-
-    <a href="most-viewed.html">
-      🔥 Most Viewed
-    </a>
-
-    <a href="latest.html">
-      🆕 Latest Videos
-    </a>
-
-    <a href="#categories">
-      ▦ Categories
-    </a>
-
-    <a href="legal.html">
-      Terms &amp; Privacy
-    </a>
+    <input
+      id="search"
+      type="search"
+      placeholder="Search videos..."
+      autocomplete="off">
 
   </div>
 
-  <!-- MAIN -->
+  <!-- =========================
+       SIDE MENU
+  ========================= -->
 
-  <main class="dvMain">
+  <div
+    id="sideOverlay"
+    class="sideOverlay">
+  </div>
+
+  <aside
+    id="sideMenu"
+    class="sideMenu">
+
+    <button
+      id="closeMenu"
+      class="closeMenu"
+      type="button">
+
+      ×
+
+    </button>
+
+    <div class="sideLogo">
+      Desi<span>Vexa</span>
+    </div>
+
+    <a
+      href="index.html"
+      class="menuLink">
+
+      🏠 Home
+
+    </a>
+
+    <a
+      href="latest.html"
+      class="menuLink">
+
+      🆕 Latest Videos
+
+    </a>
+
+    <a
+      href="trending.html"
+      class="menuLink">
+
+      🔥 Trending Videos
+
+    </a>
+
+    <a
+      href="recommended.html"
+      class="menuLink">
+
+      ⭐ Recommended Videos
+
+    </a>
+
+    <a
+      href="#categories"
+      class="menuLink"
+      id="menuCategory">
+
+      📂 Categories
+
+    </a>
+
+    <a
+      href="login.html"
+      class="menuLink">
+
+      🔐 Login
+
+    </a>
+
+  </aside>
+
+  <!-- =========================
+       MAIN
+  ========================= -->
+
+  <main class="main">
+
+    <!-- HERO -->
+
+    <section class="hero">
+
+      <div class="heroSmall">
+        DESIVEXA • 18+ VIDEO PLATFORM
+      </div>
+
+      <h1>
+        Discover videos.<br>
+        Watch what you like.
+      </h1>
+
+      <p>
+        Explore trending and latest videos
+        in a clean, fast and mobile-friendly layout.
+      </p>
+
+      <a
+        href="#trending"
+        class="heroButton">
+
+        ▶ Explore Videos
+
+      </a>
+
+    </section>
+
+    <!-- CATEGORY -->
+
+    <section id="categories">
+
+      <button
+        id="categoryBtn"
+        class="categoryButton"
+        type="button">
+
+        ☰ Categories
+
+      </button>
+
+      <div
+        id="categoryBox"
+        class="categoryBox">
+
+        <input
+          id="categorySearch"
+          class="categorySearch"
+          type="search"
+          placeholder="Search categories..."
+          autocomplete="off">
+
+        <div id="categoryItems"></div>
+
+      </div>
+
+    </section>
+
+    <!-- =========================
+         TRENDING
+    ========================= -->
 
     <section
-      class="dvSection"
-      id="categories">
+      id="trending"
+      class="section">
 
-      <!-- CATEGORY -->
+      <div class="sectionHeader">
 
-      <div class="toolbar">
+        <h2 class="sectionTitle">
+          <span>🔥</span>
+          Trending Videos
+        </h2>
 
-        <button
-          id="categoryBtn"
-          class="categoryBtn"
-          type="button">
+        <a
+          href="trending.html"
+          class="viewAll">
 
-          ▦ &nbsp; Categories
+          View all ›
 
-        </button>
-
-        <div
-          id="cats"
-          class="categoryList">
-
-          <input
-            id="categorySearch"
-            type="search"
-            placeholder="Search categories..."
-            autocomplete="off">
-
-          <div id="categoryItems"></div>
-
-        </div>
-
-      </div>
-
-      <!-- WIDE AD -->
-
-      <div class="dvAdSlot dvAdWide">
-
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async
-          src="https://poweredby.jads.co/js/jads.js">
-        </script>
-
-        <ins
-          id="1128310"
-          data-width="774"
-          data-height="290">
-        </ins>
-
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async>
-          (adsbyjuicy = window.adsbyjuicy || []).push({
-            'adzone':1128310
-          });
-        </script>
-
-      </div>
-
-      <!-- BEST HD -->
-
-      <div class="dvSectionTitle">
-
-        <div>
-          <h2>
-            Best HD Videos
-          </h2>
-        </div>
-
-        <a href="most-viewed.html">
-          View all
         </a>
 
       </div>
 
       <div
         id="trendingVideos"
-        class="dvGrid">
-      </div>
+        class="videoGrid">
 
-      <!-- COMPACT AD -->
-
-      <div class="dvAdSlot dvAdCompact">
-
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async
-          src="https://poweredby.jads.co/js/jads.js">
-        </script>
-
-        <ins
-          id="1128312"
-          data-width="300"
-          data-height="100">
-        </ins>
-
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async>
-          (adsbyjuicy = window.adsbyjuicy || []).push({
-            'adzone':1128312
-          });
-        </script>
-
-      </div>
-
-      <!-- LATEST -->
-
-      <div class="dvSectionTitle">
-
-        <div>
-          <h2>
-            Recent HD Videos
-          </h2>
+        <div class="loading">
+          Loading trending videos...
         </div>
 
-        <a href="latest.html">
-          View all
+      </div>
+
+    </section>
+
+    <!-- =========================
+         LATEST
+    ========================= -->
+
+    <section
+      id="latest"
+      class="section">
+
+      <div class="sectionHeader">
+
+        <h2 class="sectionTitle">
+          <span>🆕</span>
+          Latest Videos
+        </h2>
+
+        <a
+          href="latest.html"
+          class="viewAll">
+
+          View all ›
+
         </a>
 
       </div>
 
       <div
         id="videos"
-        class="dvGrid">
-      </div>
+        class="videoGrid">
 
-      <!-- BANNER AD -->
-
-      <div class="dvAdSlot dvAdBanner">
-
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async
-          src="https://poweredby.jads.co/js/jads.js">
-        </script>
-
-        <ins
-          id="1128301"
-          data-width="308"
-          data-height="286">
-        </ins>
-
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async>
-          (adsbyjuicy = window.adsbyjuicy || []).push({
-            'adzone':1128301
-          });
-        </script>
+        <div class="loading">
+          Loading latest videos...
+        </div>
 
       </div>
 
-      <!-- SMALL AD -->
+    </section>
 
-      <div class="dvAdSlot dvAdSmall">
+    <!-- =========================
+         RECOMMENDED
+    ========================= -->
 
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async
-          src="https://poweredby.jads.co/js/jads.js">
-        </script>
+    <section
+      id="recommended"
+      class="section">
 
-        <ins
-          id="1128309"
-          data-width="108"
-          data-height="140">
-        </ins>
+      <div class="sectionHeader">
 
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async>
-          (adsbyjuicy = window.adsbyjuicy || []).push({
-            'adzone':1128309
-          });
-        </script>
+        <h2 class="sectionTitle">
+          <span>⭐</span>
+          Recommended Videos
+        </h2>
+
+        <a
+          href="recommended.html"
+          class="viewAll">
+
+          View all ›
+
+        </a>
+
+      </div>
+
+      <div
+        id="recommendedVideos"
+        class="videoGrid">
+
+        <div class="loading">
+          Loading recommended videos...
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =========================
+         RANDOM
+    ========================= -->
+
+    <section
+      id="random"
+      class="section">
+
+      <div class="sectionHeader">
+
+        <h2 class="sectionTitle">
+          <span>🎲</span>
+          Random Videos
+        </h2>
+
+      </div>
+
+      <div
+        id="randomVideos"
+        class="videoGrid">
+
+        <div class="loading">
+          Loading random videos...
+        </div>
 
       </div>
 
@@ -816,7 +1020,9 @@
 
   </main>
 
-  <!-- FOOTER -->
+  <!-- =========================
+       FOOTER
+  ========================= -->
 
   <footer>
 
@@ -834,130 +1040,256 @@
 
   </footer>
 
-  <!-- APP JS -->
+  <!-- EXISTING APP -->
 
   <script
     type="module"
-    src="app.js?v=41">
+    src="app.js?v=50">
   </script>
 
-  <!-- JUICYADS FLOAT -->
-
-  <script type="text/javascript">
-    juicy_adzone = '1128307';
-  </script>
-
-  <script
-    type="text/javascript"
-    src="https://poweredby.jads.co/js/jfc.js"
-    charset="utf-8">
-  </script>
-
-  <!-- JUICYADS NATIVE -->
-
-  <script
-    type="text/javascript"
-    data-id="juicyads-native-ads"
-    data-ad-zone="1128313"
-    data-targets="a"
-    src="https://js.juicyads.com/juicyads.native-ads.min.js">
-  </script>
-
-  <!-- UI CONTROLS -->
+  <!-- UI -->
 
   <script>
 
     const menuBtn =
       document.getElementById("menuBtn");
 
-    const mobileMenu =
-      document.getElementById("mobileMenu");
+    const closeMenu =
+      document.getElementById("closeMenu");
+
+    const sideMenu =
+      document.getElementById("sideMenu");
+
+    const sideOverlay =
+      document.getElementById("sideOverlay");
 
     const searchBtn =
       document.getElementById("searchBtn");
 
-    const searchBox =
-      document.getElementById("searchBox");
-
-    const categoryBtn =
-      document.getElementById("categoryBtn");
-
-    const cats =
-      document.getElementById("cats");
+    const searchPanel =
+      document.getElementById("searchPanel");
 
     const search =
       document.getElementById("search");
 
-    /* MENU */
+    const categoryBtn =
+      document.getElementById("categoryBtn");
 
-    if(menuBtn){
+    const categoryBox =
+      document.getElementById("categoryBox");
 
-      menuBtn.addEventListener("click", function(){
+    const menuCategory =
+      document.getElementById("menuCategory");
 
-        mobileMenu.classList.toggle("open");
 
-      });
+    /* MENU OPEN */
+
+    function openMenu(){
+
+      sideMenu.classList.add("show");
+
+      sideOverlay.classList.add("show");
 
     }
 
-    /* SEARCH */
 
-    if(searchBtn){
+    /* MENU CLOSE */
 
-      searchBtn.addEventListener("click", function(){
+    function closeSideMenu(){
 
-        searchBox.classList.toggle("open");
+      sideMenu.classList.remove("show");
 
-        if(searchBox.classList.contains("open")){
+      sideOverlay.classList.remove("show");
+
+    }
+
+
+    if(menuBtn){
+
+      menuBtn.addEventListener(
+        "click",
+        openMenu
+      );
+
+    }
+
+
+    if(closeMenu){
+
+      closeMenu.addEventListener(
+        "click",
+        closeSideMenu
+      );
+
+    }
+
+
+    if(sideOverlay){
+
+      sideOverlay.addEventListener(
+        "click",
+        closeSideMenu
+      );
+
+    }
+
+
+    /* CATEGORY FROM MENU */
+
+    if(menuCategory){
+
+      menuCategory.addEventListener(
+        "click",
+        function(){
+
+          closeSideMenu();
 
           setTimeout(function(){
 
-            if(search){
-              search.focus();
+            const section =
+              document.getElementById(
+                "categories"
+              );
+
+            if(section){
+
+              section.scrollIntoView({
+                behavior:"smooth"
+              });
+
             }
 
           },100);
 
         }
+      );
 
-      });
+    }
+
+
+    /* SEARCH */
+
+    if(searchBtn){
+
+      searchBtn.addEventListener(
+        "click",
+        function(){
+
+          searchPanel.classList.toggle(
+            "show"
+          );
+
+          if(
+            searchPanel.classList.contains(
+              "show"
+            )
+          ){
+
+            setTimeout(
+              function(){
+
+                if(search){
+                  search.focus();
+                }
+
+              },
+              100
+            );
+
+          }
+
+        }
+      );
 
     }
 
-    /* CATEGORY */
-
-    if(categoryBtn){
-
-      categoryBtn.addEventListener("click", function(){
-
-        cats.classList.toggle("open");
-
-      });
-
-    }
 
     /* SEARCH ENTER */
 
     if(search){
 
-      search.addEventListener("keydown", function(e){
+      search.addEventListener(
+        "keydown",
+        function(e){
 
-        if(e.key === "Enter"){
+          if(e.key === "Enter"){
 
-          const value =
-            search.value.trim();
+            const value =
+              search.value.trim();
 
-          if(value){
+            if(value){
 
-            window.location.href =
-              "index.html?search=" +
-              encodeURIComponent(value);
+              window.location.href =
+                "index.html?search=" +
+                encodeURIComponent(
+                  value
+                );
+
+            }
 
           }
 
         }
+      );
 
-      });
+    }
+
+
+    /* CATEGORY */
+
+    if(categoryBtn){
+
+      categoryBtn.addEventListener(
+        "click",
+        function(){
+
+          categoryBox.classList.toggle(
+            "show"
+          );
+
+        }
+      );
+
+    }
+
+
+    /* AGE GATE */
+
+    const ageGate =
+      document.getElementById("ageGate");
+
+    const enter =
+      document.getElementById("enter");
+
+
+    if(
+      localStorage.getItem(
+        "desivexa_age_verified"
+      ) === "1"
+    ){
+
+      ageGate.style.display =
+        "none";
+
+    }
+
+
+    if(enter){
+
+      enter.addEventListener(
+        "click",
+        function(){
+
+          localStorage.setItem(
+            "desivexa_age_verified",
+            "1"
+          );
+
+          ageGate.style.display =
+            "none";
+
+        }
+      );
 
     }
 
