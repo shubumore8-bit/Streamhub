@@ -3,14 +3,12 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 const MEDIA_FUNCTION = `${SUPABASE_URL}/functions/v1/get-video-media`;
 
 const params = new URLSearchParams(window.location.search);
 const videoId = params.get("id");
 
 let currentVideo = null;
-let currentVideoUrl = "";
 let visitorId = localStorage.getItem("desivexa_visitor_id");
 
 if (!visitorId) {
@@ -37,8 +35,7 @@ function escapeHTML(value = "") {
 }
 
 function formatViews(value) {
-  const number = Number(value || 0);
-  return number.toLocaleString("en-IN");
+  return Number(value || 0).toLocaleString("en-IN");
 }
 
 function showMessage(message) {
@@ -49,6 +46,7 @@ function showMessage(message) {
     </div>`;
 }
 
+// Resolve video and thumbnail URLs through Supabase Edge Function.
 async function getMedia(id) {
   const response = await fetch(MEDIA_FUNCTION, {
     method: "POST",
@@ -61,14 +59,22 @@ async function getMedia(id) {
   });
 
   if (!response.ok) {
-    throw new Error("Video media load nahi ho paaya.");
+    throw new Error(`Media function error: ${response.status}`);
   }
 
   const data = await response.json();
 
   return {
-    videoUrl: data.videoUrl || data.signedUrl || data.url || "",
-    thumbnailUrl: data.thumbnailUrl || data.thumbnail_url || ""
+    videoUrl:
+      data.videoUrl ||
+      data.signedUrl ||
+      data.url ||
+      "",
+    thumbnailUrl:
+      data.thumbnailUrl ||
+      data.thumbnail_url ||
+      data.thumbnail ||
+      ""
   };
 }
 
@@ -79,37 +85,37 @@ async function loadVideo() {
   }
 
   try {
-    const { data, error } = await supabase
+    const { data: video, error } = await supabase
       .from("videos")
       .select("*")
       .eq("id", videoId)
       .maybeSingle();
 
     if (error) throw error;
-    if (!data) {
+
+    if (!video) {
       showMessage("Video nahi mila ya delete ho chuka hai.");
       return;
     }
 
-    currentVideo = data;
+    currentVideo = video;
 
     let media = { videoUrl: "", thumbnailUrl: "" };
 
     try {
-      media = await getMedia(data.id);
+      media = await getMedia(video.id);
     } catch (error) {
-      console.error("Media error:", error);
+      console.error("Main video media error:", error);
     }
 
-    currentVideoUrl = media.videoUrl;
+    renderVideo(video, media);
 
-    renderVideo(data, media);
-    recordView(data.id);
-    loadLikes(data.id);
-    loadComments(data.id);
-    loadRelatedVideos(data.id, data.category);
+    recordView(video.id);
+    loadLikes(video.id);
+    loadComments(video.id);
+    loadRelatedVideos(video.id, video.category);
   } catch (error) {
-    console.error("Video error:", error);
+    console.error("Video loading error:", error);
     showMessage("Video load nahi ho paaya. Please dobara try karein.");
   }
 }
@@ -130,18 +136,18 @@ function renderVideo(video, media) {
         justify-content:space-between;gap:10px;margin-bottom:15px;">
         <a href="/" style="color:#ff3030;font-size:25px;
           font-weight:bold;text-decoration:none;">DesiVexa</a>
+
         <a href="/" style="background:#202020;color:white;
           padding:9px 13px;border-radius:7px;text-decoration:none;">
           Home
         </a>
       </header>
 
-      <div style="width:100%;background:#000;border-radius:10px;
-        overflow:hidden;">
+      <div style="width:100%;background:#000;border-radius:10px;overflow:hidden;">
         <video id="mainVideo" controls playsinline preload="metadata"
           poster="${escapeHTML(thumbnail)}"
-          style="display:block;width:100%;max-height:70vh;min-height:200px;
-          background:#000;">
+          style="display:block;width:100%;max-height:70vh;
+          min-height:200px;background:#000;">
           ${media.videoUrl
             ? `<source src="${escapeHTML(media.videoUrl)}">`
             : ""}
@@ -151,8 +157,7 @@ function renderVideo(video, media) {
 
       ${!media.videoUrl ? `
         <p style="color:#ff7777;margin:10px 0;">
-          Video playback URL load nahi hui. Storage aur get-video-media
-          function settings check karein.
+          Video URL load nahi hui. Supabase media function check karein.
         </p>` : ""}
 
       <h1 style="font-size:21px;line-height:1.4;margin:15px 0 8px;">
@@ -167,9 +172,7 @@ function renderVideo(video, media) {
           : ""}
       </div>
 
-      <div style="display:flex;flex-wrap:wrap;gap:9px;
-        margin:15px 0 20px;">
-
+      <div style="display:flex;flex-wrap:wrap;gap:9px;margin:15px 0 20px;">
         <button id="likeButton" type="button"
           style="background:#242424;color:white;border:0;
           padding:11px 15px;border-radius:8px;font-size:14px;">
@@ -193,26 +196,25 @@ function renderVideo(video, media) {
         <section style="background:#151515;padding:14px;
           border-radius:9px;margin-bottom:25px;">
           <h3 style="font-size:16px;margin:0 0 8px;">Description</h3>
-          <p style="color:#ccc;line-height:1.6;margin:0;
-            white-space:pre-wrap;">${escapeHTML(video.description)}</p>
+          <p style="color:#ccc;line-height:1.6;margin:0;white-space:pre-wrap;">
+            ${escapeHTML(video.description)}
+          </p>
         </section>` : ""}
 
-      <!-- RELATED VIDEOS: COMMENTS SE PEHLE -->
+      <!-- RELATED VIDEOS FIRST -->
       <section id="relatedSection" style="margin-top:28px;">
-        <h2 style="font-size:19px;margin:0 0 15px;">
-          Related Videos
-        </h2>
+        <h2 style="font-size:19px;margin:0 0 15px;">Related Videos</h2>
 
         <div id="randomVideos"
           style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
           gap:10px;">
-          <div style="color:#888;grid-column:1/-1;">
+          <p style="color:#888;grid-column:1/-1;">
             Loading related videos...
-          </div>
+          </p>
         </div>
       </section>
 
-      <!-- COMMENTS: RELATED VIDEOS KE BAAD -->
+      <!-- COMMENTS BELOW RELATED VIDEOS -->
       <section id="commentsSection"
         style="margin-top:35px;scroll-margin-top:20px;">
         <h2 style="font-size:19px;margin:0 0 15px;">Comments</h2>
@@ -222,13 +224,12 @@ function renderVideo(video, media) {
             placeholder="Apna comment likhein..."
             style="box-sizing:border-box;width:100%;min-height:90px;
             background:#171717;color:#fff;border:1px solid #333;
-            border-radius:9px;padding:12px;font-size:14px;
-            resize:vertical;"></textarea>
+            border-radius:9px;padding:12px;font-size:14px;resize:vertical;">
+          </textarea>
 
           <button type="submit"
             style="margin-top:9px;background:#e5242a;color:#fff;
-            border:0;border-radius:8px;padding:11px 17px;
-            font-weight:bold;">
+            border:0;border-radius:8px;padding:11px 17px;font-weight:bold;">
             Post Comment
           </button>
         </form>
@@ -281,13 +282,13 @@ async function recordView(id) {
 
     const nextViews = Number(data.views || 0) + 1;
 
-    const result = await supabase
+    const { error: updateError } = await supabase
       .from("videos")
       .update({ views: nextViews })
       .eq("id", id);
 
-    if (result.error) {
-      console.warn("View count update failed:", result.error);
+    if (updateError) {
+      console.warn("View count update failed:", updateError);
       return;
     }
 
@@ -350,7 +351,6 @@ async function toggleLike(id) {
         .eq("id", existing.id);
 
       if (error) throw error;
-
       button.style.color = "#fff";
     } else {
       const { error } = await supabase
@@ -361,7 +361,6 @@ async function toggleLike(id) {
         });
 
       if (error) throw error;
-
       button.style.color = "#ff4040";
     }
 
@@ -392,8 +391,9 @@ async function loadComments(id) {
 
     if (!data || data.length === 0) {
       list.innerHTML = `
-        <p style="color:#888;background:#151515;padding:14px;
-          border-radius:8px;">Abhi koi comment nahi hai. Pehla comment karein!</p>`;
+        <p style="color:#888;background:#151515;padding:14px;border-radius:8px;">
+          Abhi koi comment nahi hai. Pehla comment karein!
+        </p>`;
       return;
     }
 
@@ -409,8 +409,8 @@ async function loadComments(id) {
           <div style="color:#ff5555;font-size:12px;margin-bottom:7px;">
             Viewer · ${escapeHTML(date)}
           </div>
-          <div style="color:#eee;line-height:1.5;
-            white-space:pre-wrap;overflow-wrap:anywhere;">
+          <div style="color:#eee;line-height:1.5;white-space:pre-wrap;
+            overflow-wrap:anywhere;">
             ${escapeHTML(body)}
           </div>
         </article>`;
@@ -454,19 +454,22 @@ async function submitComment(event, id) {
     await loadComments(id);
   } catch (error) {
     console.error("Comment submit error:", error);
-    alert("Comment post nahi hua. Supabase table ke columns aur policies check karein.");
+    alert("Comment post nahi hua. Supabase columns aur policies check karein.");
   } finally {
     button.disabled = false;
     button.textContent = "Post Comment";
   }
 }
 
+// Load related videos and resolve their thumbnail URLs.
 async function loadRelatedVideos(id, category) {
   const container = document.getElementById("randomVideos");
   if (!container) return;
 
   container.innerHTML = `
-    <p style="color:#888;grid-column:1/-1;">Loading related videos...</p>`;
+    <p style="color:#888;grid-column:1/-1;">
+      Loading related videos...
+    </p>`;
 
   try {
     let query = supabase
@@ -482,23 +485,25 @@ async function loadRelatedVideos(id, category) {
     }
 
     let { data, error } = await query;
-
     if (error) throw error;
 
-    // Category mein kam videos hon to baaki recent videos bhi dikhao.
+    // If category has fewer videos, fill with other recent videos.
     if ((!data || data.length < 20) && category) {
-      const existingIds = [id, ...(data || []).map(item => item.id)];
+      const existingIds = new Set([id, ...(data || []).map(v => v.id)]);
 
-      const fallback = await supabase
+      const fallbackResult = await supabase
         .from("videos")
         .select("id,title,category,thumbnail_url,views,created_at")
         .eq("published", true)
-        .not("id", "in", `(${existingIds.join(",")})`)
         .order("created_at", { ascending: false })
-        .limit(20 - (data || []).length);
+        .limit(20);
 
-      if (!fallback.error && fallback.data) {
-        data = [...(data || []), ...fallback.data];
+      if (!fallbackResult.error && fallbackResult.data) {
+        const extra = fallbackResult.data.filter(
+          item => !existingIds.has(item.id)
+        );
+
+        data = [...(data || []), ...extra].slice(0, 20);
       }
     }
 
@@ -510,27 +515,65 @@ async function loadRelatedVideos(id, category) {
       return;
     }
 
-    container.innerHTML = data.map(item => {
-      const thumb = item.thumbnail_url ||
-        item.thumbnail || "";
+    // Try the stored thumbnail URL first, then ask the media function.
+    const videos = await Promise.all(
+      data.map(async item => {
+        let thumbnail =
+          item.thumbnail_url ||
+          item.thumbnail ||
+          "";
+
+        // A normal HTTP(S) URL can be used directly.
+        const isDirectURL = /^https?:\/\//i.test(thumbnail);
+
+        // For missing/non-URL thumbnail values, resolve via the Edge Function.
+        if (!thumbnail || !isDirectURL) {
+          try {
+            const media = await getMedia(item.id);
+            thumbnail = media.thumbnailUrl || thumbnail;
+          } catch (error) {
+            console.warn("Thumbnail resolution failed:", item.id, error);
+          }
+        }
+
+        return {
+          ...item,
+          resolvedThumbnail: thumbnail
+        };
+      })
+    );
+
+    container.innerHTML = videos.map(item => {
+      const thumb = item.resolvedThumbnail || "";
 
       return `
         <a href="video.html?id=${encodeURIComponent(item.id)}"
           style="display:block;text-decoration:none;color:#fff;
-          background:#151515;border-radius:8px;overflow:hidden;
-          min-width:0;">
+          background:#151515;border-radius:8px;overflow:hidden;min-width:0;">
 
-          <div style="aspect-ratio:16/10;background:#252525;
-            overflow:hidden;">
-            ${thumb
-              ? `<img src="${escapeHTML(thumb)}"
-                  alt="${escapeHTML(item.title || "Video thumbnail")}"
-                  loading="lazy"
-                  style="width:100%;height:100%;object-fit:cover;display:block;">`
-              : `<div style="height:100%;display:flex;align-items:center;
-                  justify-content:center;color:#ff4444;font-weight:bold;">
-                  DesiVexa
-                </div>`}
+          <div style="position:relative;aspect-ratio:16/10;
+            background:#252525;overflow:hidden;">
+
+            ${thumb ? `
+              <img
+                src="${escapeHTML(thumb)}"
+                alt="${escapeHTML(item.title || "Video thumbnail")}"
+                loading="lazy"
+                style="width:100%;height:100%;object-fit:cover;display:block;"
+                onerror="this.style.display='none';
+                  this.nextElementSibling.style.display='flex';"
+              >
+              <div style="display:none;position:absolute;inset:0;
+                align-items:center;justify-content:center;
+                color:#ff4444;font-weight:bold;font-size:12px;">
+                Thumbnail unavailable
+              </div>
+            ` : `
+              <div style="height:100%;display:flex;align-items:center;
+                justify-content:center;color:#ff4444;font-weight:bold;">
+                DesiVexa
+              </div>
+            `}
           </div>
 
           <div style="padding:9px;">
@@ -539,14 +582,17 @@ async function loadRelatedVideos(id, category) {
               -webkit-box-orient:vertical;overflow:hidden;">
               ${escapeHTML(item.title || "Untitled video")}
             </div>
+
             <div style="font-size:11px;color:#999;margin-top:6px;">
               👁 ${formatViews(item.views)} views
             </div>
           </div>
         </a>`;
     }).join("");
+
   } catch (error) {
     console.error("Related videos error:", error);
+
     container.innerHTML = `
       <p style="color:#ff8888;grid-column:1/-1;">
         Related videos load nahi hue. Videos table aur published column check karein.
