@@ -100,10 +100,8 @@ a{
   z-index:100;
 }
 
-
-/* menu */
-
-.menuButton{
+.menuButton,
+.searchButton{
 
   width:40px;
   height:40px;
@@ -118,8 +116,14 @@ a{
   align-items:center;
   justify-content:center;
 
-  font-size:22px;
+}
 
+.menuButton{
+  font-size:22px;
+}
+
+.searchButton{
+  font-size:20px;
 }
 
 
@@ -141,24 +145,6 @@ a{
 
 .logo span{
   color:#ff1744;
-}
-
-
-/* search */
-
-.searchButton{
-
-  width:40px;
-  height:40px;
-
-  border:0;
-  border-radius:9px;
-
-  background:#101c26;
-  color:#fff;
-
-  font-size:20px;
-
 }
 
 
@@ -317,6 +303,49 @@ a{
 
 
 /* =========================
+   CATEGORIES BUTTON
+========================= */
+
+.categoriesButtonWrap{
+
+  padding:
+    10px 14px 0;
+
+}
+
+.categoriesButton{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:space-between;
+
+  width:100%;
+
+  padding:13px 15px;
+
+  border:
+    1px solid #293d4a;
+
+  border-radius:10px;
+
+  background:#0b1720;
+
+  color:#fff;
+
+  font-size:14px;
+
+  font-weight:800;
+
+}
+
+.categoriesButton span:last-child{
+  color:#ff1744;
+}
+
+
+/* =========================
    CATEGORY PILLS
 ========================= */
 
@@ -463,17 +492,13 @@ a{
 
   display:block;
 
+  transition:
+    transform .2s ease;
+
 }
 
 .videoCard:hover .videoThumb img{
   transform:scale(1.03);
-}
-
-.videoThumb img{
-
-  transition:
-    transform .2s ease;
-
 }
 
 
@@ -819,6 +844,11 @@ a{
     font-size:23px;
   }
 
+  .categoriesButtonWrap{
+    padding:
+      8px 12px 0;
+  }
+
   .section{
     padding:
       18px 11px 0;
@@ -864,10 +894,6 @@ a{
 }
 
 
-/* =========================
-   VERY SMALL PHONE
-========================= */
-
 @media(max-width:360px){
 
   .logo{
@@ -897,9 +923,7 @@ a{
 <div class="page">
 
 
-<!-- =========================
-     HEADER
-========================= -->
+<!-- HEADER -->
 
 <header class="header">
 
@@ -928,9 +952,7 @@ a{
 </header>
 
 
-<!-- =========================
-     MOBILE MENU
-========================= -->
+<!-- MOBILE MENU -->
 
 <div
   class="mobileMenu"
@@ -965,12 +987,17 @@ a{
   ⭐ Recommended
 </a>
 
+<a
+  href="category.html"
+  class="menuItem"
+>
+  📂 Categories
+</a>
+
 </div>
 
 
-<!-- =========================
-     SEARCH
-========================= -->
+<!-- SEARCH -->
 
 <div
   class="searchBox"
@@ -988,9 +1015,7 @@ a{
 </div>
 
 
-<!-- =========================
-     HERO
-========================= -->
+<!-- HERO -->
 
 <section class="hero">
 
@@ -1009,31 +1034,34 @@ Discover latest, trending, recommended and random videos.
 </section>
 
 
-<!-- =========================
-     CATEGORIES
-========================= -->
+<!-- CATEGORIES BUTTON -->
 
-<div style="padding:14px 14px 0;">
-  <a
-    href="category.html"
-    style="
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      width:100%;
-      padding:13px 15px;
-      border:1px solid #293d4a;
-      border-radius:10px;
-      background:#0b1720;
-      color:#fff;
-      font-size:14px;
-      font-weight:800;
-    "
-  >
-    <span>📂 Categories</span>
-    <span style="color:#ff1744;">Search →</span>
-  </a>
+<div class="categoriesButtonWrap">
+
+<a
+  href="category.html"
+  class="categoriesButton"
+>
+
+<span>
+📂 Categories
+</span>
+
+<span>
+Search →
+</span>
+
+</a>
+
 </div>
+
+
+<!-- CATEGORY PILLS -->
+
+<div
+  class="categories"
+  id="categories"
+>
 
 <button
   class="category active"
@@ -1045,9 +1073,7 @@ Discover latest, trending, recommended and random videos.
 </div>
 
 
-<!-- =========================
-     TRENDING
-========================= -->
+<!-- TRENDING -->
 
 <section
   class="section"
@@ -1064,7 +1090,7 @@ Discover latest, trending, recommended and random videos.
   class="viewAll"
   href="trending.html"
 >
-  View All →
+View All →
 </a>
 
 </div>
@@ -1084,9 +1110,7 @@ Loading videos...
 </section>
 
 
-<!-- =========================
-     NEW
-========================= -->
+<!-- NEW -->
 
 <section
   class="section"
@@ -1103,7 +1127,7 @@ Loading videos...
   class="viewAll"
   href="new.html"
 >
-  View All →
+View All →
 </a>
 
 </div>
@@ -1123,9 +1147,7 @@ Loading videos...
 </section>
 
 
-<!-- =========================
-     RECOMMENDED
-========================= -->
+<!-- RECOMMENDED -->
 
 <section
   class="section"
@@ -1142,7 +1164,7 @@ Loading videos...
   class="viewAll"
   href="recommended.html"
 >
-  View All →
+View All →
 </a>
 
 </div>
@@ -1162,9 +1184,7 @@ Loading videos...
 </section>
 
 
-<!-- =========================
-     RANDOM
-========================= -->
+<!-- RANDOM -->
 
 <section
   class="section"
@@ -1200,9 +1220,7 @@ Loading random videos...
 </section>
 
 
-<!-- =========================
-     FOOTER
-========================= -->
+<!-- FOOTER -->
 
 <footer class="footer">
 
@@ -1221,9 +1239,7 @@ authorized content involving adults.
 </div>
 
 
-<!-- =========================
-     BOTTOM NAV
-========================= -->
+<!-- BOTTOM NAV -->
 
 <nav class="bottomNav">
 
@@ -1233,8 +1249,8 @@ authorized content involving adults.
   class="bottomItem active"
   href="index.html"
 >
-  <span>🏠</span>
-  <span>Home</span>
+<span>🏠</span>
+<span>Home</span>
 </a>
 
 
@@ -1242,8 +1258,8 @@ authorized content involving adults.
   class="bottomItem"
   href="new.html"
 >
-  <span>🆕</span>
-  <span>New</span>
+<span>🆕</span>
+<span>New</span>
 </a>
 
 
@@ -1251,8 +1267,8 @@ authorized content involving adults.
   class="bottomItem"
   href="trending.html"
 >
-  <span>🔥</span>
-  <span>Trending</span>
+<span>🔥</span>
+<span>Trending</span>
 </a>
 
 
@@ -1260,14 +1276,13 @@ authorized content involving adults.
   class="bottomItem"
   href="recommended.html"
 >
-  <span>⭐</span>
-  <span>Recommended</span>
+<span>⭐</span>
+<span>Recommended</span>
 </a>
 
 </div>
 
 </nav>
-
 
 
 <script type="module">
@@ -1305,14 +1320,15 @@ const supabase =
 
 const RANDOM_PER_PAGE = 16;
 
-let randomPage = Math.max(
-  1,
-  parseInt(
-    new URLSearchParams(
-      location.search
-    ).get("randomPage") || "1"
-  )
-);
+let randomPage =
+  Math.max(
+    1,
+    parseInt(
+      new URLSearchParams(
+        location.search
+      ).get("randomPage") || "1"
+    )
+  );
 
 
 let allVideos = [];
@@ -1406,22 +1422,27 @@ function escapeHTML(value){
   return String(
     value ?? ""
   )
+
   .replace(
     /&/g,
     "&amp;"
   )
+
   .replace(
     /</g,
     "&lt;"
   )
+
   .replace(
     />/g,
     "&gt;"
   )
+
   .replace(
     /"/g,
     "&quot;"
   )
+
   .replace(
     /'/g,
     "&#039;"
@@ -1440,7 +1461,9 @@ function formatViews(value){
     Number(value || 0);
 
 
-  if(n >= 1000000){
+  if(
+    n >= 1000000
+  ){
 
     return (
       n / 1000000
@@ -1454,7 +1477,9 @@ function formatViews(value){
   }
 
 
-  if(n >= 1000){
+  if(
+    n >= 1000
+  ){
 
     return (
       n / 1000
@@ -1493,8 +1518,12 @@ function timeAgo(date){
     );
 
 
-  if(seconds < 60){
+  if(
+    seconds < 60
+  ){
+
     return "just now";
+
   }
 
 
@@ -1504,8 +1533,12 @@ function timeAgo(date){
     );
 
 
-  if(minutes < 60){
+  if(
+    minutes < 60
+  ){
+
     return minutes + "m ago";
+
   }
 
 
@@ -1515,8 +1548,12 @@ function timeAgo(date){
     );
 
 
-  if(hours < 24){
+  if(
+    hours < 24
+  ){
+
     return hours + "h ago";
+
   }
 
 
@@ -1526,8 +1563,12 @@ function timeAgo(date){
     );
 
 
-  if(days < 30){
+  if(
+    days < 30
+  ){
+
     return days + "d ago";
+
   }
 
 
@@ -1733,13 +1774,30 @@ function shuffle(array){
 
 
 /* =========================
-   RENDER TOP SECTIONS
+   EMPTY
 ========================= */
 
-function renderSections(){
+function emptyMessage(){
+
+  return `
+    <div class="emptyVideos">
+      No videos found.
+    </div>
+  `;
+
+}
+
+
+/* =========================
+   RENDER SECTIONS
+========================= */
+
+function renderSections(
+  videos = allVideos
+){
 
   const trending =
-    [...allVideos]
+    [...videos]
     .sort(
       (a,b) =>
         Number(b.views || 0) -
@@ -1749,7 +1807,7 @@ function renderSections(){
 
 
   const latest =
-    [...allVideos]
+    [...videos]
     .sort(
       (a,b) =>
         new Date(
@@ -1763,23 +1821,17 @@ function renderSections(){
 
 
   const recommended =
-    [...allVideos]
+    [...videos]
     .sort(
       (a,b) => {
 
-        const viewsDifference =
+        const diff =
           Number(b.views || 0) -
           Number(a.views || 0);
 
-
-        if(
-          viewsDifference !== 0
-        ){
-
-          return viewsDifference;
-
+        if(diff !== 0){
+          return diff;
         }
-
 
         return (
           new Date(
@@ -1828,21 +1880,6 @@ function renderSections(){
 
 
 /* =========================
-   EMPTY
-========================= */
-
-function emptyMessage(){
-
-  return `
-    <div class="emptyVideos">
-      No videos found.
-    </div>
-  `;
-
-}
-
-
-/* =========================
    RANDOM VIDEOS
 ========================= */
 
@@ -1852,7 +1889,6 @@ function renderRandomVideos(){
     document.getElementById(
       "randomVideos"
     );
-
 
   const pagination =
     document.getElementById(
@@ -1884,15 +1920,10 @@ function renderRandomVideos(){
     RANDOM_PER_PAGE;
 
 
-  const end =
-    start +
-    RANDOM_PER_PAGE;
-
-
   const current =
     randomVideos.slice(
       start,
-      end
+      start + RANDOM_PER_PAGE
     );
 
 
@@ -1942,8 +1973,6 @@ function renderRandomPagination(
 
   let html = "";
 
-
-  /* Previous */
 
   html += `
 
@@ -2010,8 +2039,6 @@ function renderRandomPagination(
   }
 
 
-  /* Numbers */
-
   for(
     let i = start;
     i <= end;
@@ -2039,8 +2066,6 @@ function renderRandomPagination(
   }
 
 
-  /* Next */
-
   html += `
 
     <button
@@ -2067,16 +2092,11 @@ function renderRandomPagination(
 
 
 /* =========================
-   CHANGE RANDOM PAGE
+   CHANGE PAGE
 ========================= */
 
 window.changeRandomPage =
 function(page){
-
-  if(page < 1){
-    return;
-  }
-
 
   const totalPages =
     Math.ceil(
@@ -2086,6 +2106,7 @@ function(page){
 
 
   if(
+    page < 1 ||
     page > totalPages
   ){
 
@@ -2132,20 +2153,14 @@ function(page){
   renderRandomVideos();
 
 
-  const section =
-    document.getElementById(
+  document
+    .getElementById(
       "randomSection"
-    );
-
-
-  if(section){
-
-    section.scrollIntoView({
+    )
+    ?.scrollIntoView({
       behavior:"smooth",
       block:"start"
     });
-
-  }
 
 };
 
@@ -2162,12 +2177,14 @@ function renderCategories(){
         allVideos
           .map(
             video =>
-              video.category
+              String(
+                video.category || ""
+              ).trim()
           )
           .filter(Boolean)
       )
     ]
-    .slice(0,12);
+    .slice(0,20);
 
 
   categoriesBox.innerHTML =
@@ -2205,7 +2222,7 @@ function renderCategories(){
 
   document
     .querySelectorAll(
-      ".category"
+      "#categories .category"
     )
     .forEach(
       button => {
@@ -2216,7 +2233,7 @@ function renderCategories(){
 
             document
               .querySelectorAll(
-                ".category"
+                "#categories .category"
               )
               .forEach(
                 item =>
@@ -2236,108 +2253,33 @@ function renderCategories(){
               button.dataset.category;
 
 
-            if(
+            const filtered =
               category === "all"
-            ){
 
-              renderSections();
+                ? allVideos
 
-              randomVideos =
-                shuffle(
-                  allVideos
-                );
-
-            }else{
-
-              const filtered =
-                allVideos.filter(
-                  video =>
-                    video.category ===
-                    category
-                );
+                : allVideos.filter(
+                    video =>
+                      String(
+                        video.category || ""
+                      ) === category
+                  );
 
 
-              const trending =
-                [...filtered]
-                .sort(
-                  (a,b) =>
-                    Number(
-                      b.views || 0
-                    ) -
-                    Number(
-                      a.views || 0
-                    )
-                )
-                .slice(0,4);
+            renderSections(
+              filtered
+            );
 
 
-              const latest =
-                [...filtered]
-                .sort(
-                  (a,b) =>
-                    new Date(
-                      b.created_at
-                    ) -
-                    new Date(
-                      a.created_at
-                    )
-                )
-                .slice(0,4);
+            randomVideos =
+              shuffle(
+                filtered
+              );
 
 
-              const recommended =
-                [...filtered]
-                .sort(
-                  (a,b) =>
-                    Number(
-                      b.views || 0
-                    ) -
-                    Number(
-                      a.views || 0
-                    )
-                )
-                .slice(0,4);
+            randomPage =
+              1;
 
-
-              document.getElementById(
-                "trendingVideos"
-              ).innerHTML =
-                trending.length
-                  ? trending
-                      .map(videoCard)
-                      .join("")
-                  : emptyMessage();
-
-
-              document.getElementById(
-                "newVideos"
-              ).innerHTML =
-                latest.length
-                  ? latest
-                      .map(videoCard)
-                      .join("")
-                  : emptyMessage();
-
-
-              document.getElementById(
-                "recommendedVideos"
-              ).innerHTML =
-                recommended.length
-                  ? recommended
-                      .map(videoCard)
-                      .join("")
-                  : emptyMessage();
-
-
-              randomVideos =
-                shuffle(
-                  filtered
-                );
-
-            }
-
-
-            randomPage = 1;
 
             renderRandomVideos();
 
@@ -2366,7 +2308,20 @@ searchInput.addEventListener(
 
     if(!query){
 
-      renderSections();
+      renderSections(
+        allVideos
+      );
+
+
+      randomVideos =
+        shuffle(
+          allVideos
+        );
+
+
+      randomPage = 1;
+
+      renderRandomVideos();
 
       return;
 
@@ -2408,37 +2363,9 @@ searchInput.addEventListener(
       );
 
 
-    document.getElementById(
-      "trendingVideos"
-    ).innerHTML =
-      results.length
-        ? results
-            .slice(0,4)
-            .map(videoCard)
-            .join("")
-        : emptyMessage();
-
-
-    document.getElementById(
-      "newVideos"
-    ).innerHTML =
-      results.length
-        ? results
-            .slice(0,4)
-            .map(videoCard)
-            .join("")
-        : emptyMessage();
-
-
-    document.getElementById(
-      "recommendedVideos"
-    ).innerHTML =
-      results.length
-        ? results
-            .slice(0,4)
-            .map(videoCard)
-            .join("")
-        : emptyMessage();
+    renderSections(
+      results
+    );
 
 
     randomVideos =
@@ -2461,25 +2388,25 @@ searchInput.addEventListener(
 
 async function loadVideos(){
 
-  const trendingBox =
+  const boxes = [
+
     document.getElementById(
       "trendingVideos"
-    );
+    ),
 
-  const newBox =
     document.getElementById(
       "newVideos"
-    );
+    ),
 
-  const recommendedBox =
     document.getElementById(
       "recommendedVideos"
-    );
+    ),
 
-  const randomBox =
     document.getElementById(
       "randomVideos"
-    );
+    )
+
+  ];
 
 
   try{
@@ -2513,32 +2440,7 @@ async function loadVideos(){
 
     if(error){
 
-      console.error(
-        "Supabase error:",
-        error
-      );
-
-
-      const message = `
-        <div class="emptyVideos">
-          Videos load nahi ho paaye.
-        </div>
-      `;
-
-
-      trendingBox.innerHTML =
-        message;
-
-      newBox.innerHTML =
-        message;
-
-      recommendedBox.innerHTML =
-        message;
-
-      randomBox.innerHTML =
-        message;
-
-      return;
+      throw error;
 
     }
 
@@ -2547,17 +2449,13 @@ async function loadVideos(){
       data || [];
 
 
-    /* Sections */
+    renderSections(
+      allVideos
+    );
 
-    renderSections();
-
-
-    /* Categories */
 
     renderCategories();
 
-
-    /* Random */
 
     randomVideos =
       shuffle(
@@ -2571,28 +2469,22 @@ async function loadVideos(){
   }catch(error){
 
     console.error(
+      "Supabase error:",
       error
     );
 
 
-    const message = `
-      <div class="emptyVideos">
-        Something went wrong.
-      </div>
-    `;
+    boxes.forEach(
+      box => {
 
+        box.innerHTML = `
+          <div class="emptyVideos">
+            Videos load nahi ho paaye.
+          </div>
+        `;
 
-    trendingBox.innerHTML =
-      message;
-
-    newBox.innerHTML =
-      message;
-
-    recommendedBox.innerHTML =
-      message;
-
-    randomBox.innerHTML =
-      message;
+      }
+    );
 
   }
 
@@ -2607,7 +2499,7 @@ loadVideos();
 
 
 /* =========================
-   BACK/FORWARD
+   BACK / FORWARD
 ========================= */
 
 window.addEventListener(
