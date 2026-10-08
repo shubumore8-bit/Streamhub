@@ -1617,3 +1617,58 @@ footer {
   }
 
 }
+
+/* =========================
+   RANDOM PAGINATION
+   ========================= */
+
+.randomPagination{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:7px;
+  margin:28px 0 10px;
+}
+
+.randomPageBtn{
+  min-width:40px;
+  height:40px;
+  padding:0 11px;
+
+  border:1px solid #293d4b;
+  border-radius:9px;
+
+  background:#0b1822;
+  color:#fff;
+
+  font-size:13px;
+  font-weight:700;
+
+  cursor:pointer;
+}
+
+.randomPageBtn.active{
+  background:#ff1744;
+  border-color:#ff1744;
+}
+
+.randomPageBtn:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+
+@media(max-width:600px){
+
+  .randomPagination{
+    gap:5px;
+  }
+
+  .randomPageBtn{
+    min-width:37px;
+    height:37px;
+    padding:0 8px;
+    font-size:12px;
+  }
+
+}
