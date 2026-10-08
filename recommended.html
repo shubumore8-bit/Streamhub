@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>DesiVexa</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DesiVexa - Recommended</title>
 
 <style>
 *{
@@ -13,307 +13,247 @@
 }
 
 body{
-  background:#02070d;
+  background:#080808;
   color:#fff;
-  font-family:Arial,Helvetica,sans-serif;
+  font-family:Arial,sans-serif;
+  padding-bottom:80px;
 }
 
-.app{
-  max-width:700px;
-  min-height:100vh;
-  margin:auto;
-  background:#06111a;
-  padding-bottom:85px;
+a{
+  text-decoration:none;
+  color:inherit;
 }
 
-/* HEADER */
 header{
-  height:78px;
+  height:65px;
+  background:#111;
+  border-bottom:1px solid #292929;
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  padding:0 18px;
-  border-bottom:1px solid #263540;
-  background:#020a11;
-}
-
-.menu{
-  font-size:30px;
+  padding:0 5%;
+  gap:20px;
+  position:sticky;
+  top:0;
+  z-index:100;
 }
 
 .logo{
+  color:#e50914;
   font-size:25px;
-  font-weight:800;
+  font-weight:900;
 }
 
-.logo span{
-  color:#ff1744;
+.search{
+  flex:1;
+  max-width:600px;
+  margin:auto;
 }
 
-.icons{
-  display:flex;
-  gap:18px;
-  font-size:25px;
+.search input{
+  width:100%;
+  background:#1c1c1c;
+  border:1px solid #333;
+  color:#fff;
+  padding:12px 18px;
+  border-radius:25px;
+  outline:none;
 }
 
-/* AD */
-.ad{
-  margin:8px 18px 13px;
-  height:58px;
-  border:2px solid #ff1744;
-  border-radius:8px;
+.profile{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#e50914;
   display:flex;
   align-items:center;
   justify-content:center;
-  background:#280914;
-}
-
-/* CATEGORIES */
-.categories{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  padding:0 18px 15px;
-  scrollbar-width:none;
-}
-
-.categories::-webkit-scrollbar{
-  display:none;
-}
-
-.cat{
-  flex-shrink:0;
-  padding:10px 16px;
-  border-radius:10px;
-  background:#10202c;
-  border:1px solid #233a49;
-  font-size:13px;
-}
-
-.cat.active{
-  background:#ff1744;
-  border-color:#ff1744;
-}
-
-/* SECTION */
-.section{
-  padding:0 18px;
-  margin-bottom:22px;
-}
-
-.section-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:10px;
-}
-
-.section-head h2{
-  font-size:21px;
-}
-
-.view{
-  color:#ff1744;
-  font-size:13px;
   font-weight:bold;
 }
 
-/* VIDEO GRID */
-.video-grid{
+.container{
+  width:90%;
+  max-width:1400px;
+  margin:25px auto;
+}
+
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:25px 0 15px;
+}
+
+.section-title h2{
+  font-size:23px;
+}
+
+.section-title span{
+  color:#aaa;
+  font-size:14px;
+}
+
+.grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:10px;
+  gap:18px;
 }
 
 .card{
-  min-width:0;
-  border-bottom:1px solid #20313c;
-  padding-bottom:8px;
+  background:#121212;
+  border-radius:10px;
+  overflow:hidden;
+  border:1px solid #222;
+  transition:.2s;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+  border-color:#e50914;
 }
 
 .thumb{
-  position:relative;
-  aspect-ratio:16/9;
-  overflow:hidden;
-  border-radius:5px;
+  height:160px;
   background:
-    linear-gradient(135deg,#675451,#202a32,#744f58);
-}
-
-.thumb:after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:rgba(180,150,150,.18);
-  backdrop-filter:blur(7px);
-}
-
-.play{
-  position:absolute;
-  z-index:2;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  background:rgba(0,0,0,.65);
+    linear-gradient(135deg,#260000,#151515,#400000);
   display:flex;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
+  position:relative;
 }
 
-.duration{
+.thumb span{
+  font-size:42px;
+  color:#e50914;
+}
+
+.badge{
   position:absolute;
-  z-index:3;
-  right:4px;
-  bottom:4px;
+  right:8px;
+  bottom:8px;
   background:#000;
-  padding:3px 5px;
-  border-radius:3px;
-  font-size:9px;
+  padding:4px 7px;
+  border-radius:4px;
+  font-size:11px;
 }
 
-.name{
-  font-size:11px;
+.info{
+  padding:12px;
+}
+
+.title{
   font-weight:bold;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
-  margin:6px 2px;
 }
 
-.tag{
-  display:inline-block;
-  background:#ff1744;
-  border-radius:8px;
-  padding:3px 7px;
-  font-size:9px;
-}
-
-.info{
-  font-size:9px;
-  color:#c8d0d5;
-  line-height:17px;
-}
-
-/* RANDOM */
-.random-grid{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:9px;
-}
-
-.random .play{
-  width:28px;
-  height:28px;
+.meta{
+  color:#888;
   font-size:12px;
+  margin-top:7px;
 }
 
-.random .name{
-  font-weight:normal;
-  font-size:10px;
+.random-title{
+  margin-top:40px;
 }
 
-/* PAGINATION */
 .pagination{
   display:flex;
   justify-content:center;
-  gap:7px;
+  gap:8px;
+  margin:30px 0;
   flex-wrap:wrap;
-  padding:4px 0 25px;
 }
 
-.page{
-  min-width:38px;
-  height:36px;
-  padding:0 10px;
-  border:1px solid #29404f;
-  background:#0b1b27;
-  color:white;
-  border-radius:7px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.pagination button{
+  background:#171717;
+  color:#fff;
+  border:1px solid #333;
+  padding:9px 14px;
+  border-radius:6px;
   cursor:pointer;
 }
 
-.page.active{
-  background:#ff1744;
-  border-color:#ff1744;
+.pagination button:hover,
+.pagination button.active{
+  background:#e50914;
+  border-color:#e50914;
 }
 
-/* BOTTOM NAV */
-.bottom{
+.bottom-nav{
   position:fixed;
   bottom:0;
-  left:50%;
-  transform:translateX(-50%);
+  left:0;
   width:100%;
-  max-width:700px;
-  height:75px;
-  background:#020910;
-  border-top:1px solid #26343e;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  z-index:100;
-}
-
-.nav{
+  height:65px;
+  background:#111;
+  border-top:1px solid #292929;
   display:flex;
-  flex-direction:column;
+  justify-content:space-around;
   align-items:center;
-  justify-content:center;
-  gap:4px;
-  font-size:10px;
+  z-index:200;
 }
 
-.nav-icon{
-  font-size:23px;
+.bottom-nav a{
+  color:#aaa;
+  font-size:12px;
+  text-align:center;
 }
 
-.nav.active{
-  color:#ff1744;
+.bottom-nav a.active{
+  color:#e50914;
 }
 
-/* DESKTOP */
-@media(min-width:701px){
-  body{
-    padding:20px 0;
-  }
+.bottom-nav div{
+  font-size:20px;
+  margin-bottom:3px;
+}
 
-  .app{
-    border:1px solid #233541;
-    border-radius:25px;
-    overflow:hidden;
-  }
-
-  .bottom{
-    bottom:20px;
-    border-radius:0 0 25px 25px;
+@media(max-width:900px){
+  .grid{
+    grid-template-columns:repeat(3,1fr);
   }
 }
 
-/* SMALL PHONE */
-@media(max-width:390px){
-  .section{
+@media(max-width:650px){
+  header{
     padding:0 12px;
+    gap:10px;
   }
 
-  .categories{
-    padding-left:12px;
+  .logo{
+    font-size:20px;
   }
 
-  .video-grid{
-    gap:7px;
+  .search{
+    max-width:none;
   }
 
-  .random-grid{
-    gap:6px;
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
   }
 
-  .section-head h2{
-    font-size:18px;
+  .thumb{
+    height:115px;
+  }
+
+  .container{
+    width:94%;
+  }
+
+  .section-title h2{
+    font-size:19px;
+  }
+}
+
+@media(max-width:400px){
+  .grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .thumb{
+    height:105px;
   }
 }
 </style>
@@ -321,411 +261,298 @@ header{
 
 <body>
 
-<div class="app">
-
 <header>
-  <div class="menu">☰</div>
+  <a href="index.html" class="logo">DesiVexa</a>
 
-  <div class="logo">
-    Desi<span>Vexa</span>
+  <div class="search">
+    <input
+      type="text"
+      placeholder="Search videos..."
+      onkeydown="searchVideo(event)"
+    >
   </div>
 
-  <div class="icons">
-    ⌕
-    ♙
-  </div>
+  <a href="profile.html" class="profile">P</a>
 </header>
 
-<div class="ad">
-  Top Banner Ad (320×100)
-</div>
 
-<div class="categories">
-  <div class="cat active">All</div>
-  <div class="cat">Indian</div>
-  <div class="cat">Bhabhi</div>
-  <div class="cat">Desi</div>
-  <div class="cat">Mature</div>
-  <div class="cat">Lesbian</div>
-  <div class="cat">More⌄</div>
-</div>
+<main class="container">
 
+  <!-- RECOMMENDED -->
+  <section>
+    <div class="section-title">
+      <h2>Recommended Videos</h2>
+      <span>For You</span>
+    </div>
 
-<!-- MAIN VIDEO SECTION -->
-<section class="section">
-
-  <div class="section-head">
-    <h2 id="mainTitle">🔥 Trending Videos</h2>
-    <div class="view">View All →</div>
-  </div>
-
-  <div class="video-grid" id="mainVideos"></div>
-
-</section>
+    <div class="grid" id="recommendedGrid"></div>
+  </section>
 
 
-<!-- RANDOM VIDEOS -->
-<section class="section">
+  <!-- RANDOM -->
+  <section class="random-title">
 
-  <div class="section-head">
-    <h2>🎲 Random Videos</h2>
-    <div class="view">View All →</div>
-  </div>
+    <div class="section-title">
+      <h2>Random Videos</h2>
+      <span>30 videos per page</span>
+    </div>
 
-  <div class="random-grid" id="randomVideos"></div>
+    <div class="grid" id="randomGrid"></div>
 
-</section>
+    <div class="pagination" id="pagination"></div>
 
+  </section>
 
-<!-- PAGINATION -->
-<div class="pagination" id="pagination"></div>
+</main>
 
 
 <!-- BOTTOM NAV -->
-<nav class="bottom">
+<nav class="bottom-nav">
 
-  <div class="nav active">
-    <div class="nav-icon">⌂</div>
+  <a href="index.html">
+    <div>⌂</div>
     Home
-  </div>
+  </a>
 
-  <div class="nav">
-    <div class="nav-icon">◷</div>
+  <a href="new.html">
+    <div>★</div>
     Latest
-  </div>
+  </a>
 
-  <div class="nav">
-    <div class="nav-icon">♨</div>
-    Most Viewed
-  </div>
+  <a href="trending.html">
+    <div>🔥</div>
+    Trending
+  </a>
 
-  <div class="nav">
-    <div class="nav-icon">▦</div>
-    Categories
-  </div>
+  <a href="recommended.html" class="active">
+    <div>♥</div>
+    Recommended
+  </a>
 
-  <div class="nav">
-    <div class="nav-icon">♙</div>
+  <a href="profile.html">
+    <div>●</div>
     Profile
-  </div>
+  </a>
 
 </nav>
-
-</div>
 
 
 <script>
 
-/* --------------------------------
-   DETECT CURRENT PAGE
--------------------------------- */
+/* =========================
+   RECOMMENDED VIDEOS
+========================= */
 
-const file = location.pathname.split("/").pop().toLowerCase();
+const recommendedVideos = [];
 
-let pageType = "trending";
+for(let i=1;i<=12;i++){
 
-if(file === "new.html"){
-  pageType = "new";
+  recommendedVideos.push({
+    id:300+i,
+    title:"Recommended Video "+i,
+    views:(i*1743)+" views",
+    duration:"10:"+String(i+5).padStart(2,"0")
+  });
+
 }
 
-if(file === "recommended.html"){
-  pageType = "recommended";
-}
 
-
-/* --------------------------------
-   MAIN PAGE DATA
--------------------------------- */
-
-const data = {
-
-  trending:[
-    ["Trending Video 1","Indian","12:34","124K"],
-    ["Trending Video 2","Bhabhi","08:50","98K"],
-    ["Trending Video 3","Desi","15:20","156K"],
-    ["Trending Video 4","Mature","10:12","78K"],
-    ["Trending Video 5","Indian","09:45","112K"],
-    ["Trending Video 6","Desi","13:22","91K"],
-    ["Trending Video 7","Bhabhi","07:42","87K"],
-    ["Trending Video 8","Mature","11:31","105K"]
-  ],
-
-  new:[
-    ["New Video 1","Desi","09:12","45K"],
-    ["New Video 2","Bhabhi","14:37","67K"],
-    ["New Video 3","Indian","07:45","32K"],
-    ["New Video 4","Mature","12:08","89K"],
-    ["New Video 5","Desi","10:25","55K"],
-    ["New Video 6","Indian","08:33","61K"],
-    ["New Video 7","Bhabhi","13:12","74K"],
-    ["New Video 8","Mature","06:50","39K"]
-  ],
-
-  recommended:[
-    ["Recommended 1","Indian","11:30","76K"],
-    ["Recommended 2","Desi","08:15","93K"],
-    ["Recommended 3","Bhabhi","13:40","61K"],
-    ["Recommended 4","Mature","09:25","102K"],
-    ["Recommended 5","Indian","12:10","81K"],
-    ["Recommended 6","Desi","07:55","68K"],
-    ["Recommended 7","Bhabhi","14:22","97K"],
-    ["Recommended 8","Mature","10:18","72K"]
-  ]
-
-};
-
-
-/* --------------------------------
-   TITLE
--------------------------------- */
-
-const titles = {
-  trending:"🔥 Trending Videos",
-  new:"⭐ New Videos",
-  recommended:"👤 Recommended Videos"
-};
-
-document.getElementById("mainTitle").textContent =
-  titles[pageType];
-
-
-/* --------------------------------
-   CREATE MAIN VIDEOS
--------------------------------- */
-
-const mainBox =
-  document.getElementById("mainVideos");
-
-data[pageType].forEach(v=>{
-
-  mainBox.innerHTML += `
-
-    <div class="card">
-
-      <div class="thumb">
-
-        <div class="play">▶</div>
-
-        <div class="duration">
-          ${v[2]}
-        </div>
-
-      </div>
-
-      <div class="name">
-        ${v[0]}
-      </div>
-
-      <span class="tag">
-        ${v[1]}
-      </span>
-
-      <div class="info">
-        👁 ${v[3]} views<br>
-        ◷ ${Math.floor(Math.random()*10)+1} hours ago
-      </div>
-
-    </div>
-
-  `;
-
-});
-
-
-/* --------------------------------
+/* =========================
    RANDOM VIDEOS
    150 TOTAL
    30 PER PAGE
--------------------------------- */
+========================= */
 
-const randomData = [];
+const randomVideos = [];
 
 for(let i=1;i<=150;i++){
 
-  randomData.push({
-    name:"Random Video "+i,
-    duration:
-      String(Math.floor(Math.random()*15)+1)
-      .padStart(2,"0")
-      +":"+
-      String(Math.floor(Math.random()*60))
-      .padStart(2,"0")
+  randomVideos.push({
+    id:1000+i,
+    title:"Random Video "+i,
+    views:(i*827)+" views",
+    duration:"8:"+String((i%59)+1).padStart(2,"0")
   });
 
 }
 
 
-/* --------------------------------
-   RENDER RANDOM
--------------------------------- */
+/* =========================
+   CREATE CARD
+========================= */
 
-let currentPage = 1;
+function createCard(video){
 
-const perPage = 30;
+  return `
+    <a href="video.html?id=${video.id}" class="card">
 
-function renderRandom(){
+      <div class="thumb">
+        <span>▶</span>
 
-  const box =
-    document.getElementById("randomVideos");
+        <div class="badge">
+          ${video.duration}
+        </div>
+      </div>
 
-  box.innerHTML = "";
+      <div class="info">
 
-  const start =
-    (currentPage-1)*perPage;
-
-  const end =
-    start+perPage;
-
-  const videos =
-    randomData.slice(start,end);
-
-  videos.forEach(video=>{
-
-    box.innerHTML += `
-
-      <div class="card random">
-
-        <div class="thumb">
-
-          <div class="play">▶</div>
-
-          <div class="duration">
-            ${video.duration}
-          </div>
-
+        <div class="title">
+          ${video.title}
         </div>
 
-        <div class="name">
-          ${video.name}
+        <div class="meta">
+          ${video.views}
         </div>
 
       </div>
 
-    `;
+    </a>
+  `;
+}
 
-  });
 
-  renderPagination();
+/* =========================
+   RENDER RECOMMENDED
+========================= */
+
+function renderRecommended(){
+
+  const grid=document.getElementById("recommendedGrid");
+
+  grid.innerHTML=
+    recommendedVideos
+      .map(createCard)
+      .join("");
 
 }
 
 
-/* --------------------------------
+/* =========================
+   RANDOM PAGINATION
+========================= */
+
+const perPage=30;
+let currentPage=1;
+
+function renderRandom(){
+
+  const grid=document.getElementById("randomGrid");
+
+  const start=(currentPage-1)*perPage;
+  const end=start+perPage;
+
+  const pageVideos=randomVideos.slice(start,end);
+
+  grid.innerHTML=
+    pageVideos
+      .map(createCard)
+      .join("");
+
+  renderPagination();
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* =========================
    PAGINATION
--------------------------------- */
+========================= */
 
 function renderPagination(){
 
-  const box =
-    document.getElementById("pagination");
+  const pagination=document.getElementById("pagination");
 
-  box.innerHTML = "";
+  const totalPages=Math.ceil(
+    randomVideos.length/perPage
+  );
 
-  const previous =
-    document.createElement("button");
+  let html="";
 
-  previous.className = "page";
-
-  previous.textContent = "‹ Previous";
-
-  previous.onclick = ()=>{
-
-    if(currentPage > 1){
-
-      currentPage--;
-
-      renderRandom();
-
-      window.scrollTo({
-        top:document.querySelector(".section:last-of-type").offsetTop,
-        behavior:"smooth"
-      });
-
-    }
-
-  };
-
-  box.appendChild(previous);
-
+  html+=`
+    <button
+      onclick="changePage(${currentPage-1})"
+      ${currentPage===1?"disabled":""}>
+      Previous
+    </button>
+  `;
 
   for(let i=1;i<=5;i++){
 
-    const btn =
-      document.createElement("button");
-
-    btn.className =
-      "page "+(i===currentPage ? "active":"");
-
-    btn.textContent = i;
-
-    btn.onclick = ()=>{
-
-      currentPage = i;
-
-      renderRandom();
-
-      window.scrollTo({
-        top:document.querySelector(".section:last-of-type").offsetTop,
-        behavior:"smooth"
-      });
-
-    };
-
-    box.appendChild(btn);
+    html+=`
+      <button
+        class="${i===currentPage?"active":""}"
+        onclick="changePage(${i})">
+        ${i}
+      </button>
+    `;
 
   }
 
+  html+=`
+    <button
+      onclick="changePage(${currentPage+1})"
+      ${currentPage===totalPages?"disabled":""}>
+      Next
+    </button>
+  `;
 
-  const next =
-    document.createElement("button");
+  pagination.innerHTML=html;
 
-  next.className = "page";
+}
 
-  next.textContent = "Next ›";
 
-  next.onclick = ()=>{
+/* =========================
+   CHANGE PAGE
+========================= */
 
-    if(currentPage < 5){
+function changePage(page){
 
-      currentPage++;
+  const totalPages=Math.ceil(
+    randomVideos.length/perPage
+  );
 
-      renderRandom();
+  if(page<1 || page>totalPages){
+    return;
+  }
 
-      window.scrollTo({
-        top:document.querySelector(".section:last-of-type").offsetTop,
-        behavior:"smooth"
-      });
+  currentPage=page;
+
+  renderRandom();
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+function searchVideo(event){
+
+  if(event.key==="Enter"){
+
+    const value=event.target.value.trim();
+
+    if(value){
+
+      window.location.href=
+        "search.html?q="+
+        encodeURIComponent(value);
 
     }
 
-  };
-
-  box.appendChild(next);
+  }
 
 }
 
 
 /* START */
+
+renderRecommended();
 renderRandom();
-
-
-/* --------------------------------
-   CATEGORY BUTTONS
--------------------------------- */
-
-document.querySelectorAll(".cat")
-.forEach(cat=>{
-
-  cat.onclick = ()=>{
-
-    document.querySelectorAll(".cat")
-    .forEach(x=>x.classList.remove("active"));
-
-    cat.classList.add("active");
-
-  };
-
-});
 
 </script>
 
