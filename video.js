@@ -10,30 +10,64 @@ const MEDIA_FUNCTION =
   `${SUPABASE_URL}/functions/v1/get-video-media`;
 
 const page = document.getElementById("page");
-const videoId = new URLSearchParams(location.search).get("id");
 
-const visitorKey = "desivexa_visitor_id";
 
-function getVisitorId() {
-  let id = localStorage.getItem(visitorKey);
+// ======================================================
+// GET VIDEO ID
+// ======================================================
+
+function getVideoId() {
+  const params = new URLSearchParams(window.location.search);
+  let id = params.get("id");
 
   if (!id) {
-    id = crypto.randomUUID
-      ? crypto.randomUUID()
-      : `dv-${Date.now()}-${Math.random()
-          .toString(36)
-          .slice(2)}`;
-
-    localStorage.setItem(visitorKey, id);
+    return null;
   }
 
-  return id;
+  // Handle accidental duplicate query string
+  // Example:
+  // UUID?id=UUID
+  if (id.includes("?")) {
+    id = id.split("?")[0];
+  }
+
+  if (id.includes("=")) {
+    id = id.split("=")[0];
+  }
+
+  return id.trim();
 }
 
-const visitorId = getVisitorId();
 
-function escapeHTML(value) {
-  return String(value ?? "")
+const videoId = getVideoId();
+
+console.log("=================================");
+console.log("DESIVEXA VIDEO PAGE");
+console.log("URL:", window.location.href);
+console.log("VIDEO ID:", videoId);
+console.log("=================================");
+
+
+// ======================================================
+// UUID VALIDATION
+// ======================================================
+
+function isValidUUID(value) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+    .test(value);
+}
+
+
+// ======================================================
+// ESCAPE HTML
+// ======================================================
+
+function escapeHtml(value) {
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return String(value)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -41,27 +75,92 @@ function escapeHTML(value) {
     .replace(/'/g, "&#039;");
 }
 
-/* =========================================================
-   GET PRIVATE VIDEO / THUMBNAIL SIGNED URL
-========================================================= */
+
+// ======================================================
+// ERROR
+// ======================================================
+
+function showError(message) {
+  if (!page) {
+    return;
+  }
+
+  page.innerHTML = `
+    <div style="
+      min-height:50vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:30px 15px;
+    ">
+      <div style="
+        width:100%;
+        max-width:600px;
+        background:#111;
+        border:1px solid #292929;
+        border-radius:14px;
+        padding:25px;
+        text-align:center;
+      ">
+        <div style="
+          color:#ff3030;
+          font-size:22px;
+          font-weight:700;
+          margin-bottom:12px;
+        ">
+          Could not load video
+        </div>
+
+        <div style="
+          color:#aaa;
+          font-size:14px;
+          line-height:1.5;
+          word-break:break-word;
+        ">
+          ${escapeHtml(message)}
+        </div>
+
+        <a href="index.html" style="
+          display:inline-block;
+          margin-top:20px;
+          padding:11px 18px;
+          background:#e50914;
+          color:#fff;
+          text-decoration:none;
+          border-radius:8px;
+          font-weight:600;
+        ">
+          Go Home
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+
+// ======================================================
+// MEDIA FUNCTION
+// ======================================================
 
 async function getMedia(id) {
+
   const headers = {
     "Content-Type": "application/json",
     "apikey": SUPABASE_ANON_KEY,
     "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
   };
 
-  console.log("=================================");
-  console.log("DESIVEXA MEDIA REQUEST");
+  console.log("---------------------------------");
+  console.log("MEDIA FUNCTION REQUEST");
   console.log("URL:", MEDIA_FUNCTION);
   console.log("METHOD: POST");
   console.log("VIDEO ID:", id);
-  console.log("=================================");
+  console.log("---------------------------------");
 
   let response;
 
   try {
+
     response = await fetch(MEDIA_FUNCTION, {
       method: "POST",
       headers,
@@ -69,12 +168,16 @@ async function getMedia(id) {
         videoId: id
       })
     });
-  } catch (networkError) {
-    console.error("MEDIA NETWORK ERROR:", networkError);
+
+  } catch (error) {
+
+    console.error("MEDIA NETWORK ERROR:", error);
+
     throw new Error(
       "Media server se connection nahi ho paaya."
     );
   }
+
 
   const responseText = await response.text();
 
@@ -88,6 +191,7 @@ async function getMedia(id) {
     responseText
   );
 
+
   let result = {};
 
   try {
@@ -98,7 +202,9 @@ async function getMedia(id) {
     };
   }
 
+
   if (!response.ok) {
+
     throw new Error(
       result.error ||
       result.message ||
@@ -106,7 +212,9 @@ async function getMedia(id) {
     );
   }
 
+
   if (!result.videoUrl) {
+
     console.error(
       "No videoUrl returned:",
       result
@@ -117,1167 +225,1145 @@ async function getMedia(id) {
     );
   }
 
+
   return result;
 }
 
-/* =========================================================
-   START
-========================================================= */
 
-if (!page) {
-  console.error(
-    "Page container #page not found."
-  );
-} else if (!videoId) {
-  showError("Video ID missing.");
-} else {
-  loadVideo();
-}
-
-/* =========================================================
-   LOAD VIDEO
-========================================================= */
+// ======================================================
+// LOAD VIDEO
+// ======================================================
 
 async function loadVideo() {
-  try {
-    page.innerHTML = `
-      <div style="
-        max-width:1000px;
-        margin:auto;
-        padding:20px;
-        text-align:center;
-        color:white;
-      ">
-        <div style="
-          font-size:18px;
-          margin-bottom:10px;
-        ">
-          Loading video...
-        </div>
 
-        <div style="
-          color:#888;
-          font-size:13px;
-        ">
-          Please wait...
-        </div>
-      </div>
-    `;
-
-    console.log(
-      "Loading video:",
-      videoId
+  if (!page) {
+    console.error(
+      "#page element nahi mila."
     );
+
+    return;
+  }
+
+
+  if (!videoId) {
+
+    showError(
+      "Video ID URL me nahi mili."
+    );
+
+    return;
+  }
+
+
+  if (!isValidUUID(videoId)) {
+
+    showError(
+      `Invalid video ID: ${videoId}`
+    );
+
+    return;
+  }
+
+
+  page.innerHTML = `
+    <div style="
+      min-height:50vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#aaa;
+      font-size:16px;
+    ">
+      Loading video...
+    </div>
+  `;
+
+
+  try {
+
+    // -----------------------------------------------
+    // GET VIDEO DATABASE ROW
+    // -----------------------------------------------
 
     const {
       data: video,
-      error
+      error: videoError
     } = await supabase
       .from("videos")
-      .select(`
-        id,
-        title,
-        category,
-        description,
-        video_url,
-        thumbnail_url,
-        views
-      `)
+      .select("*")
       .eq("id", videoId)
       .eq("published", true)
       .maybeSingle();
 
-    if (error) {
+
+    if (videoError) {
+
       console.error(
-        "Supabase video error:",
-        error
+        "VIDEO DATABASE ERROR:",
+        videoError
       );
 
-      throw error;
+      throw new Error(
+        videoError.message
+      );
     }
+
 
     if (!video) {
+
       throw new Error(
-        "Video not found or video is not published."
+        "Published video nahi mila."
       );
     }
 
+
     console.log(
-      "Video database record:",
+      "VIDEO DATABASE ROW:",
       video
     );
 
-    /* -----------------------------------------
-       GET SIGNED MEDIA URL
-    ----------------------------------------- */
 
-    const media = await getMedia(video.id);
+    // -----------------------------------------------
+    // GET SIGNED MEDIA URL
+    // -----------------------------------------------
+
+    const media = await getMedia(
+      video.id
+    );
+
 
     console.log(
       "SIGNED MEDIA:",
       media
     );
 
+
+    // -----------------------------------------------
+    // RENDER
+    // -----------------------------------------------
+
     renderVideo(
       video,
       media
     );
 
-    loadLikes();
-    loadRandomVideos(video.id);
-    loadComments();
+
+    // -----------------------------------------------
+    // VIEWS
+    // -----------------------------------------------
+
+    increaseViews(
+      video.id,
+      video.views
+    );
+
+
+    // -----------------------------------------------
+    // RANDOM VIDEOS
+    // -----------------------------------------------
+
+    loadRandomVideos(
+      video.id
+    );
+
+
+    // -----------------------------------------------
+    // COMMENTS
+    // -----------------------------------------------
+
+    loadComments(
+      video.id
+    );
+
+
+    // -----------------------------------------------
+    // LIKES
+    // -----------------------------------------------
+
+    setupLikeButton(
+      video.id
+    );
+
 
   } catch (error) {
+
     console.error(
-      "VIDEO LOADING ERROR:",
+      "LOAD VIDEO ERROR:",
       error
     );
 
     showError(
       error.message ||
-      "Unable to load video."
+      "Unknown error"
     );
   }
 }
 
-/* =========================================================
-   RENDER VIDEO
-========================================================= */
 
-function renderVideo(
-  video,
-  media
-) {
+// ======================================================
+// RENDER VIDEO
+// ======================================================
+
+function renderVideo(video, media) {
+
   page.innerHTML = `
-    <div style="
+
+    <section style="
       width:100%;
-      max-width:1000px;
-      margin:auto;
+      padding:12px;
     ">
 
-      <video
-        id="mainVideo"
-        controls
-        playsinline
-        preload="metadata"
-        style="
-          width:100%;
-          display:block;
-          background:#000;
-          border-radius:10px;
-        "
-      ></video>
-
-      <h1 style="
-        color:white;
-        font-size:21px;
-        margin:15px 0 8px;
-      ">
-        ${escapeHTML(
-          video.title || "Untitled"
-        )}
-      </h1>
-
       <div style="
-        color:#999;
-        font-size:13px;
-      ">
-        ${escapeHTML(
-          video.category || "Video"
-        )}
-        ·
-        <span id="viewCount">
-          ${Number(video.views || 0)}
-        </span>
-        views
-      </div>
-
-      <div style="
-        display:flex;
-        gap:8px;
-        margin:18px 0;
-        flex-wrap:wrap;
+        width:100%;
+        background:#000;
+        border-radius:10px;
+        overflow:hidden;
       ">
 
-        <button
-          id="likeBtn"
-          type="button"
+        <video
+          id="mainVideo"
+          controls
+          playsinline
+          preload="metadata"
+          poster="${escapeHtml(media.thumbnailUrl || "")}"
           style="
-            background:#222;
-            color:white;
-            border:0;
-            border-radius:8px;
-            padding:12px 16px;
+            width:100%;
+            max-height:75vh;
+            display:block;
+            background:#000;
           "
-        >
-          ❤️
-          <span id="likeText">
-            Like
-          </span>
-          <span id="likeCount">
-            0
-          </span>
-        </button>
-
-        <button
-          id="commentBtn"
-          type="button"
-          style="
-            background:#222;
-            color:white;
-            border:0;
-            border-radius:8px;
-            padding:12px 16px;
-          "
-        >
-          💬 Comment
-          <span id="commentCount">
-            0
-          </span>
-        </button>
-
-        <button
-          id="shareBtn"
-          type="button"
-          style="
-            background:#222;
-            color:white;
-            border:0;
-            border-radius:8px;
-            padding:12px 16px;
-          "
-        >
-          🔗 Share
-        </button>
+        ></video>
 
       </div>
 
-      <div
-        id="shareStatus"
-        style="
-          color:#55d66b;
-          font-size:13px;
-        "
-      ></div>
 
-      ${
-        video.description
-          ? `
-            <div style="
-              color:#ccc;
-              line-height:1.5;
-              margin:16px 0 25px;
-            ">
-              ${escapeHTML(
-                video.description
-              )}
-            </div>
-          `
-          : ""
-      }
-
-      <section style="
-        margin-top:35px;
+      <div style="
+        padding:15px 2px;
       ">
 
-        <h2 style="
-          color:white;
+        <h1 style="
+          margin:0 0 10px;
           font-size:20px;
+          line-height:1.35;
+          color:#fff;
         ">
-          Random Videos
-        </h2>
+          ${escapeHtml(video.title)}
+        </h1>
 
-        <div
-          id="randomVideos"
-          style="
-            display:grid;
-            grid-template-columns:
-              repeat(
-                3,
-                minmax(0,1fr)
-              );
-            gap:8px;
-          "
-        >
-          <p style="color:#888">
-            Loading videos...
-          </p>
-        </div>
-
-      </section>
-
-      <section
-        id="commentsSection"
-        style="
-          margin-top:35px;
-          padding-top:25px;
-          border-top:1px solid #222;
-        "
-      >
-
-        <h2 style="color:white">
-          Comments
-        </h2>
 
         <div style="
           display:flex;
           gap:8px;
-          margin:15px 0;
+          flex-wrap:wrap;
+          margin-bottom:14px;
         ">
 
-          <input
-            id="commentInput"
-            type="text"
-            maxlength="500"
-            placeholder="Write a comment..."
-            style="
-              flex:1;
-              min-width:0;
-              background:#171717;
-              color:white;
-              border:1px solid #333;
-              border-radius:8px;
-              padding:12px;
-            "
-          >
+          <span style="
+            background:#181818;
+            border:1px solid #292929;
+            color:#aaa;
+            padding:6px 10px;
+            border-radius:20px;
+            font-size:13px;
+          ">
+            ${escapeHtml(video.category || "Other")}
+          </span>
+
+          <span style="
+            background:#181818;
+            border:1px solid #292929;
+            color:#aaa;
+            padding:6px 10px;
+            border-radius:20px;
+            font-size:13px;
+          ">
+            ${Number(video.views || 0)} views
+          </span>
+
+        </div>
+
+
+        <div style="
+          display:flex;
+          gap:10px;
+          margin-bottom:18px;
+        ">
 
           <button
-            id="commentSubmit"
+            id="likeBtn"
             type="button"
             style="
-              background:#e00000;
-              color:white;
-              border:0;
+              flex:1;
+              padding:11px;
+              border:1px solid #333;
               border-radius:8px;
-              padding:0 16px;
+              background:#151515;
+              color:#fff;
+              font-size:14px;
+              cursor:pointer;
             "
           >
-            Post
+            ❤️ Like
+          </button>
+
+
+          <button
+            id="commentScrollBtn"
+            type="button"
+            style="
+              flex:1;
+              padding:11px;
+              border:1px solid #333;
+              border-radius:8px;
+              background:#151515;
+              color:#fff;
+              font-size:14px;
+              cursor:pointer;
+            "
+          >
+            💬 Comments
+          </button>
+
+
+          <button
+            id="shareBtn"
+            type="button"
+            style="
+              flex:1;
+              padding:11px;
+              border:1px solid #333;
+              border-radius:8px;
+              background:#151515;
+              color:#fff;
+              font-size:14px;
+              cursor:pointer;
+            "
+          >
+            ↗ Share
           </button>
 
         </div>
 
-        <div id="commentStatus"></div>
 
-        <div id="commentsList">
-          <p style="color:#888">
-            Loading comments...
-          </p>
-        </div>
+        ${
+          video.description
+            ? `
+              <div style="
+                background:#111;
+                border:1px solid #222;
+                border-radius:10px;
+                padding:14px;
+                color:#bbb;
+                font-size:14px;
+                line-height:1.6;
+                margin-bottom:20px;
+              ">
+                ${escapeHtml(video.description)}
+              </div>
+            `
+            : ""
+        }
 
-      </section>
+
+        <section id="commentsSection" style="
+          margin-top:25px;
+          scroll-margin-top:70px;
+        ">
+
+          <h2 style="
+            font-size:19px;
+            margin:0 0 14px;
+          ">
+            Comments
+          </h2>
+
+
+          <div id="commentForm"></div>
+
+
+          <div id="commentsList">
+            <div style="
+              color:#777;
+              padding:10px 0;
+            ">
+              Loading comments...
+            </div>
+          </div>
+
+        </section>
+
+
+        <section style="
+          margin-top:35px;
+        ">
+
+          <h2 style="
+            font-size:19px;
+            margin:0 0 15px;
+          ">
+            Random Videos
+          </h2>
+
+
+          <div
+            id="randomVideos"
+            style="
+              display:grid;
+              grid-template-columns:repeat(2,minmax(0,1fr));
+              gap:10px;
+            "
+          >
+            <div style="color:#777;">
+              Loading...
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+
+    </section>
+  `;
+
+
+  // -----------------------------------------------
+  // VIDEO SOURCE
+  // -----------------------------------------------
+
+  const player =
+    document.getElementById("mainVideo");
+
+
+  if (player) {
+
+    player.src =
+      media.videoUrl;
+
+
+    if (media.thumbnailUrl) {
+
+      player.poster =
+        media.thumbnailUrl;
+    }
+
+
+    player.addEventListener(
+      "error",
+      () => {
+
+        console.error(
+          "VIDEO PLAYER ERROR:",
+          player.error
+        );
+
+      }
+    );
+
+
+    player.addEventListener(
+      "loadedmetadata",
+      () => {
+
+        console.log(
+          "VIDEO METADATA LOADED"
+        );
+
+      }
+    );
+  }
+
+
+  // -----------------------------------------------
+  // COMMENT SCROLL
+  // -----------------------------------------------
+
+  const commentButton =
+    document.getElementById(
+      "commentScrollBtn"
+    );
+
+
+  if (commentButton) {
+
+    commentButton.addEventListener(
+      "click",
+      () => {
+
+        const section =
+          document.getElementById(
+            "commentsSection"
+          );
+
+        if (section) {
+
+          section.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+
+        }
+
+      }
+    );
+  }
+
+
+  // -----------------------------------------------
+  // SHARE
+  // -----------------------------------------------
+
+  const shareButton =
+    document.getElementById(
+      "shareBtn"
+    );
+
+
+  if (shareButton) {
+
+    shareButton.addEventListener(
+      "click",
+      async () => {
+
+        const url =
+          window.location.href;
+
+
+        try {
+
+          if (
+            navigator.share
+          ) {
+
+            await navigator.share({
+              title: video.title,
+              url
+            });
+
+          } else {
+
+            await navigator.clipboard.writeText(
+              url
+            );
+
+            alert(
+              "Video link copied!"
+            );
+          }
+
+        } catch (error) {
+
+          console.log(
+            "Share cancelled:",
+            error
+          );
+
+        }
+
+      }
+    );
+  }
+}
+
+
+// ======================================================
+// INCREASE VIEWS
+// ======================================================
+
+async function increaseViews(
+  id,
+  currentViews
+) {
+
+  try {
+
+    await supabase
+      .from("videos")
+      .update({
+        views:
+          Number(currentViews || 0) + 1
+      })
+      .eq("id", id);
+
+  } catch (error) {
+
+    console.log(
+      "Views update failed:",
+      error
+    );
+  }
+}
+
+
+// ======================================================
+// LIKE BUTTON
+// ======================================================
+
+async function setupLikeButton(
+  id
+) {
+
+  const button =
+    document.getElementById(
+      "likeBtn"
+    );
+
+
+  if (!button) {
+    return;
+  }
+
+
+  let liked = false;
+
+
+  button.addEventListener(
+    "click",
+    async () => {
+
+      liked = !liked;
+
+
+      button.innerHTML =
+        liked
+          ? "❤️ Liked"
+          : "❤️ Like";
+
+
+      button.style.borderColor =
+        liked
+          ? "#e50914"
+          : "#333";
+
+
+      try {
+
+        const visitorId =
+          getVisitorId();
+
+
+        if (liked) {
+
+          await supabase
+            .from("video_likes")
+            .insert({
+              video_id: id,
+              visitor_id: visitorId
+            });
+
+        } else {
+
+          await supabase
+            .from("video_likes")
+            .delete()
+            .eq("video_id", id)
+            .eq("visitor_id", visitorId);
+
+        }
+
+      } catch (error) {
+
+        console.log(
+          "Like database update:",
+          error
+        );
+
+      }
+
+    }
+  );
+}
+
+
+// ======================================================
+// VISITOR ID
+// ======================================================
+
+function getVisitorId() {
+
+  let id =
+    localStorage.getItem(
+      "desivexa_visitor_id"
+    );
+
+
+  if (!id) {
+
+    if (
+      window.crypto &&
+      crypto.randomUUID
+    ) {
+
+      id =
+        crypto.randomUUID();
+
+    } else {
+
+      id =
+        "visitor-" +
+        Date.now() +
+        "-" +
+        Math.random()
+          .toString(36)
+          .substring(2);
+
+    }
+
+
+    localStorage.setItem(
+      "desivexa_visitor_id",
+      id
+    );
+  }
+
+
+  return id;
+}
+
+
+// ======================================================
+// COMMENTS
+// ======================================================
+
+async function loadComments(
+  videoId
+) {
+
+  const list =
+    document.getElementById(
+      "commentsList"
+    );
+
+
+  const form =
+    document.getElementById(
+      "commentForm"
+    );
+
+
+  if (!list || !form) {
+    return;
+  }
+
+
+  form.innerHTML = `
+
+    <div style="
+      display:flex;
+      gap:8px;
+      margin-bottom:18px;
+    ">
+
+      <input
+        id="commentInput"
+        type="text"
+        maxlength="500"
+        placeholder="Write a comment..."
+        style="
+          flex:1;
+          min-width:0;
+          background:#111;
+          color:#fff;
+          border:1px solid #333;
+          border-radius:8px;
+          padding:11px;
+          outline:none;
+        "
+      >
+
+      <button
+        id="commentSubmit"
+        type="button"
+        style="
+          padding:0 15px;
+          border:0;
+          border-radius:8px;
+          background:#e50914;
+          color:#fff;
+          font-weight:600;
+        "
+      >
+        Post
+      </button>
 
     </div>
   `;
 
-  const player =
-    document.getElementById(
-      "mainVideo"
-    );
 
-  /* -----------------------------------------
-     SET VIDEO SOURCE
-  ----------------------------------------- */
-
-  if (!media.videoUrl) {
-    console.error(
-      "Missing videoUrl:",
-      media
-    );
-
-    showError(
-      "Video URL nahi mili."
-    );
-
-    return;
-  }
-
-  console.log(
-    "SETTING VIDEO SRC:",
-    media.videoUrl
-  );
-
-  player.src =
-    media.videoUrl;
-
-  if (media.thumbnailUrl) {
-    player.poster =
-      media.thumbnailUrl;
-  }
-
-  player.load();
-
-  /* -----------------------------------------
-     VIDEO EVENTS
-  ----------------------------------------- */
-
-  player.addEventListener(
-    "loadedmetadata",
-    () => {
-      console.log(
-        "VIDEO METADATA LOADED"
-      );
-    }
-  );
-
-  player.addEventListener(
-    "canplay",
-    () => {
-      console.log(
-        "VIDEO CAN PLAY"
-      );
-    }
-  );
-
-  player.addEventListener(
-    "playing",
-    () => {
-      console.log(
-        "VIDEO PLAYING"
-      );
-    }
-  );
-
-  player.addEventListener(
-    "waiting",
-    () => {
-      console.log(
-        "VIDEO WAITING"
-      );
-    }
-  );
-
-  player.addEventListener(
-    "error",
-    () => {
-      const error =
-        player.error;
-
-      console.error(
-        "VIDEO PLAYBACK ERROR:",
-        error
-      );
-
-      if (error) {
-        console.error(
-          "MEDIA ERROR CODE:",
-          error.code
-        );
-
-        console.error(
-          "MEDIA ERROR MESSAGE:",
-          error.message
-        );
-      }
-    }
-  );
-
-  /* -----------------------------------------
-     VIEW COUNT
-  ----------------------------------------- */
-
-  let counted = false;
-
-  player.addEventListener(
-    "play",
-    async () => {
-      if (counted) return;
-
-      counted = true;
-
-      const newViews =
-        Number(video.views || 0) + 1;
-
-      const viewCount =
-        document.getElementById(
-          "viewCount"
-        );
-
-      if (viewCount) {
-        viewCount.textContent =
-          newViews;
-      }
-
-      const {
-        error
-      } = await supabase
-        .from("videos")
-        .update({
-          views: newViews
-        })
-        .eq(
-          "id",
-          video.id
-        );
-
-      if (error) {
-        console.warn(
-          "View count update failed:",
-          error.message
-        );
-      }
-    }
-  );
-
-  /* -----------------------------------------
-     BUTTONS
-  ----------------------------------------- */
-
-  document.getElementById(
-    "likeBtn"
-  ).onclick = toggleLike;
-
-  document.getElementById(
-    "commentBtn"
-  ).onclick = () => {
-    document
-      .getElementById(
-        "commentsSection"
-      )
-      .scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-  };
-
-  document.getElementById(
-    "shareBtn"
-  ).onclick = shareVideo;
-
-  document.getElementById(
-    "commentSubmit"
-  ).onclick = addComment;
-
-  document.getElementById(
-    "commentInput"
-  ).addEventListener(
-    "keydown",
-    event => {
-      if (
-        event.key === "Enter"
-      ) {
-        addComment();
-      }
-    }
-  );
-}
-
-/* =========================================================
-   LIKES
-========================================================= */
-
-async function loadLikes() {
-  const countEl =
-    document.getElementById(
-      "likeCount"
-    );
-
-  const textEl =
-    document.getElementById(
-      "likeText"
-    );
-
-  const button =
-    document.getElementById(
-      "likeBtn"
-    );
-
-  if (!countEl) return;
-
-  const result =
-    await supabase
-      .from("video_likes")
-      .select("*", {
-        count: "exact",
-        head: true
-      })
-      .eq(
-        "video_id",
-        videoId
-      );
-
-  if (result.error) {
-    console.warn(
-      "Like count:",
-      result.error.message
-    );
-  } else {
-    countEl.textContent =
-      Number(
-        result.count || 0
-      );
-  }
-
-  const userLike =
-    await supabase
-      .from("video_likes")
-      .select("id")
-      .eq(
-        "video_id",
-        videoId
-      )
-      .eq(
-        "visitor_id",
-        visitorId
-      )
-      .limit(1);
-
-  if (userLike.error) {
-    console.warn(
-      "User like:",
-      userLike.error.message
-    );
-
-    return;
-  }
-
-  const liked =
-    (userLike.data || [])
-      .length > 0;
-
-  textEl.textContent =
-    liked
-      ? "Liked"
-      : "Like";
-
-  button.style.background =
-    liked
-      ? "#e00000"
-      : "#222";
-}
-
-async function toggleLike() {
-  const button =
-    document.getElementById(
-      "likeBtn"
-    );
-
-  button.disabled = true;
-
-  try {
-    const {
-      data,
-      error
-    } = await supabase
-      .from("video_likes")
-      .select("id")
-      .eq(
-        "video_id",
-        videoId
-      )
-      .eq(
-        "visitor_id",
-        visitorId
-      )
-      .limit(1);
-
-    if (error) throw error;
-
-    if (data?.length) {
-      const result =
-        await supabase
-          .from("video_likes")
-          .delete()
-          .eq(
-            "id",
-            data[0].id
-          );
-
-      if (result.error) {
-        throw result.error;
-      }
-    } else {
-      const result =
-        await supabase
-          .from("video_likes")
-          .insert({
-            video_id:
-              videoId,
-            visitor_id:
-              visitorId
-          });
-
-      if (result.error) {
-        throw result.error;
-      }
-    }
-
-    await loadLikes();
-
-  } catch (error) {
-    console.error(
-      "Like update failed:",
-      error
-    );
-
-    alert(
-      "Like update nahi hua."
-    );
-
-  } finally {
-    button.disabled = false;
-  }
-}
-
-/* =========================================================
-   COMMENTS
-========================================================= */
-
-async function loadComments() {
-  const list =
-    document.getElementById(
-      "commentsList"
-    );
-
-  const countEl =
-    document.getElementById(
-      "commentCount"
-    );
-
-  try {
-    const result =
-      await supabase
-        .from("video_comments")
-        .select(
-          "id,body,created_at"
-        )
-        .eq(
-          "video_id",
-          videoId
-        )
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        )
-        .limit(100);
-
-    if (result.error) {
-      throw result.error;
-    }
-
-    const comments =
-      result.data || [];
-
-    countEl.textContent =
-      comments.length;
-
-    renderComments(
-      comments
-    );
-
-  } catch (error) {
-    console.error(
-      "Comments loading failed:",
-      error
-    );
-
-    list.innerHTML = `
-      <p style="color:#888">
-        Could not load comments.
-      </p>
-    `;
-  }
-}
-
-function renderComments(
-  comments
-) {
-  const list =
-    document.getElementById(
-      "commentsList"
-    );
-
-  if (!comments.length) {
-    list.innerHTML = `
-      <p style="color:#888">
-        No comments yet.
-        Be the first!
-      </p>
-    `;
-
-    return;
-  }
-
-  list.innerHTML =
-    comments
-      .map(
-        item => `
-          <div style="
-            background:#171717;
-            border:1px solid #242424;
-            border-radius:8px;
-            padding:12px;
-            margin-bottom:8px;
-          ">
-
-            <strong style="color:white">
-              Guest
-            </strong>
-
-            <p style="
-              color:#ccc;
-              margin:6px 0 0;
-              word-break:break-word;
-            ">
-              ${escapeHTML(
-                item.body ||
-                item.comment ||
-                ""
-              )}
-            </p>
-
-          </div>
-        `
-      )
-      .join("");
-}
-
-async function addComment() {
   const input =
     document.getElementById(
       "commentInput"
     );
 
-  const button =
+
+  const submit =
     document.getElementById(
       "commentSubmit"
     );
 
-  const status =
+
+  if (submit) {
+
+    submit.addEventListener(
+      "click",
+      async () => {
+
+        const body =
+          input.value.trim();
+
+
+        if (!body) {
+          return;
+        }
+
+
+        submit.disabled = true;
+
+
+        try {
+
+          const visitorId =
+            getVisitorId();
+
+
+          const {
+            error
+          } = await supabase
+            .from("video_comments")
+            .insert({
+              video_id: videoId,
+              visitor_id: visitorId,
+              body
+            });
+
+
+          if (error) {
+
+            throw error;
+          }
+
+
+          input.value = "";
+
+
+          await fetchComments(
+            videoId
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "COMMENT ERROR:",
+            error
+          );
+
+
+          alert(
+            "Comment post nahi hua."
+          );
+
+        } finally {
+
+          submit.disabled = false;
+
+        }
+
+      }
+    );
+  }
+
+
+  await fetchComments(
+    videoId
+  );
+}
+
+
+// ======================================================
+// FETCH COMMENTS
+// ======================================================
+
+async function fetchComments(
+  videoId
+) {
+
+  const list =
     document.getElementById(
-      "commentStatus"
+      "commentsList"
     );
 
-  const comment =
-    input.value.trim();
 
-  if (!comment) return;
+  if (!list) {
+    return;
+  }
 
-  button.disabled = true;
-  button.textContent =
-    "Posting...";
 
   try {
+
     const {
+      data,
       error
     } = await supabase
       .from("video_comments")
-      .insert({
-        video_id:
-          videoId,
-        visitor_id:
-          visitorId,
-        body:
-          comment
+      .select("*")
+      .eq("video_id", videoId)
+      .order("created_at", {
+        ascending: false
       });
 
+
     if (error) {
+
       throw error;
     }
 
-    input.value = "";
 
-    status.innerHTML = `
-      <p style="color:#55d66b">
-        ✓ Comment posted
-      </p>
-    `;
+    if (!data || data.length === 0) {
 
-    await loadComments();
+      list.innerHTML = `
+        <div style="
+          color:#777;
+          padding:15px 0;
+        ">
+          No comments yet.
+        </div>
+      `;
+
+      return;
+    }
+
+
+    list.innerHTML =
+      data.map(
+        comment => `
+
+          <div style="
+            background:#111;
+            border:1px solid #222;
+            border-radius:10px;
+            padding:12px;
+            margin-bottom:10px;
+          ">
+
+            <div style="
+              color:#aaa;
+              font-size:12px;
+              margin-bottom:6px;
+            ">
+              Visitor
+            </div>
+
+            <div style="
+              color:#eee;
+              font-size:14px;
+              line-height:1.5;
+              word-break:break-word;
+            ">
+              ${escapeHtml(comment.body)}
+            </div>
+
+          </div>
+
+        `
+      ).join("");
+
 
   } catch (error) {
+
     console.error(
-      "Comment insert failed:",
+      "FETCH COMMENTS ERROR:",
       error
     );
 
-    alert(
-      "Comment post nahi hua: " +
-      (
-        error.message ||
-        "Unknown error"
-      )
-    );
 
-  } finally {
-    button.disabled = false;
-    button.textContent =
-      "Post";
+    list.innerHTML = `
+      <div style="
+        color:#777;
+        padding:10px 0;
+      ">
+        Comments unavailable.
+      </div>
+    `;
   }
 }
 
-/* =========================================================
-   SHARE
-========================================================= */
 
-async function shareVideo() {
-  const url =
-    location.href;
-
-  const status =
-    document.getElementById(
-      "shareStatus"
-    );
-
-  try {
-    if (
-      navigator.share
-    ) {
-      await navigator.share({
-        title:
-          document.title ||
-          "DesiVexa Video",
-        text:
-          "Watch this video on DesiVexa",
-        url
-      });
-    } else {
-      await navigator.clipboard
-        .writeText(url);
-
-      status.textContent =
-        "✓ Video link copied";
-    }
-
-  } catch (error) {
-    if (
-      error.name !==
-      "AbortError"
-    ) {
-      alert(
-        "Copy this video link:\n\n" +
-        url
-      );
-    }
-  }
-}
-
-/* =========================================================
-   RANDOM VIDEOS
-========================================================= */
+// ======================================================
+// RANDOM VIDEOS
+// ======================================================
 
 async function loadRandomVideos(
-  currentId
+  currentVideoId
 ) {
-  const box =
+
+  const container =
     document.getElementById(
       "randomVideos"
     );
 
+
+  if (!container) {
+    return;
+  }
+
+
   try {
+
     const {
       data,
       error
     } = await supabase
       .from("videos")
       .select(
-        "id,title,category,thumbnail_url,views"
+        "id,title,category,thumbnail_url,views,duration"
       )
-      .eq(
-        "published",
-        true
-      )
-      .neq(
-        "id",
-        currentId
-      )
-      .limit(50);
+      .eq("published", true)
+      .neq("id", currentVideoId)
+      .limit(20);
+
 
     if (error) {
+
       throw error;
     }
 
-    const videos =
-      data || [];
 
-    if (!videos.length) {
-      box.innerHTML = `
-        <p style="color:#888">
-          No other videos available.
-        </p>
+    if (!data || data.length === 0) {
+
+      container.innerHTML = `
+        <div style="color:#777;">
+          No other videos found.
+        </div>
       `;
 
       return;
     }
 
-    videos.sort(
-      () =>
-        Math.random() -
-        0.5
-    );
 
-    const selected =
-      videos.slice(
-        0,
-        20
-      );
+    container.innerHTML = "";
 
-    box.innerHTML =
-      selected
-        .map(
-          video => `
-            <a
-              href="video.html?id=${encodeURIComponent(
-                video.id
-              )}"
-              style="
-                display:block;
-                text-decoration:none;
-                color:white;
-              "
-            >
 
-              <div
-                id="thumb-${video.id}"
-                style="
+    for (const video of data) {
+
+      const card =
+        document.createElement(
+          "a"
+        );
+
+
+      card.href =
+        `video.html?id=${encodeURIComponent(video.id)}`;
+
+
+      card.style.cssText = `
+        display:block;
+        text-decoration:none;
+        color:#fff;
+        background:#111;
+        border:1px solid #222;
+        border-radius:9px;
+        overflow:hidden;
+      `;
+
+
+      const thumbnail =
+        video.thumbnail_url || "";
+
+
+      card.innerHTML = `
+
+        <div style="
+          aspect-ratio:16/9;
+          background:#1a1a1a;
+          overflow:hidden;
+        ">
+
+          ${
+            thumbnail
+              ? `
+                <img
+                  src="${escapeHtml(thumbnail)}"
+                  alt=""
+                  loading="lazy"
+                  style="
+                    width:100%;
+                    height:100%;
+                    object-fit:cover;
+                  "
+                >
+              `
+              : `
+                <div style="
                   width:100%;
-                  aspect-ratio:16/9;
-                  background:#171717;
-                  border-radius:7px;
+                  height:100%;
                   display:flex;
                   align-items:center;
                   justify-content:center;
-                  color:#888;
-                "
-              >
-                ▶
-              </div>
-
-              <div style="
-                font-size:13px;
-                margin-top:6px;
-                line-height:1.3;
-              ">
-                ${escapeHTML(
-                  video.title ||
-                  "Untitled"
-                )}
-              </div>
-
-              <div style="
-                color:#888;
-                font-size:11px;
-                margin-top:3px;
-              ">
-                ${Number(
-                  video.views || 0
-                )}
-                views
-              </div>
-
-            </a>
-          `
-        )
-        .join("");
-
-    await Promise.all(
-      selected.map(
-        async video => {
-          const target =
-            document.getElementById(
-              `thumb-${video.id}`
-            );
-
-          if (
-            !target ||
-            !video.thumbnail_url
-          ) {
-            return;
+                  color:#e50914;
+                  font-weight:700;
+                ">
+                  DesiVexa
+                </div>
+              `
           }
 
-          try {
-            const media =
-              await getMedia(
-                video.id
-              );
+        </div>
 
-            if (
-              media.thumbnailUrl
-            ) {
-              const img =
-                document.createElement(
-                  "img"
-                );
 
-              img.src =
-                media.thumbnailUrl;
+        <div style="
+          padding:9px;
+        ">
 
-              img.alt = "";
+          <div style="
+            font-size:13px;
+            font-weight:600;
+            line-height:1.35;
+            display:-webkit-box;
+            -webkit-line-clamp:2;
+            -webkit-box-orient:vertical;
+            overflow:hidden;
+          ">
+            ${escapeHtml(video.title)}
+          </div>
 
-              img.loading =
-                "lazy";
 
-              img.style.cssText =
-                `
-                  width:100%;
-                  height:100%;
-                  aspect-ratio:16/9;
-                  object-fit:cover;
-                  border-radius:7px;
-                  display:block;
-                `;
+          <div style="
+            color:#777;
+            font-size:11px;
+            margin-top:5px;
+          ">
+            ${Number(video.views || 0)} views
+          </div>
 
-              target.replaceWith(
-                img
-              );
-            }
+        </div>
+      `;
 
-          } catch (error) {
-            console.warn(
-              "Thumbnail unavailable:",
-              video.id,
-              error.message
-            );
-          }
-        }
-      )
-    );
+
+      container.appendChild(
+        card
+      );
+    }
+
 
   } catch (error) {
+
     console.error(
-      "Random videos failed:",
+      "RANDOM VIDEOS ERROR:",
       error
     );
 
-    box.innerHTML = `
-      <p style="color:#888">
-        Unable to load videos.
-      </p>
+
+    container.innerHTML = `
+      <div style="color:#777;">
+        Random videos unavailable.
+      </div>
     `;
   }
 }
 
-/* =========================================================
-   ERROR
-========================================================= */
 
-function showError(
-  message
-) {
-  if (!page) return;
+// ======================================================
+// START
+// ======================================================
 
-  page.innerHTML = `
-    <div style="
-      padding:30px 20px;
-      color:white;
-      text-align:center;
-    ">
-
-      <h2>
-        Could not load video
-      </h2>
-
-      <p style="
-        color:#aaa;
-        word-break:break-word;
-      ">
-        ${escapeHTML(
-          message
-        )}
-      </p>
-
-    </div>
-  `;
-}
+loadVideo();
