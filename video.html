@@ -1,15 +1,69 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
   <title>DesiVexa — Video</title>
 
-  <link rel="stylesheet" href="style.css?v=40">
+  <link rel="stylesheet" href="style.css?v=41">
+
+  <style>
+    .videoTopBar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      background: rgba(8,8,8,.96);
+      border-bottom: 1px solid #222;
+      backdrop-filter: blur(10px);
+    }
+
+    .homeButton {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 8px;
+      background: #e00000;
+      color: #fff;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .homeButton:active {
+      transform: scale(.95);
+    }
+
+    .topLogo {
+      margin-left: 12px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .topLogo span {
+      color: #e00000;
+    }
+  </style>
 </head>
 
 <body>
+
+  <header class="videoTopBar">
+    <a href="index.html" class="homeButton">
+      ← Home
+    </a>
+
+    <div class="topLogo">
+      Desi<span>Vexa</span>
+    </div>
+  </header>
 
   <main class="dvMain" id="page">
 
@@ -36,10 +90,7 @@
     <a href="index.html">Home</a>
   </footer>
 
-  <script
-    type="module"
-    src="video.js?v=40">
-  </script>
+  <script type="module" src="video.js?v=41"></script>
 
 </body>
 </html>
