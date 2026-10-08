@@ -2,229 +2,579 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="description" content="DesiVexa - 18+ video platform">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
+  <meta name="description"
+        content="DesiVexa - 18+ video platform">
+
+  <!-- ExoClick verification -->
   <meta name="6a97888e-site-verification"
         content="cdfc6e06389c2153c30b80c3449ad95c">
 
+  <!-- JuicyAds verification -->
   <meta name="juicyads-site-verification"
         content="97df17e7b5112caab5770e66ce197265">
 
   <title>DesiVexa - 18+ Videos</title>
 
-  <link rel="preconnect" href="https://poweredby.jads.co">
-  <link rel="dns-prefetch" href="//poweredby.jads.co">
-
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="ads.css">
 
   <style>
-    /* MOBILE — DESKTOP STYLE / 3 COLUMNS */
+    /* =====================================================
+       DESIVEXA - COMPACT MOBILE VIDEO SITE
+       Eporner-inspired structure, original branding
+    ===================================================== */
 
-    @media (max-width:699px){
+    *{
+      box-sizing:border-box;
+    }
 
-      html,
-      body{
-        width:100% !important;
-        max-width:100% !important;
-        overflow-x:hidden !important;
+    html,
+    body{
+      margin:0;
+      padding:0;
+      background:#000;
+      color:#fff;
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden;
+      font-family:Arial,Helvetica,sans-serif;
+    }
+
+    body{
+      min-height:100vh;
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    button,
+    input{
+      font:inherit;
+    }
+
+    /* =====================================================
+       AGE GATE
+    ===================================================== */
+
+    .gate{
+      position:fixed;
+      inset:0;
+      z-index:99999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background:#000;
+    }
+
+    .gatebox{
+      width:min(420px,100%);
+      background:#111;
+      border:1px solid #333;
+      border-radius:8px;
+      padding:28px 20px;
+      text-align:center;
+    }
+
+    .gateLogo{
+      font-size:34px;
+      font-weight:900;
+      color:#fff;
+    }
+
+    .gateLogo span{
+      color:#e00000;
+    }
+
+    .adultBadge{
+      display:inline-block;
+      margin:15px 0 8px;
+      padding:5px 10px;
+      background:#d90000;
+      border-radius:3px;
+      font-weight:900;
+    }
+
+    .gatebox h2{
+      margin:8px 0;
+    }
+
+    .gatebox p{
+      color:#aaa;
+      line-height:1.5;
+    }
+
+    .btn{
+      border:0;
+      background:#e00000;
+      color:#fff;
+      padding:12px 20px;
+      border-radius:4px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+
+    .dvHeader{
+      background:#c90000;
+      border-bottom:2px solid #4d0000;
+      position:relative;
+      z-index:1000;
+    }
+
+    .dvHeaderInner{
+      height:64px;
+      width:100%;
+      max-width:1100px;
+      margin:auto;
+      padding:0 10px;
+
+      display:grid;
+      grid-template-columns:52px 1fr 52px;
+      align-items:center;
+      gap:8px;
+    }
+
+    .headerIcon{
+      width:42px;
+      height:42px;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      background:#b50000;
+      border:1px solid #650000;
+      color:#fff;
+
+      font-size:25px;
+      cursor:pointer;
+    }
+
+    .dvLogo{
+      text-align:center;
+      font-size:29px;
+      line-height:1;
+      font-weight:900;
+      letter-spacing:-1.5px;
+      color:#050505;
+      text-transform:uppercase;
+    }
+
+    .dvLogo span{
+      color:#000;
+    }
+
+    /* =====================================================
+       SEARCH
+    ===================================================== */
+
+    .dvSearchBox{
+      display:none;
+      padding:8px 10px;
+      background:#090909;
+      border-bottom:1px solid #333;
+    }
+
+    .dvSearchBox.open{
+      display:block;
+    }
+
+    .dvSearchBox input{
+      width:100%;
+      height:42px;
+      padding:0 13px;
+      border:1px solid #777;
+      background:#151515;
+      color:#fff;
+      outline:none;
+      border-radius:3px;
+    }
+
+    .dvSearchBox input::placeholder{
+      color:#888;
+    }
+
+    /* =====================================================
+       MENU
+    ===================================================== */
+
+    .mobileMenu{
+      display:none;
+      position:absolute;
+      top:64px;
+      left:0;
+      right:0;
+      z-index:2000;
+      background:#101010;
+      border-bottom:2px solid #c90000;
+    }
+
+    .mobileMenu.open{
+      display:block;
+    }
+
+    .mobileMenu a{
+      display:block;
+      padding:14px 18px;
+      border-bottom:1px solid #292929;
+      color:#ddd;
+    }
+
+    .mobileMenu a:hover{
+      background:#1b1b1b;
+      color:#fff;
+    }
+
+    /* =====================================================
+       MAIN
+    ===================================================== */
+
+    .dvMain{
+      width:100%;
+      max-width:1100px;
+      margin:0 auto;
+      padding:0 10px 35px;
+    }
+
+    /* =====================================================
+       TOP SEARCH / CATEGORY BAR
+    ===================================================== */
+
+    .toolbar{
+      margin-top:8px;
+    }
+
+    .categoryBtn{
+      width:100%;
+      min-height:42px;
+      background:#151515;
+      border:1px solid #444;
+      color:#fff;
+      text-align:left;
+      padding:0 12px;
+      cursor:pointer;
+      border-radius:2px;
+    }
+
+    .categoryList{
+      display:none;
+      margin-top:5px;
+      background:#101010;
+      border:1px solid #333;
+      padding:7px;
+    }
+
+    .categoryList.open{
+      display:block;
+    }
+
+    #categorySearch{
+      width:100%;
+      height:38px;
+      background:#050505;
+      color:#fff;
+      border:1px solid #555;
+      padding:0 10px;
+      margin-bottom:7px;
+      outline:none;
+    }
+
+    #categoryItems{
+      display:flex;
+      flex-wrap:wrap;
+      gap:5px;
+    }
+
+    .catItem{
+      display:inline-block;
+      padding:7px 9px;
+      background:#414141;
+      color:#ddd;
+      border-radius:3px;
+      font-size:12px;
+    }
+
+    /* =====================================================
+       AD
+    ===================================================== */
+
+    .dvAdSlot{
+      width:100%;
+      overflow:hidden;
+      text-align:center;
+      margin:8px 0;
+      background:#111;
+    }
+
+    .dvAdWide{
+      min-height:80px;
+    }
+
+    .dvAdCompact{
+      min-height:50px;
+    }
+
+    .dvAdBanner{
+      min-height:80px;
+    }
+
+    .dvAdSmall{
+      min-height:40px;
+    }
+
+    /* =====================================================
+       SECTION HEADER
+    ===================================================== */
+
+    .dvSectionTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+
+      margin:9px 0 4px;
+      padding:5px 7px;
+
+      background:linear-gradient(#1b1b1b,#050505);
+      border-left:3px solid #777;
+      border-bottom:1px solid #333;
+    }
+
+    .dvSectionTitle > div{
+      min-width:0;
+    }
+
+    .sectionLabel{
+      display:none;
+    }
+
+    .dvSectionTitle h2{
+      margin:0;
+      font-size:19px;
+      line-height:1.2;
+      font-weight:400;
+    }
+
+    .dvSectionTitle h2::before{
+      content:"› ";
+      color:#aaa;
+    }
+
+    .dvSectionTitle a{
+      color:#aaa;
+      font-size:11px;
+      white-space:nowrap;
+    }
+
+    /* =====================================================
+       VIDEO GRID
+    ===================================================== */
+
+    .dvGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:3px;
+      width:100%;
+    }
+
+    .dvGrid .card{
+      min-width:0;
+      overflow:hidden;
+      background:#090909;
+      border:0;
+      border-radius:0;
+    }
+
+    .dvGrid .thumb{
+      position:relative;
+      width:100%;
+      aspect-ratio:16/10;
+      overflow:hidden;
+      background:#222;
+    }
+
+    .dvGrid .thumb img{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
+    }
+
+    .dvGrid .body{
+      padding:3px 4px 6px;
+    }
+
+    .dvGrid .card h3{
+      margin:0;
+      color:#ddd;
+      font-size:11px;
+      font-weight:400;
+      line-height:1.25;
+
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
+    .dvGrid .cardMeta{
+      margin-top:3px;
+      color:#777;
+      font-size:8px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .dvGrid .playCircle{
+      width:28px!important;
+      height:28px!important;
+      font-size:11px!important;
+    }
+
+    .dvGrid .cardViews{
+      font-size:8px!important;
+      padding:2px 3px!important;
+    }
+
+    /* =====================================================
+       DESKTOP
+    ===================================================== */
+
+    @media(min-width:700px){
+
+      .dvHeaderInner{
+        grid-template-columns:55px 1fr 55px;
       }
 
       .dvMain{
-        width:100% !important;
-        max-width:1280px !important;
-        margin:0 auto !important;
-        padding:18px 10px 45px !important;
+        padding:10px 12px 50px;
       }
 
-      .dvHeaderInner{
-        width:100% !important;
-        max-width:1280px !important;
-        min-height:62px !important;
-        padding:0 12px !important;
+      .categoryBtn{
+        width:auto;
+        min-width:180px;
       }
-
-      .dvLogo{
-        font-size:24px !important;
-      }
-
-      .headerIcon{
-        width:42px !important;
-        height:42px !important;
-        font-size:23px !important;
-      }
-
-      /* Desktop-style hero */
-
-      .premiumHero{
-        grid-template-columns:
-          minmax(0,1fr)
-          minmax(0,1.15fr) !important;
-
-        gap:14px !important;
-        min-height:250px !important;
-        padding:18px !important;
-        border-radius:14px !important;
-      }
-
-      .premiumHero h1{
-        font-size:clamp(24px,7vw,38px) !important;
-        letter-spacing:-1.2px !important;
-      }
-
-      .premiumHero p{
-        font-size:12px !important;
-        line-height:1.45 !important;
-      }
-
-      .heroButton{
-        padding:10px 13px !important;
-        font-size:12px !important;
-      }
-
-      .featuredThumb{
-        aspect-ratio:16/9 !important;
-      }
-
-      .featuredInfo{
-        padding:9px !important;
-      }
-
-      .featuredInfo h2{
-        font-size:14px !important;
-      }
-
-      /* Categories */
-
-      #categoryItems,
-      .categoryItems{
-        flex-wrap:wrap !important;
-        gap:6px !important;
-      }
-
-      .categoryItem,
-      .catItem{
-        padding:8px 12px !important;
-        font-size:12px !important;
-      }
-
-      /* VIDEO GRID — 3 COLUMNS */
 
       .dvGrid{
-        display:grid !important;
-
-        grid-template-columns:
-          repeat(3,minmax(0,1fr)) !important;
-
-        gap:10px !important;
-
-        width:100% !important;
+        grid-template-columns:repeat(4,minmax(0,1fr));
+        gap:7px;
       }
 
-      .card{
-        width:100% !important;
-        min-width:0 !important;
-        max-width:100% !important;
-
-        border-radius:9px !important;
-
-        overflow:hidden !important;
+      .dvGrid .card h3{
+        font-size:13px;
       }
 
-      .thumb{
-        width:100% !important;
-        aspect-ratio:16/9 !important;
-        overflow:hidden !important;
-      }
-
-      .thumb img{
-        width:100% !important;
-        height:100% !important;
-        object-fit:cover !important;
-      }
-
-      .card .body{
-        padding:8px !important;
-      }
-
-      .card h3{
-        font-size:11px !important;
-        line-height:1.25 !important;
-      }
-
-      .cardMeta{
-        font-size:9px !important;
-      }
-
-      .playCircle{
-        width:34px !important;
-        height:34px !important;
-        font-size:12px !important;
-      }
-
-      .cardViews{
-        font-size:8px !important;
-        padding:3px 4px !important;
-      }
-
-      .dvSectionTitle{
-        margin:25px 0 14px !important;
+      .dvGrid .cardMeta{
+        font-size:10px;
       }
 
       .dvSectionTitle h2{
-        font-size:22px !important;
-      }
-
-      .dvAdSlot{
-        width:100% !important;
-        max-width:100% !important;
-        overflow:hidden !important;
-      }
-
-      footer{
-        width:100% !important;
-        max-width:100% !important;
-        overflow:hidden !important;
+        font-size:22px;
       }
     }
+
+    /* =====================================================
+       VERY SMALL PHONES
+    ===================================================== */
+
+    @media(max-width:360px){
+
+      .dvHeaderInner{
+        height:58px;
+        grid-template-columns:44px 1fr 44px;
+      }
+
+      .headerIcon{
+        width:38px;
+        height:38px;
+      }
+
+      .dvLogo{
+        font-size:23px;
+      }
+
+      .dvMain{
+        padding-left:5px;
+        padding-right:5px;
+      }
+
+      .dvGrid{
+        gap:2px;
+      }
+
+      .dvGrid .body{
+        padding:2px 3px 5px;
+      }
+
+      .dvGrid .card h3{
+        font-size:9px;
+      }
+
+      .dvGrid .cardMeta{
+        font-size:7px;
+      }
+    }
+
+    /* =====================================================
+       FOOTER
+    ===================================================== */
+
+    footer{
+      margin-top:15px;
+      padding:25px 15px;
+      text-align:center;
+      background:#080808;
+      border-top:1px solid #292929;
+    }
+
+    .footerLogo{
+      font-size:25px;
+      font-weight:900;
+    }
+
+    .footerLogo span{
+      color:#e00000;
+    }
+
+    footer p{
+      color:#777;
+      font-size:11px;
+    }
+
+    footer a{
+      color:#aaa;
+      font-size:12px;
+    }
+
   </style>
 </head>
 
+
 <body>
 
-  <!-- AGE GATE -->
+  <!-- =====================================================
+       AGE GATE
+  ====================================================== -->
 
   <div id="ageGate" class="gate">
 
-    <div class="gatebox"
-      style="
-        width:min(430px,100%);
-        padding:28px;
-        text-align:center;
-        background:#121212;
-        border:1px solid #303030;
-        border-radius:14px;
-        box-shadow:0 8px 30px rgba(0,0,0,.35);
-      ">
+    <div class="gatebox">
 
-      <div style="
-        font-size:28px;
-        font-weight:900;
-      ">
-        Desi<span style="color:#ff1744;">Vexa</span>
+      <div class="gateLogo">
+        Desi<span>Vexa</span>
       </div>
 
-      <div style="
-        display:inline-block;
-        margin:14px 0;
-        padding:6px 10px;
-        border-radius:7px;
-        background:#ff1744;
-        color:#fff;
-        font-weight:900;
-      ">
+      <div class="adultBadge">
         18+
       </div>
 
@@ -237,25 +587,19 @@
 
       <button
         id="enter"
-        type="button"
-        style="
-          padding:12px 18px;
-          border:0;
-          border-radius:8px;
-          background:#e50914;
-          color:#fff;
-          cursor:pointer;
-          font-weight:700;
-        "
-      >
+        class="btn"
+        type="button">
         I am 18+ - Enter
       </button>
 
     </div>
+
   </div>
 
 
-  <!-- HEADER -->
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
 
   <header class="dvHeader">
 
@@ -269,24 +613,24 @@
         ☰
       </button>
 
+
       <a
         href="index.html"
         class="dvLogo">
-        Desi<span>Vexa</span>
+        DESI<span>VEXA</span>
       </a>
+
 
       <button
         id="searchBtn"
         class="headerIcon"
         type="button"
         aria-label="Search">
-        ⌕
+        🔍
       </button>
 
     </div>
 
-
-    <!-- SEARCH -->
 
     <div
       id="searchBox"
@@ -295,7 +639,7 @@
       <input
         id="search"
         type="search"
-        placeholder="Search videos..."
+        placeholder="Find your favorite videos..."
         autocomplete="off">
 
     </div>
@@ -303,79 +647,47 @@
   </header>
 
 
-  <!-- MOBILE MENU -->
+  <!-- =====================================================
+       MENU
+  ====================================================== -->
 
   <div
     id="mobileMenu"
     class="mobileMenu">
 
     <a href="index.html">
-      Home
+      🏠 Home
     </a>
 
     <a href="most-viewed.html">
-      Most Viewed
+      🔥 Most Viewed
     </a>
 
     <a href="latest.html">
-      Latest
+      🆕 Latest Videos
     </a>
 
     <a href="#categories">
-      Categories
+      ▦ Categories
+    </a>
+
+    <a href="legal.html">
+      Terms &amp; Privacy
     </a>
 
   </div>
 
 
-  <!-- MAIN -->
+  <!-- =====================================================
+       MAIN
+  ====================================================== -->
 
   <main class="dvMain">
 
 
-    <!-- PREMIUM HERO -->
-
-    <section class="premiumHero">
-
-      <div class="heroCopy">
-
-        <span class="eyebrow">
-          DESIVEXA • 18+ VIDEO PLATFORM
-        </span>
-
-        <h1>
-          Discover videos.<br>
-          <span>Watch what you like.</span>
-        </h1>
-
-        <p>
-          Explore trending and latest videos
-          in a cleaner, faster and mobile-friendly layout.
-        </p>
-
-        <a
-          class="heroButton"
-          href="#latest">
-          ▶ Explore Videos
-        </a>
-
-      </div>
-
-
-      <div
-        id="featuredVideo"
-        class="featuredVideo">
-
-        <div class="featuredLoading">
-          Loading featured video...
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- CATEGORIES -->
+    <!-- ===================================================
+         CATEGORY / SEARCH
+    ==================================================== -->
 
     <section
       class="dvSection"
@@ -387,7 +699,9 @@
           id="categoryBtn"
           class="categoryBtn"
           type="button">
-          ☰ Categories
+
+          ▦ &nbsp; Categories
+
         </button>
 
 
@@ -408,10 +722,11 @@
       </div>
 
 
-      <!-- JUICYADS WIDE -->
+      <!-- =================================================
+           WIDE AD - 1128310
+      ================================================== -->
 
-      <div
-        class="dvAdSlot dvAdWide">
+      <div class="dvAdSlot dvAdWide">
 
         <script
           type="text/javascript"
@@ -438,24 +753,22 @@
       </div>
 
 
-      <!-- MOST VIEWED -->
+      <!-- =================================================
+           BEST / MOST VIEWED
+      ================================================== -->
 
       <div class="dvSectionTitle">
 
         <div>
 
-          <span class="sectionLabel">
-            TRENDING
-          </span>
-
           <h2>
-            Most Viewed
+            Best HD Videos
           </h2>
 
         </div>
 
         <a href="most-viewed.html">
-          View all ›
+          View all
         </a>
 
       </div>
@@ -467,10 +780,11 @@
       </div>
 
 
-      <!-- JUICYADS COMPACT -->
+      <!-- =================================================
+           COMPACT AD - 1128312
+      ================================================== -->
 
-      <div
-        class="dvAdSlot dvAdCompact">
+      <div class="dvAdSlot dvAdCompact">
 
         <script
           type="text/javascript"
@@ -497,26 +811,50 @@
       </div>
 
 
-      <!-- LATEST -->
+      <!-- =================================================
+           RECOMMENDATIONS
+      ================================================== -->
 
-      <div
-        id="latest"
-        class="dvSectionTitle latestHeading">
+      <div class="dvSectionTitle">
 
         <div>
 
-          <span class="sectionLabel">
-            NEW
-          </span>
-
           <h2>
-            Latest Videos
+            Recommendations For You
           </h2>
 
         </div>
 
         <a href="latest.html">
-          View all ›
+          View all
+        </a>
+
+      </div>
+
+
+      <div
+        id="recommendations"
+        class="dvGrid">
+      </div>
+
+
+      <!-- =================================================
+           LATEST
+      ================================================== -->
+
+      <div
+        class="dvSectionTitle latestHeading">
+
+        <div>
+
+          <h2>
+            Recent HD Videos
+          </h2>
+
+        </div>
+
+        <a href="latest.html">
+          View all
         </a>
 
       </div>
@@ -528,10 +866,11 @@
       </div>
 
 
-      <!-- JUICYADS BANNER -->
+      <!-- =================================================
+           BANNER AD - 1128301
+      ================================================== -->
 
-      <div
-        class="dvAdSlot dvAdBanner">
+      <div class="dvAdSlot dvAdBanner">
 
         <script
           type="text/javascript"
@@ -558,10 +897,11 @@
       </div>
 
 
-      <!-- JUICYADS SMALL -->
+      <!-- =================================================
+           SMALL AD - 1128309
+      ================================================== -->
 
-      <div
-        class="dvAdSlot dvAdSmall">
+      <div class="dvAdSlot dvAdSmall">
 
         <script
           type="text/javascript"
@@ -592,7 +932,9 @@
   </main>
 
 
-  <!-- FOOTER -->
+  <!-- =====================================================
+       FOOTER
+  ====================================================== -->
 
   <footer>
 
@@ -611,15 +953,19 @@
   </footer>
 
 
-  <!-- APP JS -->
+  <!-- =====================================================
+       APP
+    ====================================================== -->
 
   <script
     type="module"
-    src="app.js?v=30">
+    src="app.js?v=40">
   </script>
 
 
-  <!-- JUICYADS FLOAT -->
+  <!-- =====================================================
+       JUICYADS FLOAT - 1128307
+  ====================================================== -->
 
   <script type="text/javascript">
     juicy_adzone = '1128307';
@@ -632,7 +978,9 @@
   </script>
 
 
-  <!-- JUICYADS NATIVE -->
+  <!-- =====================================================
+       JUICYADS NATIVE - 1128313
+  ====================================================== -->
 
   <script
     type="text/javascript"
@@ -642,5 +990,121 @@
     src="https://js.juicyads.com/juicyads.native-ads.min.js">
   </script>
 
+
+  <!-- =====================================================
+       CATEGORY / SEARCH FALLBACK
+       Keeps the page functional even if app.js does not
+       control these UI elements.
+  ====================================================== -->
+
+  <script>
+
+    const menuBtn =
+      document.getElementById("menuBtn");
+
+    const mobileMenu =
+      document.getElementById("mobileMenu");
+
+    const searchBtn =
+      document.getElementById("searchBtn");
+
+    const searchBox =
+      document.getElementById("searchBox");
+
+    const categoryBtn =
+      document.getElementById("categoryBtn");
+
+    const cats =
+      document.getElementById("cats");
+
+    const search =
+      document.getElementById("search");
+
+
+    if(menuBtn){
+
+      menuBtn.addEventListener("click", function(){
+
+        mobileMenu.classList.toggle("open");
+
+      });
+
+    }
+
+
+    if(searchBtn){
+
+      searchBtn.addEventListener("click", function(){
+
+        searchBox.classList.toggle("open");
+
+        if(searchBox.classList.contains("open")){
+
+          setTimeout(function(){
+
+            if(search){
+              search.focus();
+            }
+
+          },100);
+
+        }
+
+      });
+
+    }
+
+
+    if(categoryBtn){
+
+      categoryBtn.addEventListener("click", function(){
+
+        cats.classList.toggle("open");
+
+      });
+
+    }
+
+
+    if(search){
+
+      search.addEventListener("keydown", function(e){
+
+        if(e.key === "Enter"){
+
+          const value =
+            search.value.trim();
+
+          if(value){
+
+            window.location.href =
+              "index.html?search=" +
+              encodeURIComponent(value);
+
+          }
+
+        }
+
+      });
+
+    }
+
+
+    document.addEventListener("click", function(e){
+
+      if(
+        mobileMenu &&
+        !mobileMenu.contains(e.target) &&
+        !menuBtn.contains(e.target)
+      ){
+
+        mobileMenu.classList.remove("open");
+
+      }
+
+    });
+
+  </script>
+
 </body>
-        </html>
+</html>
