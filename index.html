@@ -1,972 +1,1615 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DesiVexa</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
+  <meta name="description"
+        content="DesiVexa - Trending, New and Recommended videos">
 
-body{
-    background:#02070d;
-    color:#fff;
-    font-family:Arial,sans-serif;
-}
+  <title>DesiVexa - Home</title>
 
-.app{
-    max-width:700px;
-    min-height:100vh;
-    margin:auto;
-    background:#06111a;
-    padding-bottom:90px;
-}
-
-/* HEADER */
-header{
-    height:78px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 18px;
-    background:#020a11;
-    border-bottom:1px solid #263540;
-}
-
-.menu{
-    font-size:28px;
-    cursor:pointer;
-}
-
-.logo{
-    font-size:25px;
-    font-weight:800;
-}
-
-.logo span{
-    color:#ff1744;
-}
-
-.header-actions{
-    display:flex;
-    gap:15px;
-    align-items:center;
-}
-
-.header-btn{
-    color:#fff;
-    text-decoration:none;
-    font-size:22px;
-}
-
-/* AD */
-.ad{
-    margin:8px 18px 13px;
-    height:58px;
-    border:2px solid #ff1744;
-    border-radius:8px;
-    background:#280914;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:13px;
-}
-
-/* CATEGORIES */
-.categories{
-    display:flex;
-    gap:8px;
-    overflow-x:auto;
-    padding:0 18px 15px;
-    scrollbar-width:none;
-}
-
-.categories::-webkit-scrollbar{
-    display:none;
-}
-
-.category{
-    flex-shrink:0;
-    padding:10px 16px;
-    border-radius:10px;
-    background:#10202c;
-    border:1px solid #233a49;
-    color:#fff;
-    text-decoration:none;
-    font-size:13px;
-}
-
-.category.active{
-    background:#ff1744;
-    border-color:#ff1744;
-}
-
-/* SECTION */
-.section{
-    padding:0 18px;
-    margin:20px 0;
-}
-
-.section-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:10px;
-}
-
-.section-header h2{
-    font-size:20px;
-}
-
-.view-all{
-    color:#ff1744;
-    font-size:13px;
-    font-weight:bold;
-    text-decoration:none;
-}
-
-/* VIDEO GRID */
-.video-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:9px;
-}
-
-.video-card{
-    min-width:0;
-    cursor:pointer;
-}
-
-.thumbnail{
-    position:relative;
-    aspect-ratio:16/9;
-    overflow:hidden;
-    border-radius:5px;
-    background:
-    linear-gradient(
-        135deg,
-        #675451,
-        #202a32,
-        #754f59
-    );
-}
-
-.thumbnail::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:rgba(180,150,150,.18);
-    backdrop-filter:blur(7px);
-}
-
-.play{
-    position:absolute;
-    z-index:2;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    width:36px;
-    height:36px;
-    border-radius:50%;
-    background:rgba(0,0,0,.65);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.duration{
-    position:absolute;
-    z-index:3;
-    right:4px;
-    bottom:4px;
-    background:#000;
-    padding:3px 5px;
-    font-size:9px;
-    border-radius:3px;
-}
-
-.video-title{
-    font-size:11px;
-    font-weight:bold;
-    margin:5px 2px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-.tag{
-    display:inline-block;
-    background:#ff1744;
-    padding:3px 7px;
-    border-radius:8px;
-    font-size:9px;
-}
-
-.video-info{
-    color:#ccd2d6;
-    font-size:9px;
-    line-height:16px;
-}
-
-/* RANDOM */
-.random-grid{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:8px;
-}
-
-.random-grid .play{
-    width:28px;
-    height:28px;
-    font-size:12px;
-}
-
-.random-grid .video-title{
-    font-weight:normal;
-    font-size:10px;
-}
-
-/* PAGINATION */
-.pagination{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:7px;
-    flex-wrap:wrap;
-    padding:5px 18px 25px;
-}
-
-.page-btn{
-    min-width:38px;
-    height:36px;
-    border:1px solid #29404f;
-    background:#0b1b27;
-    color:#fff;
-    border-radius:7px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-decoration:none;
-    padding:0 10px;
-}
-
-.page-btn.active{
-    background:#ff1744;
-    border-color:#ff1744;
-}
-
-.page-btn:disabled{
-    opacity:.4;
-    cursor:not-allowed;
-}
-
-/* BOTTOM NAV */
-.bottom-nav{
-    position:fixed;
-    bottom:0;
-    left:50%;
-    transform:translateX(-50%);
-    width:100%;
-    max-width:700px;
-    height:75px;
-    background:#020910;
-    border-top:1px solid #26343e;
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    z-index:100;
-}
-
-.nav-item{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    color:#fff;
-    text-decoration:none;
-    font-size:10px;
-}
-
-.nav-icon{
-    font-size:23px;
-}
-
-.nav-item.active{
-    color:#ff1744;
-}
-
-/* MOBILE */
-@media(max-width:500px){
-
-    .video-grid{
-        grid-template-columns:repeat(2,1fr);
-        gap:9px;
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    .random-grid{
-        grid-template-columns:repeat(3,1fr);
+    html {
+      scroll-behavior: smooth;
     }
 
-    .section{
-        padding:0 12px;
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #02070d;
+      color: #fff;
+      min-height: 100vh;
     }
 
-    .categories{
-        padding-left:12px;
-        padding-right:12px;
-    }
-}
-
-/* SMALL PHONE */
-@media(max-width:390px){
-
-    .random-grid{
-        grid-template-columns:repeat(2,1fr);
+    button,
+    input {
+      font: inherit;
     }
 
-    .section-header h2{
-        font-size:18px;
-    }
-}
-
-/* DESKTOP */
-@media(min-width:701px){
-
-    body{
-        padding:20px 0;
+    button {
+      cursor: pointer;
     }
 
-    .app{
-        border:1px solid #233541;
-        border-radius:25px;
-        overflow:hidden;
+    a {
+      color: inherit;
+      text-decoration: none;
     }
 
-    .bottom-nav{
-        bottom:20px;
-        border-radius:0 0 25px 25px;
+    /* =========================
+       APP
+    ========================= */
+
+    .app {
+      width: 100%;
+      max-width: 1100px;
+      margin: auto;
+      min-height: 100vh;
+      background: #06111a;
+      padding-bottom: 90px;
     }
-}
-</style>
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .header {
+      height: 72px;
+      display: grid;
+      grid-template-columns: 55px 1fr 110px;
+      align-items: center;
+      padding: 0 18px;
+      background: #030b12;
+      border-bottom: 1px solid #182631;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .menu-btn,
+    .icon-btn {
+      background: none;
+      border: 0;
+      color: white;
+      font-size: 30px;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: #ff1744;
+    }
+
+    .header-right {
+      display: flex;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+
+    .icon-btn {
+      font-size: 27px;
+    }
+
+    /* =========================
+       SIDE MENU
+    ========================= */
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      left: -290px;
+      width: 280px;
+      height: 100vh;
+      background: #07131d;
+      z-index: 2000;
+      transition: .25s ease;
+      border-right: 1px solid #243440;
+      box-shadow: 10px 0 30px rgba(0,0,0,.45);
+    }
+
+    .side-menu.active {
+      left: 0;
+    }
+
+    .menu-header {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid #243440;
+    }
+
+    .menu-logo {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .menu-logo span {
+      color: #ff1744;
+    }
+
+    .close-menu {
+      background: none;
+      border: 0;
+      color: white;
+      font-size: 30px;
+    }
+
+    .menu-list {
+      padding: 15px;
+    }
+
+    .menu-item {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 8px;
+      background: #0b1b27;
+      border: 1px solid #172c3b;
+      border-radius: 12px;
+      color: white;
+      text-align: left;
+      font-size: 16px;
+    }
+
+    .menu-item:hover {
+      background: #ff1744;
+    }
+
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      z-index: 1500;
+      display: none;
+    }
+
+    .menu-overlay.active {
+      display: block;
+    }
+
+    /* =========================
+       SEARCH
+    ========================= */
+
+    .search-box {
+      display: none;
+      padding: 12px 18px;
+      background: #06111a;
+      border-bottom: 1px solid #172936;
+    }
+
+    .search-box.active {
+      display: block;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 46px;
+      border: 1px solid #2a3c4a;
+      background: #0a1823;
+      color: white;
+      border-radius: 12px;
+      padding: 0 15px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #ff1744;
+    }
+
+    /* =========================
+       TOP BANNER
+    ========================= */
+
+    .top-banner {
+      margin: 18px;
+      min-height: 74px;
+      border: 1px solid #ff1744;
+      border-radius: 12px;
+      background: linear-gradient(
+        90deg,
+        #160914,
+        #25101a,
+        #120b12
+      );
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      gap: 15px;
+    }
+
+    .banner-text {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .banner-button {
+      border: 0;
+      border-radius: 22px;
+      background: #ff1744;
+      color: white;
+      padding: 11px 18px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* =========================
+       CATEGORIES
+    ========================= */
+
+    .categories {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 0 18px 8px;
+      scrollbar-width: none;
+    }
+
+    .categories::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category {
+      flex: 0 0 auto;
+      border: 1px solid #20394a;
+      background: #0b1c2a;
+      color: #dce5ed;
+      border-radius: 11px;
+      padding: 10px 19px;
+      font-weight: 600;
+    }
+
+    .category.active,
+    .category:hover {
+      background: #ff1744;
+      border-color: #ff1744;
+      color: white;
+    }
+
+    /* =========================
+       SECTIONS
+    ========================= */
+
+    .section {
+      padding: 15px 18px 0;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 12px 0 14px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 23px;
+      font-weight: 800;
+    }
+
+    .section-title .emoji {
+      font-size: 25px;
+    }
+
+    .view-all {
+      border: 0;
+      background: transparent;
+      color: #ff1744;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    /* =========================
+       VIDEO GRID
+    ========================= */
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .video-card {
+      min-width: 0;
+      cursor: pointer;
+    }
+
+    .thumbnail {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      position: relative;
+      overflow: hidden;
+      border-radius: 9px;
+      background: #0b1822;
+    }
+
+    .thumbnail img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      transition: transform .25s ease;
+    }
+
+    .video-card:hover .thumbnail img {
+      transform: scale(1.04);
+    }
+
+    .play-icon {
+      position: absolute;
+      left: 9px;
+      bottom: 9px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(0,0,0,.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .duration {
+      position: absolute;
+      right: 7px;
+      bottom: 7px;
+      background: rgba(0,0,0,.82);
+      padding: 4px 6px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .video-title {
+      margin-top: 8px;
+      font-size: 15px;
+      line-height: 1.3;
+      font-weight: 700;
+      min-height: 39px;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-top: 7px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: #ff1744;
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .video-info {
+      margin-top: 7px;
+      color: #aebdca;
+      font-size: 12px;
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .dot {
+      opacity: .6;
+    }
+
+    /* =========================
+       RANDOM
+    ========================= */
+
+    .random-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 13px;
+    }
+
+    .random-grid .video-title {
+      font-size: 13px;
+      min-height: auto;
+    }
+
+    .random-grid .tag,
+    .random-grid .video-info {
+      display: none;
+    }
+
+    /* =========================
+       PAGINATION
+    ========================= */
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+      margin: 22px 0 8px;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      min-width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      border: 1px solid #24394a;
+      background: #0b1b28;
+      color: white;
+      padding: 0 11px;
+    }
+
+    .page-btn.active,
+    .page-btn:hover {
+      background: #ff1744;
+      border-color: #ff1744;
+    }
+
+    /* =========================
+       EMPTY
+    ========================= */
+
+    .empty {
+      text-align: center;
+      color: #8293a1;
+      padding: 35px 10px;
+      display: none;
+    }
+
+    /* =========================
+       BOTTOM NAV
+    ========================= */
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 1100px;
+      height: 72px;
+      background: rgba(3,11,18,.97);
+      border-top: 1px solid #1b2b38;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      z-index: 1200;
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-item {
+      border: 0;
+      background: transparent;
+      color: #aebdca;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      font-size: 11px;
+    }
+
+    .nav-icon {
+      font-size: 22px;
+    }
+
+    .nav-item.active {
+      color: #ff1744;
+    }
+
+    /* =========================
+       DESKTOP
+    ========================= */
+
+    @media (min-width: 901px) {
+
+      .bottom-nav {
+        position: static;
+        transform: none;
+        margin-top: 30px;
+        max-width: none;
+        border: 0;
+      }
+
+      .app {
+        padding-bottom: 0;
+      }
+
+      .header {
+        border-radius: 0;
+      }
+    }
+
+    /* =========================
+       TABLET
+    ========================= */
+
+    @media (max-width: 900px) {
+
+      .video-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .random-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 600px) {
+
+      .header {
+        height: 66px;
+        grid-template-columns: 48px 1fr 92px;
+        padding: 0 12px;
+      }
+
+      .logo {
+        font-size: 27px;
+      }
+
+      .menu-btn {
+        font-size: 27px;
+      }
+
+      .icon-btn {
+        font-size: 24px;
+      }
+
+      .top-banner {
+        margin: 14px 14px 16px;
+        min-height: 67px;
+        padding: 10px 12px;
+      }
+
+      .banner-text {
+        font-size: 13px;
+      }
+
+      .banner-button {
+        font-size: 12px;
+        padding: 9px 13px;
+      }
+
+      .section {
+        padding: 13px 14px 0;
+      }
+
+      .section-title {
+        font-size: 20px;
+      }
+
+      .view-all {
+        font-size: 13px;
+      }
+
+      .video-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px 12px;
+      }
+
+      .video-title {
+        font-size: 14px;
+      }
+
+      .video-info {
+        font-size: 11px;
+      }
+
+      .random-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+
+      .random-grid .video-title {
+        font-size: 12px;
+      }
+
+      .categories {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .category {
+        padding: 9px 16px;
+        font-size: 13px;
+      }
+    }
+
+    /* =========================
+       SMALL PHONE
+    ========================= */
+
+    @media (max-width: 390px) {
+
+      .logo {
+        font-size: 24px;
+      }
+
+      .header {
+        grid-template-columns: 45px 1fr 80px;
+      }
+
+      .top-banner {
+        gap: 8px;
+      }
+
+      .banner-text {
+        font-size: 11px;
+      }
+
+      .banner-button {
+        padding: 8px 10px;
+        font-size: 11px;
+      }
+
+      .video-grid {
+        gap: 15px 9px;
+      }
+
+      .video-title {
+        font-size: 13px;
+      }
+
+      .random-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="app">
+  <div class="app">
 
-<!-- HEADER -->
-<header>
+    <!-- ================= HEADER ================= -->
 
-    <div class="menu" onclick="toggleMenu()">
+    <header class="header">
+
+      <button
+        class="menu-btn"
+        id="menuBtn"
+        aria-label="Open menu">
         ☰
-    </div>
+      </button>
 
-    <a href="index.html"
-       style="text-decoration:none;color:white">
+      <a href="#" class="logo">
+        Desi<span>Vexa</span>
+      </a>
 
-        <div class="logo">
-            Desi<span>Vexa</span>
+      <div class="header-right">
+
+        <button
+          class="icon-btn"
+          id="searchBtn"
+          aria-label="Search">
+          🔍
+        </button>
+
+        <button
+          class="icon-btn"
+          onclick="showProfile()"
+          aria-label="Profile">
+          👤
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <!-- ================= SIDE MENU ================= -->
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <aside class="side-menu" id="sideMenu">
+
+      <div class="menu-header">
+
+        <div class="menu-logo">
+          Desi<span>Vexa</span>
         </div>
 
-    </a>
+        <button class="close-menu" id="closeMenu">
+          ×
+        </button>
 
-    <div class="header-actions">
+      </div>
 
-        <a href="search.html"
-           class="header-btn">
-            🔍
-        </a>
+      <div class="menu-list">
 
-        <a href="profile.html"
-           class="header-btn">
-            👤
-        </a>
+        <button
+          class="menu-item"
+          onclick="scrollToSection('home')">
+          🏠 Home
+        </button>
+
+        <button
+          class="menu-item"
+          onclick="scrollToSection('trending')">
+          🔥 Trending
+        </button>
+
+        <button
+          class="menu-item"
+          onclick="scrollToSection('newVideos')">
+          ⭐ New Videos
+        </button>
+
+        <button
+          class="menu-item"
+          onclick="scrollToSection('recommended')">
+          👤 Recommended
+        </button>
+
+        <button
+          class="menu-item"
+          onclick="scrollToSection('random')">
+          🎲 Random Videos
+        </button>
+
+        <button
+          class="menu-item"
+          onclick="showCategories()">
+          📂 Categories
+        </button>
+
+        <button
+          class="menu-item"
+          onclick="showProfile()">
+          👤 Profile
+        </button>
+
+      </div>
+
+    </aside>
+
+
+    <!-- ================= SEARCH ================= -->
+
+    <div class="search-box" id="searchBox">
+
+      <input
+        type="search"
+        id="searchInput"
+        class="search-input"
+        placeholder="Search videos..."
+        autocomplete="off">
 
     </div>
 
-</header>
+
+    <!-- ================= TOP BANNER ================= -->
+
+    <section class="top-banner">
+
+      <div class="banner-text">
+        ⭐ Discover Trending Videos
+      </div>
+
+      <button
+        class="banner-button"
+        onclick="scrollToSection('trending')">
+        Explore
+      </button>
+
+    </section>
 
 
-<!-- AD -->
-<div class="ad">
-    Top Banner Ad
-</div>
+    <!-- ================= CATEGORIES ================= -->
 
+    <nav class="categories" id="categories">
 
-<!-- CATEGORIES -->
-<div class="categories">
-
-    <a href="category.html?cat=all"
-       class="category active">
+      <button class="category active" data-category="All">
         All
-    </a>
+      </button>
 
-    <a href="category.html?cat=indian"
-       class="category">
-        Indian
-    </a>
+      <button class="category" data-category="Travel">
+        Travel
+      </button>
 
-    <a href="category.html?cat=bhabhi"
-       class="category">
-        Bhabhi
-    </a>
+      <button class="category" data-category="Food">
+        Food
+      </button>
 
-    <a href="category.html?cat=desi"
-       class="category">
-        Desi
-    </a>
+      <button class="category" data-category="Fitness">
+        Fitness
+      </button>
 
-    <a href="category.html?cat=mature"
-       class="category">
-        Mature
-    </a>
+      <button class="category" data-category="Tech">
+        Tech
+      </button>
 
-    <a href="category.html"
-       class="category">
+      <button class="category" data-category="Lifestyle">
+        Lifestyle
+      </button>
+
+      <button class="category" data-category="More">
         More⌄
-    </a>
+      </button>
 
-</div>
+    </nav>
 
 
-<!-- TRENDING -->
-<section class="section">
+    <!-- ================= TRENDING ================= -->
 
-    <div class="section-header">
+    <section
+      class="section"
+      id="trending">
 
-        <h2>
-            🔥 Trending Videos
+      <div class="section-header">
+
+        <h2 class="section-title">
+          <span class="emoji">🔥</span>
+          Trending Videos
         </h2>
 
-        <a href="trending.html"
-           class="view-all">
-            View All →
-        </a>
+        <button
+          class="view-all"
+          onclick="showAll('Trending')">
+          View All →
+        </button>
 
-    </div>
+      </div>
 
-    <div
+      <div
         class="video-grid"
-        id="trendingVideos">
-    </div>
+        id="trendingGrid">
+      </div>
 
-</section>
+    </section>
 
 
-<!-- NEW -->
-<section class="section">
+    <!-- ================= NEW ================= -->
 
-    <div class="section-header">
+    <section
+      class="section"
+      id="newVideos">
 
-        <h2>
-            ⭐ New Videos
+      <div class="section-header">
+
+        <h2 class="section-title">
+          <span class="emoji">⭐</span>
+          New Videos
         </h2>
 
-        <a href="new.html"
-           class="view-all">
-            View All →
-        </a>
+        <button
+          class="view-all"
+          onclick="showAll('New')">
+          View All →
+        </button>
 
-    </div>
+      </div>
 
-    <div
+      <div
         class="video-grid"
-        id="newVideos">
-    </div>
+        id="newGrid">
+      </div>
 
-</section>
+    </section>
 
 
-<!-- RECOMMENDED -->
-<section class="section">
+    <!-- ================= RECOMMENDED ================= -->
 
-    <div class="section-header">
+    <section
+      class="section"
+      id="recommended">
 
-        <h2>
-            👤 Recommended Videos
+      <div class="section-header">
+
+        <h2 class="section-title">
+          <span class="emoji">👤</span>
+          Recommended Videos
         </h2>
 
-        <a href="recommended.html"
-           class="view-all">
-            View All →
-        </a>
+        <button
+          class="view-all"
+          onclick="showAll('Recommended')">
+          View All →
+        </button>
 
-    </div>
+      </div>
 
-    <div
+      <div
         class="video-grid"
-        id="recommendedVideos">
-    </div>
+        id="recommendedGrid">
+      </div>
 
-</section>
+    </section>
 
 
-<!-- RANDOM -->
-<section class="section">
+    <!-- ================= RANDOM ================= -->
 
-    <div class="section-header">
+    <section
+      class="section"
+      id="random">
 
-        <h2>
-            🎲 Random Videos
+      <div class="section-header">
+
+        <h2 class="section-title">
+          <span class="emoji">🎲</span>
+          Random Videos
         </h2>
 
-    </div>
+        <button
+          class="view-all"
+          onclick="showAll('Random')">
+          View All →
+        </button>
 
-    <div
+      </div>
+
+      <div
         class="random-grid"
-        id="randomVideos">
+        id="randomGrid">
+      </div>
+
+      <div
+        class="pagination"
+        id="pagination">
+      </div>
+
+    </section>
+
+
+    <div
+      class="empty"
+      id="emptyMessage">
+      No videos found.
     </div>
 
-</section>
+
+    <!-- ================= BOTTOM NAV ================= -->
+
+    <nav class="bottom-nav">
+
+      <button
+        class="nav-item active"
+        onclick="scrollToSection('home')">
+
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+
+      </button>
+
+      <button
+        class="nav-item"
+        onclick="scrollToSection('newVideos')">
+
+        <span class="nav-icon">🕐</span>
+        <span>Latest</span>
+
+      </button>
+
+      <button
+        class="nav-item"
+        onclick="scrollToSection('trending')">
+
+        <span class="nav-icon">🔥</span>
+        <span>Trending</span>
+
+      </button>
+
+      <button
+        class="nav-item"
+        onclick="scrollToSection('recommended')">
+
+        <span class="nav-icon">▦</span>
+        <span>Recommended</span>
+
+      </button>
+
+      <button
+        class="nav-item"
+        onclick="showProfile()">
+
+        <span class="nav-icon">👤</span>
+        <span>Profile</span>
+
+      </button>
+
+    </nav>
+
+  </div>
 
 
-<!-- PAGINATION -->
-<div
-    class="pagination"
-    id="pagination">
-</div>
+  <script>
+
+    /* ======================================
+       DEMO VIDEO DATA
+    ====================================== */
+
+    const trendingVideos = [
+
+      {
+        title: "Amazing Mountain Trip",
+        category: "Travel",
+        views: "245K",
+        time: "2 days ago",
+        duration: "12:48",
+        image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=80"
+      },
+
+      {
+        title: "Street Food Tour",
+        category: "Food",
+        views: "187K",
+        time: "1 day ago",
+        duration: "10:32",
+        image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80"
+      },
+
+      {
+        title: "Best Home Workout",
+        category: "Fitness",
+        views: "156K",
+        time: "3 days ago",
+        duration: "15:20",
+        image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=900&q=80"
+      },
+
+      {
+        title: "New Smartphone Review",
+        category: "Tech",
+        views: "98K",
+        time: "4 days ago",
+        duration: "10:12",
+        image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=900&q=80"
+      }
+
+    ];
 
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
+    const newVideos = [
 
-    <a href="index.html"
-       class="nav-item active">
+      {
+        title: "Beautiful Village Travel",
+        category: "Travel",
+        views: "56K",
+        time: "5 hours ago",
+        duration: "09:15",
+        image: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=900&q=80"
+      },
 
-        <div class="nav-icon">⌂</div>
-        Home
+      {
+        title: "Easy Cooking Recipe",
+        category: "Food",
+        views: "92K",
+        time: "8 hours ago",
+        duration: "14:27",
+        image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=900&q=80"
+      },
 
-    </a>
+      {
+        title: "Morning Fitness Routine",
+        category: "Fitness",
+        views: "32K",
+        time: "10 hours ago",
+        duration: "07:45",
+        image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=900&q=80"
+      },
 
+      {
+        title: "Latest Laptop Review",
+        category: "Tech",
+        views: "89K",
+        time: "12 hours ago",
+        duration: "12:08",
+        image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=900&q=80"
+      }
 
-    <a href="new.html"
-       class="nav-item">
-
-        <div class="nav-icon">◷</div>
-        Latest
-
-    </a>
-
-
-    <a href="trending.html"
-       class="nav-item">
-
-        <div class="nav-icon">♨</div>
-        Trending
-
-    </a>
-
-
-    <a href="recommended.html"
-       class="nav-item">
-
-        <div class="nav-icon">▦</div>
-        Recommended
-
-    </a>
-
-
-    <a href="profile.html"
-       class="nav-item">
-
-        <div class="nav-icon">♙</div>
-        Profile
-
-    </a>
-
-</nav>
-
-</div>
+    ];
 
 
-<script>
+    const recommendedVideos = [
 
-/* =========================
-   DEMO VIDEO DATA
-========================= */
+      {
+        title: "Top 10 Travel Places",
+        category: "Travel",
+        views: "134K",
+        time: "1 day ago",
+        duration: "11:52",
+        image: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80"
+      },
 
-const trending = [
+      {
+        title: "Best Indian Recipes",
+        category: "Food",
+        views: "76K",
+        time: "2 days ago",
+        duration: "08:36",
+        image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=900&q=80"
+      },
 
-    ["Trending Video 1","Indian","12:34","124K"],
-    ["Trending Video 2","Bhabhi","08:50","98K"],
-    ["Trending Video 3","Desi","15:20","156K"],
-    ["Trending Video 4","Mature","10:12","78K"],
-    ["Trending Video 5","Indian","09:45","112K"],
-    ["Trending Video 6","Desi","13:22","91K"],
-    ["Trending Video 7","Bhabhi","07:42","87K"],
-    ["Trending Video 8","Mature","11:31","105K"]
+      {
+        title: "Full Body Workout",
+        category: "Fitness",
+        views: "61K",
+        time: "2 days ago",
+        duration: "13:40",
+        image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=900&q=80"
+      },
 
-];
+      {
+        title: "Useful AI Tools",
+        category: "Tech",
+        views: "102K",
+        time: "3 days ago",
+        duration: "09:25",
+        image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=900&q=80"
+      }
 
-
-const newVideos = [
-
-    ["New Video 1","Desi","09:12","45K"],
-    ["New Video 2","Bhabhi","14:37","67K"],
-    ["New Video 3","Indian","07:45","32K"],
-    ["New Video 4","Mature","12:08","89K"],
-    ["New Video 5","Desi","10:25","55K"],
-    ["New Video 6","Indian","08:33","61K"],
-    ["New Video 7","Bhabhi","13:12","74K"],
-    ["New Video 8","Mature","06:50","39K"]
-
-];
-
-
-const recommended = [
-
-    ["Recommended 1","Indian","11:30","76K"],
-    ["Recommended 2","Desi","08:15","93K"],
-    ["Recommended 3","Bhabhi","13:40","61K"],
-    ["Recommended 4","Mature","09:25","102K"],
-    ["Recommended 5","Indian","12:10","81K"],
-    ["Recommended 6","Desi","07:55","68K"],
-    ["Recommended 7","Bhabhi","14:22","97K"],
-    ["Recommended 8","Mature","10:18","72K"]
-
-];
+    ];
 
 
-/* =========================
-   CARD
-========================= */
+    const randomVideos = [
 
-function createCard(video,index){
+      {
+        title: "Beautiful Beach",
+        category: "Travel",
+        duration: "07:42",
+        image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=700&q=80"
+      },
 
-    return `
+      {
+        title: "Healthy Breakfast",
+        category: "Food",
+        duration: "10:15",
+        image: "https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?auto=format&fit=crop&w=700&q=80"
+      },
 
-    <a
-        href="video.html?id=${index}"
-        class="video-card"
-        style="
-            text-decoration:none;
-            color:inherit;
-            display:block;
-        "
-    >
+      {
+        title: "Outdoor Workout",
+        category: "Fitness",
+        duration: "09:28",
+        image: "https://images.unsplash.com/photo-1558611848-73f7eb4001a1?auto=format&fit=crop&w=700&q=80"
+      },
 
-        <div class="thumbnail">
+      {
+        title: "City Travel Guide",
+        category: "Travel",
+        duration: "14:20",
+        image: "https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=700&q=80"
+      },
 
-            <div class="play">
-                ▶
+      {
+        title: "New Camera Review",
+        category: "Tech",
+        duration: "08:50",
+        image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=700&q=80"
+      },
+
+      {
+        title: "Simple Dinner Recipe",
+        category: "Food",
+        duration: "06:32",
+        image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80"
+      }
+
+    ];
+
+
+    /* ======================================
+       CREATE VIDEO CARD
+    ====================================== */
+
+    function createCard(video) {
+
+      return `
+        <article
+          class="video-card"
+          data-title="${video.title.toLowerCase()}"
+          data-category="${video.category.toLowerCase()}"
+          onclick="openVideo('${escapeText(video.title)}')">
+
+          <div class="thumbnail">
+
+            <img
+              src="${video.image}"
+              alt="${escapeText(video.title)}"
+              loading="lazy">
+
+            <div class="play-icon">
+              ▶
             </div>
 
             <div class="duration">
-                ${video[2]}
+              ${video.duration}
             </div>
 
-        </div>
-
-        <div class="video-title">
-            ${video[0]}
-        </div>
-
-        <span class="tag">
-            ${video[1]}
-        </span>
-
-        <div class="video-info">
-            👁 ${video[3]} views<br>
-            ◷ Recently
-        </div>
-
-    </a>
-
-    `;
-
-}
-
-
-/* =========================
-   RENDER MAIN SECTIONS
-========================= */
-
-document.getElementById(
-    "trendingVideos"
-).innerHTML =
-    trending
-    .map((video,index)=>
-        createCard(video,index+1)
-    )
-    .join("");
-
-
-document.getElementById(
-    "newVideos"
-).innerHTML =
-    newVideos
-    .map((video,index)=>
-        createCard(video,index+101)
-    )
-    .join("");
-
-
-document.getElementById(
-    "recommendedVideos"
-).innerHTML =
-    recommended
-    .map((video,index)=>
-        createCard(video,index+201)
-    )
-    .join("");
-
-
-/* =========================
-   RANDOM 150
-========================= */
-
-const randomVideos = [];
-
-for(let i=1;i<=150;i++){
-
-    randomVideos.push({
-
-        id: i+300,
-
-        title:
-            "Random Video " + i,
-
-        duration:
-            String(
-                Math.floor(
-                    Math.random()*15
-                )+1
-            ).padStart(2,"0")
-            +
-            ":"
-            +
-            String(
-                Math.floor(
-                    Math.random()*60
-                )
-            ).padStart(2,"0")
-
-    });
-
-}
-
-
-let currentPage = 1;
-
-const videosPerPage = 30;
-
-
-/* =========================
-   RANDOM RENDER
-========================= */
-
-function renderRandomVideos(){
-
-    const box =
-        document.getElementById(
-            "randomVideos"
-        );
-
-    const start =
-        (currentPage-1)
-        *
-        videosPerPage;
-
-    const end =
-        start+videosPerPage;
-
-    const currentVideos =
-        randomVideos.slice(
-            start,
-            end
-        );
-
-
-    box.innerHTML =
-        currentVideos
-        .map(video=>`
-
-            <a
-                href="video.html?id=${video.id}"
-                class="video-card"
-                style="
-                    text-decoration:none;
-                    color:inherit;
-                    display:block;
-                "
-            >
-
-                <div class="thumbnail">
-
-                    <div class="play">
-                        ▶
-                    </div>
-
-                    <div class="duration">
-                        ${video.duration}
-                    </div>
-
-                </div>
-
-                <div class="video-title">
-                    ${video.title}
-                </div>
-
-            </a>
-
-        `)
-        .join("");
-
-
-    renderPagination();
-
-}
-
-
-/* =========================
-   PAGINATION
-========================= */
-
-function renderPagination(){
-
-    const pagination =
-        document.getElementById(
-            "pagination"
-        );
-
-    pagination.innerHTML = "";
-
-
-    const previous =
-        document.createElement("button");
-
-    previous.className =
-        "page-btn";
-
-    previous.innerText =
-        "‹ Previous";
-
-    previous.disabled =
-        currentPage===1;
-
-    previous.onclick=function(){
-
-        if(currentPage>1){
-
-            currentPage--;
-
-            renderRandomVideos();
-
-            scrollToRandom();
-
-        }
-
-    };
-
-    pagination.appendChild(previous);
-
-
-    for(
-        let page=1;
-        page<=5;
-        page++
-    ){
-
-        const button =
-            document.createElement(
-                "button"
-            );
-
-        button.className =
-            "page-btn";
-
-        if(page===currentPage){
-
-            button.classList.add(
-                "active"
-            );
-
-        }
-
-        button.innerText=page;
-
-        button.onclick=function(){
-
-            currentPage=page;
-
-            renderRandomVideos();
-
-            scrollToRandom();
-
-        };
-
-        pagination.appendChild(button);
+          </div>
+
+          <div class="video-title">
+            ${escapeText(video.title)}
+          </div>
+
+          <span class="tag">
+            ${escapeText(video.category)}
+          </span>
+
+          ${
+            video.views
+            ?
+            `
+              <div class="video-info">
+                <span>◉ ${video.views} views</span>
+                <span class="dot">•</span>
+                <span>${video.time}</span>
+              </div>
+            `
+            :
+            ""
+          }
+
+        </article>
+      `;
+    }
+
+
+    function escapeText(text) {
+
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
     }
 
 
-    const next =
-        document.createElement("button");
+    /* ======================================
+       RENDER
+    ====================================== */
 
-    next.className =
-        "page-btn";
+    function renderVideos() {
 
-    next.innerText =
-        "Next ›";
+      document.getElementById("trendingGrid").innerHTML =
+        trendingVideos.map(createCard).join("");
 
-    next.disabled =
-        currentPage===5;
+      document.getElementById("newGrid").innerHTML =
+        newVideos.map(createCard).join("");
 
-    next.onclick=function(){
+      document.getElementById("recommendedGrid").innerHTML =
+        recommendedVideos.map(createCard).join("");
 
-        if(currentPage<5){
+      renderRandom();
 
-            currentPage++;
-
-            renderRandomVideos();
-
-            scrollToRandom();
-
-        }
-
-    };
-
-    pagination.appendChild(next);
-
-}
+    }
 
 
-/* =========================
-   SCROLL
-========================= */
+    /* ======================================
+       RANDOM PAGINATION
+    ====================================== */
 
-function scrollToRandom(){
+    let randomPage = 1;
 
-    document
-        .getElementById("randomVideos")
+    const randomPerPage = 3;
+
+
+    function renderRandom() {
+
+      const start =
+        (randomPage - 1) * randomPerPage;
+
+      const end =
+        start + randomPerPage;
+
+      const videos =
+        randomVideos.slice(start, end);
+
+      document.getElementById("randomGrid").innerHTML =
+        videos.map(createCard).join("");
+
+      renderPagination();
+
+    }
+
+
+    function renderPagination() {
+
+      const totalPages =
+        Math.ceil(randomVideos.length / randomPerPage);
+
+      let html = "";
+
+      if (randomPage > 1) {
+
+        html += `
+          <button
+            class="page-btn"
+            onclick="changeRandomPage(${randomPage - 1})">
+            ‹
+          </button>
+        `;
+
+      }
+
+      for (
+        let i = 1;
+        i <= totalPages;
+        i++
+      ) {
+
+        html += `
+          <button
+            class="page-btn ${i === randomPage ? "active" : ""}"
+            onclick="changeRandomPage(${i})">
+            ${i}
+          </button>
+        `;
+
+      }
+
+      if (randomPage < totalPages) {
+
+        html += `
+          <button
+            class="page-btn"
+            onclick="changeRandomPage(${randomPage + 1})">
+            ›
+          </button>
+        `;
+
+      }
+
+      document.getElementById("pagination").innerHTML =
+        html;
+
+    }
+
+
+    function changeRandomPage(page) {
+
+      randomPage = page;
+
+      renderRandom();
+
+      document.getElementById("random")
         .scrollIntoView({
-            behavior:"smooth",
-            block:"start"
+          behavior: "smooth"
         });
 
-}
+    }
 
 
-/* =========================
-   MENU
-========================= */
+    /* ======================================
+       SEARCH
+    ====================================== */
 
-function toggleMenu(){
+    const searchBtn =
+      document.getElementById("searchBtn");
 
-    window.location.href =
-        "category.html";
+    const searchBox =
+      document.getElementById("searchBox");
 
-}
+    const searchInput =
+      document.getElementById("searchInput");
 
 
-/* =========================
-   START
-========================= */
+    searchBtn.addEventListener("click", () => {
 
-renderRandomVideos();
+      searchBox.classList.toggle("active");
 
-</script>
+      if (searchBox.classList.contains("active")) {
+        searchInput.focus();
+      }
+
+    });
+
+
+    searchInput.addEventListener("input", () => {
+
+      const query =
+        searchInput.value.toLowerCase().trim();
+
+      document
+        .querySelectorAll(".video-card")
+        .forEach(card => {
+
+          const title =
+            card.dataset.title || "";
+
+          const category =
+            card.dataset.category || "";
+
+          const match =
+            title.includes(query) ||
+            category.includes(query);
+
+          card.style.display =
+            match ? "" : "none";
+
+        });
+
+    });
+
+
+    /* ======================================
+       CATEGORY FILTER
+    ====================================== */
+
+    document
+      .querySelectorAll(".category")
+      .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+          document
+            .querySelectorAll(".category")
+            .forEach(btn =>
+              btn.classList.remove("active")
+            );
+
+          button.classList.add("active");
+
+          const selected =
+            button.dataset.category;
+
+          if (selected === "All" || selected === "More") {
+
+            document
+              .querySelectorAll(".video-card")
+              .forEach(card => {
+                card.style.display = "";
+              });
+
+            return;
+          }
+
+          document
+            .querySelectorAll(".video-card")
+            .forEach(card => {
+
+              const category =
+                card.dataset.category || "";
+
+              card.style.display =
+                category === selected.toLowerCase()
+                ? ""
+                : "none";
+
+            });
+
+        });
+
+      });
+
+
+    /* ======================================
+       MENU
+    ====================================== */
+
+    const menuBtn =
+      document.getElementById("menuBtn");
+
+    const closeMenu =
+      document.getElementById("closeMenu");
+
+    const sideMenu =
+      document.getElementById("sideMenu");
+
+    const menuOverlay =
+      document.getElementById("menuOverlay");
+
+
+    function openMenu() {
+
+      sideMenu.classList.add("active");
+
+      menuOverlay.classList.add("active");
+
+    }
+
+
+    function hideMenu() {
+
+      sideMenu.classList.remove("active");
+
+      menuOverlay.classList.remove("active");
+
+    }
+
+
+    menuBtn.addEventListener("click", openMenu);
+
+    closeMenu.addEventListener("click", hideMenu);
+
+    menuOverlay.addEventListener("click", hideMenu);
+
+
+    /* ======================================
+       SCROLL
+    ====================================== */
+
+    function scrollToSection(id) {
+
+      hideMenu();
+
+      const section =
+        document.getElementById(id);
+
+      if (section) {
+
+        section.scrollIntoView({
+          behavior: "smooth"
+        });
+
+      }
+
+    }
+
+
+    /* ======================================
+       OTHER BUTTONS
+    ====================================== */
+
+    function showProfile() {
+
+      alert(
+        "Profile page yahan connect ki ja sakti hai."
+      );
+
+    }
+
+
+    function showCategories() {
+
+      hideMenu();
+
+      document
+        .getElementById("categories")
+        .scrollIntoView({
+          behavior: "smooth"
+        });
+
+    }
+
+
+    function showAll(sectionName) {
+
+      alert(
+        sectionName +
+        " videos ka full page yahan connect kiya ja sakta hai."
+      );
+
+    }
+
+
+    function openVideo(title) {
+
+      alert(
+        "Video open: " + title
+      );
+
+    }
+
+
+    /* ======================================
+       INITIAL LOAD
+    ====================================== */
+
+    renderVideos();
+
+  </script>
 
 </body>
 </html>
