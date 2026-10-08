@@ -3,275 +3,243 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>New Videos - DesiVexa</title>
+
+<title>Latest Videos - DesiVexa</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
 body{
-    background:#02070d;
-    color:#fff;
-    font-family:Arial,sans-serif;
+  background:#080808;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  padding-bottom:80px;
 }
 
 .app{
-    max-width:700px;
-    min-height:100vh;
-    margin:auto;
-    background:#06111a;
-    padding-bottom:90px;
+  width:100%;
+  max-width:900px;
+  margin:auto;
+  min-height:100vh;
+  background:#080808;
 }
 
 header{
-    height:78px;
-    padding:0 18px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    background:#020a11;
-    border-bottom:1px solid #263540;
+  height:65px;
+  padding:0 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#0b0b0b;
+  border-bottom:1px solid #242424;
+  position:sticky;
+  top:0;
+  z-index:50;
 }
 
 .logo{
-    color:#fff;
-    font-size:25px;
-    font-weight:800;
-    text-decoration:none;
+  color:#fff;
+  font-size:24px;
+  font-weight:900;
+  text-decoration:none;
 }
 
-.logo span{color:#ff1744}
+.logo span{
+  color:#ff1744;
+}
 
 .back,
 .profile{
-    color:#fff;
-    text-decoration:none;
-    font-size:24px;
-}
-
-.ad{
-    margin:8px 18px 13px;
-    height:58px;
-    border:2px solid #ff1744;
-    border-radius:8px;
-    background:#280914;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:13px;
+  color:#fff;
+  text-decoration:none;
+  font-size:24px;
 }
 
 .section{
-    padding:0 18px;
-    margin:20px 0;
+  padding:0 12px;
+  margin:22px 0;
 }
 
 .title{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:14px;
 }
 
 .title h1{
-    font-size:21px;
+  font-size:21px;
 }
 
 .video-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:9px;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
 }
 
 .video-card{
-    text-decoration:none;
-    color:#fff;
-    min-width:0;
+  text-decoration:none;
+  color:#fff;
+  min-width:0;
+  overflow:hidden;
 }
 
 .thumbnail{
-    position:relative;
-    aspect-ratio:16/9;
-    border-radius:5px;
-    overflow:hidden;
-    background:linear-gradient(
-        135deg,
-        #675451,
-        #202a32,
-        #754f59
-    );
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  overflow:hidden;
+  border-radius:8px;
+  background:#171717;
 }
 
-.thumbnail:after{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:rgba(180,150,150,.18);
-    backdrop-filter:blur(7px);
+.thumbnail img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
 }
 
 .play{
-    position:absolute;
-    z-index:2;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    width:36px;
-    height:36px;
-    border-radius:50%;
-    background:rgba(0,0,0,.7);
-    display:flex;
-    align-items:center;
-    justify-content:center;
+  position:absolute;
+  z-index:2;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  background:rgba(0,0,0,.72);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
 }
 
 .duration{
-    position:absolute;
-    z-index:3;
-    right:4px;
-    bottom:4px;
-    background:#000;
-    padding:3px 5px;
-    font-size:9px;
-    border-radius:3px;
+  position:absolute;
+  z-index:3;
+  right:4px;
+  bottom:4px;
+  background:#000;
+  padding:3px 5px;
+  font-size:9px;
+  border-radius:3px;
 }
 
 .video-title{
-    margin:5px 2px;
-    font-size:11px;
-    font-weight:bold;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
+  margin:6px 2px 4px;
+  font-size:11px;
+  font-weight:bold;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 .tag{
-    display:inline-block;
-    background:#ff1744;
-    padding:3px 7px;
-    border-radius:8px;
-    font-size:9px;
+  display:inline-block;
+  background:#ff1744;
+  padding:3px 7px;
+  border-radius:8px;
+  font-size:8px;
 }
 
 .info{
-    color:#ccd2d6;
-    font-size:9px;
-    line-height:16px;
+  color:#888;
+  font-size:9px;
+  line-height:15px;
 }
 
-.random{
-    margin-top:30px;
-}
-
-.random-grid{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:8px;
-}
-
-.random-grid .video-title{
-    font-weight:normal;
-    font-size:10px;
+.loading,
+.empty,
+.error{
+  grid-column:1/-1;
+  padding:30px 10px;
+  text-align:center;
+  color:#888;
 }
 
 .pagination{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:7px;
-    padding:10px 18px 25px;
+  display:flex;
+  justify-content:center;
+  gap:7px;
+  flex-wrap:wrap;
+  padding:20px 12px 30px;
 }
 
 .page{
-    min-width:38px;
-    height:36px;
-    border:1px solid #29404f;
-    background:#0b1b27;
-    color:#fff;
-    border-radius:7px;
-    cursor:pointer;
+  min-width:38px;
+  height:36px;
+  border:1px solid #303030;
+  background:#151515;
+  color:#fff;
+  border-radius:7px;
+  cursor:pointer;
 }
 
 .page.active{
-    background:#ff1744;
-    border-color:#ff1744;
+  background:#ff1744;
+  border-color:#ff1744;
 }
 
 .page:disabled{
-    opacity:.4;
+  opacity:.4;
 }
 
 .bottom-nav{
-    position:fixed;
-    bottom:0;
-    left:50%;
-    transform:translateX(-50%);
-    width:100%;
-    max-width:700px;
-    height:75px;
-    background:#020910;
-    border-top:1px solid #26343e;
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    z-index:100;
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  height:68px;
+  background:rgba(10,10,10,.98);
+  border-top:1px solid #292929;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  z-index:100;
 }
 
 .nav{
-    color:#fff;
-    text-decoration:none;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    font-size:10px;
+  color:#777;
+  text-decoration:none;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  font-size:9px;
 }
 
 .nav-icon{
-    font-size:22px;
+  font-size:20px;
 }
 
 .nav.active{
-    color:#ff1744;
+  color:#ff1744;
 }
 
 @media(max-width:500px){
 
-    .video-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
+  .video-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:8px;
+  }
 
-    .random-grid{
-        grid-template-columns:repeat(3,1fr);
-    }
+  .video-title{
+    font-size:9px;
+  }
 
-    .section{
-        padding:0 12px;
-    }
-}
+  .info{
+    font-size:8px;
+  }
 
-@media(max-width:390px){
-
-    .random-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-}
-
-@media(min-width:701px){
-
-    body{
-        padding:20px 0;
-    }
-
-    .app{
-        border:1px solid #233541;
-        border-radius:25px;
-        overflow:hidden;
-    }
-
-    .bottom-nav{
-        bottom:20px;
-        border-radius:0 0 25px 25px;
-    }
+  .tag{
+    font-size:7px;
+  }
 }
 </style>
 </head>
@@ -282,336 +250,470 @@ header{
 
 <header>
 
-    <a href="index.html" class="back">‹</a>
+<a href="index.html" class="back">‹</a>
 
-    <a href="index.html" class="logo">
-        Desi<span>Vexa</span>
-    </a>
+<a href="index.html" class="logo">
+Desi<span>Vexa</span>
+</a>
 
-    <a href="profile.html" class="profile">
-        👤
-    </a>
+<a href="profile.html" class="profile">
+👤
+</a>
 
 </header>
-
-<div class="ad">
-    Top Banner Ad
-</div>
 
 
 <section class="section">
 
-    <div class="title">
-        <h1>⭐ New Videos</h1>
-    </div>
+<div class="title">
+<h1>⭐ Latest Videos</h1>
+</div>
 
-    <div
-        class="video-grid"
-        id="newVideos">
-    </div>
+<div
+id="newVideos"
+class="video-grid">
 
-</section>
+<div class="loading">
+Loading latest videos...
+</div>
 
-
-<section class="section random">
-
-    <div class="title">
-        <h1>🎲 Random Videos</h1>
-    </div>
-
-    <div
-        class="random-grid"
-        id="randomVideos">
-    </div>
+</div>
 
 </section>
 
 
 <div
-    class="pagination"
-    id="pagination">
+id="pagination"
+class="pagination">
 </div>
 
 
 <nav class="bottom-nav">
 
-    <a href="index.html" class="nav">
-        <div class="nav-icon">⌂</div>
-        Home
-    </a>
+<a href="index.html" class="nav">
 
-    <a href="new.html" class="nav active">
-        <div class="nav-icon">◷</div>
-        Latest
-    </a>
+<div class="nav-icon">⌂</div>
 
-    <a href="trending.html" class="nav">
-        <div class="nav-icon">♨</div>
-        Trending
-    </a>
+Home
 
-    <a href="recommended.html" class="nav">
-        <div class="nav-icon">▦</div>
-        Recommended
-    </a>
+</a>
 
-    <a href="profile.html" class="nav">
-        <div class="nav-icon">♙</div>
-        Profile
-    </a>
+
+<a href="new.html" class="nav active">
+
+<div class="nav-icon">◷</div>
+
+Latest
+
+</a>
+
+
+<a href="trending.html" class="nav">
+
+<div class="nav-icon">🔥</div>
+
+Trending
+
+</a>
+
+
+<a href="recommended.html" class="nav">
+
+<div class="nav-icon">★</div>
+
+Recommended
+
+</a>
+
+
+<a href="profile.html" class="nav">
+
+<div class="nav-icon">♙</div>
+
+Profile
+
+</a>
 
 </nav>
 
 </div>
 
 
-<script>
+<script type="module">
 
-const newVideos = [
-
-    ["New Video 1","Desi","09:12","45K"],
-    ["New Video 2","Bhabhi","14:37","67K"],
-    ["New Video 3","Indian","07:45","32K"],
-    ["New Video 4","Mature","12:08","89K"],
-    ["New Video 5","Desi","10:25","55K"],
-    ["New Video 6","Indian","08:33","61K"],
-    ["New Video 7","Bhabhi","13:12","74K"],
-    ["New Video 8","Mature","06:50","39K"],
-    ["New Video 9","Indian","11:20","52K"],
-    ["New Video 10","Desi","08:44","48K"],
-    ["New Video 11","Bhabhi","10:15","63K"],
-    ["New Video 12","Mature","12:40","81K"]
-
-];
+import {
+  createClient
+} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
 
-document.getElementById("newVideos").innerHTML =
+/*
+  IMPORTANT:
+  YAHAN WAHI SUPABASE URL + ANON KEY
+  USE KARO JO TUMHARE app.js ME HAI.
+*/
 
-    newVideos.map((video,index)=>`
+const SUPABASE_URL =
+  "YOUR_SUPABASE_URL";
 
-        <a
-            href="video.html?id=${index+100}"
-            class="video-card"
-        >
-
-            <div class="thumbnail">
-
-                <div class="play">▶</div>
-
-                <div class="duration">
-                    ${video[2]}
-                </div>
-
-            </div>
-
-            <div class="video-title">
-                ${video[0]}
-            </div>
-
-            <span class="tag">
-                ${video[1]}
-            </span>
-
-            <div class="info">
-                👁 ${video[3]} views<br>
-                ◷ Recently Added
-            </div>
-
-        </a>
-
-    `).join("");
+const SUPABASE_ANON_KEY =
+  "YOUR_SUPABASE_ANON_KEY";
 
 
-/* RANDOM VIDEOS */
+const supabase =
+  createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
-const randomVideos=[];
 
-for(let i=1;i<=150;i++){
+const container =
+  document.getElementById("newVideos");
 
-    randomVideos.push({
+const pagination =
+  document.getElementById("pagination");
 
-        id:i+700,
 
-        title:"Random Video "+i,
+let currentPage = 1;
 
-        duration:
-            String(
-                Math.floor(Math.random()*15)+1
-            ).padStart(2,"0")
-            +
-            ":"
-            +
-            String(
-                Math.floor(Math.random()*60)
-            ).padStart(2,"0")
+const perPage = 30;
 
-    });
+
+/* LOAD LATEST VIDEOS */
+
+async function loadLatest(){
+
+  container.innerHTML =
+    `<div class="loading">
+       Loading latest videos...
+     </div>`;
+
+
+  const from =
+    (currentPage - 1) * perPage;
+
+  const to =
+    from + perPage - 1;
+
+
+  const {
+    data,
+    error,
+    count
+  } = await supabase
+
+    .from("videos")
+
+    .select("*", {
+      count:"exact"
+    })
+
+    .order(
+      "created_at",
+      {
+        ascending:false
+      }
+    )
+
+    .range(from,to);
+
+
+  if(error){
+
+    console.error(error);
+
+    container.innerHTML =
+      `<div class="error">
+        Could not load videos.<br>
+        ${escapeHtml(error.message)}
+      </div>`;
+
+    return;
+  }
+
+
+  if(!data || data.length === 0){
+
+    container.innerHTML =
+      `<div class="empty">
+        No videos found.
+      </div>`;
+
+    pagination.innerHTML = "";
+
+    return;
+  }
+
+
+  container.innerHTML =
+    data.map(video => {
+
+      const id =
+        encodeURIComponent(video.id);
+
+      const title =
+        escapeHtml(
+          video.title ||
+          "Untitled Video"
+        );
+
+      const category =
+        escapeHtml(
+          video.category ||
+          "Video"
+        );
+
+      const thumbnail =
+        video.thumbnail_url ||
+        video.thumbnail ||
+        "";
+
+
+      return `
+
+<a
+  href="video.html?id=${id}"
+  class="video-card"
+>
+
+<div class="thumbnail">
+
+${
+thumbnail
+?
+`<img
+src="${escapeAttr(thumbnail)}"
+alt="${title}"
+loading="lazy"
+>`
+:
+""
+}
+
+<div class="play">
+▶
+</div>
+
+${
+video.duration
+?
+`<div class="duration">
+${escapeHtml(video.duration)}
+</div>`
+:
+""
+}
+
+</div>
+
+
+<div class="video-title">
+${title}
+</div>
+
+
+<span class="tag">
+${category}
+</span>
+
+
+<div class="info">
+
+${
+video.views != null
+?
+`👁 ${formatViews(video.views)} views`
+:
+""
+}
+
+<br>
+
+◷ Recently Added
+
+</div>
+
+</a>
+
+`;
+
+    }).join("");
+
+
+  renderPagination(count || data.length);
 
 }
 
 
-let currentPage=1;
+/* PAGINATION */
 
-const perPage=30;
+function renderPagination(total){
 
-
-function renderRandom(){
-
-    const start =
-        (currentPage-1)*perPage;
-
-    const videos =
-        randomVideos.slice(
-            start,
-            start+perPage
-        );
+  const pages =
+    Math.max(
+      1,
+      Math.ceil(
+        total / perPage
+      )
+    );
 
 
-    document.getElementById(
-        "randomVideos"
-    ).innerHTML =
-
-        videos.map(video=>`
-
-            <a
-                href="video.html?id=${video.id}"
-                class="video-card"
-            >
-
-                <div class="thumbnail">
-
-                    <div class="play">
-                        ▶
-                    </div>
-
-                    <div class="duration">
-                        ${video.duration}
-                    </div>
-
-                </div>
-
-                <div class="video-title">
-                    ${video.title}
-                </div>
-
-            </a>
-
-        `).join("");
+  pagination.innerHTML = "";
 
 
-    renderPagination();
-}
-
-
-function renderPagination(){
-
-    const box =
-        document.getElementById(
-            "pagination"
-        );
-
-    box.innerHTML="";
-
+  if(currentPage > 1){
 
     const previous =
-        document.createElement("button");
+      createPageButton(
+        "‹",
+        currentPage - 1
+      );
 
-    previous.className="page";
+    pagination.appendChild(
+      previous
+    );
 
-    previous.innerText="‹ Previous";
-
-    previous.disabled =
-        currentPage===1;
-
-    previous.onclick=()=>{
-
-        if(currentPage>1){
-
-            currentPage--;
-
-            renderRandom();
-
-            scrollRandom();
-
-        }
-
-    };
-
-    box.appendChild(previous);
+  }
 
 
-    for(let i=1;i<=5;i++){
+  const maxPages =
+    Math.min(
+      pages,
+      10
+    );
 
-        const button =
-            document.createElement("button");
 
-        button.className="page";
+  for(
+    let i = 1;
+    i <= maxPages;
+    i++
+  ){
 
-        button.innerText=i;
+    const button =
+      createPageButton(
+        i,
+        i
+      );
 
-        if(i===currentPage){
+    pagination.appendChild(
+      button
+    );
 
-            button.classList.add(
-                "active"
-            );
+  }
 
-        }
 
-        button.onclick=()=>{
-
-            currentPage=i;
-
-            renderRandom();
-
-            scrollRandom();
-
-        };
-
-        box.appendChild(button);
-
-    }
-
+  if(currentPage < pages){
 
     const next =
-        document.createElement("button");
+      createPageButton(
+        "›",
+        currentPage + 1
+      );
 
-    next.className="page";
+    pagination.appendChild(
+      next
+    );
 
-    next.innerText="Next ›";
-
-    next.disabled =
-        currentPage===5;
-
-    next.onclick=()=>{
-
-        if(currentPage<5){
-
-            currentPage++;
-
-            renderRandom();
-
-            scrollRandom();
-
-        }
-
-    };
-
-    box.appendChild(next);
-}
-
-
-function scrollRandom(){
-
-    document
-        .getElementById("randomVideos")
-        .scrollIntoView({
-            behavior:"smooth"
-        });
+  }
 
 }
 
 
-renderRandom();
+function createPageButton(
+  text,
+  page
+){
+
+  const button =
+    document.createElement(
+      "button"
+    );
+
+  button.className =
+    "page";
+
+  button.textContent =
+    text;
+
+  if(page === currentPage){
+
+    button.classList.add(
+      "active"
+    );
+
+  }
+
+
+  button.onclick = () => {
+
+    currentPage = page;
+
+    loadLatest();
+
+    window.scrollTo({
+      top:0,
+      behavior:"smooth"
+    });
+
+  };
+
+
+  return button;
+
+}
+
+
+/* HELPERS */
+
+function formatViews(value){
+
+  const number =
+    Number(value) || 0;
+
+  if(number >= 1000000){
+
+    return (
+      number / 1000000
+    ).toFixed(1) + "M";
+
+  }
+
+  if(number >= 1000){
+
+    return (
+      number / 1000
+    ).toFixed(1) + "K";
+
+  }
+
+  return String(number);
+
+}
+
+
+function escapeHtml(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+function escapeAttr(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;");
+
+}
+
+
+loadLatest();
 
 </script>
 
