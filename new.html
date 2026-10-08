@@ -1,373 +1,555 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#02070d">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DesiVexa — Latest Videos</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#02070d;color:#fff;font-family:Arial,Helvetica,sans-serif}
-a{text-decoration:none;color:inherit}
-.page{max-width:1100px;margin:auto;min-height:100vh;background:#06111a;padding-bottom:40px}
-.top{height:68px;background:#030b12;border-bottom:1px solid #172733;display:flex;align-items:center;padding:0 15px;position:sticky;top:0;z-index:10}
-.home{background:#0b1b28;border:1px solid #263d4c;padding:9px 13px;border-radius:9px}
-.logo{font-size:27px;font-weight:900;flex:1;text-align:center;margin-right:65px}
-.logo span{color:#ff1744}
-.section{padding:20px 14px}
-.title{font-size:23px;margin-bottom:17px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.card{cursor:pointer}
-.thumb{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:9px;background:#0b1822}
-.thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.play{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.75);width:31px;height:31px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.badge{position:absolute;right:7px;bottom:7px;background:rgba(0,0,0,.8);padding:4px 6px;border-radius:5px;font-size:11px}
-.card-title{margin-top:8px;font-weight:700;font-size:14px;line-height:1.35}
-.tag{display:inline-block;margin-top:6px;padding:4px 9px;border-radius:15px;background:#ff1744;font-size:10px;font-weight:700}
-.meta{margin-top:6px;color:#9eafbd;font-size:11px}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:#05070d;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+
+header{
+  height:60px;
+  background:#0b0f18;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  border-bottom:1px solid #1c2230;
+}
+
+.logo{
+  color:#ff1744;
+  font-size:25px;
+  font-weight:900;
+}
+
+.homeBtn{
+  position:absolute;
+  left:12px;
+  text-decoration:none;
+  color:#fff;
+  background:#151b27;
+  padding:8px 12px;
+  border-radius:8px;
+  font-size:13px;
+}
+
+.container{
+  width:100%;
+  max-width:1400px;
+  margin:auto;
+  padding:18px 12px 40px;
+}
+
+h1{
+  font-size:22px;
+  margin-bottom:18px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+
+.card{
+  background:#0c111b;
+  border:1px solid #1a2130;
+  border-radius:10px;
+  overflow:hidden;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.card:hover{
+  transform:translateY(-2px);
+  border-color:#ff1744;
+}
+
+.thumb{
+  width:100%;
+  aspect-ratio:16/9;
+  background:#151b27;
+  position:relative;
+  overflow:hidden;
+}
+
+.thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.play{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background:rgba(255,23,68,.9);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
+  padding-left:3px;
+}
+
+.hd{
+  position:absolute;
+  right:7px;
+  top:7px;
+  background:#ff1744;
+  color:#fff;
+  padding:4px 6px;
+  border-radius:5px;
+  font-size:10px;
+  font-weight:bold;
+}
+
+.info{
+  padding:10px;
+}
+
+.title{
+  font-size:14px;
+  font-weight:bold;
+  line-height:1.35;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.meta{
+  margin-top:7px;
+  color:#9299a8;
+  font-size:11px;
+  display:flex;
+  justify-content:space-between;
+  gap:5px;
+}
+
+.category{
+  color:#ff1744;
+}
 
 .pagination{
-display:flex;
-justify-content:center;
-align-items:center;
-gap:7px;
-margin-top:30px;
-flex-wrap:wrap;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:7px;
+  margin-top:25px;
+  flex-wrap:wrap;
 }
 
-.pageBtn{
-min-width:40px;
-height:40px;
-padding:0 12px;
-border:1px solid #29404f;
-border-radius:9px;
-background:#0b1b28;
-color:#fff;
-font-weight:700;
-cursor:pointer;
+.pagination button{
+  border:0;
+  background:#151b27;
+  color:#fff;
+  padding:9px 13px;
+  border-radius:7px;
+  cursor:pointer;
 }
 
-.pageBtn.active{
-background:#ff1744;
-border-color:#ff1744;
+.pagination button.active{
+  background:#ff1744;
 }
 
-.pageBtn:disabled{
-opacity:.35;
-cursor:not-allowed;
+.pagination button:disabled{
+  opacity:.4;
+  cursor:not-allowed;
 }
 
-.loading,.empty{text-align:center;color:#9eafbd;padding:40px 10px;grid-column:1/-1}
+.message{
+  text-align:center;
+  color:#8e96a5;
+  padding:40px 10px;
+}
 
-@media(max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:600px){
-.grid{grid-template-columns:repeat(2,1fr);gap:17px 11px}
-.logo{font-size:24px;margin-right:0}
-.card-title{font-size:13px}
-.pagination{gap:5px}
-.pageBtn{min-width:38px;height:38px;padding:0 9px}
+@media(max-width:900px){
+  .grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+@media(max-width:650px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:9px;
+  }
+
+  .container{
+    padding:15px 8px 30px;
+  }
+
+  h1{
+    font-size:19px;
+  }
+
+  .title{
+    font-size:12px;
+  }
+
+  .meta{
+    font-size:10px;
+  }
+
+  .info{
+    padding:8px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<div class="page">
-
-<header class="top">
-<a class="home" href="index.html">← Home</a>
-<div class="logo">Desi<span>Vexa</span></div>
+<header>
+  <a href="index.html" class="homeBtn">← Home</a>
+  <div class="logo">DesiVexa</div>
 </header>
 
-<section class="section">
+<div class="container">
 
-<h1 class="title">⭐ Latest Videos</h1>
+  <h1>⭐ Latest Videos</h1>
 
-<div class="grid" id="videos">
-<div class="loading">Loading videos...</div>
-</div>
+  <div id="videos" class="grid"></div>
 
-<div class="pagination" id="pagination"></div>
+  <div id="message" class="message">Loading videos...</div>
 
-</section>
+  <div id="pagination" class="pagination"></div>
+
 </div>
 
 <script type="module">
 
-import {createClient}
+import { createClient }
 from "https://esm.sh/@supabase/supabase-js@2";
 
 import {
-SUPABASE_URL,
-SUPABASE_ANON_KEY
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
 }
 from "./config.js";
 
-const supabase=createClient(
-SUPABASE_URL,
-SUPABASE_ANON_KEY
+const supabase = createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
 );
 
-const PER_PAGE=20;
+const PER_PAGE = 20;
 
-let currentPage=
-Math.max(
-1,
-parseInt(
-new URLSearchParams(location.search).get("page")||"1"
-)
-);
+let currentPage =
+  parseInt(new URLSearchParams(location.search).get("page")) || 1;
 
-let totalVideos=0;
-
-
-function esc(v){
-return String(v??"")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+if(currentPage < 1){
+  currentPage = 1;
 }
 
+async function getTotal(){
 
-function views(v){
+  const { count, error } = await supabase
+    .from("videos")
+    .select("id", {
+      count:"exact",
+      head:true
+    })
+    .eq("published", true);
 
-const n=Number(v||0);
+  if(error){
+    console.error(error);
+    return 0;
+  }
 
-if(n>=1000000)
-return (n/1000000).toFixed(1).replace(".0","")+"M";
-
-if(n>=1000)
-return (n/1000).toFixed(1).replace(".0","")+"K";
-
-return String(n);
+  return count || 0;
 }
 
+function escapeHtml(value){
 
-function ago(date){
-
-if(!date)return "";
-
-const seconds=
-Math.floor((Date.now()-new Date(date))/1000);
-
-if(seconds<60)return "just now";
-
-const minutes=Math.floor(seconds/60);
-if(minutes<60)return minutes+"m ago";
-
-const hours=Math.floor(minutes/60);
-if(hours<24)return hours+"h ago";
-
-return Math.floor(hours/24)+"d ago";
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 }
 
+function timeAgo(date){
 
-function fallback(){
+  if(!date) return "";
 
-const svg=`
-<svg xmlns="http://www.w3.org/2000/svg"
-width="800" height="450">
-<rect width="100%" height="100%" fill="#101d28"/>
-<text x="50%" y="50%"
-text-anchor="middle"
-dominant-baseline="middle"
-fill="#ff1744"
-font-size="46"
-font-family="Arial"
-font-weight="bold">
-DesiVexa
-</text>
-</svg>`;
+  const seconds =
+    Math.floor((Date.now() - new Date(date).getTime()) / 1000);
 
-return "data:image/svg+xml;charset=UTF-8,"+
-encodeURIComponent(svg);
+  if(seconds < 60) return seconds + "s ago";
+
+  const minutes = Math.floor(seconds / 60);
+
+  if(minutes < 60) return minutes + "m ago";
+
+  const hours = Math.floor(minutes / 60);
+
+  if(hours < 24) return hours + "h ago";
+
+  const days = Math.floor(hours / 24);
+
+  if(days < 30) return days + "d ago";
+
+  const months = Math.floor(days / 30);
+
+  if(months < 12) return months + "mo ago";
+
+  return Math.floor(months / 12) + "y ago";
 }
 
+function fallbackImage(){
 
-function card(v){
-
-return `
-<article class="card"
-onclick="openVideo('${encodeURIComponent(v.id)}')">
-
-<div class="thumb">
-
-<img
-src="${esc(v.thumbnail_url||fallback())}"
-alt="${esc(v.title||"Video")}"
-loading="lazy">
-
-<div class="play">▶</div>
-<div class="badge">HD</div>
-
-</div>
-
-<div class="card-title">
-${esc(v.title||"Untitled Video")}
-</div>
-
-<span class="tag">
-${esc(v.category||"Other")}
-</span>
-
-<div class="meta">
-◉ ${views(v.views)} views · ${ago(v.created_at)}
-</div>
-
-</article>
-`;
+  return "data:image/svg+xml;charset=UTF-8," +
+  encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg"
+         width="640"
+         height="360"
+         viewBox="0 0 640 360">
+      <rect width="640" height="360" fill="#151b27"/>
+      <text x="320"
+            y="185"
+            text-anchor="middle"
+            fill="#ff1744"
+            font-size="38"
+            font-family="Arial"
+            font-weight="bold">
+        DesiVexa
+      </text>
+    </svg>
+  `);
 }
 
+function videoCard(video){
 
-window.openVideo=function(id){
-location.href=
-"video.html?id="+
-encodeURIComponent(decodeURIComponent(id));
+  const title = escapeHtml(video.title || "Untitled");
+
+  const category =
+    escapeHtml(video.category || "General");
+
+  const thumbnail =
+    video.thumbnail_url || fallbackImage();
+
+  const views =
+    Number(video.views || 0).toLocaleString();
+
+  return `
+    <div class="card"
+         onclick="openVideo('${encodeURIComponent(video.id)}')">
+
+      <div class="thumb">
+
+        <img
+          src="${escapeHtml(thumbnail)}"
+          alt="${title}"
+          onerror="this.onerror=null;this.src='${fallbackImage()}'"
+        >
+
+        <div class="play">▶</div>
+
+        <div class="hd">HD</div>
+
+      </div>
+
+      <div class="info">
+
+        <div class="title">
+          ${title}
+        </div>
+
+        <div class="meta">
+          <span class="category">
+            ${category}
+          </span>
+
+          <span>
+            ${views} views
+          </span>
+        </div>
+
+        <div class="meta">
+          <span>
+            ${timeAgo(video.created_at)}
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+  `;
+}
+
+window.openVideo = function(id){
+
+  location.href =
+    "video.html?id=" +
+    encodeURIComponent(decodeURIComponent(id));
 };
 
+function renderPagination(total){
 
-function goPage(page){
+  const pagination =
+    document.getElementById("pagination");
 
-location.href=
-"new.html?page="+page;
+  pagination.innerHTML = "";
 
+  const totalPages =
+    Math.ceil(total / PER_PAGE);
+
+  if(totalPages <= 1) return;
+
+  const previous =
+    document.createElement("button");
+
+  previous.textContent = "Previous";
+  previous.disabled = currentPage <= 1;
+
+  previous.onclick = () => {
+    if(currentPage > 1){
+      location.href =
+        "new.html?page=" + (currentPage - 1);
+    }
+  };
+
+  pagination.appendChild(previous);
+
+  let start =
+    Math.max(1, currentPage - 2);
+
+  let end =
+    Math.min(totalPages, start + 4);
+
+  if(end - start < 4){
+    start = Math.max(1, end - 4);
+  }
+
+  for(let i=start; i<=end; i++){
+
+    const button =
+      document.createElement("button");
+
+    button.textContent = i;
+
+    if(i === currentPage){
+      button.classList.add("active");
+    }
+
+    button.onclick = () => {
+      location.href =
+        "new.html?page=" + i;
+    };
+
+    pagination.appendChild(button);
+  }
+
+  const next =
+    document.createElement("button");
+
+  next.textContent = "Next";
+  next.disabled = currentPage >= totalPages;
+
+  next.onclick = () => {
+
+    if(currentPage < totalPages){
+
+      location.href =
+        "new.html?page=" +
+        (currentPage + 1);
+    }
+  };
+
+  pagination.appendChild(next);
 }
 
+async function loadVideos(){
 
-function renderPagination(){
+  const videosBox =
+    document.getElementById("videos");
 
-const box=document.getElementById("pagination");
+  const message =
+    document.getElementById("message");
 
-const totalPages=
-Math.ceil(totalVideos/PER_PAGE);
+  const total =
+    await getTotal();
 
-if(totalPages<=1){
-box.innerHTML="";
-return;
+  const totalPages =
+    Math.ceil(total / PER_PAGE);
+
+  if(total === 0){
+
+    message.textContent =
+      "No videos available.";
+
+    return;
+  }
+
+  if(currentPage > totalPages){
+
+    location.href = "new.html?page=1";
+    return;
+  }
+
+  const from =
+    (currentPage - 1) * PER_PAGE;
+
+  const to =
+    from + PER_PAGE - 1;
+
+  const { data, error } =
+    await supabase
+      .from("videos")
+      .select(`
+        id,
+        title,
+        category,
+        description,
+        thumbnail_url,
+        video_url,
+        views,
+        created_at
+      `)
+      .eq("published", true)
+      .order("created_at", {
+        ascending:false
+      })
+      .range(from,to);
+
+  if(error){
+
+    console.error(error);
+
+    message.textContent =
+      "Failed to load videos.";
+
+    return;
+  }
+
+  message.style.display = "none";
+
+  videosBox.innerHTML =
+    data.map(videoCard).join("");
+
+  renderPagination(total);
 }
 
-let html="";
-
-html+=`
-<button class="pageBtn"
-${currentPage<=1?"disabled":""}
-onclick="goPage(${currentPage-1})">
-Previous
-</button>
-`;
-
-
-let start=Math.max(1,currentPage-2);
-let end=Math.min(totalPages,currentPage+2);
-
-if(currentPage<=3){
-start=1;
-end=Math.min(totalPages,5);
-}
-
-if(currentPage>=totalPages-2){
-start=Math.max(1,totalPages-4);
-end=totalPages;
-}
-
-
-for(let i=start;i<=end;i++){
-
-html+=`
-<button
-class="pageBtn ${i===currentPage?"active":""}"
-onclick="goPage(${i})">
-${i}
-</button>
-`;
-
-}
-
-
-html+=`
-<button class="pageBtn"
-${currentPage>=totalPages?"disabled":""}
-onclick="goPage(${currentPage+1})">
-Next
-</button>
-`;
-
-box.innerHTML=html;
-}
-
-
-async function load(){
-
-const box=document.getElementById("videos");
-
-const countResult=
-await supabase
-.from("videos")
-.select("id",{count:"exact",head:true})
-.eq("published",true);
-
-if(countResult.error){
-
-console.error(countResult.error);
-
-box.innerHTML=
-`<div class="empty">
-Videos load nahi ho paaye.
-</div>`;
-
-return;
-}
-
-totalVideos=countResult.count||0;
-
-const from=(currentPage-1)*PER_PAGE;
-const to=from+PER_PAGE-1;
-
-
-const {data,error}=
-await supabase
-.from("videos")
-.select(
-"id,title,category,description,thumbnail_url,video_url,views,created_at"
-)
-.eq("published",true)
-.order("created_at",{ascending:false})
-.range(from,to);
-
-
-if(error){
-
-console.error(error);
-
-box.innerHTML=
-`<div class="empty">
-Videos load nahi ho paaye.
-</div>`;
-
-return;
-}
-
-
-if(!data.length && currentPage>1){
-
-goPage(1);
-return;
-
-}
-
-
-box.innerHTML=data.length
-?data.map(card).join("")
-:`<div class="empty">No videos found.</div>`;
-
-renderPagination();
-
-}
-
-load();
+loadVideos();
 
 </script>
 
