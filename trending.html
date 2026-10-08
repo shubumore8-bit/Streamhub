@@ -3,280 +3,281 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Trending Videos - DesiVexa</title>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 
 body{
-    background:#02070d;
-    color:#fff;
-    font-family:Arial,sans-serif;
+  background:#080808;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  padding-bottom:80px;
 }
 
 .app{
-    max-width:700px;
-    min-height:100vh;
-    margin:auto;
-    background:#06111a;
-    padding-bottom:90px;
+  width:100%;
+  max-width:900px;
+  min-height:100vh;
+  margin:auto;
+  background:#080808;
 }
 
 header{
-    height:78px;
-    padding:0 18px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    background:#020a11;
-    border-bottom:1px solid #263540;
+  height:65px;
+  padding:0 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#0b0b0b;
+  border-bottom:1px solid #242424;
+  position:sticky;
+  top:0;
+  z-index:50;
 }
 
 .logo{
-    color:#fff;
-    font-size:25px;
-    font-weight:800;
-    text-decoration:none;
+  color:#fff;
+  font-size:24px;
+  font-weight:900;
+  text-decoration:none;
 }
 
-.logo span{color:#ff1744}
-
-.back{
-    color:#fff;
-    text-decoration:none;
-    font-size:24px;
+.logo span{
+  color:#ff1744;
 }
 
+.back,
 .profile{
-    color:#fff;
-    text-decoration:none;
-    font-size:22px;
+  color:#fff;
+  text-decoration:none;
+  font-size:24px;
 }
 
 .ad{
-    margin:8px 18px 13px;
-    height:58px;
-    border:2px solid #ff1744;
-    border-radius:8px;
-    background:#280914;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:13px;
+  margin:10px 12px;
+  min-height:55px;
+  border:1px solid #292929;
+  border-radius:9px;
+  background:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#777;
+  font-size:11px;
 }
 
 .section{
-    padding:0 18px;
-    margin:20px 0;
+  padding:0 12px;
+  margin:22px 0;
 }
 
 .title{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
 }
 
 .title h1{
-    font-size:21px;
+  font-size:22px;
 }
 
 .video-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:9px;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
 }
 
 .video-card{
-    text-decoration:none;
-    color:#fff;
-    min-width:0;
+  text-decoration:none;
+  color:#fff;
+  min-width:0;
+  overflow:hidden;
 }
 
 .thumbnail{
-    position:relative;
-    aspect-ratio:16/9;
-    border-radius:5px;
-    overflow:hidden;
-    background:linear-gradient(
-        135deg,
-        #675451,
-        #202a32,
-        #754f59
-    );
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  border-radius:8px;
+  overflow:hidden;
+  background:#171717;
 }
 
-.thumbnail:after{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:rgba(180,150,150,.18);
-    backdrop-filter:blur(7px);
+.thumbnail img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
 }
 
 .play{
-    position:absolute;
-    z-index:2;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    width:36px;
-    height:36px;
-    border-radius:50%;
-    background:rgba(0,0,0,.7);
-    display:flex;
-    align-items:center;
-    justify-content:center;
+  position:absolute;
+  z-index:2;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:rgba(0,0,0,.72);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
 }
 
 .duration{
-    position:absolute;
-    z-index:3;
-    right:4px;
-    bottom:4px;
-    background:#000;
-    padding:3px 5px;
-    font-size:9px;
-    border-radius:3px;
+  position:absolute;
+  z-index:3;
+  right:4px;
+  bottom:4px;
+  background:#000;
+  padding:3px 5px;
+  font-size:9px;
+  border-radius:3px;
 }
 
 .video-title{
-    margin:5px 2px;
-    font-size:11px;
-    font-weight:bold;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
+  margin:6px 2px 4px;
+  font-size:11px;
+  font-weight:bold;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 .tag{
-    display:inline-block;
-    background:#ff1744;
-    padding:3px 7px;
-    border-radius:8px;
-    font-size:9px;
+  display:inline-block;
+  background:#ff1744;
+  padding:3px 7px;
+  border-radius:8px;
+  font-size:8px;
 }
 
 .info{
-    color:#ccd2d6;
-    font-size:9px;
-    line-height:16px;
+  color:#888;
+  font-size:9px;
+  line-height:15px;
+}
+
+.loading,
+.empty,
+.error{
+  grid-column:1/-1;
+  padding:35px 10px;
+  text-align:center;
+  color:#888;
+}
+
+.error{
+  color:#ff7777;
 }
 
 .random{
-    margin-top:30px;
+  margin-top:30px;
 }
 
 .random-grid{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:8px;
-}
-
-.random-grid .video-title{
-    font-weight:normal;
-    font-size:10px;
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:9px;
 }
 
 .pagination{
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    gap:7px;
-    padding:10px 18px 25px;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:7px;
+  padding:10px 12px 30px;
 }
 
 .page{
-    min-width:38px;
-    height:36px;
-    border:1px solid #29404f;
-    background:#0b1b27;
-    color:#fff;
-    border-radius:7px;
-    cursor:pointer;
+  min-width:38px;
+  height:36px;
+  border:1px solid #303030;
+  background:#151515;
+  color:#fff;
+  border-radius:7px;
+  cursor:pointer;
 }
 
 .page.active{
-    background:#ff1744;
-    border-color:#ff1744;
+  background:#ff1744;
+  border-color:#ff1744;
 }
 
 .page:disabled{
-    opacity:.4;
+  opacity:.4;
 }
 
 .bottom-nav{
-    position:fixed;
-    bottom:0;
-    left:50%;
-    transform:translateX(-50%);
-    width:100%;
-    max-width:700px;
-    height:75px;
-    background:#020910;
-    border-top:1px solid #26343e;
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    z-index:100;
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  height:68px;
+  background:rgba(10,10,10,.98);
+  border-top:1px solid #292929;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  z-index:100;
 }
 
 .nav{
-    color:#fff;
-    text-decoration:none;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    font-size:10px;
+  color:#777;
+  text-decoration:none;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  font-size:9px;
 }
 
 .nav-icon{
-    font-size:22px;
+  font-size:20px;
 }
 
 .nav.active{
-    color:#ff1744;
+  color:#ff1744;
 }
 
-@media(max-width:500px){
+@media(max-width:600px){
 
-    .video-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
+  .video-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:9px;
+  }
 
-    .random-grid{
-        grid-template-columns:repeat(3,1fr);
-    }
+  .video-title{
+    font-size:10px;
+  }
 
-    .section{
-        padding:0 12px;
-    }
+  .info{
+    font-size:8px;
+  }
+
+  .random-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
 }
 
 @media(max-width:390px){
 
-    .random-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-}
+  .video-grid{
+    gap:7px;
+  }
 
-@media(min-width:701px){
+  .random-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
 
-    body{
-        padding:20px 0;
-    }
-
-    .app{
-        border:1px solid #233541;
-        border-radius:25px;
-        overflow:hidden;
-    }
-
-    .bottom-nav{
-        bottom:20px;
-        border-radius:0 0 25px 25px;
-    }
+  .video-title{
+    font-size:9px;
+  }
 }
 </style>
 </head>
@@ -287,315 +288,680 @@ header{
 
 <header>
 
-    <a href="index.html" class="back">‹</a>
+<a href="index.html" class="back">‹</a>
 
-    <a href="index.html" class="logo">
-        Desi<span>Vexa</span>
-    </a>
+<a href="index.html" class="logo">
+Desi<span>Vexa</span>
+</a>
 
-    <a href="profile.html" class="profile">
-        👤
-    </a>
+<a href="profile.html" class="profile">👤</a>
 
 </header>
 
+
 <div class="ad">
-    Top Banner Ad
+Top Banner Ad
 </div>
 
 
 <section class="section">
 
-    <div class="title">
-        <h1>🔥 Trending Videos</h1>
-    </div>
+<div class="title">
+<h1>🔥 Trending Videos</h1>
+</div>
 
-    <div
-        class="video-grid"
-        id="trending">
-    </div>
+<div
+id="trending"
+class="video-grid">
+
+<div class="loading">
+Loading trending videos...
+</div>
+
+</div>
 
 </section>
 
 
 <section class="section random">
 
-    <div class="title">
-        <h1>🎲 Random Videos</h1>
-    </div>
+<div class="title">
+<h1>🎲 Random Videos</h1>
+</div>
 
-    <div
-        class="random-grid"
-        id="random">
-    </div>
+<div
+id="random"
+class="random-grid">
+
+<div class="loading">
+Loading random videos...
+</div>
+
+</div>
 
 </section>
 
 
 <div
-    class="pagination"
-    id="pagination">
+id="pagination"
+class="pagination">
 </div>
 
 
 <nav class="bottom-nav">
 
-    <a href="index.html" class="nav">
-        <div class="nav-icon">⌂</div>
-        Home
-    </a>
+<a href="index.html" class="nav">
+<span class="nav-icon">⌂</span>
+Home
+</a>
 
-    <a href="new.html" class="nav">
-        <div class="nav-icon">◷</div>
-        Latest
-    </a>
+<a href="new.html" class="nav">
+<span class="nav-icon">◷</span>
+Latest
+</a>
 
-    <a href="trending.html" class="nav active">
-        <div class="nav-icon">♨</div>
-        Trending
-    </a>
+<a href="trending.html" class="nav active">
+<span class="nav-icon">🔥</span>
+Trending
+</a>
 
-    <a href="recommended.html" class="nav">
-        <div class="nav-icon">▦</div>
-        Recommended
-    </a>
+<a href="recommended.html" class="nav">
+<span class="nav-icon">★</span>
+Recommended
+</a>
 
-    <a href="profile.html" class="nav">
-        <div class="nav-icon">♙</div>
-        Profile
-    </a>
+<a href="profile.html" class="nav">
+<span class="nav-icon">♙</span>
+Profile
+</a>
 
 </nav>
 
 </div>
 
 
-<script>
+<script type="module">
 
-const trendingVideos = [
-
-    ["Trending Video 1","Indian","12:34","124K"],
-    ["Trending Video 2","Bhabhi","08:50","98K"],
-    ["Trending Video 3","Desi","15:20","156K"],
-    ["Trending Video 4","Mature","10:12","78K"],
-    ["Trending Video 5","Indian","09:45","112K"],
-    ["Trending Video 6","Desi","13:22","91K"],
-    ["Trending Video 7","Bhabhi","07:42","87K"],
-    ["Trending Video 8","Mature","11:31","105K"],
-    ["Trending Video 9","Indian","10:40","99K"],
-    ["Trending Video 10","Desi","09:22","88K"],
-    ["Trending Video 11","Bhabhi","12:14","77K"],
-    ["Trending Video 12","Mature","08:30","71K"]
-];
+import {
+  createClient
+} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
 
-document.getElementById("trending").innerHTML =
-    trendingVideos.map((video,index)=>`
+/*
+ IMPORTANT:
+ app.js mein jo SAME Supabase URL
+ aur ANON KEY hai, wahi yahan paste karo.
+*/
 
-        <a
-            href="video.html?id=${index+1}"
-            class="video-card"
-        >
+const SUPABASE_URL =
+  "YOUR_SUPABASE_URL";
 
-            <div class="thumbnail">
-
-                <div class="play">▶</div>
-
-                <div class="duration">
-                    ${video[2]}
-                </div>
-
-            </div>
-
-            <div class="video-title">
-                ${video[0]}
-            </div>
-
-            <span class="tag">
-                ${video[1]}
-            </span>
-
-            <div class="info">
-                👁 ${video[3]} views<br>
-                ◷ Trending
-            </div>
-
-        </a>
-
-    `).join("");
+const SUPABASE_ANON_KEY =
+  "YOUR_SUPABASE_ANON_KEY";
 
 
-/* RANDOM 150 */
+const supabase =
+  createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
-const randomVideos=[];
 
-for(let i=1;i<=150;i++){
+const trendingBox =
+  document.getElementById("trending");
 
-    randomVideos.push({
-        id:i+500,
-        title:"Random Video "+i,
-        duration:
-            String(
-                Math.floor(Math.random()*15)+1
-            ).padStart(2,"0")
-            +
-            ":"
-            +
-            String(
-                Math.floor(Math.random()*60)
-            ).padStart(2,"0")
-    });
+const randomBox =
+  document.getElementById("random");
+
+const paginationBox =
+  document.getElementById("pagination");
+
+
+let currentPage = 1;
+
+const perPage = 30;
+
+
+/* -------------------------
+   TRENDING
+------------------------- */
+
+async function loadTrending(){
+
+  trendingBox.innerHTML =
+    `<div class="loading">
+       Loading trending videos...
+     </div>`;
+
+
+  /*
+    views ke basis par trending.
+    Agar views column nahi hai,
+    neeche error dikhega.
+  */
+
+  const {
+    data,
+    error
+  } = await supabase
+
+    .from("videos")
+
+    .select("*")
+
+    .order(
+      "views",
+      {
+        ascending:false,
+        nullsFirst:false
+      }
+    )
+
+    .limit(30);
+
+
+  if(error){
+
+    console.error(error);
+
+    trendingBox.innerHTML =
+      `<div class="error">
+        Could not load trending videos.<br><br>
+        ${escapeHtml(error.message)}
+      </div>`;
+
+    return;
+  }
+
+
+  if(!data || data.length === 0){
+
+    trendingBox.innerHTML =
+      `<div class="empty">
+        No trending videos found.
+      </div>`;
+
+    return;
+  }
+
+
+  renderVideos(
+    trendingBox,
+    data,
+    "Trending"
+  );
 
 }
 
 
-let currentPage=1;
+/* -------------------------
+   RANDOM
+------------------------- */
 
-const perPage=30;
+async function loadRandom(){
 
+  randomBox.innerHTML =
+    `<div class="loading">
+       Loading random videos...
+     </div>`;
+
+
+  /*
+    Database se videos lekar
+    client side shuffle.
+  */
+
+  const {
+    data,
+    error
+  } = await supabase
+
+    .from("videos")
+
+    .select("*")
+
+    .limit(150);
+
+
+  if(error){
+
+    console.error(error);
+
+    randomBox.innerHTML =
+      `<div class="error">
+        Could not load random videos.<br><br>
+        ${escapeHtml(error.message)}
+      </div>`;
+
+    return;
+  }
+
+
+  if(!data || data.length === 0){
+
+    randomBox.innerHTML =
+      `<div class="empty">
+        No videos found.
+      </div>`;
+
+    paginationBox.innerHTML = "";
+
+    return;
+  }
+
+
+  shuffle(data);
+
+  window.randomVideos = data;
+
+  renderRandom();
+
+}
+
+
+/* -------------------------
+   RENDER RANDOM
+------------------------- */
 
 function renderRandom(){
 
-    const start=(currentPage-1)*perPage;
+  const videos =
+    window.randomVideos || [];
 
-    const videos=
-        randomVideos.slice(
-            start,
-            start+perPage
-        );
 
-    document.getElementById("random").innerHTML=
+  const start =
+    (currentPage - 1) * perPage;
 
-        videos.map(video=>`
 
-            <a
-                href="video.html?id=${video.id}"
-                class="video-card"
-            >
+  const pageVideos =
+    videos.slice(
+      start,
+      start + perPage
+    );
 
-                <div class="thumbnail">
 
-                    <div class="play">▶</div>
+  renderVideos(
+    randomBox,
+    pageVideos,
+    "Random"
+  );
 
-                    <div class="duration">
-                        ${video.duration}
-                    </div>
 
-                </div>
+  renderPagination(
+    videos.length
+  );
 
-                <div class="video-title">
-                    ${video.title}
-                </div>
-
-            </a>
-
-        `).join("");
-
-    renderPagination();
 }
 
 
-function renderPagination(){
+/* -------------------------
+   VIDEO CARDS
+------------------------- */
 
-    const box=
-        document.getElementById("pagination");
+function renderVideos(
+  box,
+  videos,
+  label
+){
 
-    box.innerHTML="";
+  box.innerHTML = videos.map(
+    video => {
 
+      /*
+        THIS IS THE IMPORTANT FIX.
 
-    const prev=
-        document.createElement("button");
+        Real Supabase UUID is used.
+        No 1, 100, 500 etc.
+      */
 
-    prev.className="page";
-
-    prev.innerText="‹ Previous";
-
-    prev.disabled=currentPage===1;
-
-    prev.onclick=()=>{
-
-        if(currentPage>1){
-
-            currentPage--;
-
-            renderRandom();
-
-            scrollRandom();
-
-        }
-
-    };
-
-    box.appendChild(prev);
+      const id =
+        encodeURIComponent(
+          video.id
+        );
 
 
-    for(let i=1;i<=5;i++){
+      const title =
+        escapeHtml(
+          video.title ||
+          "Untitled Video"
+        );
 
-        const btn=
-            document.createElement("button");
 
-        btn.className="page";
+      const category =
+        escapeHtml(
+          video.category ||
+          "Video"
+        );
 
-        btn.innerText=i;
 
-        if(i===currentPage){
-            btn.classList.add("active");
-        }
+      const thumbnail =
+        video.thumbnail_url ||
+        video.thumbnail ||
+        "";
 
-        btn.onclick=()=>{
 
-            currentPage=i;
+      const duration =
+        video.duration ||
+        "";
 
-            renderRandom();
 
-            scrollRandom();
+      const views =
+        formatViews(
+          video.views
+        );
 
-        };
 
-        box.appendChild(btn);
+      return `
+
+<a
+  href="video.html?id=${id}"
+  class="video-card"
+>
+
+<div class="thumbnail">
+
+${
+thumbnail
+?
+`
+<img
+src="${escapeAttr(thumbnail)}"
+alt="${title}"
+loading="lazy">
+`
+:
+""
+}
+
+<div class="play">
+▶
+</div>
+
+${
+duration
+?
+`
+<div class="duration">
+${escapeHtml(duration)}
+</div>
+`
+:
+""
+}
+
+</div>
+
+
+<div class="video-title">
+${title}
+</div>
+
+
+<span class="tag">
+${category}
+</span>
+
+
+<div class="info">
+
+👁 ${views} views
+
+<br>
+
+◷ ${label}
+
+</div>
+
+</a>
+
+`;
+
+    }
+  ).join("");
+
+}
+
+
+/* -------------------------
+   PAGINATION
+------------------------- */
+
+function renderPagination(total){
+
+  const pages =
+    Math.max(
+      1,
+      Math.ceil(
+        total / perPage
+      )
+    );
+
+
+  paginationBox.innerHTML = "";
+
+
+  if(pages <= 1){
+    return;
+  }
+
+
+  const previous =
+    document.createElement(
+      "button"
+    );
+
+  previous.className = "page";
+
+  previous.textContent =
+    "‹";
+
+  previous.disabled =
+    currentPage === 1;
+
+  previous.onclick = () => {
+
+    if(currentPage > 1){
+
+      currentPage--;
+
+      renderRandom();
+
+      scrollRandom();
+
+    }
+
+  };
+
+  paginationBox.appendChild(
+    previous
+  );
+
+
+  const maxPages =
+    Math.min(
+      pages,
+      10
+    );
+
+
+  for(
+    let i = 1;
+    i <= maxPages;
+    i++
+  ){
+
+    const button =
+      document.createElement(
+        "button"
+      );
+
+    button.className =
+      "page";
+
+    button.textContent =
+      i;
+
+
+    if(i === currentPage){
+
+      button.classList.add(
+        "active"
+      );
 
     }
 
 
-    const next=
-        document.createElement("button");
+    button.onclick = () => {
 
-    next.className="page";
+      currentPage = i;
 
-    next.innerText="Next ›";
+      renderRandom();
 
-    next.disabled=currentPage===5;
-
-    next.onclick=()=>{
-
-        if(currentPage<5){
-
-            currentPage++;
-
-            renderRandom();
-
-            scrollRandom();
-
-        }
+      scrollRandom();
 
     };
 
-    box.appendChild(next);
+
+    paginationBox.appendChild(
+      button
+    );
+
+  }
+
+
+  const next =
+    document.createElement(
+      "button"
+    );
+
+  next.className = "page";
+
+  next.textContent =
+    "›";
+
+  next.disabled =
+    currentPage === pages;
+
+  next.onclick = () => {
+
+    if(currentPage < pages){
+
+      currentPage++;
+
+      renderRandom();
+
+      scrollRandom();
+
+    }
+
+  };
+
+  paginationBox.appendChild(
+    next
+  );
+
+}
+
+
+/* -------------------------
+   HELPERS
+------------------------- */
+
+function shuffle(array){
+
+  for(
+    let i = array.length - 1;
+    i > 0;
+    i--
+  ){
+
+    const j =
+      Math.floor(
+        Math.random() * (i + 1)
+      );
+
+    [
+      array[i],
+      array[j]
+    ] =
+    [
+      array[j],
+      array[i]
+    ];
+
+  }
+
 }
 
 
 function scrollRandom(){
 
-    document
-        .getElementById("random")
-        .scrollIntoView({
-            behavior:"smooth"
-        });
+  document
+    .getElementById("random")
+    .scrollIntoView({
+      behavior:"smooth"
+    });
 
 }
 
 
-renderRandom();
+function formatViews(value){
+
+  const number =
+    Number(value) || 0;
+
+
+  if(number >= 1000000){
+
+    return (
+      number / 1000000
+    ).toFixed(1) + "M";
+
+  }
+
+
+  if(number >= 1000){
+
+    return (
+      number / 1000
+    ).toFixed(1) + "K";
+
+  }
+
+
+  return String(number);
+
+}
+
+
+function escapeHtml(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+function escapeAttr(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;");
+
+}
+
+
+/* START */
+
+loadTrending();
+
+loadRandom();
 
 </script>
 
