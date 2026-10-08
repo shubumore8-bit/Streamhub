@@ -1,209 +1,340 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#02070d">
+<title>DesiVexa — Recommended</title>
 
-  <title>DesiVexa — Recommended</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#02070d;color:#fff;font-family:Arial,Helvetica,sans-serif}
+a{text-decoration:none;color:inherit}
+.page{max-width:1100px;margin:auto;min-height:100vh;background:#06111a;padding-bottom:40px}
+.top{height:68px;background:#030b12;border-bottom:1px solid #172733;display:flex;align-items:center;padding:0 15px;position:sticky;top:0;z-index:10}
+.home{background:#0b1b28;border:1px solid #263d4c;padding:9px 13px;border-radius:9px}
+.logo{font-size:27px;font-weight:900;flex:1;text-align:center;margin-right:65px}
+.logo span{color:#ff1744}
+.section{padding:20px 14px}
+.title{font-size:23px;margin-bottom:17px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.card{cursor:pointer}
+.thumb{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:9px;background:#0b1822}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.play{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.75);width:31px;height:31px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.badge{position:absolute;right:7px;bottom:7px;background:rgba(0,0,0,.8);padding:4px 6px;border-radius:5px;font-size:11px}
+.card-title{margin-top:8px;font-weight:700;font-size:14px;line-height:1.35}
+.tag{display:inline-block;margin-top:6px;padding:4px 9px;border-radius:15px;background:#ff1744;font-size:10px;font-weight:700}
+.meta{margin-top:6px;color:#9eafbd;font-size:11px}
+.loading,.empty{text-align:center;color:#9eafbd;padding:40px 10px;grid-column:1/-1}
 
-  <link rel="stylesheet" href="style.css?v=41">
+.pagination{display:flex;justify-content:center;align-items:center;gap:7px;margin-top:30px;flex-wrap:wrap}
+.pageBtn{min-width:40px;height:40px;padding:0 12px;border:1px solid #29404f;border-radius:9px;background:#0b1b28;color:#fff;font-weight:700;cursor:pointer}
+.pageBtn.active{background:#ff1744;border-color:#ff1744}
+.pageBtn:disabled{opacity:.35;cursor:not-allowed}
+
+@media(max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){
+.grid{grid-template-columns:repeat(2,1fr);gap:17px 11px}
+.logo{font-size:24px;margin-right:0}
+.card-title{font-size:13px}
+.pagination{gap:5px}
+.pageBtn{min-width:38px;height:38px;padding:0 9px}
+}
+</style>
 </head>
 
 <body>
 
-<main class="dvMain">
+<div class="page">
 
-  <div style="
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:15px;
-  ">
-    <h1 style="
-      color:white;
-      font-size:22px;
-      margin:0;
-    ">
-      Recommended
-    </h1>
+<header class="top">
+<a class="home" href="index.html">← Home</a>
+<div class="logo">Desi<span>Vexa</span></div>
+</header>
 
-    <a
-      href="index.html"
-      style="
-        color:white;
-        background:#e00000;
-        padding:8px 12px;
-        border-radius:7px;
-        text-decoration:none;
-        font-size:13px;
-      "
-    >
-      Home
-    </a>
-  </div>
+<section class="section">
 
-  <div id="recommendedVideos" style="
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:10px;
-  ">
-    <p style="color:#888;">
-      Loading recommended videos...
-    </p>
-  </div>
+<h1 class="title">👤 Recommended Videos</h1>
 
-</main>
+<div class="grid" id="videos">
+<div class="loading">Loading videos...</div>
+</div>
+
+<div class="pagination" id="pagination"></div>
+
+</section>
+</div>
 
 <script type="module">
 
-import { createClient }
+import {createClient}
 from "https://esm.sh/@supabase/supabase-js@2";
 
 import {
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-} from "./config.js";
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+}
+from "./config.js";
 
-const supabase = createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
+const supabase=createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
 );
 
-const box =
-  document.getElementById("recommendedVideos");
+const PER_PAGE=20;
 
-loadRecommended();
+let currentPage=
+Math.max(
+1,
+parseInt(
+new URLSearchParams(location.search).get("page")||"1"
+)
+);
 
-async function loadRecommended() {
+let totalVideos=0;
 
-  const result = await supabase
-    .from("videos")
-    .select(`
-      id,
-      title,
-      category,
-      thumbnail_url,
-      views,
-      created_at
-    `)
-    .eq("published", true)
-    .order("views", {
-      ascending:false
-    })
-    .order("created_at", {
-      ascending:false
-    })
-    .limit(100);
 
-  if (result.error) {
-
-    console.error(result.error);
-
-    box.innerHTML = `
-      <p style="color:#888;">
-        Unable to load recommended videos.
-      </p>
-    `;
-
-    return;
-  }
-
-  const videos = result.data || [];
-
-  if (!videos.length) {
-
-    box.innerHTML = `
-      <p style="color:#888;">
-        No recommended videos available.
-      </p>
-    `;
-
-    return;
-  }
-
-  box.innerHTML = videos.map(video => {
-
-    const id =
-      encodeURIComponent(video.id);
-
-    return `
-      <a
-        href="video.html?id=${id}"
-        style="
-          display:block;
-          color:white;
-          text-decoration:none;
-          min-width:0;
-        "
-      >
-
-        ${
-          video.thumbnail_url
-            ? `
-              <img
-                src="${escapeHTML(video.thumbnail_url)}"
-                loading="lazy"
-                alt=""
-                style="
-                  width:100%;
-                  aspect-ratio:16/9;
-                  object-fit:cover;
-                  display:block;
-                  border-radius:8px;
-                  background:#171717;
-                "
-              >
-            `
-            : `
-              <div style="
-                width:100%;
-                aspect-ratio:16/9;
-                display:flex;
-                align-items:center;
-                justify-content:center;
-                background:#171717;
-                border-radius:8px;
-                font-size:28px;
-              ">
-                ▶
-              </div>
-            `
-        }
-
-        <div style="
-          margin-top:6px;
-          font-size:14px;
-          font-weight:600;
-          line-height:1.3;
-        ">
-          ${escapeHTML(video.title || "Untitled")}
-        </div>
-
-        <div style="
-          color:#999;
-          font-size:11px;
-          margin-top:4px;
-        ">
-          ${escapeHTML(video.category || "Video")}
-          ·
-          ${Number(video.views || 0)} views
-        </div>
-
-      </a>
-    `;
-
-  }).join("");
+function esc(v){
+return String(v??"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
 }
 
-function escapeHTML(value) {
 
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+function views(v){
+
+const n=Number(v||0);
+
+if(n>=1000000)
+return (n/1000000).toFixed(1).replace(".0","")+"M";
+
+if(n>=1000)
+return (n/1000).toFixed(1).replace(".0","")+"K";
+
+return String(n);
 }
+
+
+function ago(date){
+
+if(!date)return "";
+
+const seconds=
+Math.floor((Date.now()-new Date(date))/1000);
+
+if(seconds<60)return "just now";
+
+const minutes=Math.floor(seconds/60);
+if(minutes<60)return minutes+"m ago";
+
+const hours=Math.floor(minutes/60);
+if(hours<24)return hours+"h ago";
+
+return Math.floor(hours/24)+"d ago";
+}
+
+
+function fallback(){
+
+const svg=`
+<svg xmlns="http://www.w3.org/2000/svg"
+width="800" height="450">
+<rect width="100%" height="100%" fill="#101d28"/>
+<text x="50%" y="50%"
+text-anchor="middle"
+dominant-baseline="middle"
+fill="#ff1744"
+font-size="46"
+font-family="Arial"
+font-weight="bold">
+DesiVexa
+</text>
+</svg>`;
+
+return "data:image/svg+xml;charset=UTF-8,"+
+encodeURIComponent(svg);
+}
+
+
+function card(v){
+
+return `
+<article class="card"
+onclick="openVideo('${encodeURIComponent(v.id)}')">
+
+<div class="thumb">
+
+<img
+src="${esc(v.thumbnail_url||fallback())}"
+alt="${esc(v.title||"Video")}"
+loading="lazy">
+
+<div class="play">▶</div>
+<div class="badge">HD</div>
+
+</div>
+
+<div class="card-title">
+${esc(v.title||"Untitled Video")}
+</div>
+
+<span class="tag">
+${esc(v.category||"Other")}
+</span>
+
+<div class="meta">
+◉ ${views(v.views)} views · ${ago(v.created_at)}
+</div>
+
+</article>
+`;
+}
+
+
+window.openVideo=function(id){
+
+location.href=
+"video.html?id="+
+encodeURIComponent(decodeURIComponent(id));
+
+};
+
+
+function goPage(page){
+
+location.href=
+"recommended.html?page="+page;
+
+}
+
+
+function renderPagination(){
+
+const box=document.getElementById("pagination");
+
+const totalPages=
+Math.ceil(totalVideos/PER_PAGE);
+
+if(totalPages<=1){
+box.innerHTML="";
+return;
+}
+
+let html="";
+
+html+=`
+<button class="pageBtn"
+${currentPage<=1?"disabled":""}
+onclick="goPage(${currentPage-1})">
+Previous
+</button>
+`;
+
+let start=Math.max(1,currentPage-2);
+let end=Math.min(totalPages,currentPage+2);
+
+if(currentPage<=3){
+start=1;
+end=Math.min(totalPages,5);
+}
+
+if(currentPage>=totalPages-2){
+start=Math.max(1,totalPages-4);
+end=totalPages;
+}
+
+for(let i=start;i<=end;i++){
+
+html+=`
+<button
+class="pageBtn ${i===currentPage?"active":""}"
+onclick="goPage(${i})">
+${i}
+</button>
+`;
+
+}
+
+html+=`
+<button class="pageBtn"
+${currentPage>=totalPages?"disabled":""}
+onclick="goPage(${currentPage+1})">
+Next
+</button>
+`;
+
+box.innerHTML=html;
+}
+
+
+async function load(){
+
+const box=document.getElementById("videos");
+
+const countResult=
+await supabase
+.from("videos")
+.select("id",{count:"exact",head:true})
+.eq("published",true);
+
+if(countResult.error){
+
+console.error(countResult.error);
+
+box.innerHTML=
+`<div class="empty">Videos load nahi ho paaye.</div>`;
+
+return;
+}
+
+totalVideos=countResult.count||0;
+
+const from=(currentPage-1)*PER_PAGE;
+const to=from+PER_PAGE-1;
+
+
+const {data,error}=
+await supabase
+.from("videos")
+.select(
+"id,title,category,description,thumbnail_url,video_url,views,created_at"
+)
+.eq("published",true)
+.order("views",{ascending:false})
+.order("created_at",{ascending:false})
+.range(from,to);
+
+
+if(error){
+
+console.error(error);
+
+box.innerHTML=
+`<div class="empty">Videos load nahi ho paaye.</div>`;
+
+return;
+}
+
+if(!data.length && currentPage>1){
+
+goPage(1);
+return;
+
+}
+
+box.innerHTML=data.length
+?data.map(card).join("")
+:`<div class="empty">No recommended videos found.</div>`;
+
+renderPagination();
+
+}
+
+load();
 
 </script>
 
