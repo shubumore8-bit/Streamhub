@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>DesiVexa - Search</title>
 
 <style>
-
 *{
   box-sizing:border-box;
   margin:0;
@@ -27,16 +24,12 @@ a{
   text-decoration:none;
 }
 
-/* HEADER */
-
 header{
   height:65px;
   background:#111;
   border-bottom:1px solid #292929;
-
   display:flex;
   align-items:center;
-
   gap:12px;
   padding:0 5%;
 }
@@ -55,20 +48,12 @@ header{
 
 .searchBox input{
   width:100%;
-
   padding:12px 18px;
-
   border-radius:25px;
-
   border:1px solid #333;
-
   background:#1b1b1b;
-
   color:#fff;
-
   outline:none;
-
-  font-size:15px;
 }
 
 .searchBox input:focus{
@@ -78,24 +63,17 @@ header{
 .profile{
   width:40px;
   height:40px;
-
   border-radius:50%;
-
   background:#e50914;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   font-weight:bold;
 }
-
-/* MAIN */
 
 .container{
   width:92%;
   max-width:1400px;
-
   margin:25px auto;
 }
 
@@ -112,82 +90,48 @@ header{
   margin-top:7px;
 }
 
-/* GRID */
-
 .grid{
   display:grid;
-
-  grid-template-columns:
-    repeat(4,1fr);
-
+  grid-template-columns:repeat(4,1fr);
   gap:18px;
 }
 
-/* CARD */
-
 .card{
   background:#121212;
-
   border:1px solid #222;
-
   border-radius:9px;
-
   overflow:hidden;
-
   transition:.2s;
 }
 
 .card:hover{
   transform:translateY(-3px);
-
   border-color:#e50914;
 }
 
-/* THUMBNAIL */
-
 .thumb{
   height:160px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #270000,
-      #151515,
-      #400000
-    );
-
+  background:linear-gradient(135deg,#270000,#151515,#400000);
   position:relative;
-
   overflow:hidden;
 }
 
 .thumb img{
   width:100%;
   height:100%;
-
   object-fit:cover;
-
   display:block;
 }
 
 .play{
   position:absolute;
-
   left:50%;
   top:50%;
-
-  transform:
-    translate(-50%,-50%);
-
+  transform:translate(-50%,-50%);
   color:#e50914;
-
   font-size:40px;
-
-  text-shadow:
-    0 2px 10px #000;
+  text-shadow:0 2px 10px #000;
 }
-
-/* INFO */
 
 .info{
   padding:12px;
@@ -195,151 +139,91 @@ header{
 
 .title{
   font-weight:bold;
-
   white-space:nowrap;
-
   overflow:hidden;
-
   text-overflow:ellipsis;
 }
 
 .meta{
   color:#888;
-
   font-size:12px;
-
   margin-top:7px;
 }
 
-/* MESSAGE */
-
 .message{
   grid-column:1/-1;
-
   background:#111;
-
   border:1px solid #292929;
-
   padding:40px 20px;
-
   border-radius:10px;
-
   text-align:center;
-
   color:#888;
 }
 
 .message h2{
   color:#fff;
-
   margin-bottom:8px;
 }
 
-/* PAGINATION */
-
 .pagination{
   display:flex;
-
   justify-content:center;
-
   align-items:center;
-
   gap:8px;
-
   flex-wrap:wrap;
-
   margin:30px 0;
 }
 
 .pagination button{
   background:#171717;
-
   border:1px solid #333;
-
   color:#fff;
-
   padding:9px 14px;
-
   border-radius:6px;
-
   cursor:pointer;
-
-  font-size:14px;
 }
 
+.pagination button.active,
 .pagination button:hover{
   background:#e50914;
-
-  border-color:#e50914;
-}
-
-.pagination button.active{
-  background:#e50914;
-
   border-color:#e50914;
 }
 
 .pagination button:disabled{
   opacity:.35;
-
   cursor:not-allowed;
 }
 
-/* BOTTOM NAV */
-
 .bottom-nav{
   position:fixed;
-
   bottom:0;
   left:0;
-
   width:100%;
-
   height:65px;
-
   background:#111;
-
   border-top:1px solid #292929;
-
   display:flex;
-
   justify-content:space-around;
-
   align-items:center;
-
   z-index:100;
 }
 
 .bottom-nav a{
   color:#aaa;
-
   text-align:center;
-
   font-size:12px;
-}
-
-.bottom-nav a.active{
-  color:#e50914;
 }
 
 .bottom-nav div{
   font-size:20px;
-
   margin-bottom:3px;
 }
 
-/* TABLET */
-
 @media(max-width:900px){
-
   .grid{
-    grid-template-columns:
-      repeat(3,1fr);
+    grid-template-columns:repeat(3,1fr);
   }
-
 }
-
-/* MOBILE */
 
 @media(max-width:600px){
 
@@ -356,9 +240,7 @@ header{
   }
 
   .grid{
-    grid-template-columns:
-      repeat(2,1fr);
-
+    grid-template-columns:repeat(2,1fr);
     gap:10px;
   }
 
@@ -373,71 +255,42 @@ header{
   .title{
     font-size:14px;
   }
-
-  .meta{
-    font-size:11px;
-  }
-
 }
-
-/* SMALL MOBILE */
 
 @media(max-width:380px){
 
   .profile{
     display:none;
   }
-
 }
-
 </style>
-
 </head>
 
 <body>
 
-
-<!-- HEADER -->
-
 <header>
 
-  <a
-    href="index.html"
-    class="logo">
-
+  <a href="index.html" class="logo">
     DesiVexa
-
   </a>
 
-
   <div class="searchBox">
-
     <input
       id="searchInput"
       type="text"
       placeholder="Search videos..."
       autocomplete="off"
     >
-
   </div>
 
-
-  <a
-    href="profile.html"
-    class="profile">
-
+  <a href="profile.html" class="profile">
     P
-
   </a>
 
 </header>
 
 
-
-<!-- MAIN -->
-
 <main class="container">
-
 
   <div class="heading">
 
@@ -457,9 +310,8 @@ header{
     class="grid">
 
     <div class="message">
-
-      Loading videos...
-
+      <h2>Loading...</h2>
+      <p>Please wait.</p>
     </div>
 
   </div>
@@ -470,81 +322,43 @@ header{
     class="pagination">
   </div>
 
-
 </main>
 
 
-
-<!-- BOTTOM NAV -->
-
 <nav class="bottom-nav">
 
-
   <a href="index.html">
-
     <div>⌂</div>
-
     Home
-
   </a>
-
 
   <a href="new.html">
-
     <div>★</div>
-
     Latest
-
   </a>
 
-
-  <a
-    href="trending.html">
-
+  <a href="trending.html">
     <div>🔥</div>
-
     Trending
-
   </a>
 
-
-  <a
-    href="recommended.html">
-
+  <a href="recommended.html">
     <div>♥</div>
-
     Recommended
-
   </a>
 
-
-  <a
-    href="profile.html">
-
+  <a href="profile.html">
     <div>●</div>
-
     Profile
-
   </a>
-
 
 </nav>
 
 
-
 <script type="module">
 
-
-/* =========================
-   SUPABASE
-========================= */
-
-import {
-  createClient
-}
-from
-"https://esm.sh/@supabase/supabase-js@2";
-
+import { createClient }
+from "https://esm.sh/@supabase/supabase-js@2";
 
 import {
   SUPABASE_URL,
@@ -560,50 +374,42 @@ const supabase =
   );
 
 
-
 /* =========================
-   URL SEARCH
+   URL
 ========================= */
 
-const urlParams =
+const params =
   new URLSearchParams(
     window.location.search
   );
 
-
 let search =
-  urlParams.get("q") || "";
-
+  params.get("q") || "";
 
 search =
   search.trim();
 
 
-let page =
+let currentPage =
   parseInt(
-    urlParams.get("page") || "1"
+    params.get("page") || "1",
+    10
   );
 
 
 if(
-  isNaN(page) ||
-  page < 1
+  isNaN(currentPage) ||
+  currentPage < 1
 ){
-
-  page = 1;
-
+  currentPage = 1;
 }
 
 
-
-/* =========================
-   SETTINGS
-========================= */
-
 const PER_PAGE = 20;
 
-let videos = [];
+let allVideos = [];
 
+let results = [];
 
 
 /* =========================
@@ -615,24 +421,20 @@ const input =
     "searchInput"
   );
 
-
 const grid =
   document.getElementById(
     "videoGrid"
   );
-
 
 const title =
   document.getElementById(
     "pageTitle"
   );
 
-
 const count =
   document.getElementById(
     "resultCount"
   );
-
 
 const pagination =
   document.getElementById(
@@ -640,46 +442,23 @@ const pagination =
   );
 
 
-
-/* =========================
-   INPUT
-========================= */
-
-input.value =
-  search;
-
+input.value = search;
 
 
 /* =========================
-   HTML ESCAPE
+   ESCAPE
 ========================= */
 
 function escapeHTML(text){
 
   return String(text || "")
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 
 }
-
 
 
 /* =========================
@@ -688,178 +467,162 @@ function escapeHTML(text){
 
 function formatViews(value){
 
-  const number =
+  const n =
     Number(value) || 0;
 
-
-  if(
-    number >= 1000000
-  ){
+  if(n >= 1000000){
 
     return (
-      (number / 1000000)
+      (n / 1000000)
       .toFixed(1)
-      .replace(".0","")
-      +
+      .replace(".0","") +
       "M"
     );
 
   }
 
-
-  if(
-    number >= 1000
-  ){
+  if(n >= 1000){
 
     return (
-      (number / 1000)
+      (n / 1000)
       .toFixed(1)
-      .replace(".0","")
-      +
+      .replace(".0","") +
       "K"
     );
 
   }
 
-
-  return String(number);
+  return String(n);
 
 }
 
 
+/* =========================
+   NORMALIZE SEARCH
+========================= */
+
+function normalize(text){
+
+  return String(text || "")
+    .toLowerCase()
+    .trim();
+
+}
+
 
 /* =========================
-   LOAD VIDEOS
+   LOAD ALL PUBLISHED VIDEOS
 ========================= */
 
 async function loadVideos(){
 
-
   grid.innerHTML = `
-
     <div class="message">
-
-      Searching...
-
+      <h2>Loading videos...</h2>
+      <p>Please wait.</p>
     </div>
-
   `;
-
-
-  let request =
-    supabase
-      .from("videos")
-      .select(`
-        id,
-        title,
-        category,
-        thumbnail_url,
-        video_url,
-        views,
-        created_at
-      `)
-      .eq(
-        "published",
-        true
-      )
-      .order(
-        "created_at",
-        {
-          ascending:false
-        }
-      );
-
-
-  /*
-    SEARCH TITLE OR CATEGORY
-  */
-
-  if(search){
-
-    const cleanSearch =
-      search
-        .replace(
-          /[%_]/g,
-          ""
-        )
-        .replace(
-          /,/g,
-          " "
-        );
-
-
-    if(cleanSearch){
-
-      request =
-        request.or(
-          "title.ilike.%" +
-          cleanSearch +
-          "%," +
-          "category.ilike.%" +
-          cleanSearch +
-          "%"
-        );
-
-    }
-
-  }
 
 
   const {
     data,
     error
   } =
-  await request;
+  await supabase
+    .from("videos")
+    .select(`
+      id,
+      title,
+      category,
+      thumbnail_url,
+      video_url,
+      views,
+      created_at
+    `)
+    .eq(
+      "published",
+      true
+    )
+    .order(
+      "created_at",
+      {
+        ascending:false
+      }
+    )
+    .limit(1000);
 
 
   if(error){
 
     console.error(
-      "SEARCH ERROR:",
+      "VIDEOS ERROR:",
       error
     );
 
 
     grid.innerHTML = `
-
       <div class="message">
-
-        <h2>
-          Search Error
-        </h2>
-
-        <p>
-          ${escapeHTML(
-            error.message
-          )}
-        </p>
-
+        <h2>Videos load nahi ho rahe</h2>
+        <p>${escapeHTML(error.message)}</p>
       </div>
-
     `;
 
-
     count.textContent =
-      "Unable to load videos";
-
-
-    pagination.innerHTML =
-      "";
-
+      "Database error";
 
     return;
 
   }
 
 
-  videos =
+  allVideos =
     data || [];
+
+
+  /*
+    SEARCH
+  */
+
+  const q =
+    normalize(search);
+
+
+  if(!q){
+
+    results =
+      allVideos;
+
+  }else{
+
+    results =
+      allVideos.filter(
+        video => {
+
+          const videoTitle =
+            normalize(
+              video.title
+            );
+
+          const category =
+            normalize(
+              video.category
+            );
+
+
+          return (
+            videoTitle.includes(q) ||
+            category.includes(q)
+          );
+
+        }
+      );
+
+  }
 
 
   render();
 
 }
-
 
 
 /* =========================
@@ -868,11 +631,6 @@ async function loadVideos(){
 
 function render(){
 
-
-  /*
-    TITLE
-  */
-
   if(search){
 
     title.textContent =
@@ -880,8 +638,7 @@ function render(){
       search +
       '"';
 
-  }
-  else{
+  }else{
 
     title.textContent =
       "All Videos";
@@ -889,25 +646,16 @@ function render(){
   }
 
 
-  /*
-    COUNT
-  */
-
   count.textContent =
-    videos.length +
+    results.length +
     (
-      videos.length === 1
+      results.length === 1
       ? " video found"
       : " videos found"
     );
 
 
-
-  /*
-    NO RESULTS
-  */
-
-  if(videos.length === 0){
+  if(results.length === 0){
 
     grid.innerHTML = `
 
@@ -920,10 +668,10 @@ function render(){
         <p>
           ${
             search
-              ? 'No videos found for "' +
-                escapeHTML(search) +
-                '".'
-              : "There are no published videos yet."
+            ? 'No video found for "' +
+              escapeHTML(search) +
+              '".'
+            : "No published videos available."
           }
         </p>
 
@@ -932,44 +680,32 @@ function render(){
     `;
 
 
-    pagination.innerHTML =
-      "";
-
+    pagination.innerHTML = "";
 
     return;
 
   }
 
 
-
-  /*
-    TOTAL PAGES
-  */
-
   const totalPages =
     Math.ceil(
-      videos.length /
+      results.length /
       PER_PAGE
     );
 
 
   if(
-    page > totalPages
+    currentPage > totalPages
   ){
 
-    page =
+    currentPage =
       totalPages;
 
   }
 
 
-
-  /*
-    CURRENT PAGE
-  */
-
   const start =
-    (page - 1) *
+    (currentPage - 1) *
     PER_PAGE;
 
 
@@ -979,130 +715,105 @@ function render(){
 
 
   const pageVideos =
-    videos.slice(
+    results.slice(
       start,
       end
     );
 
 
-
-  /*
-    CARDS
-  */
-
   grid.innerHTML =
     pageVideos
-      .map(
-        video => {
+      .map(video => {
 
-          const videoTitle =
-            escapeHTML(
-              video.title ||
-              "Untitled Video"
-            );
-
-
-          const category =
-            escapeHTML(
-              video.category ||
-              "Uncategorized"
-            );
+        const videoTitle =
+          escapeHTML(
+            video.title ||
+            "Untitled Video"
+          );
 
 
-          const views =
-            formatViews(
-              video.views
-            );
+        const category =
+          escapeHTML(
+            video.category ||
+            "Uncategorized"
+          );
 
 
-          let thumbnailHTML = `
+        const views =
+          formatViews(
+            video.views
+          );
 
-            <div class="play">
-              ▶
-            </div>
+
+        let image = "";
+
+
+        if(
+          video.thumbnail_url
+        ){
+
+          image = `
+
+            <img
+              src="${escapeHTML(
+                video.thumbnail_url
+              )}"
+              alt="${videoTitle}"
+              loading="lazy"
+            >
 
           `;
 
+        }
 
-          if(
-            video.thumbnail_url
-          ){
 
-            thumbnailHTML = `
+        return `
 
-              <img
-                src="${
-                  escapeHTML(
-                    video.thumbnail_url
-                  )
-                }"
-                alt="${videoTitle}"
-                loading="lazy"
-              >
+          <a
+            href="video.html?id=${
+              encodeURIComponent(
+                video.id
+              )
+            }"
+            class="card">
+
+            <div class="thumb">
+
+              ${image}
 
               <div class="play">
                 ▶
               </div>
 
-            `;
+            </div>
 
-          }
+            <div class="info">
 
+              <div class="title">
+                ${videoTitle}
+              </div>
 
-          return `
+              <div class="meta">
 
-            <a
-              class="card"
-              href="video.html?id=${
-                encodeURIComponent(
-                  video.id
-                )
-              }">
-
-
-              <div class="thumb">
-
-                ${thumbnailHTML}
+                👁 ${views}
+                •
+                ${category}
 
               </div>
 
+            </div>
 
-              <div class="info">
+          </a>
 
-                <div class="title">
+        `;
 
-                  ${videoTitle}
-
-                </div>
-
-
-                <div class="meta">
-
-                  👁 ${views}
-
-                  •
-
-                  ${category}
-
-                </div>
-
-              </div>
-
-
-            </a>
-
-          `;
-
-        }
-      )
+      })
       .join("");
-
 
 
   renderPagination();
 
 }
-
 
 
 /* =========================
@@ -1111,20 +822,16 @@ function render(){
 
 function renderPagination(){
 
-
   const totalPages =
     Math.ceil(
-      videos.length /
+      results.length /
       PER_PAGE
     );
 
 
-  if(
-    totalPages <= 1
-  ){
+  if(totalPages <= 1){
 
-    pagination.innerHTML =
-      "";
+    pagination.innerHTML = "";
 
     return;
 
@@ -1134,94 +841,69 @@ function renderPagination(){
   let html = "";
 
 
-
-  /*
-    PREVIOUS
-  */
-
   html += `
-
     <button
-      id="previousButton">
-
+      id="prevBtn"
+      ${currentPage === 1 ? "disabled" : ""}>
       Previous
-
     </button>
-
   `;
 
 
-
-  /*
-    PAGE NUMBERS
-  */
-
-  let startPage =
+  let start =
     Math.max(
       1,
-      page - 2
+      currentPage - 2
     );
 
 
-  let endPage =
+  let end =
     Math.min(
       totalPages,
-      startPage + 4
+      start + 4
     );
 
 
   if(
-    endPage - startPage < 4
+    end - start < 4
   ){
 
-    startPage =
+    start =
       Math.max(
         1,
-        endPage - 4
+        end - 4
       );
 
   }
 
 
   for(
-    let i = startPage;
-    i <= endPage;
+    let i = start;
+    i <= end;
     i++
   ){
 
     html += `
-
       <button
         class="${
-          i === page
+          i === currentPage
           ? "active"
           : ""
         }"
         data-page="${i}">
-
         ${i}
-
       </button>
-
     `;
 
   }
 
 
-
-  /*
-    NEXT
-  */
-
   html += `
-
     <button
-      id="nextButton">
-
+      id="nextBtn"
+      ${currentPage === totalPages ? "disabled" : ""}>
       Next
-
     </button>
-
   `;
 
 
@@ -1229,98 +911,64 @@ function renderPagination(){
     html;
 
 
-
-  /*
-    BUTTON EVENTS
-  */
-
-  const previous =
-    document.getElementById(
-      "previousButton"
+  document
+    .getElementById("prevBtn")
+    .onclick =
+    () => goToPage(
+      currentPage - 1
     );
 
 
-  const next =
-    document.getElementById(
-      "nextButton"
+  document
+    .getElementById("nextBtn")
+    .onclick =
+    () => goToPage(
+      currentPage + 1
     );
-
-
-  previous.disabled =
-    page === 1;
-
-
-  next.disabled =
-    page === totalPages;
-
-
-
-  previous.onclick =
-    function(){
-
-      if(page > 1){
-
-        goToPage(
-          page - 1
-        );
-
-      }
-
-    };
-
-
-
-  next.onclick =
-    function(){
-
-      if(
-        page < totalPages
-      ){
-
-        goToPage(
-          page + 1
-        );
-
-      }
-
-    };
-
 
 
   document
     .querySelectorAll(
       "[data-page]"
     )
-    .forEach(
-      button => {
+    .forEach(button => {
 
-        button.onclick =
-          function(){
+      button.onclick =
+      () => goToPage(
+        Number(
+          button.dataset.page
+        )
+      );
 
-            goToPage(
-              Number(
-                this.dataset.page
-              )
-            );
-
-          };
-
-      }
-    );
+    });
 
 }
 
 
-
 /* =========================
-   GO TO PAGE
+   PAGE CHANGE
 ========================= */
 
-function goToPage(
-  newPage
-){
+function goToPage(newPage){
 
-  page =
+  const totalPages =
+    Math.ceil(
+      results.length /
+      PER_PAGE
+    );
+
+
+  if(
+    newPage < 1 ||
+    newPage > totalPages
+  ){
+
+    return;
+
+  }
+
+
+  currentPage =
     newPage;
 
 
@@ -1342,7 +990,7 @@ function goToPage(
 
   url.searchParams.set(
     "page",
-    page
+    currentPage
   );
 
 
@@ -1364,14 +1012,13 @@ function goToPage(
 }
 
 
-
 /* =========================
    SEARCH
 ========================= */
 
 input.addEventListener(
   "keydown",
-  function(event){
+  event => {
 
     if(
       event.key !== "Enter"
@@ -1383,7 +1030,7 @@ input.addEventListener(
 
 
     const value =
-      this.value.trim();
+      input.value.trim();
 
 
     if(!value){
@@ -1404,7 +1051,6 @@ input.addEventListener(
 
   }
 );
-
 
 
 /* =========================
