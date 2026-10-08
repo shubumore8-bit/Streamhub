@@ -275,7 +275,10 @@ video{
   color:#ff667f;
 }
 
-/* COMMENTS */
+
+/* =========================
+   COMMENTS
+========================= */
 
 .comments{
   margin-top:35px;
@@ -293,6 +296,7 @@ video{
   min-width:0;
 
   background:#0c111b;
+
   border:1px solid #242c3b;
 
   color:#fff;
@@ -310,7 +314,9 @@ video{
 
 .commentBtn{
   border:0;
+
   background:#ff1744;
+
   color:#fff;
 
   border-radius:8px;
@@ -320,12 +326,18 @@ video{
   cursor:pointer;
 }
 
+.commentBtn:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
 .commentList{
   margin-top:15px;
 }
 
 .comment{
   background:#0c111b;
+
   border:1px solid #1a2130;
 
   border-radius:9px;
@@ -337,7 +349,9 @@ video{
 
 .commentName{
   font-size:12px;
+
   font-weight:bold;
+
   color:#ff1744;
 }
 
@@ -349,16 +363,30 @@ video{
   font-size:13px;
 
   line-height:1.5;
+
+  word-break:break-word;
+}
+
+.commentDate{
+  margin-top:7px;
+
+  color:#777f90;
+
+  font-size:10px;
 }
 
 .empty{
   color:#777f90;
+
   padding:20px 0;
+
   font-size:13px;
 }
 
 
-/* MOBILE */
+/* =========================
+   MOBILE
+========================= */
 
 @media(max-width:900px){
 
@@ -438,7 +466,9 @@ video{
 <div class="container">
 
 
-  <!-- VIDEO -->
+  <!-- =========================
+       VIDEO
+  ========================== -->
 
   <div id="videoArea">
 
@@ -452,7 +482,9 @@ video{
 
 
 
-  <!-- RELATED VIDEOS -->
+  <!-- =========================
+       RELATED VIDEOS
+  ========================== -->
 
   <div class="sectionTitle">
 
@@ -487,9 +519,13 @@ video{
 
 
 
-  <!-- COMMENTS -->
+  <!-- =========================
+       COMMENTS
+  ========================== -->
 
-  <div class="comments">
+  <div
+    class="comments"
+    id="commentsSection">
 
     <div class="sectionTitle">
 
@@ -526,7 +562,7 @@ video{
 
       <div class="empty">
 
-        Comments will appear here.
+        Loading comments...
 
       </div>
 
@@ -886,7 +922,9 @@ async function loadVideo(){
         controls
         playsinline
         preload="metadata"
-        poster="${escapeHtml(thumbnail)}">
+        poster="${escapeHtml(
+          thumbnail
+        )}">
 
         <source
           src="${escapeHtml(
@@ -1063,8 +1101,8 @@ function setupButtons(){
   commentScrollBtn.onclick = () => {
 
     document
-      .querySelector(
-        ".comments"
+      .getElementById(
+        "commentsSection"
       )
       .scrollIntoView({
         behavior:"smooth"
@@ -1332,13 +1370,9 @@ async function loadRelatedVideos(
     categoryVideos || [];
 
 
-  /*
-    Agar same category me
-    20 se kam videos hain,
-    to other videos add honge.
-  */
-
-  if(videos.length < 20){
+  if(
+    videos.length < 20
+  ){
 
     const {
       data:otherVideos
@@ -1461,9 +1495,11 @@ async function loadRelatedVideos(
 
   box.innerHTML =
     pageVideos
+
       .map(
         relatedCard
       )
+
       .join("");
 
 
@@ -1680,7 +1716,6 @@ function renderPagination(
   );
 
 
-
   let start =
     Math.max(
       1,
@@ -1706,7 +1741,6 @@ function renderPagination(
       );
 
   }
-
 
 
   for(
@@ -1748,7 +1782,6 @@ function renderPagination(
     );
 
   }
-
 
 
   const next =
@@ -1811,21 +1844,106 @@ function goRelatedPage(
 
 
 /* =========================
-   COMMENTS
+   LOAD COMMENTS
 ========================= */
 
-const commentBtn =
-  document.getElementById(
-    "commentBtn"
+async function loadComments(){
+
+  const list =
+    document.getElementById(
+      "commentList"
+    );
+
+
+  if(!videoId){
+
+    list.innerHTML = `
+
+      <div class="empty">
+
+        No video selected.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  list.innerHTML = `
+
+    <div class="empty">
+
+      Loading comments...
+
+    </div>
+
+  `;
+
+
+  const {
+    data,
+    error
+  } = await supabase
+
+    .from("comments")
+
+    .select(`
+      id,
+      video_id,
+      comment,
+      created_at
+    `)
+
+    .eq(
+      "video_id",
+      String(videoId)
+    )
+
+    .order(
+      "created_at",
+      {
+        ascending:false
+      }
+    );
+
+
+  if(error){
+
+    console.error(
+      "Comments error:",
+      error
+    );
+
+
+    list.innerHTML = `
+
+      <div class="empty">
+
+        Failed to load comments.
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
+  renderComments(
+    data || []
   );
 
-
-const commentInput =
-  document.getElementById(
-    "commentInput"
-  );
+}
 
 
+
+/* =========================
+   POST COMMENT
+========================= */
 
 commentBtn.onclick =
 async function(){
@@ -1845,48 +1963,73 @@ async function(){
   }
 
 
-  /*
-    Temporary local comments.
-  */
+  if(text.length > 500){
 
-  const comments =
-    JSON.parse(
+    alert(
+      "Comment is too long."
+    );
 
-      localStorage.getItem(
-        "desivexa_comments_" +
-        videoId
-      ) || "[]"
+    return;
 
+  }
+
+
+  commentBtn.disabled = true;
+
+  commentBtn.textContent =
+    "Posting...";
+
+
+  const {
+    error
+  } = await supabase
+
+    .from("comments")
+
+    .insert({
+
+      video_id:
+        String(videoId),
+
+      comment:
+        text
+
+    });
+
+
+  if(error){
+
+    console.error(
+      "Comment insert error:",
+      error
     );
 
 
-  comments.unshift({
-
-    text:text,
-
-    date:
-      new Date()
-        .toISOString()
-
-  });
+    alert(
+      "Comment post nahi ho paya."
+    );
 
 
-  localStorage.setItem(
+    commentBtn.disabled = false;
 
-    "desivexa_comments_" +
-    videoId,
+    commentBtn.textContent =
+      "Post";
 
-    JSON.stringify(
-      comments
-    )
+    return;
 
-  );
+  }
 
 
   commentInput.value = "";
 
 
-  renderComments();
+  commentBtn.disabled = false;
+
+  commentBtn.textContent =
+    "Post";
+
+
+  await loadComments();
 
 };
 
@@ -1896,7 +2039,9 @@ async function(){
    RENDER COMMENTS
 ========================= */
 
-function renderComments(){
+function renderComments(
+  comments
+){
 
   const list =
     document.getElementById(
@@ -1904,18 +2049,8 @@ function renderComments(){
     );
 
 
-  const comments =
-    JSON.parse(
-
-      localStorage.getItem(
-        "desivexa_comments_" +
-        videoId
-      ) || "[]"
-
-    );
-
-
   if(
+    !comments ||
     comments.length === 0
   ){
 
@@ -1942,6 +2077,7 @@ function renderComments(){
 
           <div class="comment">
 
+
             <div class="commentName">
 
               Guest
@@ -1952,10 +2088,20 @@ function renderComments(){
             <div class="commentText">
 
               ${escapeHtml(
-                comment.text
+                comment.comment
               )}
 
             </div>
+
+
+            <div class="commentDate">
+
+              ${timeAgo(
+                comment.created_at
+              )}
+
+            </div>
+
 
           </div>
 
@@ -1972,7 +2118,7 @@ function renderComments(){
    START
 ========================= */
 
-renderComments();
+loadComments();
 
 loadVideo();
 
