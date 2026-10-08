@@ -1395,3 +1395,225 @@ footer{
 .comment strong{color:#fff}
 .comment p{margin:5px 0 0;color:#b9c1cc;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
 #relatedVideos{margin-top:28px}
+
+/* =========================================
+   DESIVEXA VIDEO PAGE — MOBILE UI POLISH
+   ========================================= */
+
+body {
+  background: #080808;
+  color: #fff;
+}
+
+.dvMain {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 10px 90px;
+}
+
+
+/* VIDEO PLAYER */
+
+#mainVideo {
+  width: 100%;
+  max-height: 72vh;
+  background: #000;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,.45);
+}
+
+
+/* TITLE */
+
+.dvMain h1 {
+  font-weight: 700;
+  letter-spacing: -.2px;
+}
+
+
+/* ACTION BUTTONS */
+
+#likeBtn,
+#commentBtn,
+#shareBtn {
+  transition:
+    transform .15s ease,
+    background .15s ease,
+    opacity .15s ease;
+}
+
+#likeBtn:active,
+#commentBtn:active,
+#shareBtn:active {
+  transform: scale(.95);
+}
+
+#likeBtn:hover,
+#commentBtn:hover,
+#shareBtn:hover {
+  background: #2b2b2b !important;
+}
+
+
+/* LIKE ACTIVE */
+
+#likeBtn[style*="#e00000"] {
+  box-shadow:
+    0 0 0 1px rgba(224,0,0,.35),
+    0 5px 18px rgba(224,0,0,.18);
+}
+
+
+/* COMMENTS */
+
+#commentsSection {
+  border-top: 1px solid #222;
+  padding-top: 22px;
+}
+
+#commentsSection h2 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+#commentInput {
+  box-sizing: border-box;
+}
+
+#commentInput:focus {
+  border-color: #e00000 !important;
+  box-shadow: 0 0 0 2px rgba(224,0,0,.12);
+}
+
+
+/* POST BUTTON */
+
+#commentSubmit {
+  min-height: 44px;
+  font-weight: 600;
+}
+
+#commentSubmit:active {
+  transform: scale(.96);
+}
+
+
+/* COMMENT CARDS */
+
+#commentsList > div {
+  border: 1px solid #242424;
+  box-shadow: 0 4px 15px rgba(0,0,0,.2);
+}
+
+
+/* RANDOM VIDEOS */
+
+#randomVideos {
+  margin-top: 12px;
+}
+
+#randomVideos a {
+  overflow: hidden;
+  min-width: 0;
+}
+
+#randomVideos img,
+#randomVideos a > div:first-child {
+  transition: transform .2s ease;
+}
+
+#randomVideos a:active img,
+#randomVideos a:active > div:first-child {
+  transform: scale(.98);
+}
+
+
+/* SECTION HEADINGS */
+
+.dvMain h2 {
+  letter-spacing: -.2px;
+}
+
+
+/* SHARE STATUS */
+
+#shareStatus {
+  color: #e00000 !important;
+  font-weight: 600;
+}
+
+
+/* FOOTER */
+
+footer {
+  background: #050505;
+  border-top: 1px solid #202020;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+  .dvMain {
+    padding:
+      8px
+      8px
+      95px;
+  }
+
+  #mainVideo {
+    border-radius: 8px !important;
+    max-height: 60vh;
+  }
+
+  .dvMain h1 {
+    font-size: 19px !important;
+    line-height: 1.3;
+  }
+
+  #likeBtn,
+  #commentBtn,
+  #shareBtn {
+    padding:
+      10px 13px !important;
+    font-size: 14px !important;
+  }
+
+  #commentsSection {
+    margin-top: 25px !important;
+  }
+
+  #commentsSection h2 {
+    font-size: 18px;
+  }
+
+  #commentInput {
+    font-size: 14px;
+  }
+
+  #randomVideos {
+    gap: 7px !important;
+  }
+
+  #randomVideos a {
+    font-size: 12px;
+  }
+
+}
+
+
+/* VERY SMALL PHONES */
+
+@media (max-width: 380px) {
+
+  #likeBtn,
+  #commentBtn,
+  #shareBtn {
+    padding:
+      9px 10px !important;
+    font-size: 13px !important;
+  }
+
+}
