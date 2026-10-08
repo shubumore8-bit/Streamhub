@@ -3,15 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>DesiVexa</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box}
 
 body{
     background:#02070d;
@@ -24,11 +19,10 @@ body{
     min-height:100vh;
     margin:auto;
     background:#06111a;
-    padding-bottom:85px;
+    padding-bottom:90px;
 }
 
 /* HEADER */
-
 header{
     height:78px;
     display:flex;
@@ -40,7 +34,8 @@ header{
 }
 
 .menu{
-    font-size:30px;
+    font-size:28px;
+    cursor:pointer;
 }
 
 .logo{
@@ -52,31 +47,32 @@ header{
     color:#ff1744;
 }
 
-.icons{
-    font-size:24px;
-    word-spacing:12px;
+.header-actions{
+    display:flex;
+    gap:15px;
+    align-items:center;
 }
 
+.header-btn{
+    color:#fff;
+    text-decoration:none;
+    font-size:22px;
+}
 
 /* AD */
-
 .ad{
     margin:8px 18px 13px;
     height:58px;
     border:2px solid #ff1744;
     border-radius:8px;
     background:#280914;
-
     display:flex;
     align-items:center;
     justify-content:center;
-
     font-size:13px;
 }
 
-
 /* CATEGORIES */
-
 .categories{
     display:flex;
     gap:8px;
@@ -95,7 +91,7 @@ header{
     border-radius:10px;
     background:#10202c;
     border:1px solid #233a49;
-    color:white;
+    color:#fff;
     text-decoration:none;
     font-size:13px;
 }
@@ -105,9 +101,7 @@ header{
     border-color:#ff1744;
 }
 
-
 /* SECTION */
-
 .section{
     padding:0 18px;
     margin:20px 0;
@@ -131,9 +125,7 @@ header{
     text-decoration:none;
 }
 
-
 /* VIDEO GRID */
-
 .video-grid{
     display:grid;
     grid-template-columns:repeat(4,1fr);
@@ -142,6 +134,7 @@ header{
 
 .video-card{
     min-width:0;
+    cursor:pointer;
 }
 
 .thumbnail{
@@ -149,7 +142,6 @@ header{
     aspect-ratio:16/9;
     overflow:hidden;
     border-radius:5px;
-
     background:
     linear-gradient(
         135deg,
@@ -170,19 +162,13 @@ header{
 .play{
     position:absolute;
     z-index:2;
-
     left:50%;
     top:50%;
-
     transform:translate(-50%,-50%);
-
     width:36px;
     height:36px;
-
     border-radius:50%;
-
     background:rgba(0,0,0,.65);
-
     display:flex;
     align-items:center;
     justify-content:center;
@@ -191,25 +177,18 @@ header{
 .duration{
     position:absolute;
     z-index:3;
-
     right:4px;
     bottom:4px;
-
     background:#000;
-
     padding:3px 5px;
-
     font-size:9px;
-
     border-radius:3px;
 }
 
 .video-title{
     font-size:11px;
     font-weight:bold;
-
     margin:5px 2px;
-
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
@@ -217,13 +196,9 @@ header{
 
 .tag{
     display:inline-block;
-
     background:#ff1744;
-
     padding:3px 7px;
-
     border-radius:8px;
-
     font-size:9px;
 }
 
@@ -233,14 +208,10 @@ header{
     line-height:16px;
 }
 
-
 /* RANDOM */
-
 .random-grid{
     display:grid;
-
     grid-template-columns:repeat(5,1fr);
-
     gap:8px;
 }
 
@@ -255,45 +226,28 @@ header{
     font-size:10px;
 }
 
-
 /* PAGINATION */
-
 .pagination{
     display:flex;
-
     justify-content:center;
-
     align-items:center;
-
     gap:7px;
-
     flex-wrap:wrap;
-
     padding:5px 18px 25px;
 }
 
 .page-btn{
     min-width:38px;
     height:36px;
-
     border:1px solid #29404f;
-
     background:#0b1b27;
-
-    color:white;
-
+    color:#fff;
     border-radius:7px;
-
     cursor:pointer;
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     text-decoration:none;
-
     padding:0 10px;
 }
 
@@ -302,48 +256,35 @@ header{
     border-color:#ff1744;
 }
 
+.page-btn:disabled{
+    opacity:.4;
+    cursor:not-allowed;
+}
 
 /* BOTTOM NAV */
-
 .bottom-nav{
     position:fixed;
-
     bottom:0;
     left:50%;
-
     transform:translateX(-50%);
-
     width:100%;
     max-width:700px;
-
     height:75px;
-
     background:#020910;
-
     border-top:1px solid #26343e;
-
     display:grid;
-
     grid-template-columns:repeat(5,1fr);
-
     z-index:100;
 }
 
 .nav-item{
     display:flex;
-
     flex-direction:column;
-
     align-items:center;
-
     justify-content:center;
-
     gap:4px;
-
-    color:white;
-
+    color:#fff;
     text-decoration:none;
-
     font-size:10px;
 }
 
@@ -355,9 +296,41 @@ header{
     color:#ff1744;
 }
 
+/* MOBILE */
+@media(max-width:500px){
+
+    .video-grid{
+        grid-template-columns:repeat(2,1fr);
+        gap:9px;
+    }
+
+    .random-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .section{
+        padding:0 12px;
+    }
+
+    .categories{
+        padding-left:12px;
+        padding-right:12px;
+    }
+}
+
+/* SMALL PHONE */
+@media(max-width:390px){
+
+    .random-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .section-header h2{
+        font-size:18px;
+    }
+}
 
 /* DESKTOP */
-
 @media(min-width:701px){
 
     body{
@@ -375,101 +348,89 @@ header{
         border-radius:0 0 25px 25px;
     }
 }
-
-
-/* SMALL PHONE */
-
-@media(max-width:390px){
-
-    .section{
-        padding:0 12px;
-    }
-
-    .categories{
-        padding-left:12px;
-    }
-
-    .video-grid{
-        gap:6px;
-    }
-
-    .random-grid{
-        gap:5px;
-    }
-
-    .section-header h2{
-        font-size:18px;
-    }
-}
 </style>
 </head>
-
 
 <body>
 
 <div class="app">
 
-
 <!-- HEADER -->
-
 <header>
 
-    <div class="menu">
+    <div class="menu" onclick="toggleMenu()">
         ☰
     </div>
 
-    <div class="logo">
-        Desi<span>Vexa</span>
-    </div>
+    <a href="index.html"
+       style="text-decoration:none;color:white">
 
-    <div class="icons">
-        ⌕ ♙
+        <div class="logo">
+            Desi<span>Vexa</span>
+        </div>
+
+    </a>
+
+    <div class="header-actions">
+
+        <a href="search.html"
+           class="header-btn">
+            🔍
+        </a>
+
+        <a href="profile.html"
+           class="header-btn">
+            👤
+        </a>
+
     </div>
 
 </header>
 
 
 <!-- AD -->
-
 <div class="ad">
-    Top Banner Ad (320×100)
+    Top Banner Ad
 </div>
 
 
 <!-- CATEGORIES -->
-
 <div class="categories">
 
-    <a href="#" class="category active">
+    <a href="category.html?cat=all"
+       class="category active">
         All
     </a>
 
-    <a href="#" class="category">
+    <a href="category.html?cat=indian"
+       class="category">
         Indian
     </a>
 
-    <a href="#" class="category">
+    <a href="category.html?cat=bhabhi"
+       class="category">
         Bhabhi
     </a>
 
-    <a href="#" class="category">
+    <a href="category.html?cat=desi"
+       class="category">
         Desi
     </a>
 
-    <a href="#" class="category">
+    <a href="category.html?cat=mature"
+       class="category">
         Mature
     </a>
 
-    <a href="#" class="category">
+    <a href="category.html"
+       class="category">
         More⌄
     </a>
 
 </div>
 
 
-
 <!-- TRENDING -->
-
 <section class="section">
 
     <div class="section-header">
@@ -478,14 +439,12 @@ header{
             🔥 Trending Videos
         </h2>
 
-        <a
-            href="trending.html"
-            class="view-all">
+        <a href="trending.html"
+           class="view-all">
             View All →
         </a>
 
     </div>
-
 
     <div
         class="video-grid"
@@ -495,9 +454,7 @@ header{
 </section>
 
 
-
 <!-- NEW -->
-
 <section class="section">
 
     <div class="section-header">
@@ -506,14 +463,12 @@ header{
             ⭐ New Videos
         </h2>
 
-        <a
-            href="new.html"
-            class="view-all">
+        <a href="new.html"
+           class="view-all">
             View All →
         </a>
 
     </div>
-
 
     <div
         class="video-grid"
@@ -523,9 +478,7 @@ header{
 </section>
 
 
-
 <!-- RECOMMENDED -->
-
 <section class="section">
 
     <div class="section-header">
@@ -534,14 +487,12 @@ header{
             👤 Recommended Videos
         </h2>
 
-        <a
-            href="recommended.html"
-            class="view-all">
+        <a href="recommended.html"
+           class="view-all">
             View All →
         </a>
 
     </div>
-
 
     <div
         class="video-grid"
@@ -551,9 +502,7 @@ header{
 </section>
 
 
-
 <!-- RANDOM -->
-
 <section class="section">
 
     <div class="section-header">
@@ -564,7 +513,6 @@ header{
 
     </div>
 
-
     <div
         class="random-grid"
         id="randomVideos">
@@ -573,98 +521,70 @@ header{
 </section>
 
 
-
 <!-- PAGINATION -->
-
 <div
     class="pagination"
     id="pagination">
 </div>
 
 
-
 <!-- BOTTOM NAV -->
-
 <nav class="bottom-nav">
 
-    <a
-        href="index.html"
-        class="nav-item active">
+    <a href="index.html"
+       class="nav-item active">
 
-        <div class="nav-icon">
-            ⌂
-        </div>
-
+        <div class="nav-icon">⌂</div>
         Home
 
     </a>
 
 
-    <a
-        href="new.html"
-        class="nav-item">
+    <a href="new.html"
+       class="nav-item">
 
-        <div class="nav-icon">
-            ◷
-        </div>
-
+        <div class="nav-icon">◷</div>
         Latest
 
     </a>
 
 
-    <a
-        href="trending.html"
-        class="nav-item">
+    <a href="trending.html"
+       class="nav-item">
 
-        <div class="nav-icon">
-            ♨
-        </div>
-
+        <div class="nav-icon">♨</div>
         Trending
 
     </a>
 
 
-    <a
-        href="recommended.html"
-        class="nav-item">
+    <a href="recommended.html"
+       class="nav-item">
 
-        <div class="nav-icon">
-            ▦
-        </div>
-
+        <div class="nav-icon">▦</div>
         Recommended
 
     </a>
 
 
-    <a
-        href="#"
-        class="nav-item">
+    <a href="profile.html"
+       class="nav-item">
 
-        <div class="nav-icon">
-            ♙
-        </div>
-
+        <div class="nav-icon">♙</div>
         Profile
 
     </a>
 
 </nav>
 
-
 </div>
-
 
 
 <script>
 
-
-/* ============================
-   VIDEO DATA
-============================ */
-
+/* =========================
+   DEMO VIDEO DATA
+========================= */
 
 const trending = [
 
@@ -708,17 +628,23 @@ const recommended = [
 ];
 
 
+/* =========================
+   CARD
+========================= */
 
-/* ============================
-   CARD FUNCTION
-============================ */
-
-
-function createCard(video){
+function createCard(video,index){
 
     return `
 
-    <div class="video-card">
+    <a
+        href="video.html?id=${index}"
+        class="video-card"
+        style="
+            text-decoration:none;
+            color:inherit;
+            display:block;
+        "
+    >
 
         <div class="thumbnail">
 
@@ -732,73 +658,71 @@ function createCard(video){
 
         </div>
 
-
         <div class="video-title">
             ${video[0]}
         </div>
-
 
         <span class="tag">
             ${video[1]}
         </span>
 
-
         <div class="video-info">
-
             👁 ${video[3]} views<br>
-
             ◷ Recently
-
         </div>
 
-    </div>
+    </a>
 
     `;
 
 }
 
 
-
-/* ============================
+/* =========================
    RENDER MAIN SECTIONS
-============================ */
-
+========================= */
 
 document.getElementById(
     "trendingVideos"
 ).innerHTML =
-    trending.map(createCard).join("");
+    trending
+    .map((video,index)=>
+        createCard(video,index+1)
+    )
+    .join("");
 
 
 document.getElementById(
     "newVideos"
 ).innerHTML =
-    newVideos.map(createCard).join("");
+    newVideos
+    .map((video,index)=>
+        createCard(video,index+101)
+    )
+    .join("");
 
 
 document.getElementById(
     "recommendedVideos"
 ).innerHTML =
-    recommended.map(createCard).join("");
+    recommended
+    .map((video,index)=>
+        createCard(video,index+201)
+    )
+    .join("");
 
 
-
-/* ============================
-   RANDOM 150 VIDEOS
-   30 PER PAGE
-============================ */
-
+/* =========================
+   RANDOM 150
+========================= */
 
 const randomVideos = [];
 
-
-for(
-    let i = 1;
-    i <= 150;
-    i++
-){
+for(let i=1;i<=150;i++){
 
     randomVideos.push({
+
+        id: i+300,
 
         title:
             "Random Video " + i,
@@ -806,15 +730,15 @@ for(
         duration:
             String(
                 Math.floor(
-                    Math.random() * 15
-                ) + 1
+                    Math.random()*15
+                )+1
             ).padStart(2,"0")
             +
             ":"
             +
             String(
                 Math.floor(
-                    Math.random() * 60
+                    Math.random()*60
                 )
             ).padStart(2,"0")
 
@@ -823,17 +747,14 @@ for(
 }
 
 
-
 let currentPage = 1;
 
 const videosPerPage = 30;
 
 
-
-/* ============================
+/* =========================
    RANDOM RENDER
-============================ */
-
+========================= */
 
 function renderRandomVideos(){
 
@@ -842,17 +763,13 @@ function renderRandomVideos(){
             "randomVideos"
         );
 
-
     const start =
-        (currentPage - 1)
+        (currentPage-1)
         *
         videosPerPage;
 
-
     const end =
-        start +
-        videosPerPage;
-
+        start+videosPerPage;
 
     const currentVideos =
         randomVideos.slice(
@@ -862,30 +779,39 @@ function renderRandomVideos(){
 
 
     box.innerHTML =
-        currentVideos.map(video => `
+        currentVideos
+        .map(video=>`
 
-        <div class="video-card">
+            <a
+                href="video.html?id=${video.id}"
+                class="video-card"
+                style="
+                    text-decoration:none;
+                    color:inherit;
+                    display:block;
+                "
+            >
 
-            <div class="thumbnail">
+                <div class="thumbnail">
 
-                <div class="play">
-                    ▶
+                    <div class="play">
+                        ▶
+                    </div>
+
+                    <div class="duration">
+                        ${video.duration}
+                    </div>
+
                 </div>
 
-                <div class="duration">
-                    ${video.duration}
+                <div class="video-title">
+                    ${video.title}
                 </div>
 
-            </div>
+            </a>
 
-
-            <div class="video-title">
-                ${video.title}
-            </div>
-
-        </div>
-
-    `).join("");
+        `)
+        .join("");
 
 
     renderPagination();
@@ -893,11 +819,9 @@ function renderRandomVideos(){
 }
 
 
-
-/* ============================
+/* =========================
    PAGINATION
-============================ */
-
+========================= */
 
 function renderPagination(){
 
@@ -906,16 +830,11 @@ function renderPagination(){
             "pagination"
         );
 
-
     pagination.innerHTML = "";
 
 
-    /* PREVIOUS */
-
     const previous =
-        document.createElement(
-            "button"
-        );
+        document.createElement("button");
 
     previous.className =
         "page-btn";
@@ -924,12 +843,11 @@ function renderPagination(){
         "‹ Previous";
 
     previous.disabled =
-        currentPage === 1;
+        currentPage===1;
 
+    previous.onclick=function(){
 
-    previous.onclick = function(){
-
-        if(currentPage > 1){
+        if(currentPage>1){
 
             currentPage--;
 
@@ -941,18 +859,12 @@ function renderPagination(){
 
     };
 
+    pagination.appendChild(previous);
 
-    pagination.appendChild(
-        previous
-    );
-
-
-
-    /* PAGE NUMBERS */
 
     for(
-        let page = 1;
-        page <= 5;
+        let page=1;
+        page<=5;
         page++
     ){
 
@@ -961,14 +873,10 @@ function renderPagination(){
                 "button"
             );
 
-
         button.className =
             "page-btn";
 
-
-        if(
-            page === currentPage
-        ){
+        if(page===currentPage){
 
             button.classList.add(
                 "active"
@@ -976,106 +884,89 @@ function renderPagination(){
 
         }
 
+        button.innerText=page;
 
-        button.innerText =
-            page;
+        button.onclick=function(){
 
+            currentPage=page;
 
-        button.onclick =
-            function(){
+            renderRandomVideos();
 
-                currentPage =
-                    page;
+            scrollToRandom();
 
-                renderRandomVideos();
+        };
 
-                scrollToRandom();
-
-            };
-
-
-        pagination.appendChild(
-            button
-        );
+        pagination.appendChild(button);
 
     }
 
 
-
-    /* NEXT */
-
     const next =
-        document.createElement(
-            "button"
-        );
-
+        document.createElement("button");
 
     next.className =
         "page-btn";
 
-
     next.innerText =
         "Next ›";
 
-
     next.disabled =
-        currentPage === 5;
+        currentPage===5;
 
+    next.onclick=function(){
 
-    next.onclick =
-        function(){
+        if(currentPage<5){
 
-            if(currentPage < 5){
+            currentPage++;
 
-                currentPage++;
+            renderRandomVideos();
 
-                renderRandomVideos();
+            scrollToRandom();
 
-                scrollToRandom();
+        }
 
-            }
+    };
 
-        };
-
-
-    pagination.appendChild(
-        next
-    );
+    pagination.appendChild(next);
 
 }
 
 
-
-/* ============================
-   SCROLL TO RANDOM
-============================ */
-
+/* =========================
+   SCROLL
+========================= */
 
 function scrollToRandom(){
 
-    document.getElementById(
-        "randomVideos"
-    ).scrollIntoView({
-
-        behavior:"smooth",
-
-        block:"start"
-
-    });
+    document
+        .getElementById("randomVideos")
+        .scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
 
 }
 
 
+/* =========================
+   MENU
+========================= */
 
-/* ============================
+function toggleMenu(){
+
+    window.location.href =
+        "category.html";
+
+}
+
+
+/* =========================
    START
-============================ */
-
+========================= */
 
 renderRandomVideos();
-
 
 </script>
 
 </body>
-</html>
+    </html>
