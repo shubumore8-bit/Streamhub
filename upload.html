@@ -1,422 +1,542 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090909">
   <title>Admin Upload - DesiVexa</title>
 
   <style>
-    *{
-      box-sizing:border-box;
-      margin:0;
-      padding:0;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    body{
-      background:#090909;
-      color:#fff;
-      font-family:Arial,sans-serif;
-      min-height:100vh;
+    body {
+      background: #090909;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
     }
 
-    header{
-      height:60px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border-bottom:1px solid #222;
-      background:#0d0d0d;
-      position:sticky;
-      top:0;
-      z-index:10;
+    header {
+      background: #101010;
+      border-bottom: 1px solid #282828;
+      padding: 18px;
+      text-align: center;
+      position: sticky;
+      top: 0;
     }
 
-    .logo{
-      color:#e50914;
-      font-size:24px;
-      font-weight:800;
+    .logo {
+      color: #f01424;
+      font-size: 25px;
+      font-weight: 800;
     }
 
-    .container{
-      width:92%;
-      max-width:600px;
-      margin:30px auto;
+    .container {
+      width: 92%;
+      max-width: 650px;
+      margin: 28px auto;
     }
 
-    .box{
-      background:#111;
-      border:1px solid #242424;
-      border-radius:14px;
-      padding:22px;
+    .panel {
+      background: #111;
+      border: 1px solid #292929;
+      border-radius: 14px;
+      padding: 22px;
     }
 
-    h1{
-      font-size:22px;
-      margin-bottom:6px;
+    h1 {
+      font-size: 23px;
+      margin-bottom: 8px;
     }
 
-    .sub{
-      color:#999;
-      font-size:14px;
-      margin-bottom:25px;
+    .muted {
+      color: #aaa;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 22px;
     }
 
-    label{
-      display:block;
-      font-size:14px;
-      margin:17px 0 7px;
-      color:#ddd;
+    label {
+      display: block;
+      margin: 17px 0 8px;
+      font-size: 14px;
+      font-weight: 600;
     }
 
-    input,
-    textarea,
-    select{
-      width:100%;
-      background:#181818;
-      color:#fff;
-      border:1px solid #333;
-      border-radius:9px;
-      padding:13px;
-      outline:none;
+    input, textarea, select {
+      width: 100%;
+      background: #1b1b1b;
+      border: 1px solid #393939;
+      border-radius: 9px;
+      color: #fff;
+      padding: 13px;
+      font: inherit;
     }
 
-    input:focus,
-    textarea:focus,
-    select:focus{
-      border-color:#e50914;
+    input[type="file"] {
+      padding: 10px;
+      font-size: 13px;
     }
 
-    textarea{
-      min-height:110px;
-      resize:vertical;
+    textarea {
+      min-height: 100px;
+      resize: vertical;
     }
 
-    .btn{
-      width:100%;
-      margin-top:22px;
-      padding:14px;
-      border:0;
-      border-radius:9px;
-      background:#e50914;
-      color:#fff;
-      font-size:16px;
-      font-weight:bold;
-      cursor:pointer;
+    input:focus, textarea:focus, select:focus {
+      outline: 1px solid #f01424;
+      border-color: #f01424;
     }
 
-    .btn:disabled{
-      opacity:.5;
-      cursor:not-allowed;
+    .btn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      border: 0;
+      border-radius: 9px;
+      background: #f01424;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
     }
 
-    .status{
-      margin-top:18px;
-      padding:12px;
-      border-radius:8px;
-      background:#181818;
-      color:#bbb;
-      font-size:14px;
-      display:none;
+    .btn:disabled {
+      opacity: .55;
+      cursor: wait;
     }
 
-    .logout{
-      margin-top:12px;
-      background:#222;
+    .secondary {
+      background: #292929;
     }
 
-    .hidden{
-      display:none;
+    .status {
+      display: none;
+      margin-top: 18px;
+      padding: 13px;
+      background: #202020;
+      border-radius: 9px;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
     }
 
-    .login-box{
-      margin-top:70px;
+    .error { color: #ff7070; }
+    .success { color: #70ed9b; }
+    .hidden { display: none !important; }
+
+    .note {
+      color: #bdbdbd;
+      background: #191919;
+      border-left: 3px solid #f01424;
+      padding: 12px;
+      border-radius: 5px;
+      margin-top: 18px;
+      font-size: 13px;
+      line-height: 1.6;
     }
 
-    .error{
-      color:#ff5555;
-    }
-
-    .success{
-      color:#45e06f;
+    progress {
+      width: 100%;
+      height: 8px;
+      margin-top: 15px;
+      accent-color: #f01424;
     }
   </style>
 </head>
 
 <body>
-
 <header>
   <div class="logo">DesiVexa</div>
 </header>
 
-<div class="container">
+<main class="container">
 
-  <!-- LOGIN -->
-  <div id="loginBox" class="box login-box">
-
+  <!-- ADMIN LOGIN -->
+  <section id="loginPanel" class="panel">
     <h1>Admin Login</h1>
+    <p class="muted">Sign in with your authorized admin account.</p>
 
-    <div class="sub">
-      Login to access the upload panel.
-    </div>
+    <form id="loginForm">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        type="email"
+        autocomplete="username"
+        required
+      >
 
-    <label>Email</label>
-    <input
-      id="email"
-      type="email"
-      placeholder="Admin email"
-      autocomplete="email"
-    >
+      <label for="password">Password</label>
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        required
+      >
 
-    <label>Password</label>
-    <input
-      id="password"
-      type="password"
-      placeholder="Password"
-      autocomplete="current-password"
-    >
+      <button id="loginButton" class="btn" type="submit">
+        Login
+      </button>
+    </form>
 
-    <button id="loginBtn" class="btn">
-      Login
-    </button>
-
-    <div id="loginStatus" class="status"></div>
-
-  </div>
-
+    <div id="loginStatus" class="status" role="status"></div>
+  </section>
 
   <!-- UPLOAD PANEL -->
-  <div id="uploadBox" class="box hidden">
-
+  <section id="uploadPanel" class="panel hidden">
     <h1>Upload Video</h1>
+    <p class="muted">Admin dashboard · Private Storage</p>
 
-    <div class="sub">
-      Admin panel
-    </div>
+    <form id="uploadForm">
+      <label for="title">Video Title *</label>
+      <input
+        id="title"
+        maxlength="200"
+        required
+        placeholder="Enter video title"
+      >
 
-    <label>Video Title</label>
-    <input
-      id="title"
-      type="text"
-      placeholder="Enter video title"
-    >
+      <label for="category">Category *</label>
+      <input
+        id="category"
+        maxlength="100"
+        required
+        placeholder="Enter category"
+      >
 
-    <label>Category</label>
-    <input
-      id="category"
-      type="text"
-      placeholder="Enter category"
-    >
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        maxlength="10000"
+        placeholder="Video description"
+      ></textarea>
 
-    <label>Description</label>
-    <textarea
-      id="description"
-      placeholder="Enter video description"
-    ></textarea>
+      <label for="thumbnail">Thumbnail Image *</label>
+      <input
+        id="thumbnail"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        required
+      >
 
-    <label>Thumbnail</label>
-    <input
-      id="thumbnail"
-      type="file"
-      accept="image/*"
-    >
+      <label for="video">Video File *</label>
+      <input
+        id="video"
+        type="file"
+        accept="video/mp4,video/webm,video/quicktime"
+        required
+      >
 
-    <label>Video</label>
-    <input
-      id="video"
-      type="file"
-      accept="video/*"
-    >
+      <label for="publish">Publishing</label>
+      <select id="publish">
+        <option value="false">Save as draft</option>
+        <option value="true">Publish now</option>
+      </select>
 
-    <button id="uploadBtn" class="btn">
-      Upload Video
-    </button>
+      <div class="note">
+        Upload only lawful content you are authorized to publish.
+        Large video files may take time to upload. Do not close this
+        page until the result appears.
+      </div>
 
-    <div id="uploadStatus" class="status"></div>
+      <progress id="progress" class="hidden" value="0" max="3"></progress>
 
-    <button id="logoutBtn" class="btn logout">
+      <button id="uploadButton" class="btn" type="submit">
+        Upload Video
+      </button>
+    </form>
+
+    <div id="uploadStatus" class="status" role="status"></div>
+
+    <button id="logoutButton" class="btn secondary" type="button">
       Logout
     </button>
-
-  </div>
-
-</div>
-
+  </section>
+</main>
 
 <script type="module">
+  import { createClient } from
+    "https://esm.sh/@supabase/supabase-js@2";
 
-import { createClient }
-  from "https://esm.sh/@supabase/supabase-js@2";
+  import {
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  } from "./config.js";
 
-import {
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-} from "./config.js";
+  // Your authorized admin account UID
+  const ADMIN_UID =
+    "3ec24639-7bbf-4acc-84a8-b0ce18c75159";
 
-
-const supabase =
-  createClient(
+  const supabase = createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
   );
 
+  const $ = (id) => document.getElementById(id);
 
-const loginBox =
-  document.getElementById("loginBox");
+  const loginPanel = $("loginPanel");
+  const uploadPanel = $("uploadPanel");
+  const loginStatus = $("loginStatus");
+  const uploadStatus = $("uploadStatus");
+  const loginButton = $("loginButton");
+  const uploadButton = $("uploadButton");
+  const progress = $("progress");
 
-const uploadBox =
-  document.getElementById("uploadBox");
+  let currentUser = null;
+  let busy = false;
 
-const loginBtn =
-  document.getElementById("loginBtn");
-
-const logoutBtn =
-  document.getElementById("logoutBtn");
-
-const loginStatus =
-  document.getElementById("loginStatus");
-
-const uploadStatus =
-  document.getElementById("uploadStatus");
-
-
-function showLogin(){
-
-  loginBox.classList.remove("hidden");
-  uploadBox.classList.add("hidden");
-
-}
-
-
-function showUpload(){
-
-  loginBox.classList.add("hidden");
-  uploadBox.classList.remove("hidden");
-
-}
-
-
-function status(element,message,type=""){
-
-  element.style.display="block";
-  element.className="status " + type;
-  element.textContent=message;
-
-}
-
-
-async function checkSession(){
-
-  const {
-    data:{
-      session
-    }
-  } =
-  await supabase.auth.getSession();
-
-  if(session){
-
-    showUpload();
-
-  }else{
-
-    showLogin();
-
+  function showStatus(element, message, type = "") {
+    element.style.display = "block";
+    element.className = "status " + type;
+    element.textContent = message;
   }
 
-}
-
-
-loginBtn.addEventListener(
-  "click",
-  async function(){
-
-    const email =
-      document.getElementById("email").value.trim();
-
-    const password =
-      document.getElementById("password").value;
-
-    if(!email || !password){
-
-      status(
-        loginStatus,
-        "Email aur password enter karo.",
-        "error"
-      );
-
-      return;
-    }
-
-    loginBtn.disabled=true;
-    loginBtn.textContent="Logging in...";
-
-    const {
-      error
-    } =
-    await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    loginBtn.disabled=false;
-    loginBtn.textContent="Login";
-
-    if(error){
-
-      status(
-        loginStatus,
-        error.message,
-        "error"
-      );
-
-      return;
-    }
-
-    status(
-      loginStatus,
-      "Login successful.",
-      "success"
-    );
-
-    showUpload();
-
+  function showLogin() {
+    currentUser = null;
+    loginPanel.classList.remove("hidden");
+    uploadPanel.classList.add("hidden");
   }
-);
 
-
-logoutBtn.addEventListener(
-  "click",
-  async function(){
-
-    await supabase.auth.signOut();
-
-    showLogin();
-
-  }
-);
-
-
-supabase.auth.onAuthStateChange(
-  function(event,session){
-
-    if(session){
-
-      showUpload();
-
-    }else{
-
+  function showUpload(user) {
+    if (!user || user.id !== ADMIN_UID) {
       showLogin();
-
+      return false;
     }
 
+    currentUser = user;
+    loginPanel.classList.add("hidden");
+    uploadPanel.classList.remove("hidden");
+    return true;
   }
-);
 
+  async function refreshSession() {
+    const { data, error } =
+      await supabase.auth.getSession();
 
-checkSession();
+    if (error) {
+      showLogin();
+      showStatus(loginStatus, error.message, "error");
+      return;
+    }
 
+    if (data.session) {
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
+
+      if (userError || !showUpload(userData?.user)) {
+        await supabase.auth.signOut();
+        showStatus(
+          loginStatus,
+          "This account is not authorized as admin.",
+          "error"
+        );
+      }
+    } else {
+      showLogin();
+    }
+  }
+
+  $("loginForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    loginButton.disabled = true;
+    loginButton.textContent = "Logging in...";
+
+    const email = $("email").value.trim();
+    const password = $("password").value;
+
+    try {
+      const { data, error } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+      if (error) throw error;
+
+      if (!showUpload(data.user)) {
+        await supabase.auth.signOut();
+        throw new Error("This account is not authorized as admin.");
+      }
+
+      showStatus(loginStatus, "Admin login successful.", "success");
+
+    } catch (error) {
+      showStatus(loginStatus, error.message, "error");
+    } finally {
+      loginButton.disabled = false;
+      loginButton.textContent = "Login";
+    }
+  });
+
+  function safeExtension(file, allowed) {
+    const ext = file.name.split(".").pop().toLowerCase();
+
+    if (!allowed.includes(ext)) {
+      throw new Error("Unsupported file extension: " + ext);
+    }
+
+    return ext;
+  }
+
+  $("uploadForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    if (busy) return;
+
+    if (!currentUser || currentUser.id !== ADMIN_UID) {
+      showStatus(uploadStatus, "Please sign in with the admin account.", "error");
+      showLogin();
+      return;
+    }
+
+    const title = $("title").value.trim();
+    const category = $("category").value.trim();
+    const description = $("description").value.trim();
+    const thumbnail = $("thumbnail").files[0];
+    const video = $("video").files[0];
+    const published = $("publish").value === "true";
+
+    if (!title || !category || !thumbnail || !video) {
+      showStatus(uploadStatus, "Please complete all required fields.", "error");
+      return;
+    }
+
+    // Basic file-size limits; adjust to your project needs.
+    if (thumbnail.size > 10 * 1024 * 1024) {
+      showStatus(uploadStatus, "Thumbnail must be 10 MB or smaller.", "error");
+      return;
+    }
+
+    if (video.size > 500 * 1024 * 1024) {
+      showStatus(uploadStatus, "Video must be 500 MB or smaller in this version.", "error");
+      return;
+    }
+
+    busy = true;
+    uploadButton.disabled = true;
+    uploadButton.textContent = "Uploading...";
+    progress.classList.remove("hidden");
+    progress.value = 0;
+
+    let thumbnailPath = null;
+    let videoPath = null;
+
+    try {
+      safeExtension(thumbnail, ["jpg", "jpeg", "png", "webp"]);
+      safeExtension(video, ["mp4", "webm", "mov"]);
+
+      // Recheck the current authenticated user.
+      const { data: authData, error: authError } =
+        await supabase.auth.getUser();
+
+      if (authError) throw authError;
+
+      if (!authData.user || authData.user.id !== ADMIN_UID) {
+        throw new Error("Admin authentication required.");
+      }
+
+      const folder = ADMIN_UID + "/" + crypto.randomUUID();
+
+      const thumbnailExt = safeExtension(
+        thumbnail, ["jpg", "jpeg", "png", "webp"]
+      );
+
+      const videoExt = safeExtension(
+        video, ["mp4", "webm", "mov"]
+      );
+
+      thumbnailPath = folder + "/thumbnail." + thumbnailExt;
+      videoPath = folder + "/video." + videoExt;
+
+      showStatus(uploadStatus, "Uploading thumbnail...", "");
+      const { error: thumbError } = await supabase.storage
+        .from("thumbnails")
+        .upload(thumbnailPath, thumbnail, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: thumbnail.type
+        });
+
+      if (thumbError) throw thumbError;
+      progress.value = 1;
+
+      showStatus(uploadStatus, "Uploading video file...", "");
+      const { error: videoError } = await supabase.storage
+        .from("videos")
+        .upload(videoPath, video, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: video.type
+        });
+
+      if (videoError) throw videoError;
+      progress.value = 2;
+
+      showStatus(uploadStatus, "Saving video details...", "");
+
+      const { data: inserted, error: insertError } =
+        await supabase
+          .from("videos")
+          .insert({
+            title,
+            category,
+            description,
+            thumbnail_url: thumbnailPath,
+            video_url: videoPath,
+            published,
+            views: 0
+          })
+          .select("id")
+          .single();
+
+      if (insertError) throw insertError;
+
+      progress.value = 3;
+
+      showStatus(
+        uploadStatus,
+        "Upload successful! Video ID: " + inserted.id +
+        ". Storage paths saved. Playback URLs still need secure setup.",
+        "success"
+      );
+
+      $("uploadForm").reset();
+
+    } catch (error) {
+      console.error("Upload error:", error);
+
+      showStatus(
+        uploadStatus,
+        "Upload failed: " + (error.message || "Unknown error") +
+        ". Check your Storage policies and videos table permissions.",
+        "error"
+      );
+    } finally {
+      busy = false;
+      uploadButton.disabled = false;
+      uploadButton.textContent = "Upload Video";
+    }
+  });
+
+  $("logoutButton").addEventListener("click", async () => {
+    await supabase.auth.signOut();
+    showLogin();
+    showStatus(loginStatus, "You have logged out.", "");
+  });
+
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_OUT" || !session) {
+      showLogin();
+    }
+  });
+
+  await refreshSession();
 </script>
-
 </body>
 </html>
