@@ -1320,3 +1320,63 @@ footer{
     overflow:hidden !important;
   }
 }
+
+/* =========================================
+   DESIVEXA MOBILE - FORCE 2 COLUMNS
+========================================= */
+
+@media (max-width:699px){
+
+  html,
+  body{
+    width:100% !important;
+    max-width:100% !important;
+    overflow-x:hidden !important;
+  }
+
+  .dvGrid,
+  #trendingVideos,
+  #videos,
+  #recommendations{
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:4px !important;
+    width:100% !important;
+  }
+
+  .dvGrid .card,
+  #trendingVideos .card,
+  #videos .card,
+  #recommendations .card{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+  }
+
+  .dvGrid .thumb,
+  #trendingVideos .thumb,
+  #videos .thumb,
+  #recommendations .thumb{
+    width:100% !important;
+    aspect-ratio:16/10 !important;
+    overflow:hidden !important;
+  }
+
+  .dvGrid .thumb img,
+  #trendingVideos .thumb img,
+  #videos .thumb img,
+  #recommendations .thumb img{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+  }
+
+  .dvGrid .card h3,
+  #trendingVideos .card h3,
+  #videos .card h3,
+  #recommendations .card h3{
+    font-size:11px !important;
+    line-height:1.25 !important;
+  }
+
+}
