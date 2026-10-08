@@ -1,349 +1,967 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>DesiVexa — Home</title>
+  <meta name="description" content="DesiVexa - 18+ video platform">
 
-  <link rel="stylesheet" href="style.css?v=42">
+  <!-- ExoClick verification -->
+  <meta name="6a97888e-site-verification"
+        content="cdfc6e06389c2153c30b80c3449ad95c">
+
+  <!-- JuicyAds verification -->
+  <meta name="juicyads-site-verification"
+        content="97df17e7b5112caab5770e66ce197265">
+
+  <title>DesiVexa - 18+ Videos</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="ads.css">
 
   <style>
-    .homeWrap {
-      max-width:1100px;
-      margin:auto;
-      padding:12px 10px 90px;
+    *{
+      box-sizing:border-box;
     }
 
-    .homeTop {
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:18px;
+    html,
+    body{
+      margin:0;
+      padding:0;
+      width:100%;
+      max-width:100%;
+      overflow-x:hidden;
+      background:#000;
+      color:#fff;
+      font-family:Arial,Helvetica,sans-serif;
     }
 
-    .homeLogo {
-      font-size:25px;
-      font-weight:800;
-      color:white;
+    body{
+      min-height:100vh;
     }
 
-    .homeLogo span {
-      color:#e00000;
-    }
-
-    .homeLinks {
-      display:flex;
-      gap:7px;
-    }
-
-    .homeLinks a {
-      color:white;
-      background:#e00000;
-      padding:8px 11px;
-      border-radius:7px;
-      text-decoration:none;
-      font-size:12px;
-      font-weight:600;
-    }
-
-    .sectionTitle {
-      color:white;
-      font-size:20px;
-      margin:22px 0 12px;
-    }
-
-    .videoGrid {
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:10px;
-    }
-
-    .videoCard {
-      display:block;
-      min-width:0;
-      color:white;
+    a{
+      color:inherit;
       text-decoration:none;
     }
 
-    .thumb {
-      width:100%;
-      aspect-ratio:16/9;
-      object-fit:cover;
-      display:block;
-      border-radius:8px;
-      background:#171717;
+    button,
+    input{
+      font:inherit;
     }
 
-    .noThumb {
-      width:100%;
-      aspect-ratio:16/9;
+    /* AGE GATE */
+
+    .gate{
+      position:fixed;
+      inset:0;
+      z-index:99999;
       display:flex;
       align-items:center;
       justify-content:center;
-      background:#171717;
+      padding:20px;
+      background:#000;
+    }
+
+    .gatebox{
+      width:min(420px,100%);
+      padding:28px 20px;
+      text-align:center;
+      background:#111;
+      border:1px solid #333;
       border-radius:8px;
-      font-size:28px;
     }
 
-    .videoTitle {
-      margin-top:6px;
-      font-size:14px;
-      font-weight:600;
-      line-height:1.3;
+    .gateLogo{
+      font-size:34px;
+      font-weight:900;
     }
 
-    .videoMeta {
-      color:#888;
-      font-size:11px;
+    .gateLogo span{
+      color:#e00000;
+    }
+
+    .adultBadge{
+      display:inline-block;
+      margin:15px 0 8px;
+      padding:5px 10px;
+      background:#d90000;
+      border-radius:3px;
+      font-weight:900;
+    }
+
+    .gatebox p{
+      color:#aaa;
+    }
+
+    .btn{
+      padding:12px 20px;
+      border:0;
+      border-radius:4px;
+      background:#e00000;
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    /* HEADER */
+
+    .dvHeader{
+      position:relative;
+      z-index:1000;
+      background:#c90000;
+      border-bottom:2px solid #4d0000;
+    }
+
+    .dvHeaderInner{
+      width:100%;
+      max-width:1100px;
+      height:62px;
+      margin:auto;
+      padding:0 8px;
+
+      display:grid;
+      grid-template-columns:48px 1fr 48px;
+      align-items:center;
+      gap:5px;
+    }
+
+    .headerIcon{
+      width:40px;
+      height:40px;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      background:#b50000;
+      border:1px solid #650000;
+      color:#fff;
+
+      font-size:22px;
+      cursor:pointer;
+    }
+
+    .dvLogo{
+      text-align:center;
+      color:#050505;
+      font-size:27px;
+      font-weight:900;
+      letter-spacing:-1.5px;
+      text-transform:uppercase;
+    }
+
+    .dvLogo span{
+      color:#000;
+    }
+
+    /* SEARCH */
+
+    .dvSearchBox{
+      display:none;
+      padding:8px;
+      background:#090909;
+      border-bottom:1px solid #333;
+    }
+
+    .dvSearchBox.open{
+      display:block;
+    }
+
+    .dvSearchBox input{
+      width:100%;
+      height:40px;
+      padding:0 12px;
+
+      background:#151515;
+      border:1px solid #555;
+      border-radius:3px;
+
+      color:#fff;
+      outline:none;
+    }
+
+    /* MENU */
+
+    .mobileMenu{
+      display:none;
+      position:absolute;
+      top:62px;
+      left:0;
+      right:0;
+      z-index:3000;
+
+      background:#111;
+      border-bottom:2px solid #c90000;
+    }
+
+    .mobileMenu.open{
+      display:block;
+    }
+
+    .mobileMenu a{
+      display:block;
+      padding:14px 16px;
+      border-bottom:1px solid #292929;
+      color:#ddd;
+    }
+
+    /* MAIN */
+
+    .dvMain{
+      width:100%;
+      max-width:1100px;
+      margin:0 auto;
+      padding:0 6px 35px;
+    }
+
+    /* CATEGORY */
+
+    .toolbar{
+      margin-top:7px;
+    }
+
+    .categoryBtn{
+      width:100%;
+      min-height:40px;
+
+      padding:0 11px;
+
+      background:#151515;
+      border:1px solid #444;
+      border-radius:2px;
+
+      color:#fff;
+      text-align:left;
+      cursor:pointer;
+    }
+
+    .categoryList{
+      display:none;
       margin-top:4px;
+      padding:7px;
+
+      background:#101010;
+      border:1px solid #333;
     }
 
-    @media (max-width:380px) {
-      .videoGrid {
-        gap:8px;
+    .categoryList.open{
+      display:block;
+    }
+
+    #categorySearch{
+      width:100%;
+      height:37px;
+      margin-bottom:7px;
+      padding:0 9px;
+
+      background:#050505;
+      border:1px solid #555;
+
+      color:#fff;
+      outline:none;
+    }
+
+    #categoryItems{
+      display:flex;
+      flex-wrap:wrap;
+      gap:5px;
+    }
+
+    .catItem{
+      padding:7px 9px;
+      background:#414141;
+      color:#ddd;
+      border-radius:3px;
+      font-size:11px;
+    }
+
+    /* ADS */
+
+    .dvAdSlot{
+      width:100%;
+      overflow:hidden;
+      text-align:center;
+      background:#111;
+      margin:7px 0;
+    }
+
+    .dvAdWide{
+      min-height:70px;
+    }
+
+    .dvAdCompact{
+      min-height:45px;
+    }
+
+    .dvAdBanner{
+      min-height:70px;
+    }
+
+    .dvAdSmall{
+      min-height:40px;
+    }
+
+    /* SECTION HEADINGS */
+
+    .dvSectionTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+
+      margin:8px 0 4px;
+      padding:5px 6px;
+
+      background:linear-gradient(#1b1b1b,#050505);
+      border-left:3px solid #777;
+      border-bottom:1px solid #333;
+    }
+
+    .dvSectionTitle h2{
+      margin:0;
+      font-size:18px;
+      font-weight:400;
+      line-height:1.2;
+    }
+
+    .dvSectionTitle h2::before{
+      content:"› ";
+      color:#aaa;
+    }
+
+    .dvSectionTitle a{
+      color:#aaa;
+      font-size:10px;
+    }
+
+    .sectionLabel{
+      display:none;
+    }
+
+    /* VIDEO GRID — 2 COLUMNS */
+
+    .dvGrid{
+      width:100%;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:3px;
+    }
+
+    .dvGrid .card{
+      min-width:0;
+      overflow:hidden;
+
+      background:#090909;
+      border:0;
+      border-radius:0;
+    }
+
+    .dvGrid .thumb{
+      position:relative;
+      width:100%;
+      aspect-ratio:16/10;
+      overflow:hidden;
+      background:#222;
+    }
+
+    .dvGrid .thumb img{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
+    }
+
+    .dvGrid .body{
+      padding:4px 5px 7px;
+    }
+
+    .dvGrid .card h3{
+      margin:0;
+
+      color:#ddd;
+      font-size:11px;
+      font-weight:400;
+      line-height:1.25;
+
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
+    .dvGrid .cardMeta{
+      margin-top:3px;
+      color:#777;
+      font-size:8px;
+
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .dvGrid .playCircle{
+      width:28px !important;
+      height:28px !important;
+      font-size:11px !important;
+    }
+
+    .dvGrid .cardViews{
+      font-size:8px !important;
+      padding:2px 3px !important;
+    }
+
+    /* DESKTOP */
+
+    @media(min-width:700px){
+
+      .dvHeaderInner{
+        grid-template-columns:55px 1fr 55px;
       }
 
-      .videoTitle {
+      .dvMain{
+        padding:10px 12px 50px;
+      }
+
+      .dvGrid{
+        grid-template-columns:repeat(4,minmax(0,1fr));
+        gap:7px;
+      }
+
+      .dvGrid .card h3{
         font-size:13px;
       }
+
+      .dvGrid .cardMeta{
+        font-size:10px;
+      }
+
+      .dvSectionTitle h2{
+        font-size:21px;
+      }
+    }
+
+    /* VERY SMALL MOBILE */
+
+    @media(max-width:360px){
+
+      .dvHeaderInner{
+        height:58px;
+        grid-template-columns:44px 1fr 44px;
+      }
+
+      .headerIcon{
+        width:37px;
+        height:37px;
+        font-size:20px;
+      }
+
+      .dvLogo{
+        font-size:23px;
+      }
+
+      .dvMain{
+        padding-left:4px;
+        padding-right:4px;
+      }
+
+      .dvGrid{
+        gap:2px;
+      }
+
+      .dvGrid .card h3{
+        font-size:10px;
+      }
+
+      .dvGrid .cardMeta{
+        font-size:7px;
+      }
+    }
+
+    /* FOOTER */
+
+    footer{
+      margin-top:15px;
+      padding:24px 12px;
+      text-align:center;
+
+      background:#080808;
+      border-top:1px solid #292929;
+    }
+
+    .footerLogo{
+      font-size:25px;
+      font-weight:900;
+    }
+
+    .footerLogo span{
+      color:#e00000;
+    }
+
+    footer p{
+      color:#777;
+      font-size:11px;
+    }
+
+    footer a{
+      color:#aaa;
+      font-size:12px;
     }
   </style>
 </head>
 
 <body>
 
-<main class="homeWrap">
+  <!-- AGE GATE -->
 
-  <div class="homeTop">
+  <div id="ageGate" class="gate">
 
-    <div class="homeLogo">
+    <div class="gatebox">
+
+      <div class="gateLogo">
+        Desi<span>Vexa</span>
+      </div>
+
+      <div class="adultBadge">
+        18+
+      </div>
+
+      <h2>Adults Only</h2>
+
+      <p>
+        You must be 18 years or older
+        to enter this website.
+      </p>
+
+      <button
+        id="enter"
+        class="btn"
+        type="button">
+
+        I am 18+ - Enter
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- HEADER -->
+
+  <header class="dvHeader">
+
+    <div class="dvHeaderInner">
+
+      <button
+        id="menuBtn"
+        class="headerIcon"
+        type="button">
+
+        ☰
+
+      </button>
+
+      <a
+        href="index.html"
+        class="dvLogo">
+
+        DESI<span>VEXA</span>
+
+      </a>
+
+      <button
+        id="searchBtn"
+        class="headerIcon"
+        type="button">
+
+        🔍
+
+      </button>
+
+    </div>
+
+    <div
+      id="searchBox"
+      class="dvSearchBox">
+
+      <input
+        id="search"
+        type="search"
+        placeholder="Find your favorite videos..."
+        autocomplete="off">
+
+    </div>
+
+  </header>
+
+  <!-- MENU -->
+
+  <div
+    id="mobileMenu"
+    class="mobileMenu">
+
+    <a href="index.html">
+      🏠 Home
+    </a>
+
+    <a href="most-viewed.html">
+      🔥 Most Viewed
+    </a>
+
+    <a href="latest.html">
+      🆕 Latest Videos
+    </a>
+
+    <a href="#categories">
+      ▦ Categories
+    </a>
+
+    <a href="legal.html">
+      Terms &amp; Privacy
+    </a>
+
+  </div>
+
+  <!-- MAIN -->
+
+  <main class="dvMain">
+
+    <section
+      class="dvSection"
+      id="categories">
+
+      <!-- CATEGORY -->
+
+      <div class="toolbar">
+
+        <button
+          id="categoryBtn"
+          class="categoryBtn"
+          type="button">
+
+          ▦ &nbsp; Categories
+
+        </button>
+
+        <div
+          id="cats"
+          class="categoryList">
+
+          <input
+            id="categorySearch"
+            type="search"
+            placeholder="Search categories..."
+            autocomplete="off">
+
+          <div id="categoryItems"></div>
+
+        </div>
+
+      </div>
+
+      <!-- WIDE AD -->
+
+      <div class="dvAdSlot dvAdWide">
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async
+          src="https://poweredby.jads.co/js/jads.js">
+        </script>
+
+        <ins
+          id="1128310"
+          data-width="774"
+          data-height="290">
+        </ins>
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async>
+          (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone':1128310
+          });
+        </script>
+
+      </div>
+
+      <!-- BEST HD -->
+
+      <div class="dvSectionTitle">
+
+        <div>
+          <h2>
+            Best HD Videos
+          </h2>
+        </div>
+
+        <a href="most-viewed.html">
+          View all
+        </a>
+
+      </div>
+
+      <div
+        id="trendingVideos"
+        class="dvGrid">
+      </div>
+
+      <!-- COMPACT AD -->
+
+      <div class="dvAdSlot dvAdCompact">
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async
+          src="https://poweredby.jads.co/js/jads.js">
+        </script>
+
+        <ins
+          id="1128312"
+          data-width="300"
+          data-height="100">
+        </ins>
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async>
+          (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone':1128312
+          });
+        </script>
+
+      </div>
+
+      <!-- LATEST -->
+
+      <div class="dvSectionTitle">
+
+        <div>
+          <h2>
+            Recent HD Videos
+          </h2>
+        </div>
+
+        <a href="latest.html">
+          View all
+        </a>
+
+      </div>
+
+      <div
+        id="videos"
+        class="dvGrid">
+      </div>
+
+      <!-- BANNER AD -->
+
+      <div class="dvAdSlot dvAdBanner">
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async
+          src="https://poweredby.jads.co/js/jads.js">
+        </script>
+
+        <ins
+          id="1128301"
+          data-width="308"
+          data-height="286">
+        </ins>
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async>
+          (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone':1128301
+          });
+        </script>
+
+      </div>
+
+      <!-- SMALL AD -->
+
+      <div class="dvAdSlot dvAdSmall">
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async
+          src="https://poweredby.jads.co/js/jads.js">
+        </script>
+
+        <ins
+          id="1128309"
+          data-width="108"
+          data-height="140">
+        </ins>
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async>
+          (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone':1128309
+          });
+        </script>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+
+  <footer>
+
+    <div class="footerLogo">
       Desi<span>Vexa</span>
     </div>
 
-    <div class="homeLinks">
-      <a href="new.html">Latest</a>
-      <a href="recommended.html">Recommended</a>
-    </div>
-
-  </div>
-
-
-  <!-- LATEST -->
-
-  <h2 class="sectionTitle">
-    Latest Videos
-  </h2>
-
-  <div
-    id="latestVideos"
-    class="videoGrid"
-  >
-    <p style="color:#888;">
-      Loading...
+    <p>
+      18+ only · All content must be lawful and consensual.
     </p>
-  </div>
 
+    <a href="legal.html">
+      Terms &amp; Privacy
+    </a>
 
-  <!-- RECOMMENDED -->
+  </footer>
 
-  <h2 class="sectionTitle">
-    Recommended
-  </h2>
+  <!-- APP JS -->
 
-  <div
-    id="recommendedVideos"
-    class="videoGrid"
-  >
-    <p style="color:#888;">
-      Loading...
-    </p>
-  </div>
+  <script
+    type="module"
+    src="app.js?v=41">
+  </script>
 
-</main>
+  <!-- JUICYADS FLOAT -->
 
+  <script type="text/javascript">
+    juicy_adzone = '1128307';
+  </script>
 
-<script type="module">
+  <script
+    type="text/javascript"
+    src="https://poweredby.jads.co/js/jfc.js"
+    charset="utf-8">
+  </script>
 
-import { createClient }
-from "https://esm.sh/@supabase/supabase-js@2";
+  <!-- JUICYADS NATIVE -->
 
-import {
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-} from "./config.js";
+  <script
+    type="text/javascript"
+    data-id="juicyads-native-ads"
+    data-ad-zone="1128313"
+    data-targets="a"
+    src="https://js.juicyads.com/juicyads.native-ads.min.js">
+  </script>
 
-const supabase = createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+  <!-- UI CONTROLS -->
 
-const latestBox =
-  document.getElementById("latestVideos");
+  <script>
 
-const recommendedBox =
-  document.getElementById("recommendedVideos");
+    const menuBtn =
+      document.getElementById("menuBtn");
 
+    const mobileMenu =
+      document.getElementById("mobileMenu");
 
-loadLatest();
-loadRecommended();
+    const searchBtn =
+      document.getElementById("searchBtn");
 
+    const searchBox =
+      document.getElementById("searchBox");
 
-async function loadLatest() {
+    const categoryBtn =
+      document.getElementById("categoryBtn");
 
-  const result = await supabase
-    .from("videos")
-    .select(`
-      id,
-      title,
-      category,
-      thumbnail_url,
-      views,
-      created_at
-    `)
-    .eq("published", true)
-    .order("created_at", {
-      ascending:false
-    })
-    .limit(20);
+    const cats =
+      document.getElementById("cats");
 
-  if (result.error) {
+    const search =
+      document.getElementById("search");
 
-    console.error(result.error);
+    /* MENU */
 
-    latestBox.innerHTML = `
-      <p style="color:#888;">
-        Unable to load latest videos.
-      </p>
-    `;
+    if(menuBtn){
 
-    return;
-  }
+      menuBtn.addEventListener("click", function(){
 
-  renderVideos(
-    latestBox,
-    result.data || []
-  );
-}
+        mobileMenu.classList.toggle("open");
 
+      });
 
-async function loadRecommended() {
+    }
 
-  const result = await supabase
-    .from("videos")
-    .select(`
-      id,
-      title,
-      category,
-      thumbnail_url,
-      views,
-      created_at
-    `)
-    .eq("published", true)
-    .order("views", {
-      ascending:false
-    })
-    .order("created_at", {
-      ascending:false
-    })
-    .limit(20);
+    /* SEARCH */
 
-  if (result.error) {
+    if(searchBtn){
 
-    console.error(result.error);
+      searchBtn.addEventListener("click", function(){
 
-    recommendedBox.innerHTML = `
-      <p style="color:#888;">
-        Unable to load recommended videos.
-      </p>
-    `;
+        searchBox.classList.toggle("open");
 
-    return;
-  }
+        if(searchBox.classList.contains("open")){
 
-  renderVideos(
-    recommendedBox,
-    result.data || []
-  );
-}
+          setTimeout(function(){
 
+            if(search){
+              search.focus();
+            }
 
-function renderVideos(box, videos) {
+          },100);
 
-  if (!videos.length) {
+        }
 
-    box.innerHTML = `
-      <p style="color:#888;">
-        No videos available.
-      </p>
-    `;
+      });
 
-    return;
-  }
+    }
 
-  box.innerHTML =
-    videos.map(video => {
+    /* CATEGORY */
 
-      const id =
-        encodeURIComponent(video.id);
+    if(categoryBtn){
 
-      return `
-        <a
-          class="videoCard"
-          href="video.html?id=${id}"
-        >
+      categoryBtn.addEventListener("click", function(){
 
-          ${
-            video.thumbnail_url
-              ? `
-                <img
-                  class="thumb"
-                  src="${escapeHTML(video.thumbnail_url)}"
-                  loading="lazy"
-                  alt=""
-                >
-              `
-              : `
-                <div class="noThumb">
-                  ▶
-                </div>
-              `
+        cats.classList.toggle("open");
+
+      });
+
+    }
+
+    /* SEARCH ENTER */
+
+    if(search){
+
+      search.addEventListener("keydown", function(e){
+
+        if(e.key === "Enter"){
+
+          const value =
+            search.value.trim();
+
+          if(value){
+
+            window.location.href =
+              "index.html?search=" +
+              encodeURIComponent(value);
+
           }
 
-          <div class="videoTitle">
-            ${escapeHTML(
-              video.title || "Untitled"
-            )}
-          </div>
+        }
 
-          <div class="videoMeta">
-            ${escapeHTML(
-              video.category || "Video"
-            )}
-            ·
-            ${Number(video.views || 0)}
-            views
-          </div>
+      });
 
-        </a>
-      `;
+    }
 
-    }).join("");
-}
-
-
-function escapeHTML(value) {
-
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-}
-
-</script>
+  </script>
 
 </body>
 </html>
