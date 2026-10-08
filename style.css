@@ -1380,3 +1380,18 @@ footer{
   }
 
 }
+
+
+/* SOCIAL / COMMENTS */
+.videoActions{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.videoActions button{border:1px solid #2b3440;background:#111720;color:#fff;border-radius:9px;padding:10px 13px;cursor:pointer;font-weight:700}
+.videoActions button:hover,.videoActions button.active{background:#ff1744;border-color:#ff1744}
+.commentSection{margin-top:26px;padding-top:8px}
+.commentForm{display:grid;gap:9px;margin-bottom:16px}
+.commentForm input,.commentForm textarea{width:100%;box-sizing:border-box;border:1px solid #2b3440;border-radius:9px;background:#0e131a;color:#fff;padding:11px;outline:none}
+.commentForm input:focus,.commentForm textarea:focus{border-color:#ff1744}
+.commentForm button{width:max-content;border:0;border-radius:9px;background:#ff1744;color:#fff;padding:10px 15px;font-weight:800;cursor:pointer}
+.comment{padding:12px 0;border-bottom:1px solid #202833}
+.comment strong{color:#fff}
+.comment p{margin:5px 0 0;color:#b9c1cc;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+#relatedVideos{margin-top:28px}

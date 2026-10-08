@@ -1,972 +1,592 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DesiVexa</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
+  <meta name="description" content="DesiVexa - 18+ video platform">
 
-body{
-    background:#02070d;
-    color:#fff;
-    font-family:Arial,sans-serif;
-}
+  <!-- ExoClick verification -->
+  <meta name="6a97888e-site-verification"
+        content="cdfc6e06389c2153c30b80c3449ad95c">
 
-.app{
-    max-width:700px;
-    min-height:100vh;
-    margin:auto;
-    background:#06111a;
-    padding-bottom:90px;
-}
+  <!-- JuicyAds verification -->
+  <meta name="juicyads-site-verification"
+        content="97df17e7b5112caab5770e66ce197265">
 
-/* HEADER */
-header{
-    height:78px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:0 18px;
-    background:#020a11;
-    border-bottom:1px solid #263540;
-}
+  <title>DesiVexa - 18+ Videos</title>
 
-.menu{
-    font-size:28px;
-    cursor:pointer;
-}
+  <link rel="preconnect" href="https://poweredby.jads.co">
+  <link rel="dns-prefetch" href="//poweredby.jads.co">
 
-.logo{
-    font-size:25px;
-    font-weight:800;
-}
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="ads.css">
 
-.logo span{
-    color:#ff1744;
-}
+  <!-- Mobile layout: desktop-style, 3 video columns, no horizontal scroll -->
+  <style>
+    @media (max-width:699px){
 
-.header-actions{
-    display:flex;
-    gap:15px;
-    align-items:center;
-}
+      html,
+      body{
+        width:100% !important;
+        max-width:100% !important;
+        overflow-x:hidden !important;
+      }
 
-.header-btn{
-    color:#fff;
-    text-decoration:none;
-    font-size:22px;
-}
+      .dvMain{
+        width:100% !important;
+        max-width:1280px !important;
+        margin:0 auto !important;
+        padding:18px 10px 45px !important;
+      }
 
-/* AD */
-.ad{
-    margin:8px 18px 13px;
-    height:58px;
-    border:2px solid #ff1744;
-    border-radius:8px;
-    background:#280914;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:13px;
-}
+      .dvHeaderInner{
+        width:100% !important;
+        max-width:1280px !important;
+        min-height:62px !important;
+        padding:0 12px !important;
+      }
 
-/* CATEGORIES */
-.categories{
-    display:flex;
-    gap:8px;
-    overflow-x:auto;
-    padding:0 18px 15px;
-    scrollbar-width:none;
-}
+      .dvLogo{
+        font-size:24px !important;
+      }
 
-.categories::-webkit-scrollbar{
-    display:none;
-}
+      .headerIcon{
+        width:42px !important;
+        height:42px !important;
+        font-size:23px !important;
+      }
 
-.category{
-    flex-shrink:0;
-    padding:10px 16px;
-    border-radius:10px;
-    background:#10202c;
-    border:1px solid #233a49;
-    color:#fff;
-    text-decoration:none;
-    font-size:13px;
-}
+      /* Desktop-style hero on mobile */
+      .premiumHero{
+        grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) !important;
+        gap:14px !important;
+        min-height:250px !important;
+        padding:18px !important;
+        border-radius:14px !important;
+      }
 
-.category.active{
-    background:#ff1744;
-    border-color:#ff1744;
-}
+      .premiumHero h1{
+        font-size:clamp(24px,7vw,38px) !important;
+        letter-spacing:-1.2px !important;
+      }
 
-/* SECTION */
-.section{
-    padding:0 18px;
-    margin:20px 0;
-}
+      .premiumHero p{
+        font-size:12px !important;
+        line-height:1.45 !important;
+      }
 
-.section-header{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:10px;
-}
+      .heroButton{
+        padding:10px 13px !important;
+        font-size:12px !important;
+      }
 
-.section-header h2{
-    font-size:20px;
-}
+      .featuredThumb{
+        aspect-ratio:16/9 !important;
+      }
 
-.view-all{
-    color:#ff1744;
-    font-size:13px;
-    font-weight:bold;
-    text-decoration:none;
-}
+      .featuredInfo{
+        padding:9px !important;
+      }
 
-/* VIDEO GRID */
-.video-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:9px;
-}
+      .featuredInfo h2{
+        font-size:14px !important;
+      }
 
-.video-card{
-    min-width:0;
-    cursor:pointer;
-}
+      /* Categories */
+      #categoryItems,
+      .categoryItems{
+        flex-wrap:wrap !important;
+        gap:6px !important;
+      }
 
-.thumbnail{
-    position:relative;
-    aspect-ratio:16/9;
-    overflow:hidden;
-    border-radius:5px;
-    background:
-    linear-gradient(
-        135deg,
-        #675451,
-        #202a32,
-        #754f59
-    );
-}
+      .categoryItem,
+      .catItem{
+        padding:8px 12px !important;
+        font-size:12px !important;
+      }
 
-.thumbnail::after{
-    content:"";
-    position:absolute;
-    inset:0;
-    background:rgba(180,150,150,.18);
-    backdrop-filter:blur(7px);
-}
+      /* 3 COLUMNS */
+      .dvGrid{
+        display:grid !important;
+        grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+        gap:10px !important;
+        width:100% !important;
+      }
 
-.play{
-    position:absolute;
-    z-index:2;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    width:36px;
-    height:36px;
-    border-radius:50%;
-    background:rgba(0,0,0,.65);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
+      .card{
+        width:100% !important;
+        min-width:0 !important;
+        max-width:100% !important;
+        border-radius:9px !important;
+        overflow:hidden !important;
+      }
 
-.duration{
-    position:absolute;
-    z-index:3;
-    right:4px;
-    bottom:4px;
-    background:#000;
-    padding:3px 5px;
-    font-size:9px;
-    border-radius:3px;
-}
+      .thumb{
+        width:100% !important;
+        aspect-ratio:16/9 !important;
+        overflow:hidden !important;
+      }
 
-.video-title{
-    font-size:11px;
-    font-weight:bold;
-    margin:5px 2px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
+      .thumb img{
+        width:100% !important;
+        height:100% !important;
+        object-fit:cover !important;
+      }
 
-.tag{
-    display:inline-block;
-    background:#ff1744;
-    padding:3px 7px;
-    border-radius:8px;
-    font-size:9px;
-}
+      .card .body{
+        padding:8px !important;
+      }
 
-.video-info{
-    color:#ccd2d6;
-    font-size:9px;
-    line-height:16px;
-}
+      .card h3{
+        font-size:11px !important;
+        line-height:1.25 !important;
+      }
 
-/* RANDOM */
-.random-grid{
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:8px;
-}
+      .cardMeta{
+        font-size:9px !important;
+      }
 
-.random-grid .play{
-    width:28px;
-    height:28px;
-    font-size:12px;
-}
+      .playCircle{
+        width:34px !important;
+        height:34px !important;
+        font-size:12px !important;
+      }
 
-.random-grid .video-title{
-    font-weight:normal;
-    font-size:10px;
-}
+      .cardViews{
+        font-size:8px !important;
+        padding:3px 4px !important;
+      }
 
-/* PAGINATION */
-.pagination{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:7px;
-    flex-wrap:wrap;
-    padding:5px 18px 25px;
-}
+      .dvSectionTitle{
+        margin:25px 0 14px !important;
+      }
 
-.page-btn{
-    min-width:38px;
-    height:36px;
-    border:1px solid #29404f;
-    background:#0b1b27;
-    color:#fff;
-    border-radius:7px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-decoration:none;
-    padding:0 10px;
-}
+      .dvSectionTitle h2{
+        font-size:22px !important;
+      }
 
-.page-btn.active{
-    background:#ff1744;
-    border-color:#ff1744;
-}
+      .dvAdSlot{
+        width:100% !important;
+        max-width:100% !important;
+        overflow:hidden !important;
+      }
 
-.page-btn:disabled{
-    opacity:.4;
-    cursor:not-allowed;
-}
-
-/* BOTTOM NAV */
-.bottom-nav{
-    position:fixed;
-    bottom:0;
-    left:50%;
-    transform:translateX(-50%);
-    width:100%;
-    max-width:700px;
-    height:75px;
-    background:#020910;
-    border-top:1px solid #26343e;
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    z-index:100;
-}
-
-.nav-item{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    color:#fff;
-    text-decoration:none;
-    font-size:10px;
-}
-
-.nav-icon{
-    font-size:23px;
-}
-
-.nav-item.active{
-    color:#ff1744;
-}
-
-/* MOBILE */
-@media(max-width:500px){
-
-    .video-grid{
-        grid-template-columns:repeat(2,1fr);
-        gap:9px;
+      footer{
+        width:100% !important;
+        max-width:100% !important;
+        overflow:hidden !important;
+      }
     }
-
-    .random-grid{
-        grid-template-columns:repeat(3,1fr);
-    }
-
-    .section{
-        padding:0 12px;
-    }
-
-    .categories{
-        padding-left:12px;
-        padding-right:12px;
-    }
-}
-
-/* SMALL PHONE */
-@media(max-width:390px){
-
-    .random-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-
-    .section-header h2{
-        font-size:18px;
-    }
-}
-
-/* DESKTOP */
-@media(min-width:701px){
-
-    body{
-        padding:20px 0;
-    }
-
-    .app{
-        border:1px solid #233541;
-        border-radius:25px;
-        overflow:hidden;
-    }
-
-    .bottom-nav{
-        bottom:20px;
-        border-radius:0 0 25px 25px;
-    }
-}
-</style>
+  </style>
 </head>
 
 <body>
 
-<div class="app">
+  <!-- AGE GATE -->
+  <div id="ageGate" class="gate">
+    <div class="gatebox" style="
+      width:min(430px,100%);
+      padding:28px;
+      text-align:center;
+      background:#121212;
+      border:1px solid #303030;
+      border-radius:14px;
+      box-shadow:0 8px 30px rgba(0,0,0,.35);
+    ">
+      <div style="font-size:28px;font-weight:900;">
+        Desi<span style="color:#ff1744;">Vexa</span>
+      </div>
 
-<!-- HEADER -->
-<header>
+      <div style="
+        display:inline-block;
+        margin:14px 0;
+        padding:6px 10px;
+        border-radius:7px;
+        background:#ff1744;
+        color:#fff;
+        font-weight:900;
+      ">18+</div>
 
-    <div class="menu" onclick="toggleMenu()">
+      <h2>Adults Only</h2>
+
+      <p>
+        You must be 18 years or older
+        to enter this website.
+      </p>
+
+      <button id="enter" type="button" style="
+        padding:12px 18px;
+        border:0;
+        border-radius:8px;
+        background:#e50914;
+        color:#fff;
+        cursor:pointer;
+        font-weight:700;
+      ">
+        I am 18+ - Enter
+      </button>
+    </div>
+  </div>
+
+
+  <!-- HEADER -->
+  <header class="dvHeader">
+    <div class="dvHeaderInner">
+
+      <button
+        id="menuBtn"
+        class="headerIcon"
+        type="button"
+        aria-label="Menu">
         ☰
-    </div>
+      </button>
 
-    <a href="index.html"
-       style="text-decoration:none;color:white">
+      <a href="index.html" class="dvLogo">
+        Desi<span>Vexa</span>
+      </a>
 
-        <div class="logo">
-            Desi<span>Vexa</span>
-        </div>
-
-    </a>
-
-    <div class="header-actions">
-
-        <a href="search.html"
-           class="header-btn">
-            🔍
-        </a>
-
-        <a href="profile.html"
-           class="header-btn">
-            👤
-        </a>
+      <button
+        id="searchBtn"
+        class="headerIcon"
+        type="button"
+        aria-label="Search">
+        ⌕
+      </button>
 
     </div>
 
-</header>
-
-
-<!-- AD -->
-<div class="ad">
-    Top Banner Ad
-</div>
-
-
-<!-- CATEGORIES -->
-<div class="categories">
-
-    <a href="category.html?cat=all"
-       class="category active">
-        All
-    </a>
-
-    <a href="category.html?cat=indian"
-       class="category">
-        Indian
-    </a>
-
-    <a href="category.html?cat=bhabhi"
-       class="category">
-        Bhabhi
-    </a>
-
-    <a href="category.html?cat=desi"
-       class="category">
-        Desi
-    </a>
-
-    <a href="category.html?cat=mature"
-       class="category">
-        Mature
-    </a>
-
-    <a href="category.html"
-       class="category">
-        More⌄
-    </a>
-
-</div>
-
-
-<!-- TRENDING -->
-<section class="section">
-
-    <div class="section-header">
-
-        <h2>
-            🔥 Trending Videos
-        </h2>
-
-        <a href="trending.html"
-           class="view-all">
-            View All →
-        </a>
-
+    <div id="searchBox" class="dvSearchBox">
+      <input
+        id="search"
+        type="search"
+        placeholder="Search videos..."
+        autocomplete="off">
     </div>
-
-    <div
-        class="video-grid"
-        id="trendingVideos">
-    </div>
-
-</section>
+  </header>
 
 
-<!-- NEW -->
-<section class="section">
+  <!-- MENU -->
+  <div id="mobileMenu" class="mobileMenu">
 
-    <div class="section-header">
+    <a href="index.html">Home</a>
 
-        <h2>
-            ⭐ New Videos
-        </h2>
-
-        <a href="new.html"
-           class="view-all">
-            View All →
-        </a>
-
-    </div>
-
-    <div
-        class="video-grid"
-        id="newVideos">
-    </div>
-
-</section>
-
-
-<!-- RECOMMENDED -->
-<section class="section">
-
-    <div class="section-header">
-
-        <h2>
-            👤 Recommended Videos
-        </h2>
-
-        <a href="recommended.html"
-           class="view-all">
-            View All →
-        </a>
-
-    </div>
-
-    <div
-        class="video-grid"
-        id="recommendedVideos">
-    </div>
-
-</section>
-
-
-<!-- RANDOM -->
-<section class="section">
-
-    <div class="section-header">
-
-        <h2>
-            🎲 Random Videos
-        </h2>
-
-    </div>
-
-    <div
-        class="random-grid"
-        id="randomVideos">
-    </div>
-
-</section>
-
-
-<!-- PAGINATION -->
-<div
-    class="pagination"
-    id="pagination">
-</div>
-
-
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-
-    <a href="index.html"
-       class="nav-item active">
-
-        <div class="nav-icon">⌂</div>
-        Home
-
+    <a href="trending.html">
+      Most Viewed
     </a>
 
-
-    <a href="new.html"
-       class="nav-item">
-
-        <div class="nav-icon">◷</div>
-        Latest
-
+    <a href="new.html">
+      Latest
     </a>
 
-
-    <a href="trending.html"
-       class="nav-item">
-
-        <div class="nav-icon">♨</div>
-        Trending
-
+    <a href="#categories">
+      Categories
     </a>
 
-
-    <a href="recommended.html"
-       class="nav-item">
-
-        <div class="nav-icon">▦</div>
-        Recommended
-
-    </a>
+  </div>
 
 
-    <a href="profile.html"
-       class="nav-item">
+  <!-- MAIN -->
+  <main class="dvMain">
 
-        <div class="nav-icon">♙</div>
-        Profile
+    <!-- PREMIUM HERO -->
+    <section class="premiumHero">
 
-    </a>
+      <div class="heroCopy">
 
-</nav>
-
-</div>
-
-
-<script>
-
-/* =========================
-   DEMO VIDEO DATA
-========================= */
-
-const trending = [
-
-    ["Trending Video 1","Indian","12:34","124K"],
-    ["Trending Video 2","Bhabhi","08:50","98K"],
-    ["Trending Video 3","Desi","15:20","156K"],
-    ["Trending Video 4","Mature","10:12","78K"],
-    ["Trending Video 5","Indian","09:45","112K"],
-    ["Trending Video 6","Desi","13:22","91K"],
-    ["Trending Video 7","Bhabhi","07:42","87K"],
-    ["Trending Video 8","Mature","11:31","105K"]
-
-];
-
-
-const newVideos = [
-
-    ["New Video 1","Desi","09:12","45K"],
-    ["New Video 2","Bhabhi","14:37","67K"],
-    ["New Video 3","Indian","07:45","32K"],
-    ["New Video 4","Mature","12:08","89K"],
-    ["New Video 5","Desi","10:25","55K"],
-    ["New Video 6","Indian","08:33","61K"],
-    ["New Video 7","Bhabhi","13:12","74K"],
-    ["New Video 8","Mature","06:50","39K"]
-
-];
-
-
-const recommended = [
-
-    ["Recommended 1","Indian","11:30","76K"],
-    ["Recommended 2","Desi","08:15","93K"],
-    ["Recommended 3","Bhabhi","13:40","61K"],
-    ["Recommended 4","Mature","09:25","102K"],
-    ["Recommended 5","Indian","12:10","81K"],
-    ["Recommended 6","Desi","07:55","68K"],
-    ["Recommended 7","Bhabhi","14:22","97K"],
-    ["Recommended 8","Mature","10:18","72K"]
-
-];
-
-
-/* =========================
-   CARD
-========================= */
-
-function createCard(video,index){
-
-    return `
-
-    <a
-        href="video.html?id=${index}"
-        class="video-card"
-        style="
-            text-decoration:none;
-            color:inherit;
-            display:block;
-        "
-    >
-
-        <div class="thumbnail">
-
-            <div class="play">
-                ▶
-            </div>
-
-            <div class="duration">
-                ${video[2]}
-            </div>
-
-        </div>
-
-        <div class="video-title">
-            ${video[0]}
-        </div>
-
-        <span class="tag">
-            ${video[1]}
+        <span class="eyebrow">
+          DESIVEXA • 18+ VIDEO PLATFORM
         </span>
 
-        <div class="video-info">
-            👁 ${video[3]} views<br>
-            ◷ Recently
+        <h1>
+          Discover videos.<br>
+          <span>Watch what you like.</span>
+        </h1>
+
+        <p>
+          Explore trending and latest videos
+          in a cleaner, faster and mobile-friendly layout.
+        </p>
+
+        <a class="heroButton" href="#latest">
+          ▶ Explore Videos
+        </a>
+
+      </div>
+
+      <div id="featuredVideo" class="featuredVideo">
+        <div class="featuredLoading">
+          Loading featured video...
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- CATEGORIES -->
+    <section
+      class="dvSection"
+      id="categories">
+
+      <div class="toolbar">
+
+        <button
+          id="categoryBtn"
+          class="categoryBtn"
+          type="button">
+          ☰ Categories
+        </button>
+
+        <div id="cats" class="categoryList">
+
+          <input
+            id="categorySearch"
+            type="search"
+            placeholder="Search categories..."
+            autocomplete="off">
+
+          <div id="categoryItems"></div>
+
         </div>
 
+      </div>
+
+
+      <!-- JUICYADS WIDE 1128310 -->
+      <div class="dvAdSlot dvAdWide">
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async
+          src="https://poweredby.jads.co/js/jads.js">
+        </script>
+
+        <ins
+          id="1128310"
+          data-width="774"
+          data-height="290">
+        </ins>
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async>
+          (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone':1128310
+          });
+        </script>
+
+      </div>
+
+
+      <!-- TRENDING -->
+      <div class="dvSectionTitle">
+
+        <div>
+          <span class="sectionLabel">
+            TRENDING
+          </span>
+
+          <h2>
+            Trending Videos
+          </h2>
+        </div>
+
+        <a href="trending.html">
+          View all ›
+        </a>
+
+      </div>
+
+      <div
+        id="trendingVideos"
+        class="dvGrid">
+      </div>
+
+
+      <!-- JUICYADS COMPACT 1128312 -->
+      <div class="dvAdSlot dvAdCompact">
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async
+          src="https://poweredby.jads.co/js/jads.js">
+        </script>
+
+        <ins
+          id="1128312"
+          data-width="300"
+          data-height="100">
+        </ins>
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async>
+          (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone':1128312
+          });
+        </script>
+
+      </div>
+
+
+      <!-- LATEST -->
+      <div
+        id="latest"
+        class="dvSectionTitle latestHeading">
+
+        <div>
+          <span class="sectionLabel">
+            NEW
+          </span>
+
+          <h2>
+            Latest Videos
+          </h2>
+        </div>
+
+        <a href="new.html">
+          View all ›
+        </a>
+
+      </div>
+
+      <div
+        id="videos"
+        class="dvGrid">
+      </div>
+
+
+      <!-- RECOMMENDED -->
+      <div class="dvSectionTitle">
+        <div>
+          <span class="sectionLabel">FOR YOU</span>
+          <h2>Recommended Videos</h2>
+        </div>
+        <a href="recommended.html">View all ›</a>
+      </div>
+
+      <div id="recommendations" class="dvGrid"></div>
+
+
+      <!-- RANDOM -->
+      <div class="dvSectionTitle">
+        <div>
+          <span class="sectionLabel">DISCOVER</span>
+          <h2>Random Videos</h2>
+        </div>
+      </div>
+
+      <div id="randomVideos" class="dvGrid"></div>
+
+      <!-- JUICYADS BANNER 1128301 -->
+      <div class="dvAdSlot dvAdBanner">
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async
+          src="https://poweredby.jads.co/js/jads.js">
+        </script>
+
+        <ins
+          id="1128301"
+          data-width="308"
+          data-height="286">
+        </ins>
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async>
+          (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone':1128301
+          });
+        </script>
+
+      </div>
+
+
+      <!-- JUICYADS SMALL 1128309 -->
+      <div class="dvAdSlot dvAdSmall">
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async
+          src="https://poweredby.jads.co/js/jads.js">
+        </script>
+
+        <ins
+          id="1128309"
+          data-width="108"
+          data-height="140">
+        </ins>
+
+        <script
+          type="text/javascript"
+          data-cfasync="false"
+          async>
+          (adsbyjuicy = window.adsbyjuicy || []).push({
+            'adzone':1128309
+          });
+        </script>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- FOOTER -->
+  <footer>
+
+    <div class="footerLogo">
+      Desi<span>Vexa</span>
+    </div>
+
+    <p>
+      18+ only · All content must be lawful and consensual.
+    </p>
+
+    <a href="legal.html">
+      Terms &amp; Privacy
     </a>
 
-    `;
-
-}
-
-
-/* =========================
-   RENDER MAIN SECTIONS
-========================= */
-
-document.getElementById(
-    "trendingVideos"
-).innerHTML =
-    trending
-    .map((video,index)=>
-        createCard(video,index+1)
-    )
-    .join("");
-
-
-document.getElementById(
-    "newVideos"
-).innerHTML =
-    newVideos
-    .map((video,index)=>
-        createCard(video,index+101)
-    )
-    .join("");
-
-
-document.getElementById(
-    "recommendedVideos"
-).innerHTML =
-    recommended
-    .map((video,index)=>
-        createCard(video,index+201)
-    )
-    .join("");
-
-
-/* =========================
-   RANDOM 150
-========================= */
-
-const randomVideos = [];
-
-for(let i=1;i<=150;i++){
-
-    randomVideos.push({
-
-        id: i+300,
-
-        title:
-            "Random Video " + i,
-
-        duration:
-            String(
-                Math.floor(
-                    Math.random()*15
-                )+1
-            ).padStart(2,"0")
-            +
-            ":"
-            +
-            String(
-                Math.floor(
-                    Math.random()*60
-                )
-            ).padStart(2,"0")
-
-    });
-
-}
-
-
-let currentPage = 1;
-
-const videosPerPage = 30;
-
-
-/* =========================
-   RANDOM RENDER
-========================= */
-
-function renderRandomVideos(){
-
-    const box =
-        document.getElementById(
-            "randomVideos"
-        );
-
-    const start =
-        (currentPage-1)
-        *
-        videosPerPage;
-
-    const end =
-        start+videosPerPage;
-
-    const currentVideos =
-        randomVideos.slice(
-            start,
-            end
-        );
-
-
-    box.innerHTML =
-        currentVideos
-        .map(video=>`
-
-            <a
-                href="video.html?id=${video.id}"
-                class="video-card"
-                style="
-                    text-decoration:none;
-                    color:inherit;
-                    display:block;
-                "
-            >
-
-                <div class="thumbnail">
-
-                    <div class="play">
-                        ▶
-                    </div>
-
-                    <div class="duration">
-                        ${video.duration}
-                    </div>
-
-                </div>
-
-                <div class="video-title">
-                    ${video.title}
-                </div>
-
-            </a>
-
-        `)
-        .join("");
-
-
-    renderPagination();
-
-}
-
-
-/* =========================
-   PAGINATION
-========================= */
-
-function renderPagination(){
-
-    const pagination =
-        document.getElementById(
-            "pagination"
-        );
-
-    pagination.innerHTML = "";
-
-
-    const previous =
-        document.createElement("button");
-
-    previous.className =
-        "page-btn";
-
-    previous.innerText =
-        "‹ Previous";
-
-    previous.disabled =
-        currentPage===1;
-
-    previous.onclick=function(){
-
-        if(currentPage>1){
-
-            currentPage--;
-
-            renderRandomVideos();
-
-            scrollToRandom();
-
-        }
-
-    };
-
-    pagination.appendChild(previous);
-
-
-    for(
-        let page=1;
-        page<=5;
-        page++
-    ){
-
-        const button =
-            document.createElement(
-                "button"
-            );
-
-        button.className =
-            "page-btn";
-
-        if(page===currentPage){
-
-            button.classList.add(
-                "active"
-            );
-
-        }
-
-        button.innerText=page;
-
-        button.onclick=function(){
-
-            currentPage=page;
-
-            renderRandomVideos();
-
-            scrollToRandom();
-
-        };
-
-        pagination.appendChild(button);
-
-    }
-
-
-    const next =
-        document.createElement("button");
-
-    next.className =
-        "page-btn";
-
-    next.innerText =
-        "Next ›";
-
-    next.disabled =
-        currentPage===5;
-
-    next.onclick=function(){
-
-        if(currentPage<5){
-
-            currentPage++;
-
-            renderRandomVideos();
-
-            scrollToRandom();
-
-        }
-
-    };
-
-    pagination.appendChild(next);
-
-}
-
-
-/* =========================
-   SCROLL
-========================= */
-
-function scrollToRandom(){
-
-    document
-        .getElementById("randomVideos")
-        .scrollIntoView({
-            behavior:"smooth",
-            block:"start"
-        });
-
-}
-
-
-/* =========================
-   MENU
-========================= */
-
-function toggleMenu(){
-
-    window.location.href =
-        "category.html";
-
-}
-
-
-/* =========================
-   START
-========================= */
-
-renderRandomVideos();
-
-</script>
+  </footer>
+
+
+  <!-- APP -->
+  <script
+    type="module"
+    src="app.js?v=31">
+  </script>
+
+
+  <!-- JUICYADS FLOAT 1128307 -->
+  <script type="text/javascript">
+    juicy_adzone = '1128307';
+  </script>
+
+  <script
+    type="text/javascript"
+    src="https://poweredby.jads.co/js/jfc.js"
+    charset="utf-8">
+  </script>
+
+
+  <!-- JUICYADS NATIVE 1128313 -->
+  <script
+    type="text/javascript"
+    data-id="juicyads-native-ads"
+    data-ad-zone="1128313"
+    data-targets="a"
+    src="https://js.juicyads.com/juicyads.native-ads.min.js">
+  </script>
 
 </body>
-    </html>
+</html>
