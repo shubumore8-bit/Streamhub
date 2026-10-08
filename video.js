@@ -15,10 +15,48 @@ async function social(video){
   const likeBtn=document.querySelector("#likeBtn"), likeCount=document.querySelector("#likeCount"), commentBtn=document.querySelector("#commentBtn"), comments=document.querySelector("#comments");
   const vid=visitorId();
   async function refreshLikes(){ const {count}=await supabase.from("video_likes").select("id",{count:"exact",head:true}).eq("video_id",video.id); if(likeCount)likeCount.textContent=Number(count||0).toLocaleString(); const {data}=await supabase.from("video_likes").select("id").eq("video_id",video.id).eq("visitor_id",vid).maybeSingle(); if(likeBtn)likeBtn.classList.toggle("active",!!data); }
-  likeBtn?.addEventListener("click",async()=>{ const {data}=await supabase.from("video_likes").select("id").eq("video_id",video.id).eq("visitor_id",vid).maybeSingle(); if(data) await supabase.from("video_likes").delete().eq("id",data.id); else await supabase.from("video_likes").insert({video_id:video.id,visitor_id:vid}); refreshLikes(); });
+  let likeBusy=false;
+  likeBtn?.addEventListener("click",async()=>{
+    if(likeBusy)return;
+    likeBusy=true;
+    likeBtn.disabled=true;
+    try{
+      const {data}=await supabase.from("video_likes").select("id").eq("video_id",video.id).eq("visitor_id",vid).maybeSingle();
+      if(data) await supabase.from("video_likes").delete().eq("id",data.id);
+      else await supabase.from("video_likes").insert({video_id:video.id,visitor_id:vid});
+      await refreshLikes();
+    }catch(e){
+      console.warn("Like error:",e);
+    }finally{
+      likeBusy=false;
+      likeBtn.disabled=false;
+    }
+  });
   commentBtn?.addEventListener("click",()=>document.querySelector("#commentSection")?.scrollIntoView({behavior:"smooth"}));
   async function loadComments(){ if(!comments)return; const {data,error}=await supabase.from("video_comments").select("display_name,body,created_at").eq("video_id",video.id).eq("approved",true).order("created_at",{ascending:false}).limit(50); if(error){comments.innerHTML=`<p class="muted">Comments are not available yet.</p>`;return;} comments.innerHTML=data?.length?data.map(c=>`<div class="comment"><strong>${esc(c.display_name||"User")}</strong><p>${esc(c.body)}</p></div>`).join(""):`<p class="muted">No comments yet.</p>`; }
-  document.querySelector("#commentForm")?.addEventListener("submit",async e=>{e.preventDefault();const name=document.querySelector("#commentName")?.value.trim()||"User",body=document.querySelector("#commentText")?.value.trim();if(!body)return;const {error}=await supabase.from("video_comments").insert({video_id:video.id,visitor_id:vid,display_name:name.slice(0,60),body:body.slice(0,2000),approved:false}); if(error){alert("Comment could not be submitted.");return;} e.target.reset();alert("Comment submitted for review.");});
+  document.querySelector("#commentForm")?.addEventListener("submit",async e=>{
+    e.preventDefault();
+    const form=e.target, submit=form.querySelector("button[type=submit]");
+    const name=document.querySelector("#commentName")?.value.trim()||"User";
+    const body=document.querySelector("#commentText")?.value.trim();
+    if(!body)return;
+    if(submit){submit.disabled=true;submit.textContent="Submitting...";}
+    try{
+      const {error}=await supabase.from("video_comments").insert({
+        video_id:video.id,
+        visitor_id:vid,
+        display_name:name.slice(0,60),
+        body:body.slice(0,2000),
+        approved:false
+      });
+      if(error){console.error(error);alert("Comment could not be submitted.");return;}
+      form.reset();
+      alert("Comment submitted for review.");
+      await loadComments();
+    }finally{
+      if(submit){submit.disabled=false;submit.textContent="Post Comment";}
+    }
+  });
   refreshLikes(); loadComments();
 }
 
