@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>DesiVexa - Search</title>
 
 <style>
+
 *{
   box-sizing:border-box;
   margin:0;
@@ -54,6 +57,10 @@ header{
   background:#1b1b1b;
   color:#fff;
   outline:none;
+}
+
+.search input:focus{
+  border-color:#e50914;
 }
 
 .profile{
@@ -107,26 +114,35 @@ header{
 
 .thumb{
   height:160px;
-  background:linear-gradient(135deg,#270000,#151515,#400000);
+  background:#151515;
+  position:relative;
+  overflow:hidden;
+}
+
+.thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
+.thumbPlaceholder{
+  width:100%;
+  height:100%;
   display:flex;
   align-items:center;
   justify-content:center;
-  position:relative;
+  background:linear-gradient(
+    135deg,
+    #270000,
+    #151515,
+    #400000
+  );
 }
 
 .play{
   color:#e50914;
   font-size:42px;
-}
-
-.duration{
-  position:absolute;
-  right:7px;
-  bottom:7px;
-  background:#000;
-  padding:4px 7px;
-  border-radius:4px;
-  font-size:11px;
 }
 
 .info{
@@ -155,6 +171,13 @@ header{
   color:#888;
 }
 
+.loading{
+  grid-column:1/-1;
+  text-align:center;
+  padding:50px 20px;
+  color:#888;
+}
+
 .pagination{
   display:flex;
   justify-content:center;
@@ -176,6 +199,11 @@ header{
 .pagination button.active{
   background:#e50914;
   border-color:#e50914;
+}
+
+.pagination button:disabled{
+  opacity:.35;
+  cursor:not-allowed;
 }
 
 .bottom-nav{
@@ -208,9 +236,11 @@ header{
 }
 
 @media(max-width:900px){
+
   .grid{
     grid-template-columns:repeat(3,1fr);
   }
+
 }
 
 @media(max-width:600px){
@@ -235,14 +265,27 @@ header{
   .thumb{
     height:115px;
   }
+
+  .info{
+    padding:9px;
+  }
+
+  .title{
+    font-size:14px;
+  }
+
 }
 
 @media(max-width:380px){
+
   .profile{
     display:none;
   }
+
 }
+
 </style>
+
 </head>
 
 <body>
@@ -254,12 +297,15 @@ header{
   </a>
 
   <div class="search">
+
     <input
       id="searchInput"
       type="text"
       placeholder="Search videos..."
+      autocomplete="off"
       onkeydown="handleSearch(event)"
     >
+
   </div>
 
   <a href="profile.html" class="profile">
@@ -274,11 +320,11 @@ header{
   <div class="heading">
 
     <h1 id="searchTitle">
-      Search Results
+      All Videos
     </h1>
 
     <p id="resultCount">
-      Searching...
+      Loading...
     </p>
 
   </div>
@@ -287,6 +333,11 @@ header{
   <div
     class="grid"
     id="resultsGrid">
+
+    <div class="loading">
+      Loading videos...
+    </div>
+
   </div>
 
 
@@ -328,7 +379,24 @@ header{
 </nav>
 
 
-<script>
+<script type="module">
+
+import { createClient }
+from "https://esm.sh/@supabase/supabase-js@2";
+
+import {
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+}
+from "./config.js";
+
+
+const supabase =
+  createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
 
 /* =========================
    SEARCH QUERY
@@ -342,135 +410,255 @@ const params =
 let query =
   params.get("q") || "";
 
-query=query.trim();
+query =
+  query.trim();
 
 
 document.getElementById(
   "searchInput"
-).value=query;
+).value = query;
 
 
 /* =========================
-   DEMO VIDEO DATABASE
+   SETTINGS
 ========================= */
 
-const allVideos=[];
+const perPage = 20;
 
-const categories=[
-  "Trending",
-  "New",
-  "Recommended",
-  "Popular",
-  "Desi",
-  "Indian"
-];
-
-for(let i=1;i<=180;i++){
-
-  const category =
-    categories[
-      (i-1)%categories.length
-    ];
-
-  allVideos.push({
-
-    id:"search-"+i,
-
-    title:
-      category+
-      " Video "+
-      i,
-
-    category:category,
-
-    views:
-      (i*731)+
-      " views",
-
-    duration:
-      "8:"+
-      String(
-        (i%55)+1
-      ).padStart(2,"0")
-
-  });
-
-}
-
-
-/* =========================
-   FILTER
-========================= */
-
-function getResults(){
-
-  if(!query){
-    return allVideos;
-  }
-
-  const q=
-    query.toLowerCase();
-
-  return allVideos.filter(video =>
-
-    video.title
-      .toLowerCase()
-      .includes(q)
-
-    ||
-
-    video.category
-      .toLowerCase()
-      .includes(q)
-
+let currentPage =
+  parseInt(
+    params.get("page") || "1",
+    10
   );
 
+if(
+  !Number.isFinite(currentPage) ||
+  currentPage < 1
+){
+  currentPage = 1;
 }
 
 
-const results=getResults();
-
-const perPage=30;
-
-let currentPage=1;
+let results = [];
 
 
 /* =========================
-   RENDER RESULTS
+   ESCAPE HTML
 ========================= */
 
-function render(){
+function escapeHtml(value){
 
-  const grid=
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================
+   FORMAT VIEWS
+========================= */
+
+function formatViews(views){
+
+  const number =
+    Number(views) || 0;
+
+  if(number >= 1000000){
+
+    return (
+      (number / 1000000)
+      .toFixed(
+        number >= 10000000 ? 0 : 1
+      )
+      .replace(".0","")
+      + "M"
+    );
+
+  }
+
+  if(number >= 1000){
+
+    return (
+      (number / 1000)
+      .toFixed(
+        number >= 10000 ? 0 : 1
+      )
+      .replace(".0","")
+      + "K"
+    );
+
+  }
+
+  return String(number);
+
+}
+
+
+/* =========================
+   LOAD VIDEOS
+========================= */
+
+async function loadVideos(){
+
+  const grid =
     document.getElementById(
       "resultsGrid"
     );
 
-  const title=
+  const count =
+    document.getElementById(
+      "resultCount"
+    );
+
+  grid.innerHTML = `
+    <div class="loading">
+      Loading videos...
+    </div>
+  `;
+
+  let queryBuilder =
+    supabase
+      .from("videos")
+      .select(`
+        id,
+        title,
+        category,
+        thumbnail_url,
+        video_url,
+        views,
+        created_at
+      `)
+      .eq("published", true)
+      .order(
+        "created_at",
+        {ascending:false}
+      );
+
+
+  /*
+    Agar search query hai,
+    title/category dono me
+    search karenge.
+  */
+
+  if(query){
+
+    const safeQuery =
+      query.replace(
+        /[%_]/g,
+        ""
+      );
+
+    if(safeQuery){
+
+      queryBuilder =
+        queryBuilder.or(
+          `title.ilike.%${safeQuery}%,category.ilike.%${safeQuery}%`
+        );
+
+    }
+
+  }
+
+
+  const {
+    data,
+    error
+  } =
+    await queryBuilder;
+
+
+  if(error){
+
+    console.error(
+      "Search error:",
+      error
+    );
+
+    grid.innerHTML = `
+      <div
+        class="no-results"
+        style="grid-column:1/-1">
+
+        <h2>
+          Failed to load videos
+        </h2>
+
+        <p style="margin-top:8px">
+          Please refresh the page.
+        </p>
+
+      </div>
+    `;
+
+    count.textContent =
+      "Unable to load results";
+
+    document.getElementById(
+      "pagination"
+    ).innerHTML = "";
+
+    return;
+
+  }
+
+
+  results =
+    data || [];
+
+
+  render();
+
+}
+
+
+/* =========================
+   RENDER
+========================= */
+
+function render(){
+
+  const grid =
+    document.getElementById(
+      "resultsGrid"
+    );
+
+  const title =
     document.getElementById(
       "searchTitle"
     );
 
-  const count=
+  const count =
     document.getElementById(
       "resultCount"
     );
 
 
-  title.textContent =
-    query
-      ? `Search: "${query}"`
-      : "All Videos";
+  if(query){
+
+    title.textContent =
+      `Search: "${query}"`;
+
+  }else{
+
+    title.textContent =
+      "All Videos";
+
+  }
 
 
   count.textContent =
-    results.length+
+    results.length +
     " videos found";
 
 
-  if(results.length===0){
+  if(results.length === 0){
 
-    grid.innerHTML=`
+    grid.innerHTML = `
 
       <div
         class="no-results"
@@ -490,65 +678,117 @@ function render(){
 
     document.getElementById(
       "pagination"
-    ).innerHTML="";
+    ).innerHTML = "";
 
     return;
 
   }
 
 
-  const start=
-    (currentPage-1)*
+  const totalPages =
+    Math.ceil(
+      results.length /
+      perPage
+    );
+
+
+  if(currentPage > totalPages){
+
+    currentPage =
+      totalPages;
+
+  }
+
+
+  const start =
+    (currentPage - 1) *
     perPage;
 
-  const end=
-    start+
-    perPage;
+  const end =
+    start + perPage;
 
 
-  const pageResults=
+  const pageResults =
     results.slice(
       start,
       end
     );
 
 
-  grid.innerHTML=
-    pageResults.map(video=>`
+  grid.innerHTML =
+    pageResults
+      .map(video => {
 
-      <a
-        href="video.html?id=${encodeURIComponent(video.id)}"
-        class="card">
+        const title =
+          escapeHtml(
+            video.title ||
+            "Untitled Video"
+          );
 
-        <div class="thumb">
+        const category =
+          escapeHtml(
+            video.category ||
+            "Uncategorized"
+          );
 
-          <div class="play">
-            ▶
-          </div>
+        const views =
+          formatViews(
+            video.views
+          );
 
-          <div class="duration">
-            ${video.duration}
-          </div>
+        const thumbnail =
+          video.thumbnail_url
+            ? `
+              <img
+                src="${escapeHtml(video.thumbnail_url)}"
+                alt="${title}"
+                loading="lazy"
+                onerror="this.parentElement.innerHTML='<div class=&quot;thumbPlaceholder&quot;><div class=&quot;play&quot;>▶</div></div>'"
+              >
+            `
+            : `
+              <div class="thumbPlaceholder">
+                <div class="play">
+                  ▶
+                </div>
+              </div>
+            `;
 
-        </div>
 
-        <div class="info">
+        return `
 
-          <div class="title">
-            ${video.title}
-          </div>
+          <a
+            href="video.html?id=${encodeURIComponent(video.id)}"
+            class="card">
 
-          <div class="meta">
-            ${video.views}
-            •
-            ${video.category}
-          </div>
+            <div class="thumb">
 
-        </div>
+              ${thumbnail}
 
-      </a>
+            </div>
 
-    `).join("");
+            <div class="info">
+
+              <div class="title">
+                ${title}
+              </div>
+
+              <div class="meta">
+
+                👁 ${views}
+                •
+                ${category}
+
+              </div>
+
+            </div>
+
+          </a>
+
+        `;
+
+      })
+      .join("");
 
 
   renderPagination();
@@ -562,68 +802,121 @@ function render(){
 
 function renderPagination(){
 
-  const pagination=
+  const pagination =
     document.getElementById(
       "pagination"
     );
 
-  const totalPages=
+  const totalPages =
     Math.ceil(
-      results.length/
+      results.length /
       perPage
     );
 
-  if(totalPages<=1){
 
-    pagination.innerHTML="";
+  if(totalPages <= 1){
+
+    pagination.innerHTML = "";
 
     return;
 
   }
 
 
-  let html="";
+  let html = "";
 
 
-  html+=`
+  /*
+    Previous
+  */
+
+  html += `
+
     <button
-      onclick="changePage(${currentPage-1})"
-      ${currentPage===1?"disabled":""}>
+      onclick="changePage(${currentPage - 1})"
+      ${currentPage === 1 ? "disabled" : ""}>
+
       Previous
+
     </button>
+
   `;
 
 
-  const maxPages=
+  /*
+    Page numbers:
+    1 2 3 4 5
+  */
+
+  const maxButtons = 5;
+
+  let startPage =
+    Math.max(
+      1,
+      currentPage - 2
+    );
+
+  let endPage =
     Math.min(
-      5,
-      totalPages
+      totalPages,
+      startPage + maxButtons - 1
     );
 
 
-  for(let i=1;i<=maxPages;i++){
+  if(
+    endPage - startPage + 1
+    < maxButtons
+  ){
 
-    html+=`
+    startPage =
+      Math.max(
+        1,
+        endPage - maxButtons + 1
+      );
+
+  }
+
+
+  for(
+    let i = startPage;
+    i <= endPage;
+    i++
+  ){
+
+    html += `
+
       <button
-        class="${i===currentPage?"active":""}"
+        class="${i === currentPage ? "active" : ""}"
         onclick="changePage(${i})">
+
         ${i}
+
       </button>
+
     `;
 
   }
 
 
-  html+=`
+  /*
+    Next
+  */
+
+  html += `
+
     <button
-      onclick="changePage(${currentPage+1})"
-      ${currentPage===totalPages?"disabled":""}>
+      onclick="changePage(${currentPage + 1})"
+      ${currentPage === totalPages ? "disabled" : ""}>
+
       Next
+
     </button>
+
   `;
 
 
-  pagination.innerHTML=html;
+  pagination.innerHTML =
+    html;
 
 }
 
@@ -632,60 +925,118 @@ function renderPagination(){
    CHANGE PAGE
 ========================= */
 
-function changePage(page){
+window.changePage =
+function(page){
 
-  const totalPages=
+  const totalPages =
     Math.ceil(
-      results.length/
+      results.length /
       perPage
     );
 
+
   if(
-    page<1 ||
-    page>totalPages
+    page < 1 ||
+    page > totalPages
   ){
+
     return;
+
   }
 
-  currentPage=page;
+
+  currentPage =
+    page;
+
+
+  const url =
+    new URL(
+      window.location.href
+    );
+
+
+  if(query){
+
+    url.searchParams.set(
+      "q",
+      query
+    );
+
+  }else{
+
+    url.searchParams.delete(
+      "q"
+    );
+
+  }
+
+
+  url.searchParams.set(
+    "page",
+    currentPage
+  );
+
+
+  window.history.pushState(
+    {},
+    "",
+    url
+  );
+
 
   render();
+
 
   window.scrollTo({
     top:0,
     behavior:"smooth"
   });
 
-}
+};
 
 
 /* =========================
    NEW SEARCH
 ========================= */
 
-function handleSearch(event){
+window.handleSearch =
+function(event){
 
-  if(event.key==="Enter"){
+  if(
+    event.key !== "Enter"
+  ){
 
-    const value=
-      event.target.value.trim();
-
-    if(!value){
-      return;
-    }
-
-    window.location.href=
-      "search.html?q="+
-      encodeURIComponent(value);
+    return;
 
   }
 
-}
+
+  const value =
+    event.target.value.trim();
 
 
-/* START */
+  if(!value){
 
-render();
+    window.location.href =
+      "search.html";
+
+    return;
+
+  }
+
+
+  window.location.href =
+    "search.html?q=" +
+    encodeURIComponent(value);
+
+};
+
+
+/* =========================
+   START
+========================= */
+
+loadVideos();
 
 </script>
 
