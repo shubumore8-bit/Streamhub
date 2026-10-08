@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DesiVexa - Search</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:#080808;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  padding-bottom:80px;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+header{
+  height:65px;
+  background:#111;
+  border-bottom:1px solid #292929;
+  display:flex;
+  align-items:center;
+  gap:15px;
+  padding:0 5%;
+}
+
+.logo{
+  color:#e50914;
+  font-size:24px;
+  font-weight:900;
+}
+
+.search{
+  flex:1;
+  max-width:700px;
+  margin:auto;
+}
+
+.search input{
+  width:100%;
+  padding:12px 18px;
+  border-radius:25px;
+  border:1px solid #333;
+  background:#1b1b1b;
+  color:#fff;
+  outline:none;
+}
+
+.profile{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#e50914;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+
+.container{
+  width:92%;
+  max-width:1400px;
+  margin:25px auto;
+}
+
+.heading{
+  margin-bottom:20px;
+}
+
+.heading h1{
+  font-size:24px;
+}
+
+.heading p{
+  color:#888;
+  margin-top:7px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+}
+
+.card{
+  background:#121212;
+  border:1px solid #222;
+  border-radius:9px;
+  overflow:hidden;
+  transition:.2s;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+  border-color:#e50914;
+}
+
+.thumb{
+  height:160px;
+  background:linear-gradient(135deg,#270000,#151515,#400000);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+
+.play{
+  color:#e50914;
+  font-size:42px;
+}
+
+.duration{
+  position:absolute;
+  right:7px;
+  bottom:7px;
+  background:#000;
+  padding:4px 7px;
+  border-radius:4px;
+  font-size:11px;
+}
+
+.info{
+  padding:12px;
+}
+
+.title{
+  font-weight:bold;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.meta{
+  color:#888;
+  font-size:12px;
+  margin-top:7px;
+}
+
+.no-results{
+  background:#111;
+  border:1px solid #292929;
+  padding:35px 20px;
+  border-radius:10px;
+  text-align:center;
+  color:#888;
+}
+
+.pagination{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:30px 0;
+}
+
+.pagination button{
+  background:#171717;
+  border:1px solid #333;
+  color:#fff;
+  padding:9px 14px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.pagination button:hover,
+.pagination button.active{
+  background:#e50914;
+  border-color:#e50914;
+}
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:65px;
+  background:#111;
+  border-top:1px solid #292929;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  z-index:100;
+}
+
+.bottom-nav a{
+  color:#aaa;
+  text-align:center;
+  font-size:12px;
+}
+
+.bottom-nav a.active{
+  color:#e50914;
+}
+
+.bottom-nav div{
+  font-size:20px;
+  margin-bottom:3px;
+}
+
+@media(max-width:900px){
+  .grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+@media(max-width:600px){
+
+  header{
+    padding:0 12px;
+  }
+
+  .logo{
+    font-size:20px;
+  }
+
+  .container{
+    width:94%;
+  }
+
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+  }
+
+  .thumb{
+    height:115px;
+  }
+}
+
+@media(max-width:380px){
+  .profile{
+    display:none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+  <a href="index.html" class="logo">
+    DesiVexa
+  </a>
+
+  <div class="search">
+    <input
+      id="searchInput"
+      type="text"
+      placeholder="Search videos..."
+      onkeydown="handleSearch(event)"
+    >
+  </div>
+
+  <a href="profile.html" class="profile">
+    P
+  </a>
+
+</header>
+
+
+<main class="container">
+
+  <div class="heading">
+
+    <h1 id="searchTitle">
+      Search Results
+    </h1>
+
+    <p id="resultCount">
+      Searching...
+    </p>
+
+  </div>
+
+
+  <div
+    class="grid"
+    id="resultsGrid">
+  </div>
+
+
+  <div
+    class="pagination"
+    id="pagination">
+  </div>
+
+</main>
+
+
+<nav class="bottom-nav">
+
+  <a href="index.html">
+    <div>⌂</div>
+    Home
+  </a>
+
+  <a href="new.html">
+    <div>★</div>
+    Latest
+  </a>
+
+  <a href="trending.html">
+    <div>🔥</div>
+    Trending
+  </a>
+
+  <a href="recommended.html">
+    <div>♥</div>
+    Recommended
+  </a>
+
+  <a href="profile.html">
+    <div>●</div>
+    Profile
+  </a>
+
+</nav>
+
+
+<script>
+
+/* =========================
+   SEARCH QUERY
+========================= */
+
+const params =
+  new URLSearchParams(
+    window.location.search
+  );
+
+let query =
+  params.get("q") || "";
+
+query=query.trim();
+
+
+document.getElementById(
+  "searchInput"
+).value=query;
+
+
+/* =========================
+   DEMO VIDEO DATABASE
+========================= */
+
+const allVideos=[];
+
+const categories=[
+  "Trending",
+  "New",
+  "Recommended",
+  "Popular",
+  "Desi",
+  "Indian"
+];
+
+for(let i=1;i<=180;i++){
+
+  const category =
+    categories[
+      (i-1)%categories.length
+    ];
+
+  allVideos.push({
+
+    id:"search-"+i,
+
+    title:
+      category+
+      " Video "+
+      i,
+
+    category:category,
+
+    views:
+      (i*731)+
+      " views",
+
+    duration:
+      "8:"+
+      String(
+        (i%55)+1
+      ).padStart(2,"0")
+
+  });
+
+}
+
+
+/* =========================
+   FILTER
+========================= */
+
+function getResults(){
+
+  if(!query){
+    return allVideos;
+  }
+
+  const q=
+    query.toLowerCase();
+
+  return allVideos.filter(video =>
+
+    video.title
+      .toLowerCase()
+      .includes(q)
+
+    ||
+
+    video.category
+      .toLowerCase()
+      .includes(q)
+
+  );
+
+}
+
+
+const results=getResults();
+
+const perPage=30;
+
+let currentPage=1;
+
+
+/* =========================
+   RENDER RESULTS
+========================= */
+
+function render(){
+
+  const grid=
+    document.getElementById(
+      "resultsGrid"
+    );
+
+  const title=
+    document.getElementById(
+      "searchTitle"
+    );
+
+  const count=
+    document.getElementById(
+      "resultCount"
+    );
+
+
+  title.textContent =
+    query
+      ? `Search: "${query}"`
+      : "All Videos";
+
+
+  count.textContent =
+    results.length+
+    " videos found";
+
+
+  if(results.length===0){
+
+    grid.innerHTML=`
+
+      <div
+        class="no-results"
+        style="grid-column:1/-1">
+
+        <h2>
+          No videos found
+        </h2>
+
+        <p style="margin-top:8px">
+          Try another search.
+        </p>
+
+      </div>
+
+    `;
+
+    document.getElementById(
+      "pagination"
+    ).innerHTML="";
+
+    return;
+
+  }
+
+
+  const start=
+    (currentPage-1)*
+    perPage;
+
+  const end=
+    start+
+    perPage;
+
+
+  const pageResults=
+    results.slice(
+      start,
+      end
+    );
+
+
+  grid.innerHTML=
+    pageResults.map(video=>`
+
+      <a
+        href="video.html?id=${encodeURIComponent(video.id)}"
+        class="card">
+
+        <div class="thumb">
+
+          <div class="play">
+            ▶
+          </div>
+
+          <div class="duration">
+            ${video.duration}
+          </div>
+
+        </div>
+
+        <div class="info">
+
+          <div class="title">
+            ${video.title}
+          </div>
+
+          <div class="meta">
+            ${video.views}
+            •
+            ${video.category}
+          </div>
+
+        </div>
+
+      </a>
+
+    `).join("");
+
+
+  renderPagination();
+
+}
+
+
+/* =========================
+   PAGINATION
+========================= */
+
+function renderPagination(){
+
+  const pagination=
+    document.getElementById(
+      "pagination"
+    );
+
+  const totalPages=
+    Math.ceil(
+      results.length/
+      perPage
+    );
+
+  if(totalPages<=1){
+
+    pagination.innerHTML="";
+
+    return;
+
+  }
+
+
+  let html="";
+
+
+  html+=`
+    <button
+      onclick="changePage(${currentPage-1})"
+      ${currentPage===1?"disabled":""}>
+      Previous
+    </button>
+  `;
+
+
+  const maxPages=
+    Math.min(
+      5,
+      totalPages
+    );
+
+
+  for(let i=1;i<=maxPages;i++){
+
+    html+=`
+      <button
+        class="${i===currentPage?"active":""}"
+        onclick="changePage(${i})">
+        ${i}
+      </button>
+    `;
+
+  }
+
+
+  html+=`
+    <button
+      onclick="changePage(${currentPage+1})"
+      ${currentPage===totalPages?"disabled":""}>
+      Next
+    </button>
+  `;
+
+
+  pagination.innerHTML=html;
+
+}
+
+
+/* =========================
+   CHANGE PAGE
+========================= */
+
+function changePage(page){
+
+  const totalPages=
+    Math.ceil(
+      results.length/
+      perPage
+    );
+
+  if(
+    page<1 ||
+    page>totalPages
+  ){
+    return;
+  }
+
+  currentPage=page;
+
+  render();
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* =========================
+   NEW SEARCH
+========================= */
+
+function handleSearch(event){
+
+  if(event.key==="Enter"){
+
+    const value=
+      event.target.value.trim();
+
+    if(!value){
+      return;
+    }
+
+    window.location.href=
+      "search.html?q="+
+      encodeURIComponent(value);
+
+  }
+
+}
+
+
+/* START */
+
+render();
+
+</script>
+
+</body>
+</html>
