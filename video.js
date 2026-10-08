@@ -93,36 +93,21 @@ async function loadVideo() {
       .maybeSingle();
 
     if (result.error) {
-
       showError(result.error.message);
-
       return;
-
     }
 
     const video = result.data;
 
     if (!video) {
-
       showError("Video not found.");
-
       return;
-
     }
 
     renderVideo(video);
 
-    /*
-      Important:
-      These are loaded separately so that
-      a comment/like problem cannot break
-      the video player.
-    */
-
     loadLikes();
-
     loadComments();
-
     loadRandomVideos(video.id);
 
   } catch (error) {
@@ -194,10 +179,13 @@ function renderVideo(video) {
       </div>
 
 
+      <!-- ACTION BUTTONS -->
+
       <div style="
         display:flex;
-        gap:10px;
+        gap:8px;
         margin:18px 0;
+        flex-wrap:wrap;
       ">
 
         <button
@@ -208,21 +196,18 @@ function renderVideo(video) {
             color:white;
             border:0;
             border-radius:8px;
-            padding:12px 18px;
+            padding:12px 16px;
             font-size:15px;
             cursor:pointer;
           "
         >
-
           ❤️
           <span id="likeText">
             Like
           </span>
-
           <span id="likeCount">
             0
           </span>
-
         </button>
 
 
@@ -234,15 +219,50 @@ function renderVideo(video) {
             color:white;
             border:0;
             border-radius:8px;
-            padding:12px 18px;
+            padding:12px 16px;
             font-size:15px;
             cursor:pointer;
           "
         >
-          💬 Comment
+          💬
+          Comment
+          <span id="commentCount">
+            0
+          </span>
+        </button>
+
+
+        <button
+          id="shareBtn"
+          type="button"
+          style="
+            background:#222;
+            color:white;
+            border:0;
+            border-radius:8px;
+            padding:12px 16px;
+            font-size:15px;
+            cursor:pointer;
+          "
+        >
+          🔗 Share
         </button>
 
       </div>
+
+
+      <!-- SHARE STATUS -->
+
+      <div
+        id="shareStatus"
+        style="
+          color:#55d66b;
+          font-size:13px;
+          margin-top:-8px;
+          margin-bottom:12px;
+          min-height:18px;
+        "
+      ></div>
 
 
       ${
@@ -372,7 +392,7 @@ function renderVideo(video) {
   `;
 
 
-  /* VIDEO PLAYER */
+  /* VIDEO */
 
   const player =
     document.getElementById(
@@ -384,20 +404,17 @@ function renderVideo(video) {
 
 
   if (video.thumbnail_url) {
-
     player.poster =
       video.thumbnail_url;
-
   }
 
 
   player.load();
 
 
-  /* VIEW COUNT */
+  /* VIEWS */
 
   let counted = false;
-
 
   player.addEventListener(
     "play",
@@ -410,11 +427,9 @@ function renderVideo(video) {
       const newViews =
         Number(video.views || 0) + 1;
 
-
       document.getElementById(
         "viewCount"
       ).textContent = newViews;
-
 
       await supabase
         .from("videos")
@@ -446,10 +461,15 @@ function renderVideo(video) {
           "commentsSection"
         )
         .scrollIntoView({
-          behavior: "smooth"
+          behavior:"smooth"
         });
 
     };
+
+
+  document
+    .getElementById("shareBtn")
+    .onclick = shareVideo;
 
 
   document
@@ -470,9 +490,7 @@ function renderVideo(video) {
         if (
           event.key === "Enter"
         ) {
-
           addComment();
-
         }
 
       }
@@ -482,7 +500,7 @@ function renderVideo(video) {
 
 
 /* =========================
-   LOAD LIKES
+   LIKES
 ========================= */
 
 async function loadLikes() {
@@ -502,7 +520,6 @@ async function loadLikes() {
       "likeBtn"
     );
 
-
   if (!countEl) return;
 
 
@@ -512,8 +529,8 @@ async function loadLikes() {
       await supabase
         .from("video_likes")
         .select("*", {
-          count: "exact",
-          head: true
+          count:"exact",
+          head:true
         })
         .eq(
           "video_id",
@@ -614,9 +631,7 @@ async function toggleLike() {
       "likeBtn"
     );
 
-
   if (!button) return;
-
 
   button.disabled =
     true;
@@ -656,17 +671,13 @@ async function toggleLike() {
       existing.data.length > 0
     ) {
 
-      const likeId =
-        existing.data[0].id;
-
-
       const result =
         await supabase
           .from("video_likes")
           .delete()
           .eq(
             "id",
-            likeId
+            existing.data[0].id
           );
 
 
@@ -685,8 +696,8 @@ async function toggleLike() {
         await supabase
           .from("video_likes")
           .insert({
-            video_id: videoId,
-            visitor_id: visitorId
+            video_id:videoId,
+            visitor_id:visitorId
           });
 
 
@@ -722,7 +733,7 @@ async function toggleLike() {
 
 
 /* =========================
-   LOAD COMMENTS
+   COMMENTS
 ========================= */
 
 async function loadComments() {
@@ -730,6 +741,11 @@ async function loadComments() {
   const list =
     document.getElementById(
       "commentsList"
+    );
+
+  const countEl =
+    document.getElementById(
+      "commentCount"
     );
 
 
@@ -743,6 +759,7 @@ async function loadComments() {
         .from("video_comments")
         .select(`
           id,
+          body,
           comment,
           created_at
         `)
@@ -753,7 +770,7 @@ async function loadComments() {
         .order(
           "created_at",
           {
-            ascending: false
+            ascending:false
           }
         )
         .limit(100);
@@ -767,15 +784,62 @@ async function loadComments() {
       );
 
 
-      list.innerHTML = `
+      /*
+        Some databases have only body,
+        some have both body/comment.
+        If select fails because comment does
+        not exist, retry with body only.
+      */
 
-        <p style="
-          color:#888;
-        ">
-          Could not load comments.
-        </p>
+      const retry =
+        await supabase
+          .from("video_comments")
+          .select(`
+            id,
+            body,
+            created_at
+          `)
+          .eq(
+            "video_id",
+            videoId
+          )
+          .order(
+            "created_at",
+            {
+              ascending:false
+            }
+          )
+          .limit(100);
 
-      `;
+
+      if (retry.error) {
+
+        console.error(
+          "Comments retry error:",
+          retry.error
+        );
+
+        list.innerHTML = `
+          <p style="color:#888;">
+            Could not load comments.
+          </p>
+        `;
+
+        return;
+
+      }
+
+
+      renderComments(
+        retry.data || []
+      );
+
+      if (countEl) {
+        countEl.textContent =
+          Number(
+            (retry.data || []).length
+          );
+      }
 
       return;
 
@@ -786,27 +850,74 @@ async function loadComments() {
       result.data || [];
 
 
-    if (!comments.length) {
-
-      list.innerHTML = `
-
-        <p style="
-          color:#888;
-        ">
-          No comments yet.
-          Be the first!
-        </p>
-
-      `;
-
-      return;
-
+    if (countEl) {
+      countEl.textContent =
+        Number(comments.length);
     }
 
 
-    list.innerHTML =
+    renderComments(
       comments
-        .map(item => `
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Comments exception:",
+      error
+    );
+
+    list.innerHTML = `
+      <p style="color:#888;">
+        Could not load comments.
+      </p>
+    `;
+
+  }
+
+}
+
+
+function renderComments(
+  comments
+) {
+
+  const list =
+    document.getElementById(
+      "commentsList"
+    );
+
+  if (!list) return;
+
+
+  if (!comments.length) {
+
+    list.innerHTML = `
+      <p style="
+        color:#888;
+      ">
+        No comments yet.
+        Be the first!
+      </p>
+    `;
+
+    return;
+
+  }
+
+
+  list.innerHTML =
+    comments
+      .map(item => {
+
+        const text =
+          item.body ??
+          item.comment ??
+          "";
+
+
+        return `
 
           <div style="
             background:#171717;
@@ -821,41 +932,20 @@ async function loadComments() {
               Guest
             </strong>
 
-
             <p style="
               color:#ccc;
               margin:6px 0 0;
               word-break:break-word;
             ">
-              ${escapeHTML(
-                item.comment
-              )}
+              ${escapeHTML(text)}
             </p>
 
           </div>
 
-        `)
-        .join("");
+        `;
 
-
-  } catch (error) {
-
-    console.error(
-      "Comments exception:",
-      error
-    );
-
-    list.innerHTML = `
-
-      <p style="
-        color:#888;
-      ">
-        Could not load comments.
-      </p>
-
-    `;
-
-  }
+      })
+      .join("");
 
 }
 
@@ -892,9 +982,7 @@ async function addComment() {
 
 
   if (!comment) {
-
     return;
-
   }
 
 
@@ -905,31 +993,24 @@ async function addComment() {
     "Posting...";
 
 
-  if (status) {
-
-    status.innerHTML = "";
-
-  }
-
-
   try {
 
-    const result =
-  await supabase
-    .from("video_comments")
-    .insert({
-      video_id: videoId,
-      visitor_id: visitorId,
-      body: comment,
-      comment: comment
-    });
-
-
     /*
-      IMPORTANT:
-      If Supabase rejects the comment,
-      show the exact error.
+      Your database has a required
+      "body" column, so body is used
+      as the primary comment field.
     */
+
+    const result =
+      await supabase
+        .from("video_comments")
+        .insert({
+          video_id:videoId,
+          visitor_id:visitorId,
+          body:comment,
+          comment:comment
+        });
+
 
     if (result.error) {
 
@@ -939,45 +1020,25 @@ async function addComment() {
       );
 
 
-      const errorCode =
-        result.error.code ||
-        "unknown";
-
-      const errorMessage =
-        result.error.message ||
-        "unknown";
-
-      const errorDetails =
-        result.error.details ||
-        "none";
-
-      const errorHint =
-        result.error.hint ||
-        "none";
-
-
       alert(
         "COMMENT ERROR\n\n" +
         "Code: " +
-        errorCode +
+        (result.error.code || "unknown") +
         "\n\n" +
         "Message: " +
-        errorMessage +
+        (result.error.message || "unknown") +
         "\n\n" +
         "Details: " +
-        errorDetails +
+        (result.error.details || "none") +
         "\n\n" +
         "Hint: " +
-        errorHint
+        (result.error.hint || "none")
       );
-
 
       return;
 
     }
 
-
-    /* SUCCESS */
 
     input.value = "";
 
@@ -985,7 +1046,6 @@ async function addComment() {
     if (status) {
 
       status.innerHTML = `
-
         <div style="
           color:#55d66b;
           font-size:13px;
@@ -993,7 +1053,6 @@ async function addComment() {
         ">
           ✓ Comment posted
         </div>
-
       `;
 
     }
@@ -1012,8 +1071,10 @@ async function addComment() {
 
     alert(
       "COMMENT ERROR\n\n" +
-      (error.message ||
-        "Unknown error")
+      (
+        error.message ||
+        "Unknown error"
+      )
     );
 
 
@@ -1024,6 +1085,124 @@ async function addComment() {
 
     button.textContent =
       "Post";
+
+  }
+
+}
+
+
+/* =========================
+   SHARE
+========================= */
+
+async function shareVideo() {
+
+  const shareUrl =
+    window.location.href;
+
+  const title =
+    document.title ||
+    "DesiVexa Video";
+
+
+  const shareData = {
+    title:title,
+    text:"Watch this video on DesiVexa",
+    url:shareUrl
+  };
+
+
+  const status =
+    document.getElementById(
+      "shareStatus"
+    );
+
+
+  try {
+
+    if (
+      navigator.share &&
+      typeof navigator.share === "function"
+    ) {
+
+      await navigator.share(
+        shareData
+      );
+
+      if (status) {
+        status.textContent =
+          "✓ Share menu opened";
+      }
+
+      return;
+    }
+
+
+    await navigator.clipboard.writeText(
+      shareUrl
+    );
+
+
+    if (status) {
+
+      status.textContent =
+        "✓ Video link copied";
+
+    }
+
+
+    setTimeout(() => {
+
+      if (status) {
+        status.textContent = "";
+      }
+
+    }, 2500);
+
+
+  } catch (error) {
+
+    /*
+      User may simply close/cancel
+      the native share menu.
+    */
+
+    if (
+      error &&
+      error.name ===
+      "AbortError"
+    ) {
+      return;
+    }
+
+
+    try {
+
+      await navigator.clipboard.writeText(
+        shareUrl
+      );
+
+
+      if (status) {
+
+        status.textContent =
+          "✓ Video link copied";
+
+      }
+
+    } catch (copyError) {
+
+      console.error(
+        "Share error:",
+        error
+      );
+
+      alert(
+        "Copy this video link:\n\n" +
+        shareUrl
+      );
+
+    }
 
   }
 
@@ -1079,13 +1258,11 @@ async function loadRandomVideos(
 
 
       box.innerHTML = `
-
         <p style="
           color:#888;
         ">
           Unable to load videos.
         </p>
-
       `;
 
       return;
@@ -1100,13 +1277,11 @@ async function loadRandomVideos(
     if (!videos.length) {
 
       box.innerHTML = `
-
         <p style="
           color:#888;
         ">
           No other videos available.
         </p>
-
       `;
 
       return;
@@ -1121,7 +1296,7 @@ async function loadRandomVideos(
 
     box.innerHTML =
       videos
-        .slice(0, 20)
+        .slice(0,20)
         .map(video => {
 
           const id =
@@ -1144,7 +1319,6 @@ async function loadRandomVideos(
               ${
                 video.thumbnail_url
                   ? `
-
                     <img
                       src="${escapeHTML(
                         video.thumbnail_url
@@ -1159,10 +1333,8 @@ async function loadRandomVideos(
                       "
                       alt=""
                     >
-
                   `
                   : `
-
                     <div style="
                       width:100%;
                       aspect-ratio:16/9;
@@ -1175,7 +1347,6 @@ async function loadRandomVideos(
                     ">
                       ▶
                     </div>
-
                   `
               }
 
@@ -1185,12 +1356,10 @@ async function loadRandomVideos(
                 margin-top:6px;
                 line-height:1.3;
               ">
-
                 ${escapeHTML(
                   video.title ||
                   "Untitled"
                 )}
-
               </div>
 
 
@@ -1199,12 +1368,10 @@ async function loadRandomVideos(
                 font-size:11px;
                 margin-top:3px;
               ">
-
                 ${Number(
                   video.views || 0
                 )}
                 views
-
               </div>
 
             </a>
@@ -1224,13 +1391,11 @@ async function loadRandomVideos(
 
 
     box.innerHTML = `
-
       <p style="
         color:#888;
       ">
         Unable to load videos.
       </p>
-
     `;
 
   }
