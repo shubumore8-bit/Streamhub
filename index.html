@@ -1,1901 +1,1332 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <meta
-    name="description"
-    content="DesiVexa - Discover trending, latest and recommended videos."
-  >
-
-  <meta name="theme-color" content="#02070d">
-
-  <title>DesiVexa - Home</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background: #02070d;
-      color: #fff;
-      font-family: Arial, Helvetica, sans-serif;
-      min-height: 100vh;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    /* =========================
-       APP
-    ========================= */
-
-    .app {
-      width: 100%;
-      max-width: 1100px;
-      margin: auto;
-      min-height: 100vh;
-      background: #06111a;
-      padding-bottom: 85px;
-    }
-
-    /* =========================
-       HEADER
-    ========================= */
-
-    .header {
-      height: 68px;
-      display: grid;
-      grid-template-columns: 52px 1fr 52px;
-      align-items: center;
-      padding: 0 14px;
-      background: #030b12;
-      border-bottom: 1px solid #172733;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    .menu-btn,
-    .search-btn {
-      width: 42px;
-      height: 42px;
-      border: 0;
-      background: transparent;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .menu-btn {
-      font-size: 29px;
-    }
-
-    .search-btn {
-      font-size: 25px;
-    }
-
-    .logo {
-      text-align: center;
-      font-size: 29px;
-      font-weight: 900;
-      letter-spacing: -1px;
-    }
-
-    .logo span {
-      color: #ff1744;
-    }
-
-    /* =========================
-       SIDE MENU
-    ========================= */
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, .65);
-      z-index: 1500;
-      display: none;
-    }
-
-    .overlay.show {
-      display: block;
-    }
-
-    .side-menu {
-      position: fixed;
-      top: 0;
-      left: -290px;
-      width: 280px;
-      height: 100vh;
-      background: #07131d;
-      border-right: 1px solid #243440;
-      z-index: 2000;
-      transition: left .25s ease;
-      box-shadow: 10px 0 30px rgba(0,0,0,.5);
-    }
-
-    .side-menu.show {
-      left: 0;
-    }
-
-    .menu-header {
-      height: 68px;
-      padding: 0 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #1d303d;
-    }
-
-    .menu-logo {
-      font-size: 24px;
-      font-weight: 900;
-    }
-
-    .menu-logo span {
-      color: #ff1744;
-    }
-
-    .close-menu {
-      border: 0;
-      background: transparent;
-      color: white;
-      font-size: 31px;
-    }
-
-    .menu-list {
-      padding: 15px;
-    }
-
-    .menu-item {
-      width: 100%;
-      border: 1px solid #1b3140;
-      background: #0a1a26;
-      color: white;
-      padding: 14px;
-      margin-bottom: 9px;
-      border-radius: 11px;
-      text-align: left;
-      font-size: 15px;
-    }
-
-    .menu-item:hover {
-      background: #ff1744;
-      border-color: #ff1744;
-    }
-
-    /* =========================
-       SEARCH
-    ========================= */
-
-    .search-area {
-      display: none;
-      padding: 12px 14px;
-      border-bottom: 1px solid #182b38;
-      background: #06111a;
-    }
-
-    .search-area.show {
-      display: block;
-    }
-
-    .search-input {
-      width: 100%;
-      height: 45px;
-      padding: 0 14px;
-      border-radius: 11px;
-      border: 1px solid #28404f;
-      background: #0a1924;
-      color: #fff;
-      outline: none;
-    }
-
-    .search-input:focus {
-      border-color: #ff1744;
-    }
-
-    /* =========================
-       BANNER
-    ========================= */
-
-    .top-banner {
-      margin: 15px 14px;
-      min-height: 68px;
-      padding: 10px 13px;
-      border: 1px solid #ff1744;
-      border-radius: 12px;
-      background: linear-gradient(
-        90deg,
-        #160914,
-        #24101a,
-        #100b12
-      );
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .banner-text {
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .banner-btn {
-      background: #ff1744;
-      color: white;
-      border: 0;
-      border-radius: 22px;
-      padding: 10px 15px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    /* =========================
-       CATEGORIES
-    ========================= */
-
-    .categories {
-      display: flex;
-      gap: 9px;
-      overflow-x: auto;
-      padding: 0 14px 7px;
-      scrollbar-width: none;
-    }
-
-    .categories::-webkit-scrollbar {
-      display: none;
-    }
-
-    .category-btn {
-      flex: 0 0 auto;
-      padding: 9px 17px;
-      border-radius: 10px;
-      border: 1px solid #20394a;
-      background: #0b1c2a;
-      color: #dbe5ed;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .category-btn.active {
-      background: #ff1744;
-      border-color: #ff1744;
-      color: white;
-    }
-
-    /* =========================
-       SECTION
-    ========================= */
-
-    .section {
-      padding: 12px 14px 0;
-    }
-
-    .section-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin: 12px 0 13px;
-    }
-
-    .section-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 21px;
-      font-weight: 800;
-    }
-
-    .view-all {
-      border: 0;
-      background: transparent;
-      color: #ff1744;
-      font-weight: 700;
-      font-size: 13px;
-    }
-
-    /* =========================
-       VIDEO GRID
-    ========================= */
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 19px;
-    }
-
-    .video-card {
-      min-width: 0;
-      cursor: pointer;
-    }
-
-    .thumb {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background: #0a1822;
-      border-radius: 9px;
-      overflow: hidden;
-    }
-
-    .thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform .25s ease;
-    }
-
-    .video-card:hover .thumb img {
-      transform: scale(1.04);
-    }
-
-    .play {
-      position: absolute;
-      left: 8px;
-      bottom: 8px;
-      width: 31px;
-      height: 31px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,.75);
-      font-size: 13px;
-    }
-
-    .duration {
-      position: absolute;
-      right: 7px;
-      bottom: 7px;
-      padding: 4px 6px;
-      border-radius: 5px;
-      background: rgba(0,0,0,.82);
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .video-title {
-      margin-top: 7px;
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.35;
-      min-height: 38px;
-    }
-
-    .tag {
-      display: inline-block;
-      margin-top: 6px;
-      padding: 4px 9px;
-      border-radius: 18px;
-      background: #ff1744;
-      color: #fff;
-      font-size: 10px;
-      font-weight: 800;
-    }
-
-    .video-meta {
-      margin-top: 6px;
-      color: #aebdca;
-      font-size: 11px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    /* =========================
-       RANDOM
-    ========================= */
-
-    .random-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 12px;
-    }
-
-    .random-grid .video-title {
-      min-height: auto;
-      font-size: 12px;
-    }
-
-    .random-grid .tag,
-    .random-grid .video-meta {
-      display: none;
-    }
-
-    /* =========================
-       LOADING
-    ========================= */
-
-    .loading {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 40px 10px;
-      color: #9aaab7;
-    }
-
-    .empty {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 35px 10px;
-      color: #8b9aa6;
-    }
-
-    /* =========================
-       PAGINATION
-    ========================= */
-
-    .pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 7px;
-      padding: 22px 0 5px;
-      flex-wrap: wrap;
-    }
-
-    .page-btn {
-      min-width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      border: 1px solid #243b4c;
-      background: #0b1b28;
-      color: #fff;
-    }
-
-    .page-btn.active {
-      background: #ff1744;
-      border-color: #ff1744;
-    }
-
-    /* =========================
-       BOTTOM NAV
-    ========================= */
-
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 1100px;
-      height: 70px;
-      background: rgba(3,11,18,.97);
-      border-top: 1px solid #1b2d3a;
-      z-index: 1200;
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      backdrop-filter: blur(12px);
-    }
-
-    .nav-btn {
-      border: 0;
-      background: transparent;
-      color: #9eafbd;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      font-size: 10px;
-    }
-
-    .nav-icon {
-      font-size: 21px;
-    }
-
-    .nav-btn.active {
-      color: #ff1744;
-    }
-
-    /* =========================
-       MOBILE
-    ========================= */
-
-    @media (max-width: 900px) {
-
-      .video-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-
-      .random-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-
-    @media (max-width: 600px) {
-
-      .video-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 17px 11px;
-      }
-
-      .random-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-      }
-
-      .video-title {
-        font-size: 13px;
-      }
-
-      .section-title {
-        font-size: 20px;
-      }
-    }
-
-    @media (max-width: 390px) {
-
-      .logo {
-        font-size: 25px;
-      }
-
-      .header {
-        grid-template-columns: 48px 1fr 48px;
-      }
-
-      .banner-text {
-        font-size: 11px;
-      }
-
-      .banner-btn {
-        font-size: 11px;
-        padding: 8px 10px;
-      }
-
-      .random-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .video-title {
-        font-size: 12px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#02070d">
+<meta name="description" content="DesiVexa - Latest, Trending and Recommended Videos">
+<title>DesiVexa - Home</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:#02070d;
+  color:#fff;
+  font-family:Arial,Helvetica,sans-serif;
+  min-height:100vh;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+
+.app{
+  width:100%;
+  max-width:1100px;
+  margin:auto;
+  min-height:100vh;
+  background:#06111a;
+  padding-bottom:80px;
+}
+
+/* HEADER */
+.header{
+  height:68px;
+  display:grid;
+  grid-template-columns:52px 1fr 52px;
+  align-items:center;
+  padding:0 14px;
+  background:#030b12;
+  border-bottom:1px solid #172733;
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+.menu-btn,.search-btn{
+  width:42px;
+  height:42px;
+  border:0;
+  background:transparent;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.menu-btn{font-size:29px}
+.search-btn{font-size:25px}
+.logo{
+  text-align:center;
+  font-size:29px;
+  font-weight:900;
+}
+.logo span{color:#ff1744}
+
+/* MENU */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.65);
+  z-index:1500;
+  display:none;
+}
+.overlay.show{display:block}
+
+.side-menu{
+  position:fixed;
+  top:0;
+  left:-290px;
+  width:280px;
+  height:100vh;
+  background:#07131d;
+  border-right:1px solid #243440;
+  z-index:2000;
+  transition:left .25s ease;
+}
+.side-menu.show{left:0}
+
+.menu-header{
+  height:68px;
+  padding:0 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid #1d303d;
+}
+.menu-logo{
+  font-size:24px;
+  font-weight:900;
+}
+.menu-logo span{color:#ff1744}
+.close-menu{
+  border:0;
+  background:transparent;
+  color:white;
+  font-size:31px;
+}
+.menu-list{padding:15px}
+.menu-item{
+  width:100%;
+  border:1px solid #1b3140;
+  background:#0a1a26;
+  color:white;
+  padding:14px;
+  margin-bottom:9px;
+  border-radius:11px;
+  text-align:left;
+  font-size:15px;
+}
+.menu-item:hover{
+  background:#ff1744;
+  border-color:#ff1744;
+}
+
+/* SEARCH */
+.search-area{
+  display:none;
+  padding:12px 14px;
+  border-bottom:1px solid #182b38;
+}
+.search-area.show{display:block}
+.search-input{
+  width:100%;
+  height:45px;
+  padding:0 14px;
+  border-radius:11px;
+  border:1px solid #28404f;
+  background:#0a1924;
+  color:#fff;
+  outline:none;
+}
+.search-input:focus{border-color:#ff1744}
+
+/* BANNER */
+.top-banner{
+  margin:15px 14px;
+  min-height:68px;
+  padding:10px 13px;
+  border:1px solid #ff1744;
+  border-radius:12px;
+  background:linear-gradient(90deg,#160914,#24101a,#100b12);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.banner-text{
+  font-size:14px;
+  font-weight:700;
+}
+.banner-btn{
+  background:#ff1744;
+  color:white;
+  border:0;
+  border-radius:22px;
+  padding:10px 15px;
+  font-weight:700;
+}
+
+/* CATEGORIES */
+.categories{
+  display:flex;
+  gap:9px;
+  overflow-x:auto;
+  padding:0 14px 7px;
+  scrollbar-width:none;
+}
+.categories::-webkit-scrollbar{display:none}
+.category-btn{
+  flex:0 0 auto;
+  padding:9px 17px;
+  border-radius:10px;
+  border:1px solid #20394a;
+  background:#0b1c2a;
+  color:#dbe5ed;
+  font-size:13px;
+  font-weight:600;
+}
+.category-btn.active{
+  background:#ff1744;
+  border-color:#ff1744;
+  color:#fff;
+}
+
+/* SECTION */
+.section{
+  padding:12px 14px 0;
+}
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:12px 0 13px;
+}
+.section-title{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:21px;
+  font-weight:800;
+}
+.view-all{
+  border:0;
+  background:transparent;
+  color:#ff1744;
+  font-weight:700;
+  font-size:13px;
+}
+
+/* VIDEO GRID */
+.video-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:19px;
+}
+.video-card{
+  min-width:0;
+  cursor:pointer;
+}
+.thumb{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  background:#0a1822;
+  border-radius:9px;
+  overflow:hidden;
+}
+.thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  transition:transform .25s ease;
+}
+.video-card:hover .thumb img{
+  transform:scale(1.04);
+}
+.play{
+  position:absolute;
+  left:8px;
+  bottom:8px;
+  width:31px;
+  height:31px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.75);
+  font-size:13px;
+}
+.duration{
+  position:absolute;
+  right:7px;
+  bottom:7px;
+  padding:4px 6px;
+  border-radius:5px;
+  background:rgba(0,0,0,.82);
+  font-size:11px;
+  font-weight:700;
+}
+.video-title{
+  margin-top:7px;
+  font-size:14px;
+  font-weight:700;
+  line-height:1.35;
+  min-height:38px;
+}
+.tag{
+  display:inline-block;
+  margin-top:6px;
+  padding:4px 9px;
+  border-radius:18px;
+  background:#ff1744;
+  color:#fff;
+  font-size:10px;
+  font-weight:800;
+}
+.video-meta{
+  margin-top:6px;
+  color:#aebdca;
+  font-size:11px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+}
+
+/* RANDOM */
+.random-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+.random-grid .video-title{
+  min-height:auto;
+  font-size:13px;
+}
+.random-grid .tag,
+.random-grid .video-meta{
+  display:none;
+}
+
+/* STATUS */
+.loading,.empty{
+  grid-column:1/-1;
+  text-align:center;
+  padding:40px 10px;
+  color:#9aaab7;
+}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:1100px;
+  height:70px;
+  background:rgba(3,11,18,.97);
+  border-top:1px solid #1b2d3a;
+  z-index:1200;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  backdrop-filter:blur(12px);
+}
+.nav-btn{
+  border:0;
+  background:transparent;
+  color:#9eafbd;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  font-size:10px;
+}
+.nav-icon{font-size:21px}
+.nav-btn.active{color:#ff1744}
+
+/* MOBILE */
+@media(max-width:900px){
+  .video-grid{grid-template-columns:repeat(3,1fr)}
+}
+
+@media(max-width:600px){
+  .video-grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:17px 11px;
+  }
+  .random-grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+  }
+  .video-title{font-size:13px}
+  .section-title{font-size:20px}
+}
+
+@media(max-width:390px){
+  .logo{font-size:25px}
+  .banner-text{font-size:11px}
+  .banner-btn{
+    font-size:11px;
+    padding:8px 10px;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <div class="app" id="home">
-
-    <!-- HEADER -->
-    <header class="header">
-
-      <button
-        class="menu-btn"
-        id="menuBtn"
-        aria-label="Menu">
-        ☰
-      </button>
+<div class="app" id="home">
 
-      <a href="index.html" class="logo">
-        Desi<span>Vexa</span>
-      </a>
+<header class="header">
 
-      <button
-        class="search-btn"
-        id="searchBtn"
-        aria-label="Search">
-        🔍
-      </button>
-
-    </header>
+<button class="menu-btn" id="menuBtn">☰</button>
 
+<a href="index.html" class="logo">
+Desi<span>Vexa</span>
+</a>
 
-    <!-- SIDE MENU OVERLAY -->
-    <div
-      class="overlay"
-      id="overlay">
-    </div>
+<button class="search-btn" id="searchBtn">🔍</button>
 
+</header>
 
-    <!-- SIDE MENU -->
-    <aside
-      class="side-menu"
-      id="sideMenu">
 
-      <div class="menu-header">
+<div class="overlay" id="overlay"></div>
 
-        <div class="menu-logo">
-          Desi<span>Vexa</span>
-        </div>
 
-        <button
-          class="close-menu"
-          id="closeMenu">
-          ×
-        </button>
-
-      </div>
-
-      <div class="menu-list">
-
-        <button
-          class="menu-item"
-          onclick="goHome()">
-          🏠 Home
-        </button>
-
-        <button
-          class="menu-item"
-          onclick="scrollToId('trending')">
-          🔥 Trending
-        </button>
-
-        <button
-          class="menu-item"
-          onclick="scrollToId('latest')">
-          ⭐ Latest
-        </button>
-
-        <button
-          class="menu-item"
-          onclick="scrollToId('recommended')">
-          👤 Recommended
-        </button>
-
-        <button
-          class="menu-item"
-          onclick="scrollToId('random')">
-          🎲 Random
-        </button>
-
-        <button
-          class="menu-item"
-          onclick="showLogin()">
-          🔐 Login
-        </button>
-
-      </div>
-
-    </aside>
-
-
-    <!-- SEARCH -->
-    <div
-      class="search-area"
-      id="searchArea">
-
-      <input
-        class="search-input"
-        id="searchInput"
-        type="search"
-        placeholder="Search videos..."
-        autocomplete="off">
-
-    </div>
+<aside class="side-menu" id="sideMenu">
 
+<div class="menu-header">
 
-    <!-- TOP BANNER -->
-    <section class="top-banner">
+<div class="menu-logo">
+Desi<span>Vexa</span>
+</div>
 
-      <div class="banner-text">
-        ⭐ Discover Latest Videos
-      </div>
+<button class="close-menu" id="closeMenu">×</button>
 
-      <button
-        class="banner-btn"
-        onclick="scrollToId('latest')">
-        Explore
-      </button>
+</div>
 
-    </section>
 
-
-    <!-- CATEGORIES -->
-    <nav
-      class="categories"
-      id="categories">
+<div class="menu-list">
 
-      <button
-        class="category-btn active"
-        data-category="All">
-        All
-      </button>
+<button class="menu-item" onclick="goPage('index.html')">
+🏠 Home
+</button>
 
-      <button
-        class="category-btn"
-        data-category="Travel">
-        Travel
-      </button>
+<button class="menu-item" onclick="goPage('new.html')">
+⭐ Latest Videos
+</button>
 
-      <button
-        class="category-btn"
-        data-category="Food">
-        Food
-      </button>
+<button class="menu-item" onclick="goPage('trending.html')">
+🔥 Trending Videos
+</button>
 
-      <button
-        class="category-btn"
-        data-category="Fitness">
-        Fitness
-      </button>
+<button class="menu-item" onclick="goPage('recommended.html')">
+👤 Recommended Videos
+</button>
 
-      <button
-        class="category-btn"
-        data-category="Tech">
-        Tech
-      </button>
+<button class="menu-item" onclick="scrollToId('random')">
+🎲 Random Videos
+</button>
 
-      <button
-        class="category-btn"
-        data-category="Lifestyle">
-        Lifestyle
-      </button>
+<button class="menu-item" onclick="showLogin()">
+🔐 Login
+</button>
 
-      <button
-        class="category-btn"
-        data-category="Other">
-        Other
-      </button>
+</div>
 
-    </nav>
+</aside>
 
 
-    <!-- TRENDING -->
-    <section
-      class="section"
-      id="trending">
+<div class="search-area" id="searchArea">
 
-      <div class="section-head">
+<input
+class="search-input"
+id="searchInput"
+type="search"
+placeholder="Search videos..."
+autocomplete="off">
 
-        <h2 class="section-title">
-          <span>🔥</span>
-          Trending Videos
-        </h2>
+</div>
 
-        <button
-          class="view-all"
-          onclick="showAll('trending')">
-          View All →
-        </button>
 
-      </div>
+<section class="top-banner">
 
-      <div
-        class="video-grid"
-        id="trendingGrid">
+<div class="banner-text">
+⭐ Discover Latest Videos
+</div>
 
-        <div class="loading">
-          Loading videos...
-        </div>
+<button
+class="banner-btn"
+onclick="goPage('new.html')">
+Explore
+</button>
 
-      </div>
+</section>
 
-    </section>
 
+<nav class="categories">
 
-    <!-- LATEST -->
-    <section
-      class="section"
-      id="latest">
+<button class="category-btn active" data-category="All">
+All
+</button>
 
-      <div class="section-head">
+<button class="category-btn" data-category="Travel">
+Travel
+</button>
 
-        <h2 class="section-title">
-          <span>⭐</span>
-          New Videos
-        </h2>
+<button class="category-btn" data-category="Food">
+Food
+</button>
 
-        <button
-          class="view-all"
-          onclick="showAll('latest')">
-          View All →
-        </button>
+<button class="category-btn" data-category="Fitness">
+Fitness
+</button>
 
-      </div>
+<button class="category-btn" data-category="Tech">
+Tech
+</button>
 
-      <div
-        class="video-grid"
-        id="latestGrid">
+<button class="category-btn" data-category="Lifestyle">
+Lifestyle
+</button>
 
-        <div class="loading">
-          Loading videos...
-        </div>
+<button class="category-btn" data-category="Other">
+Other
+</button>
 
-      </div>
+</nav>
 
-    </section>
 
+<!-- TRENDING: ONLY 4 -->
 
-    <!-- RECOMMENDED -->
-    <section
-      class="section"
-      id="recommended">
+<section class="section" id="trending">
 
-      <div class="section-head">
+<div class="section-head">
 
-        <h2 class="section-title">
-          <span>👤</span>
-          Recommended Videos
-        </h2>
+<h2 class="section-title">
+🔥 Trending Videos
+</h2>
 
-        <button
-          class="view-all"
-          onclick="showAll('recommended')">
-          View All →
-        </button>
+<button
+class="view-all"
+onclick="goPage('trending.html')">
+View All →
+</button>
 
-      </div>
+</div>
 
-      <div
-        class="video-grid"
-        id="recommendedGrid">
+<div class="video-grid" id="trendingGrid">
 
-        <div class="loading">
-          Loading videos...
-        </div>
+<div class="loading">
+Loading...
+</div>
 
-      </div>
+</div>
 
-    </section>
+</section>
 
 
-    <!-- RANDOM -->
-    <section
-      class="section"
-      id="random">
+<!-- NEW: ONLY 4 -->
 
-      <div class="section-head">
+<section class="section" id="latest">
 
-        <h2 class="section-title">
-          <span>🎲</span>
-          Random Videos
-        </h2>
+<div class="section-head">
 
-        <button
-          class="view-all"
-          onclick="showAll('random')">
-          View All →
-        </button>
+<h2 class="section-title">
+⭐ New Videos
+</h2>
 
-      </div>
+<button
+class="view-all"
+onclick="goPage('new.html')">
+View All →
+</button>
 
-      <div
-        class="random-grid"
-        id="randomGrid">
+</div>
 
-        <div class="loading">
-          Loading videos...
-        </div>
+<div class="video-grid" id="latestGrid">
 
-      </div>
+<div class="loading">
+Loading...
+</div>
 
-      <div
-        class="pagination"
-        id="pagination">
-      </div>
+</div>
 
-    </section>
+</section>
 
 
-    <!-- BOTTOM NAV -->
-    <nav class="bottom-nav">
+<!-- RECOMMENDED: ONLY 4 -->
 
-      <button
-        class="nav-btn active"
-        onclick="goHome()">
+<section class="section" id="recommended">
 
-        <span class="nav-icon">🏠</span>
-        <span>Home</span>
+<div class="section-head">
 
-      </button>
+<h2 class="section-title">
+👤 Recommended Videos
+</h2>
 
-      <button
-        class="nav-btn"
-        onclick="scrollToId('latest')">
+<button
+class="view-all"
+onclick="goPage('recommended.html')">
+View All →
+</button>
 
-        <span class="nav-icon">🕐</span>
-        <span>Latest</span>
+</div>
 
-      </button>
+<div class="video-grid" id="recommendedGrid">
 
-      <button
-        class="nav-btn"
-        onclick="scrollToId('trending')">
+<div class="loading">
+Loading...
+</div>
 
-        <span class="nav-icon">🔥</span>
-        <span>Trending</span>
+</div>
 
-      </button>
+</section>
 
-      <button
-        class="nav-btn"
-        onclick="scrollToId('recommended')">
 
-        <span class="nav-icon">▦</span>
-        <span>Recommended</span>
+<!-- RANDOM: 16 -->
 
-      </button>
+<section class="section" id="random">
 
-      <button
-        class="nav-btn"
-        onclick="showLogin()">
+<div class="section-head">
 
-        <span class="nav-icon">👤</span>
-        <span>Profile</span>
+<h2 class="section-title">
+🎲 Random Videos
+</h2>
 
-      </button>
+</div>
 
-    </nav>
+<div class="random-grid" id="randomGrid">
 
-  </div>
+<div class="loading">
+Loading...
+</div>
 
+</div>
 
-  <!-- SUPABASE -->
-  <script type="module">
+</section>
 
-    import { createClient }
-      from "https://esm.sh/@supabase/supabase-js@2";
 
-    import {
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    } from "./config.js";
+<!-- BOTTOM NAV -->
 
+<nav class="bottom-nav">
 
-    const supabase =
-      createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-      );
+<button
+class="nav-btn active"
+onclick="goPage('index.html')">
 
+<span class="nav-icon">🏠</span>
+<span>Home</span>
 
-    let allVideos = [];
+</button>
 
-    let activeCategory = "All";
 
-    let randomPage = 1;
+<button
+class="nav-btn"
+onclick="goPage('new.html')">
 
-    const randomPerPage = 6;
+<span class="nav-icon">🕐</span>
+<span>Latest</span>
 
+</button>
 
-    /* =========================
-       ELEMENTS
-    ========================= */
 
-    const trendingGrid =
-      document.getElementById("trendingGrid");
+<button
+class="nav-btn"
+onclick="goPage('trending.html')">
 
-    const latestGrid =
-      document.getElementById("latestGrid");
+<span class="nav-icon">🔥</span>
+<span>Trending</span>
 
-    const recommendedGrid =
-      document.getElementById("recommendedGrid");
+</button>
 
-    const randomGrid =
-      document.getElementById("randomGrid");
 
-    const pagination =
-      document.getElementById("pagination");
+<button
+class="nav-btn"
+onclick="goPage('recommended.html')">
 
-    const searchArea =
-      document.getElementById("searchArea");
+<span class="nav-icon">▦</span>
+<span>Recommended</span>
 
-    const searchInput =
-      document.getElementById("searchInput");
+</button>
 
 
-    /* =========================
-       ESCAPE HTML
-    ========================= */
+<button
+class="nav-btn"
+onclick="showLogin()">
 
-    function escapeHTML(value) {
+<span class="nav-icon">👤</span>
+<span>Profile</span>
 
-      return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+</button>
 
-    }
+</nav>
 
+</div>
 
-    /* =========================
-       FORMAT VIEWS
-    ========================= */
 
-    function formatViews(value) {
+<script type="module">
 
-      const views =
-        Number(value || 0);
+import { createClient }
+from "https://esm.sh/@supabase/supabase-js@2";
 
-      if (views >= 1000000) {
-        return (
-          (views / 1000000)
-            .toFixed(1)
-            .replace(".0", "") +
-          "M"
-        );
-      }
+import {
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+}
+from "./config.js";
 
-      if (views >= 1000) {
-        return (
-          (views / 1000)
-            .toFixed(1)
-            .replace(".0", "") +
-          "K"
-        );
-      }
 
-      return String(views);
+const supabase =
+createClient(
+SUPABASE_URL,
+SUPABASE_ANON_KEY
+);
 
-    }
 
+let allVideos = [];
 
-    /* =========================
-       TIME
-    ========================= */
+let activeCategory = "All";
 
-    function timeAgo(dateString) {
 
-      if (!dateString) {
-        return "";
-      }
+const trendingGrid =
+document.getElementById("trendingGrid");
 
-      const date =
-        new Date(dateString);
+const latestGrid =
+document.getElementById("latestGrid");
 
-      const now =
-        new Date();
+const recommendedGrid =
+document.getElementById("recommendedGrid");
 
-      const seconds =
-        Math.floor(
-          (now - date) / 1000
-        );
+const randomGrid =
+document.getElementById("randomGrid");
 
-      if (seconds < 60) {
-        return "just now";
-      }
+const searchInput =
+document.getElementById("searchInput");
 
-      const minutes =
-        Math.floor(seconds / 60);
 
-      if (minutes < 60) {
-        return minutes + "m ago";
-      }
+/* =========================
+   ESCAPE
+========================= */
 
-      const hours =
-        Math.floor(minutes / 60);
+function escapeHTML(value){
 
-      if (hours < 24) {
-        return hours + "h ago";
-      }
+return String(value ?? "")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
 
-      const days =
-        Math.floor(hours / 24);
+}
 
-      if (days < 30) {
-        return days + "d ago";
-      }
 
-      const months =
-        Math.floor(days / 30);
+/* =========================
+   VIEWS
+========================= */
 
-      if (months < 12) {
-        return months + "mo ago";
-      }
+function formatViews(value){
 
-      const years =
-        Math.floor(months / 12);
+const views =
+Number(value || 0);
 
-      return years + "y ago";
+if(views >= 1000000)
+return (views/1000000)
+.toFixed(1)
+.replace(".0","")+"M";
 
-    }
+if(views >= 1000)
+return (views/1000)
+.toFixed(1)
+.replace(".0","")+"K";
 
+return String(views);
 
-    /* =========================
-       VIDEO CARD
-    ========================= */
+}
 
-    function createCard(video, compact = false) {
 
-      const id =
-        encodeURIComponent(
-          String(video.id)
-        );
+/* =========================
+   TIME
+========================= */
 
-      const title =
-        escapeHTML(
-          video.title || "Untitled Video"
-        );
+function timeAgo(dateString){
 
-      const category =
-        escapeHTML(
-          video.category || "Other"
-        );
+if(!dateString) return "";
 
-      const description =
-        escapeHTML(
-          video.description || ""
-        );
+const date =
+new Date(dateString);
 
-      const thumbnail =
-        video.thumbnail_url ||
-        createFallbackThumbnail(
-          video.title || "DesiVexa"
-        );
+const now =
+new Date();
 
-      const views =
-        formatViews(video.views);
+const seconds =
+Math.floor((now-date)/1000);
 
-      const ago =
-        timeAgo(video.created_at);
+if(seconds < 60)
+return "just now";
 
-      return `
-        <article
-          class="video-card"
-          data-title="${title.toLowerCase()}"
-          data-category="${category.toLowerCase()}"
-          data-description="${description.toLowerCase()}"
-          onclick="openVideo('${id}')">
+const minutes =
+Math.floor(seconds/60);
 
-          <div class="thumb">
+if(minutes < 60)
+return minutes+"m ago";
 
-            <img
-              src="${escapeHTML(thumbnail)}"
-              alt="${title}"
-              loading="lazy"
-              onerror="this.src='${createFallbackThumbnail("DesiVexa")}'">
+const hours =
+Math.floor(minutes/60);
 
-            <div class="play">
-              ▶
-            </div>
+if(hours < 24)
+return hours+"h ago";
 
-            ${
-              compact
-              ? ""
-              : `
-                <div class="duration">
-                  HD
-                </div>
-              `
-            }
+const days =
+Math.floor(hours/24);
 
-          </div>
+if(days < 30)
+return days+"d ago";
 
-          <div class="video-title">
-            ${title}
-          </div>
+const months =
+Math.floor(days/30);
 
-          <span class="tag">
-            ${category}
-          </span>
+if(months < 12)
+return months+"mo ago";
 
-          ${
-            compact
-            ? ""
-            : `
-              <div class="video-meta">
-                <span>◉ ${views} views</span>
-                <span>•</span>
-                <span>${ago}</span>
-              </div>
-            `
-          }
+return Math.floor(months/12)+"y ago";
 
-        </article>
-      `;
+}
 
-    }
 
+/* =========================
+   FALLBACK IMAGE
+========================= */
 
-    /* =========================
-       FALLBACK THUMBNAIL
-    ========================= */
+function fallbackImage(){
 
-    function createFallbackThumbnail(text) {
+const svg = `
+<svg xmlns="http://www.w3.org/2000/svg"
+width="800"
+height="450">
 
-      const safe =
-        String(text || "DesiVexa")
-          .slice(0, 28);
+<rect width="100%" height="100%"
+fill="#101d28"/>
 
-      const svg = `
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="800"
-          height="450">
+<text
+x="50%"
+y="50%"
+text-anchor="middle"
+dominant-baseline="middle"
+fill="#ff1744"
+font-size="46"
+font-family="Arial"
+font-weight="bold">
+DesiVexa
+</text>
 
-          <rect
-            width="100%"
-            height="100%"
-            fill="#101d28"/>
+</svg>
+`;
 
-          <text
-            x="50%"
-            y="50%"
-            dominant-baseline="middle"
-            text-anchor="middle"
-            fill="#ff1744"
-            font-size="42"
-            font-family="Arial"
-            font-weight="bold">
-            ${safe.replace(/[<>&'"]/g, "")}
-          </text>
+return "data:image/svg+xml;charset=UTF-8,"+
+encodeURIComponent(svg);
 
-        </svg>
-      `;
+}
 
-      return "data:image/svg+xml;charset=UTF-8," +
-        encodeURIComponent(svg);
 
-    }
+/* =========================
+   CARD
+========================= */
 
+function createCard(video){
 
-    /* =========================
-       LOAD VIDEOS
-    ========================= */
+const id =
+encodeURIComponent(
+String(video.id)
+);
 
-    async function loadVideos() {
+const title =
+escapeHTML(
+video.title || "Untitled Video"
+);
 
-      trendingGrid.innerHTML =
-        `<div class="loading">Loading videos...</div>`;
+const category =
+escapeHTML(
+video.category || "Other"
+);
 
-      latestGrid.innerHTML =
-        `<div class="loading">Loading videos...</div>`;
+const image =
+video.thumbnail_url ||
+fallbackImage();
 
-      recommendedGrid.innerHTML =
-        `<div class="loading">Loading videos...</div>`;
+return `
 
-      randomGrid.innerHTML =
-        `<div class="loading">Loading videos...</div>`;
+<article
+class="video-card"
+data-title="${title.toLowerCase()}"
+data-category="${category.toLowerCase()}"
+onclick="openVideo('${id}')">
 
+<div class="thumb">
 
-      const {
-        data,
-        error
-      } = await supabase
+<img
+src="${escapeHTML(image)}"
+alt="${title}"
+loading="lazy"
+onerror="this.src='${fallbackImage()}'">
 
-        .from("videos")
+<div class="play">
+▶
+</div>
 
-        .select(
-          "id,title,category,description,thumbnail_url,video_url,views,created_at"
-        )
+<div class="duration">
+HD
+</div>
 
-        .eq(
-          "published",
-          true
-        )
+</div>
 
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        )
+<div class="video-title">
+${title}
+</div>
 
-        .limit(200);
+<span class="tag">
+${category}
+</span>
 
+<div class="video-meta">
 
-      if (error) {
+<span>
+◉ ${formatViews(video.views)} views
+</span>
 
-        console.error(
-          "Supabase error:",
-          error
-        );
+<span>•</span>
 
-        const message =
-          `<div class="empty">
-             Videos load nahi ho paaye.
-           </div>`;
+<span>
+${timeAgo(video.created_at)}
+</span>
 
-        trendingGrid.innerHTML = message;
-        latestGrid.innerHTML = message;
-        recommendedGrid.innerHTML = message;
-        randomGrid.innerHTML = message;
+</div>
 
-        return;
-      }
+</article>
 
+`;
 
-      allVideos =
-        Array.isArray(data)
-          ? data
-          : [];
+}
 
 
-      renderAll();
+/* =========================
+   LOAD
+========================= */
 
-    }
+async function loadVideos(){
 
+const {
+data,
+error
+} = await supabase
 
-    /* =========================
-       FILTER
-    ========================= */
+.from("videos")
 
-    function filteredVideos() {
+.select(
+"id,title,category,description,thumbnail_url,video_url,views,created_at"
+)
 
-      const query =
-        searchInput.value
-          .trim()
-          .toLowerCase();
+.eq(
+"published",
+true
+)
 
+.order(
+"created_at",
+{
+ascending:false
+}
+)
 
-      return allVideos.filter(video => {
+.limit(200);
 
-        const category =
-          video.category ||
-          "Other";
 
-        if (
-          activeCategory !== "All" &&
-          category !== activeCategory
-        ) {
-          return false;
-        }
+if(error){
 
+console.error(error);
 
-        if (!query) {
-          return true;
-        }
+const msg =
+`<div class="empty">
+Videos load nahi ho paaye.
+</div>`;
 
+trendingGrid.innerHTML = msg;
+latestGrid.innerHTML = msg;
+recommendedGrid.innerHTML = msg;
+randomGrid.innerHTML = msg;
 
-        const searchable = `
+return;
 
-          ${video.title || ""}
+}
 
-          ${video.category || ""}
 
-          ${video.description || ""}
+allVideos =
+Array.isArray(data)
+? data
+: [];
 
-        `.toLowerCase();
 
+render();
 
-        return searchable.includes(query);
+}
 
-      });
 
-    }
+/* =========================
+   FILTER
+========================= */
 
+function getFiltered(){
 
-    /* =========================
-       RENDER ALL
-    ========================= */
+const query =
+searchInput.value
+.trim()
+.toLowerCase();
 
-    function renderAll() {
 
-      const videos =
-        filteredVideos();
+return allVideos.filter(video=>{
 
+const category =
+video.category || "Other";
 
-      /* TRENDING */
 
-      const trending =
-        [...videos]
+if(
+activeCategory !== "All" &&
+category !== activeCategory
+){
+return false;
+}
 
-          .sort(
-            (a, b) =>
-              Number(b.views || 0) -
-              Number(a.views || 0)
-          )
 
-          .slice(0, 8);
+if(!query)
+return true;
 
 
-      trendingGrid.innerHTML =
-        trending.length
+const text = `
 
-          ? trending
-              .map(video => createCard(video))
-              .join("")
+${video.title || ""}
+${video.category || ""}
+${video.description || ""}
 
-          : `<div class="empty">
-               No trending videos found.
-             </div>`;
+`.toLowerCase();
 
 
-      /* LATEST */
+return text.includes(query);
 
-      const latest =
-        [...videos]
+});
 
-          .sort(
-            (a, b) =>
-              new Date(b.created_at) -
-              new Date(a.created_at)
-          )
+}
 
-          .slice(0, 8);
 
+/* =========================
+   RENDER
+========================= */
 
-      latestGrid.innerHTML =
-        latest.length
+function render(){
 
-          ? latest
-              .map(video => createCard(video))
-              .join("")
+const videos =
+getFiltered();
 
-          : `<div class="empty">
-               No new videos found.
-             </div>`;
 
+/*
+TRENDING
+ONLY 4
+*/
 
-      /* RECOMMENDED */
+const trending =
+[...videos]
+.sort(
+(a,b)=>
+Number(b.views||0) -
+Number(a.views||0)
+)
+.slice(0,4);
 
-      const recommended =
-        [...videos]
 
-          .sort(
-            (a, b) =>
-              Number(b.views || 0) -
-              Number(a.views || 0)
-          )
+trendingGrid.innerHTML =
+trending.length
+?
+trending
+.map(createCard)
+.join("")
+:
+`<div class="empty">
+No trending videos found.
+</div>`;
 
-          .slice(0, 8);
 
+/*
+NEW
+ONLY 4
+*/
 
-      recommendedGrid.innerHTML =
-        recommended.length
+const latest =
+[...videos]
+.sort(
+(a,b)=>
+new Date(b.created_at) -
+new Date(a.created_at)
+)
+.slice(0,4);
 
-          ? recommended
-              .map(video => createCard(video))
-              .join("")
 
-          : `<div class="empty">
-               No recommended videos found.
-             </div>`;
+latestGrid.innerHTML =
+latest.length
+?
+latest
+.map(createCard)
+.join("")
+:
+`<div class="empty">
+No new videos found.
+</div>`;
 
 
-      /* RANDOM */
+/*
+RECOMMENDED
+ONLY 4
+*/
 
-      const random =
-        [...videos];
+const recommended =
+[...videos]
+.sort(
+(a,b)=>
+Number(b.views||0) -
+Number(a.views||0)
+)
+.slice(0,4);
 
-      random.sort(
-        () => Math.random() - 0.5
-      );
 
-      randomVideos =
-        random;
+recommendedGrid.innerHTML =
+recommended.length
+?
+recommended
+.map(createCard)
+.join("")
+:
+`<div class="empty">
+No recommended videos found.
+</div>`;
 
-      randomPage = 1;
 
-      renderRandom();
+/*
+RANDOM
+16 ONLY
+*/
 
-    }
+const random =
+[...videos]
+.sort(
+()=>Math.random()-0.5
+)
+.slice(0,16);
 
 
-    /* =========================
-       RANDOM VIDEOS
-    ========================= */
+randomGrid.innerHTML =
+random.length
+?
+random
+.map(createCard)
+.join("")
+:
+`<div class="empty">
+No random videos found.
+</div>`;
 
-    let randomVideos = [];
+}
 
 
-    function renderRandom() {
+/* =========================
+   OPEN VIDEO
+========================= */
 
-      const totalPages =
-        Math.max(
-          1,
-          Math.ceil(
-            randomVideos.length /
-            randomPerPage
-          )
-        );
+window.openVideo =
+function(encodedId){
 
+const id =
+decodeURIComponent(encodedId);
 
-      if (
-        randomPage >
-        totalPages
-      ) {
-        randomPage = totalPages;
-      }
+window.location.href =
+"video.html?id="+
+encodeURIComponent(id);
 
+};
 
-      const start =
-        (randomPage - 1) *
-        randomPerPage;
 
+/* =========================
+   PAGE NAVIGATION
+========================= */
 
-      const end =
-        start +
-        randomPerPage;
+window.goPage =
+function(page){
 
+window.location.href = page;
 
-      const current =
-        randomVideos.slice(
-          start,
-          end
-        );
+};
 
 
-      randomGrid.innerHTML =
-        current.length
+/* =========================
+   SCROLL
+========================= */
 
-          ? current
-              .map(video =>
-                createCard(video, true)
-              )
-              .join("")
+window.scrollToId =
+function(id){
 
-          : `<div class="empty">
-               No random videos found.
-             </div>`;
+closeMenu();
 
+const element =
+document.getElementById(id);
 
-      renderPagination(totalPages);
+if(element){
 
-    }
+element.scrollIntoView({
+behavior:"smooth"
+});
 
+}
 
-    /* =========================
-       PAGINATION
-    ========================= */
+};
 
-    function renderPagination(totalPages) {
 
-      if (
-        randomVideos.length <=
-        randomPerPage
-      ) {
+/* =========================
+   LOGIN
+========================= */
 
-        pagination.innerHTML = "";
+window.showLogin =
+function(){
 
-        return;
+closeMenu();
 
-      }
+alert(
+"Login page yahan connect ki ja sakti hai."
+);
 
+};
 
-      let html = "";
 
+/* =========================
+   SEARCH
+========================= */
 
-      if (randomPage > 1) {
+document
+.getElementById("searchBtn")
+.addEventListener(
+"click",
+()=>{
 
-        html += `
-          <button
-            class="page-btn"
-            onclick="changeRandomPage(${randomPage - 1})">
-            ‹
-          </button>
-        `;
+document
+.getElementById("searchArea")
+.classList.toggle("show");
 
-      }
+if(
+document
+.getElementById("searchArea")
+.classList.contains("show")
+){
 
+searchInput.focus();
 
-      for (
-        let i = 1;
-        i <= totalPages;
-        i++
-      ) {
+}
 
-        html += `
-          <button
-            class="page-btn ${
-              i === randomPage
-                ? "active"
-                : ""
-            }"
-            onclick="changeRandomPage(${i})">
-            ${i}
-          </button>
-        `;
+}
+);
 
-      }
 
+searchInput.addEventListener(
+"input",
+render
+);
 
-      if (
-        randomPage <
-        totalPages
-      ) {
 
-        html += `
-          <button
-            class="page-btn"
-            onclick="changeRandomPage(${randomPage + 1})">
-            ›
-          </button>
-        `;
+/* =========================
+   CATEGORY
+========================= */
 
-      }
+document
+.querySelectorAll(".category-btn")
+.forEach(button=>{
 
+button.addEventListener(
+"click",
+()=>{
 
-      pagination.innerHTML =
-        html;
+document
+.querySelectorAll(".category-btn")
+.forEach(btn=>
+btn.classList.remove("active")
+);
 
-    }
+button.classList.add("active");
 
+activeCategory =
+button.dataset.category;
 
-    window.changeRandomPage =
-      function(page) {
+render();
 
-        randomPage = page;
+}
+);
 
-        renderRandom();
+});
 
-        document
-          .getElementById("random")
-          .scrollIntoView({
-            behavior: "smooth"
-          });
 
-      };
+/* =========================
+   MENU
+========================= */
 
+const menuBtn =
+document.getElementById("menuBtn");
 
-    /* =========================
-       OPEN VIDEO
-    ========================= */
+const closeMenuBtn =
+document.getElementById("closeMenu");
 
-    window.openVideo =
-      function(encodedId) {
+const sideMenu =
+document.getElementById("sideMenu");
 
-        const id =
-          decodeURIComponent(
-            encodedId
-          );
+const overlay =
+document.getElementById("overlay");
 
-        window.location.href =
-          "video.html?id=" +
-          encodeURIComponent(id);
 
-      };
+function openMenu(){
 
+sideMenu.classList.add("show");
 
-    /* =========================
-       SEARCH
-    ========================= */
+overlay.classList.add("show");
 
-    document
-      .getElementById("searchBtn")
-      .addEventListener(
-        "click",
-        () => {
+}
 
-          searchArea.classList.toggle(
-            "show"
-          );
 
-          if (
-            searchArea.classList.contains(
-              "show"
-            )
-          ) {
+function closeMenu(){
 
-            searchInput.focus();
+sideMenu.classList.remove("show");
 
-          }
+overlay.classList.remove("show");
 
-        }
-      );
+}
 
 
-    searchInput.addEventListener(
-      "input",
-      () => {
+menuBtn.addEventListener(
+"click",
+openMenu
+);
 
-        renderAll();
+closeMenuBtn.addEventListener(
+"click",
+closeMenu
+);
 
-      }
-    );
+overlay.addEventListener(
+"click",
+closeMenu
+);
 
 
-    /* =========================
-       CATEGORIES
-    ========================= */
+/* =========================
+   START
+========================= */
 
-    document
-      .querySelectorAll(".category-btn")
-      .forEach(button => {
+loadVideos();
 
-        button.addEventListener(
-          "click",
-          () => {
-
-            document
-              .querySelectorAll(
-                ".category-btn"
-              )
-              .forEach(btn =>
-                btn.classList.remove(
-                  "active"
-                )
-              );
-
-
-            button.classList.add(
-              "active"
-            );
-
-
-            activeCategory =
-              button.dataset.category;
-
-
-            renderAll();
-
-          }
-        );
-
-      });
-
-
-    /* =========================
-       MENU
-    ========================= */
-
-    const menuBtn =
-      document.getElementById(
-        "menuBtn"
-      );
-
-    const closeMenu =
-      document.getElementById(
-        "closeMenu"
-      );
-
-    const sideMenu =
-      document.getElementById(
-        "sideMenu"
-      );
-
-    const overlay =
-      document.getElementById(
-        "overlay"
-      );
-
-
-    function openMenu() {
-
-      sideMenu.classList.add(
-        "show"
-      );
-
-      overlay.classList.add(
-        "show"
-      );
-
-    }
-
-
-    function closeSideMenu() {
-
-      sideMenu.classList.remove(
-        "show"
-      );
-
-      overlay.classList.remove(
-        "show"
-      );
-
-    }
-
-
-    menuBtn.addEventListener(
-      "click",
-      openMenu
-    );
-
-
-    closeMenu.addEventListener(
-      "click",
-      closeSideMenu
-    );
-
-
-    overlay.addEventListener(
-      "click",
-      closeSideMenu
-    );
-
-
-    /* =========================
-       SCROLL
-    ========================= */
-
-    window.scrollToId =
-      function(id) {
-
-        closeSideMenu();
-
-        const element =
-          document.getElementById(
-            id
-          );
-
-        if (element) {
-
-          element.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-
-        }
-
-      };
-
-
-    window.goHome =
-      function() {
-
-        closeSideMenu();
-
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        });
-
-      };
-
-
-    /* =========================
-       LOGIN
-    ========================= */
-
-    window.showLogin =
-      function() {
-
-        closeSideMenu();
-
-        alert(
-          "Login page ko baad mein Supabase Auth se connect kiya ja sakta hai."
-        );
-
-      };
-
-
-    /* =========================
-       VIEW ALL
-    ========================= */
-
-    window.showAll =
-      function(section) {
-
-        const urls = {
-
-          trending:
-            "trending.html",
-
-          latest:
-            "new.html",
-
-          recommended:
-            "recommended.html",
-
-          random:
-            "new.html"
-
-        };
-
-
-        if (urls[section]) {
-
-          window.location.href =
-            urls[section];
-
-        }
-
-      };
-
-
-    /* =========================
-       START
-    ========================= */
-
-    loadVideos();
-
-  </script>
+</script>
 
 </body>
 </html>
