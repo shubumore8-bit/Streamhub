@@ -1,831 +1,427 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#02070d">
-<meta name="description" content="DesiVexa - Latest, Trending and Recommended Videos">
-<title>DesiVexa - Home</title>
+
+<meta charset="utf-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1,viewport-fit=cover"
+>
+
+<meta
+  name="theme-color"
+  content="#05070b"
+>
+
+<meta
+  name="description"
+  content="DesiVexa — Latest, trending, recommended and random videos."
+>
+
+<title>DesiVexa</title>
+
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+
+/* =========================
+   RESET
+========================= */
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
 body{
-  background:#02070d;
+  background:#02050a;
   color:#fff;
-  font-family:Arial,Helvetica,sans-serif;
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
   min-height:100vh;
 }
-button,input{font:inherit}
-button{cursor:pointer}
-a{text-decoration:none;color:inherit}
 
-.app{
-  width:100%;
-  max-width:1100px;
-  margin:auto;
-  min-height:100vh;
-  background:#06111a;
-  padding-bottom:80px;
+button,
+input{
+  font:inherit;
 }
 
-/* HEADER */
-.header{
-  height:68px;
-  display:grid;
-  grid-template-columns:52px 1fr 52px;
-  align-items:center;
-  padding:0 14px;
-  background:#030b12;
-  border-bottom:1px solid #172733;
-  position:sticky;
-  top:0;
-  z-index:1000;
-}
-.menu-btn,.search-btn{
-  width:42px;
-  height:42px;
-  border:0;
-  background:transparent;
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-.menu-btn{font-size:29px}
-.search-btn{font-size:25px}
-.logo{
-  text-align:center;
-  font-size:29px;
-  font-weight:900;
-}
-.logo span{color:#ff1744}
-
-/* MENU */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.65);
-  z-index:1500;
-  display:none;
-}
-.overlay.show{display:block}
-
-.side-menu{
-  position:fixed;
-  top:0;
-  left:-290px;
-  width:280px;
-  height:100vh;
-  background:#07131d;
-  border-right:1px solid #243440;
-  z-index:2000;
-  transition:left .25s ease;
-}
-.side-menu.show{left:0}
-
-.menu-header{
-  height:68px;
-  padding:0 18px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  border-bottom:1px solid #1d303d;
-}
-.menu-logo{
-  font-size:24px;
-  font-weight:900;
-}
-.menu-logo span{color:#ff1744}
-.close-menu{
-  border:0;
-  background:transparent;
-  color:white;
-  font-size:31px;
-}
-.menu-list{padding:15px}
-.menu-item{
-  width:100%;
-  border:1px solid #1b3140;
-  background:#0a1a26;
-  color:white;
-  padding:14px;
-  margin-bottom:9px;
-  border-radius:11px;
-  text-align:left;
-  font-size:15px;
-}
-.menu-item:hover{
-  background:#ff1744;
-  border-color:#ff1744;
-}
-
-/* SEARCH */
-.search-area{
-  display:none;
-  padding:12px 14px;
-  border-bottom:1px solid #182b38;
-}
-.search-area.show{display:block}
-.search-input{
-  width:100%;
-  height:45px;
-  padding:0 14px;
-  border-radius:11px;
-  border:1px solid #28404f;
-  background:#0a1924;
-  color:#fff;
-  outline:none;
-}
-.search-input:focus{border-color:#ff1744}
-
-/* BANNER */
-.top-banner{
-  margin:15px 14px;
-  min-height:68px;
-  padding:10px 13px;
-  border:1px solid #ff1744;
-  border-radius:12px;
-  background:linear-gradient(90deg,#160914,#24101a,#100b12);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-.banner-text{
-  font-size:14px;
-  font-weight:700;
-}
-.banner-btn{
-  background:#ff1744;
-  color:white;
-  border:0;
-  border-radius:22px;
-  padding:10px 15px;
-  font-weight:700;
-}
-
-/* CATEGORIES */
-.categories{
-  display:flex;
-  gap:9px;
-  overflow-x:auto;
-  padding:0 14px 7px;
-  scrollbar-width:none;
-}
-.categories::-webkit-scrollbar{display:none}
-.category-btn{
-  flex:0 0 auto;
-  padding:9px 17px;
-  border-radius:10px;
-  border:1px solid #20394a;
-  background:#0b1c2a;
-  color:#dbe5ed;
-  font-size:13px;
-  font-weight:600;
-}
-.category-btn.active{
-  background:#ff1744;
-  border-color:#ff1744;
-  color:#fff;
-}
-
-/* SECTION */
-.section{
-  padding:12px 14px 0;
-}
-.section-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin:12px 0 13px;
-}
-.section-title{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:21px;
-  font-weight:800;
-}
-.view-all{
-  border:0;
-  background:transparent;
-  color:#ff1744;
-  font-weight:700;
-  font-size:13px;
-}
-
-/* VIDEO GRID */
-.video-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:19px;
-}
-.video-card{
-  min-width:0;
+button{
   cursor:pointer;
 }
-.thumb{
-  position:relative;
-  width:100%;
-  aspect-ratio:16/9;
-  background:#0a1822;
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+.page{
+  min-height:100vh;
+  max-width:1200px;
+  margin:auto;
+  background:#061019;
+  padding-bottom:90px;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+  height:64px;
+
+  display:flex;
+  align-items:center;
+
+  padding:0 13px;
+
+  background:#080d13;
+
+  border-bottom:
+    1px solid #182631;
+
+  position:sticky;
+  top:0;
+
+  z-index:100;
+}
+
+
+/* menu */
+
+.menuButton{
+
+  width:40px;
+  height:40px;
+
+  border:0;
   border-radius:9px;
-  overflow:hidden;
-}
-.thumb img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-  transition:transform .25s ease;
-}
-.video-card:hover .thumb img{
-  transform:scale(1.04);
-}
-.play{
-  position:absolute;
-  left:8px;
-  bottom:8px;
-  width:31px;
-  height:31px;
-  border-radius:50%;
+
+  background:#101c26;
+  color:#fff;
+
   display:flex;
   align-items:center;
   justify-content:center;
-  background:rgba(0,0,0,.75);
-  font-size:13px;
-}
-.duration{
-  position:absolute;
-  right:7px;
-  bottom:7px;
-  padding:4px 6px;
-  border-radius:5px;
-  background:rgba(0,0,0,.82);
-  font-size:11px;
-  font-weight:700;
-}
-.video-title{
-  margin-top:7px;
-  font-size:14px;
-  font-weight:700;
-  line-height:1.35;
-  min-height:38px;
-}
-.tag{
-  display:inline-block;
-  margin-top:6px;
-  padding:4px 9px;
-  border-radius:18px;
-  background:#ff1744;
-  color:#fff;
-  font-size:10px;
-  font-weight:800;
-}
-.video-meta{
-  margin-top:6px;
-  color:#aebdca;
-  font-size:11px;
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
+
+  font-size:22px;
+
 }
 
-/* RANDOM */
-.random-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:14px;
+
+/* logo */
+
+.logo{
+
+  flex:1;
+
+  text-align:center;
+
+  font-size:25px;
+
+  font-weight:900;
+
+  letter-spacing:-.5px;
+
 }
-.random-grid .video-title{
-  min-height:auto;
+
+.logo span{
+  color:#ff1744;
+}
+
+
+/* search */
+
+.searchButton{
+
+  width:40px;
+  height:40px;
+
+  border:0;
+  border-radius:9px;
+
+  background:#101c26;
+  color:#fff;
+
+  font-size:20px;
+
+}
+
+
+/* =========================
+   MOBILE MENU
+========================= */
+
+.mobileMenu{
+
+  display:none;
+
+  position:fixed;
+
+  top:64px;
+  left:0;
+
+  width:100%;
+
+  background:#071019;
+
+  border-bottom:
+    1px solid #243440;
+
+  z-index:99;
+
+  padding:15px;
+
+}
+
+.mobileMenu.open{
+  display:block;
+}
+
+.menuItem{
+
+  display:block;
+
+  width:100%;
+
+  padding:14px;
+
+  margin-bottom:8px;
+
+  border-radius:9px;
+
+  background:#0d1b25;
+
+  color:#fff;
+
+  font-weight:700;
+
+}
+
+.menuItem:hover{
+  background:#ff1744;
+}
+
+
+/* =========================
+   SEARCH BOX
+========================= */
+
+.searchBox{
+
+  display:none;
+
+  padding:12px;
+
+  background:#071019;
+
+  border-bottom:
+    1px solid #1d303d;
+
+}
+
+.searchBox.show{
+  display:block;
+}
+
+.searchInput{
+
+  width:100%;
+
+  height:45px;
+
+  border:1px solid #293c49;
+
+  border-radius:10px;
+
+  outline:none;
+
+  padding:0 14px;
+
+  background:#0b1720;
+
+  color:#fff;
+
+}
+
+.searchInput::placeholder{
+  color:#81919d;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+
+  padding:20px 14px 10px;
+
+}
+
+.heroBox{
+
+  background:
+    linear-gradient(
+      135deg,
+      #16070c,
+      #0a141d
+    );
+
+  border:
+    1px solid #34202a;
+
+  border-radius:14px;
+
+  padding:20px;
+
+}
+
+.heroTitle{
+
+  font-size:27px;
+
+  font-weight:900;
+
+}
+
+.heroTitle span{
+  color:#ff1744;
+}
+
+.heroText{
+
+  color:#9daeba;
+
   font-size:13px;
+
+  margin-top:7px;
+
+  line-height:1.5;
+
 }
-.random-grid .tag,
-.random-grid .video-meta{
+
+
+/* =========================
+   CATEGORY PILLS
+========================= */
+
+.categories{
+
+  display:flex;
+
+  gap:8px;
+
+  overflow-x:auto;
+
+  padding:12px 14px 5px;
+
+  scrollbar-width:none;
+
+}
+
+.categories::-webkit-scrollbar{
   display:none;
 }
 
-/* STATUS */
-.loading,.empty{
-  grid-column:1/-1;
-  text-align:center;
-  padding:40px 10px;
-  color:#9aaab7;
+.category{
+
+  flex-shrink:0;
+
+  border:1px solid #293d4a;
+
+  background:#0b1720;
+
+  color:#dce5ea;
+
+  padding:8px 14px;
+
+  border-radius:20px;
+
+  font-size:12px;
+
+  font-weight:700;
+
 }
 
-/* BOTTOM NAV */
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:100%;
-  max-width:1100px;
-  height:70px;
-  background:rgba(3,11,18,.97);
-  border-top:1px solid #1b2d3a;
-  z-index:1200;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  backdrop-filter:blur(12px);
+.category.active{
+
+  background:#ff1744;
+
+  border-color:#ff1744;
+
+  color:#fff;
+
 }
-.nav-btn{
-  border:0;
-  background:transparent;
-  color:#9eafbd;
+
+
+/* =========================
+   SECTION
+========================= */
+
+.section{
+
+  padding:20px 14px 0;
+
+}
+
+.sectionHeader{
+
   display:flex;
-  flex-direction:column;
+
   align-items:center;
-  justify-content:center;
-  gap:4px;
-  font-size:10px;
-}
-.nav-icon{font-size:21px}
-.nav-btn.active{color:#ff1744}
 
-/* MOBILE */
-@media(max-width:900px){
-  .video-grid{grid-template-columns:repeat(3,1fr)}
+  justify-content:space-between;
+
+  margin-bottom:13px;
+
 }
 
-@media(max-width:600px){
-  .video-grid{
-    grid-template-columns:repeat(2,1fr);
-    gap:17px 11px;
-  }
-  .random-grid{
-    grid-template-columns:repeat(2,1fr);
-    gap:12px;
-  }
-  .video-title{font-size:13px}
-  .section-title{font-size:20px}
+.sectionTitle{
+
+  font-size:21px;
+
+  font-weight:900;
+
 }
 
-@media(max-width:390px){
-  .logo{font-size:25px}
-  .banner-text{font-size:11px}
-  .banner-btn{
-    font-size:11px;
-    padding:8px 10px;
-  }
-}
-</style>
-</head>
+.viewAll{
 
-<body>
+  color:#ff4265;
 
-<div class="app" id="home">
+  font-size:12px;
 
-<header class="header">
-
-<button class="menu-btn" id="menuBtn">☰</button>
-
-<a href="index.html" class="logo">
-Desi<span>Vexa</span>
-</a>
-
-<button class="search-btn" id="searchBtn">🔍</button>
-
-</header>
-
-
-<div class="overlay" id="overlay"></div>
-
-
-<aside class="side-menu" id="sideMenu">
-
-<div class="menu-header">
-
-<div class="menu-logo">
-Desi<span>Vexa</span>
-</div>
-
-<button class="close-menu" id="closeMenu">×</button>
-
-</div>
-
-
-<div class="menu-list">
-
-<button class="menu-item" onclick="goPage('index.html')">
-🏠 Home
-</button>
-
-<button class="menu-item" onclick="goPage('new.html')">
-⭐ Latest Videos
-</button>
-
-<button class="menu-item" onclick="goPage('trending.html')">
-🔥 Trending Videos
-</button>
-
-<button class="menu-item" onclick="goPage('recommended.html')">
-👤 Recommended Videos
-</button>
-
-<button class="menu-item" onclick="scrollToId('random')">
-🎲 Random Videos
-</button>
-
-<button class="menu-item" onclick="showLogin()">
-🔐 Login
-</button>
-
-</div>
-
-</aside>
-
-
-<div class="search-area" id="searchArea">
-
-<input
-class="search-input"
-id="searchInput"
-type="search"
-placeholder="Search videos..."
-autocomplete="off">
-
-</div>
-
-
-<section class="top-banner">
-
-<div class="banner-text">
-⭐ Discover Latest Videos
-</div>
-
-<button
-class="banner-btn"
-onclick="goPage('new.html')">
-Explore
-</button>
-
-</section>
-
-
-<nav class="categories">
-
-<button class="category-btn active" data-category="All">
-All
-</button>
-
-<button class="category-btn" data-category="Travel">
-Travel
-</button>
-
-<button class="category-btn" data-category="Food">
-Food
-</button>
-
-<button class="category-btn" data-category="Fitness">
-Fitness
-</button>
-
-<button class="category-btn" data-category="Tech">
-Tech
-</button>
-
-<button class="category-btn" data-category="Lifestyle">
-Lifestyle
-</button>
-
-<button class="category-btn" data-category="Other">
-Other
-</button>
-
-</nav>
-
-
-<!-- TRENDING: ONLY 4 -->
-
-<section class="section" id="trending">
-
-<div class="section-head">
-
-<h2 class="section-title">
-🔥 Trending Videos
-</h2>
-
-<button
-class="view-all"
-onclick="goPage('trending.html')">
-View All →
-</button>
-
-</div>
-
-<div class="video-grid" id="trendingGrid">
-
-<div class="loading">
-Loading...
-</div>
-
-</div>
-
-</section>
-
-
-<!-- NEW: ONLY 4 -->
-
-<section class="section" id="latest">
-
-<div class="section-head">
-
-<h2 class="section-title">
-⭐ New Videos
-</h2>
-
-<button
-class="view-all"
-onclick="goPage('new.html')">
-View All →
-</button>
-
-</div>
-
-<div class="video-grid" id="latestGrid">
-
-<div class="loading">
-Loading...
-</div>
-
-</div>
-
-</section>
-
-
-<!-- RECOMMENDED: ONLY 4 -->
-
-<section class="section" id="recommended">
-
-<div class="section-head">
-
-<h2 class="section-title">
-👤 Recommended Videos
-</h2>
-
-<button
-class="view-all"
-onclick="goPage('recommended.html')">
-View All →
-</button>
-
-</div>
-
-<div class="video-grid" id="recommendedGrid">
-
-<div class="loading">
-Loading...
-</div>
-
-</div>
-
-</section>
-
-
-<!-- RANDOM: 16 -->
-
-<section class="section" id="random">
-
-<div class="section-head">
-
-<h2 class="section-title">
-🎲 Random Videos
-</h2>
-
-</div>
-
-<div class="random-grid" id="randomGrid">
-
-<div class="loading">
-Loading...
-</div>
-
-</div>
-
-</section>
-
-
-<!-- BOTTOM NAV -->
-
-<nav class="bottom-nav">
-
-<button
-class="nav-btn active"
-onclick="goPage('index.html')">
-
-<span class="nav-icon">🏠</span>
-<span>Home</span>
-
-</button>
-
-
-<button
-class="nav-btn"
-onclick="goPage('new.html')">
-
-<span class="nav-icon">🕐</span>
-<span>Latest</span>
-
-</button>
-
-
-<button
-class="nav-btn"
-onclick="goPage('trending.html')">
-
-<span class="nav-icon">🔥</span>
-<span>Trending</span>
-
-</button>
-
-
-<button
-class="nav-btn"
-onclick="goPage('recommended.html')">
-
-<span class="nav-icon">▦</span>
-<span>Recommended</span>
-
-</button>
-
-
-<button
-class="nav-btn"
-onclick="showLogin()">
-
-<span class="nav-icon">👤</span>
-<span>Profile</span>
-
-</button>
-
-</nav>
-
-</div>
-
-
-<script type="module">
-
-import { createClient }
-from "https://esm.sh/@supabase/supabase-js@2";
-
-import {
-SUPABASE_URL,
-SUPABASE_ANON_KEY
-}
-from "./config.js";
-
-
-const supabase =
-createClient(
-SUPABASE_URL,
-SUPABASE_ANON_KEY
-);
-
-
-let allVideos = [];
-
-let activeCategory = "All";
-
-
-const trendingGrid =
-document.getElementById("trendingGrid");
-
-const latestGrid =
-document.getElementById("latestGrid");
-
-const recommendedGrid =
-document.getElementById("recommendedGrid");
-
-const randomGrid =
-document.getElementById("randomGrid");
-
-const searchInput =
-document.getElementById("searchInput");
-
-
-/* =========================
-   ESCAPE
-========================= */
-
-function escapeHTML(value){
-
-return String(value ?? "")
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
+  font-weight:700;
 
 }
 
 
 /* =========================
-   VIEWS
+   VIDEO GRID
 ========================= */
 
-function formatViews(value){
+.videoGrid{
 
-const views =
-Number(value || 0);
+  display:grid;
 
-if(views >= 1000000)
-return (views/1000000)
-.toFixed(1)
-.replace(".0","")+"M";
+  grid-template-columns:
+    repeat(4,minmax(0,1fr));
 
-if(views >= 1000)
-return (views/1000)
-.toFixed(1)
-.replace(".0","")+"K";
-
-return String(views);
-
-}
-
-
-/* =========================
-   TIME
-========================= */
-
-function timeAgo(dateString){
-
-if(!dateString) return "";
-
-const date =
-new Date(dateString);
-
-const now =
-new Date();
-
-const seconds =
-Math.floor((now-date)/1000);
-
-if(seconds < 60)
-return "just now";
-
-const minutes =
-Math.floor(seconds/60);
-
-if(minutes < 60)
-return minutes+"m ago";
-
-const hours =
-Math.floor(minutes/60);
-
-if(hours < 24)
-return hours+"h ago";
-
-const days =
-Math.floor(hours/24);
-
-if(days < 30)
-return days+"d ago";
-
-const months =
-Math.floor(days/30);
-
-if(months < 12)
-return months+"mo ago";
-
-return Math.floor(months/12)+"y ago";
-
-}
-
-
-/* =========================
-   FALLBACK IMAGE
-========================= */
-
-function fallbackImage(){
-
-const svg = `
-<svg xmlns="http://www.w3.org/2000/svg"
-width="800"
-height="450">
-
-<rect width="100%" height="100%"
-fill="#101d28"/>
-
-<text
-x="50%"
-y="50%"
-text-anchor="middle"
-dominant-baseline="middle"
-fill="#ff1744"
-font-size="46"
-font-family="Arial"
-font-weight="bold">
-DesiVexa
-</text>
-
-</svg>
-`;
-
-return "data:image/svg+xml;charset=UTF-8,"+
-encodeURIComponent(svg);
+  gap:18px;
 
 }
 
@@ -834,304 +430,1226 @@ encodeURIComponent(svg);
    CARD
 ========================= */
 
-function createCard(video){
+.videoCard{
 
-const id =
-encodeURIComponent(
-String(video.id)
-);
+  min-width:0;
 
-const title =
-escapeHTML(
-video.title || "Untitled Video"
-);
+  cursor:pointer;
 
-const category =
-escapeHTML(
-video.category || "Other"
-);
+}
 
-const image =
-video.thumbnail_url ||
-fallbackImage();
+.videoThumb{
 
-return `
+  position:relative;
 
-<article
-class="video-card"
-data-title="${title.toLowerCase()}"
-data-category="${category.toLowerCase()}"
-onclick="openVideo('${id}')">
+  width:100%;
 
-<div class="thumb">
+  aspect-ratio:16/9;
 
-<img
-src="${escapeHTML(image)}"
-alt="${title}"
-loading="lazy"
-onerror="this.src='${fallbackImage()}'">
+  overflow:hidden;
 
-<div class="play">
-▶
-</div>
+  border-radius:9px;
 
-<div class="duration">
-HD
-</div>
+  background:#0d1821;
 
-</div>
+}
 
-<div class="video-title">
-${title}
-</div>
+.videoThumb img{
 
-<span class="tag">
-${category}
-</span>
+  width:100%;
+  height:100%;
 
-<div class="video-meta">
+  object-fit:cover;
 
-<span>
-◉ ${formatViews(video.views)} views
-</span>
+  display:block;
 
-<span>•</span>
+}
 
-<span>
-${timeAgo(video.created_at)}
-</span>
+.videoCard:hover .videoThumb img{
+  transform:scale(1.03);
+}
 
-</div>
+.videoThumb img{
 
-</article>
+  transition:
+    transform .2s ease;
 
-`;
+}
+
+
+/* play */
+
+.playIcon{
+
+  position:absolute;
+
+  left:8px;
+  bottom:8px;
+
+  width:31px;
+  height:31px;
+
+  border-radius:50%;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  background:
+    rgba(0,0,0,.75);
+
+  font-size:12px;
+
+}
+
+
+/* HD */
+
+.hdBadge{
+
+  position:absolute;
+
+  right:7px;
+  bottom:7px;
+
+  padding:4px 6px;
+
+  border-radius:5px;
+
+  background:
+    rgba(0,0,0,.78);
+
+  font-size:10px;
+
+  font-weight:800;
+
+}
+
+
+/* title */
+
+.videoTitle{
+
+  margin-top:8px;
+
+  font-size:13px;
+
+  font-weight:700;
+
+  line-height:1.35;
+
+  display:
+    -webkit-box;
+
+  -webkit-line-clamp:2;
+
+  -webkit-box-orient:vertical;
+
+  overflow:hidden;
+
+}
+
+
+/* category */
+
+.videoCategory{
+
+  display:inline-block;
+
+  margin-top:6px;
+
+  padding:4px 8px;
+
+  border-radius:15px;
+
+  background:#ff1744;
+
+  font-size:9px;
+
+  font-weight:800;
+
+}
+
+
+/* meta */
+
+.videoMeta{
+
+  color:#8496a3;
+
+  font-size:10px;
+
+  margin-top:6px;
 
 }
 
 
 /* =========================
-   LOAD
+   LOADING / EMPTY
 ========================= */
 
-async function loadVideos(){
+.loadingVideos,
+.emptyVideos{
 
-const {
-data,
-error
-} = await supabase
+  grid-column:1/-1;
 
-.from("videos")
+  padding:35px 10px;
 
-.select(
-"id,title,category,description,thumbnail_url,video_url,views,created_at"
-)
+  text-align:center;
 
-.eq(
-"published",
-true
-)
-
-.order(
-"created_at",
-{
-ascending:false
-}
-)
-
-.limit(200);
-
-
-if(error){
-
-console.error(error);
-
-const msg =
-`<div class="empty">
-Videos load nahi ho paaye.
-</div>`;
-
-trendingGrid.innerHTML = msg;
-latestGrid.innerHTML = msg;
-recommendedGrid.innerHTML = msg;
-randomGrid.innerHTML = msg;
-
-return;
-
-}
-
-
-allVideos =
-Array.isArray(data)
-? data
-: [];
-
-
-render();
+  color:#8798a5;
 
 }
 
 
 /* =========================
-   FILTER
+   RANDOM PAGINATION
 ========================= */
 
-function getFiltered(){
+.randomPagination{
 
-const query =
-searchInput.value
-.trim()
-.toLowerCase();
+  display:flex;
 
+  align-items:center;
 
-return allVideos.filter(video=>{
+  justify-content:center;
 
-const category =
-video.category || "Other";
+  flex-wrap:wrap;
 
+  gap:6px;
 
-if(
-activeCategory !== "All" &&
-category !== activeCategory
-){
-return false;
+  margin-top:25px;
+
 }
 
 
-if(!query)
-return true;
+.randomPageBtn{
+
+  min-width:39px;
+
+  height:39px;
+
+  padding:0 9px;
+
+  border:
+    1px solid #293d4a;
+
+  border-radius:8px;
+
+  background:#0b1822;
+
+  color:#fff;
+
+  font-size:12px;
+
+  font-weight:700;
+
+}
 
 
-const text = `
+.randomPageBtn.active{
 
-${video.title || ""}
-${video.category || ""}
-${video.description || ""}
+  background:#ff1744;
 
-`.toLowerCase();
+  border-color:#ff1744;
+
+}
 
 
-return text.includes(query);
+.randomPageBtn:disabled{
 
-});
+  opacity:.35;
+
+  cursor:not-allowed;
 
 }
 
 
 /* =========================
-   RENDER
+   BOTTOM NAV
 ========================= */
 
-function render(){
+.bottomNav{
 
-const videos =
-getFiltered();
+  position:fixed;
 
+  left:0;
+  right:0;
+  bottom:0;
 
-/*
-TRENDING
-ONLY 4
-*/
+  height:65px;
 
-const trending =
-[...videos]
-.sort(
-(a,b)=>
-Number(b.views||0) -
-Number(a.views||0)
-)
-.slice(0,4);
+  background:
+    rgba(5,10,15,.97);
 
+  border-top:
+    1px solid #1d303c;
 
-trendingGrid.innerHTML =
-trending.length
-?
-trending
-.map(createCard)
-.join("")
-:
-`<div class="empty">
-No trending videos found.
-</div>`;
+  display:flex;
 
+  justify-content:center;
 
-/*
-NEW
-ONLY 4
-*/
+  z-index:90;
 
-const latest =
-[...videos]
-.sort(
-(a,b)=>
-new Date(b.created_at) -
-new Date(a.created_at)
-)
-.slice(0,4);
+}
 
+.bottomNavInner{
 
-latestGrid.innerHTML =
-latest.length
-?
-latest
-.map(createCard)
-.join("")
-:
-`<div class="empty">
-No new videos found.
-</div>`;
+  width:100%;
 
+  max-width:650px;
 
-/*
-RECOMMENDED
-ONLY 4
-*/
+  display:grid;
 
-const recommended =
-[...videos]
-.sort(
-(a,b)=>
-Number(b.views||0) -
-Number(a.views||0)
-)
-.slice(0,4);
+  grid-template-columns:
+    repeat(4,1fr);
+
+}
+
+.bottomItem{
+
+  display:flex;
+
+  flex-direction:column;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:4px;
+
+  color:#83939e;
+
+  font-size:10px;
+
+  font-weight:700;
+
+}
+
+.bottomItem span:first-child{
+
+  font-size:19px;
+
+}
+
+.bottomItem.active{
+
+  color:#ff1744;
+
+}
 
 
-recommendedGrid.innerHTML =
-recommended.length
-?
-recommended
-.map(createCard)
-.join("")
-:
-`<div class="empty">
-No recommended videos found.
-</div>`;
+/* =========================
+   FOOTER
+========================= */
+
+.footer{
+
+  text-align:center;
+
+  padding:35px 15px 20px;
+
+  color:#687985;
+
+  font-size:11px;
+
+}
+
+.footerLogo{
+
+  color:#fff;
+
+  font-size:22px;
+
+  font-weight:900;
+
+  margin-bottom:8px;
+
+}
+
+.footerLogo span{
+  color:#ff1744;
+}
 
 
-/*
-RANDOM
-16 ONLY
-*/
+/* =========================
+   MOBILE
+========================= */
 
-const random =
-[...videos]
-.sort(
-()=>Math.random()-0.5
-)
-.slice(0,16);
+@media(max-width:900px){
+
+  .videoGrid{
+
+    grid-template-columns:
+      repeat(3,minmax(0,1fr));
+
+  }
+
+}
 
 
-randomGrid.innerHTML =
-random.length
-?
-random
-.map(createCard)
-.join("")
-:
-`<div class="empty">
-No random videos found.
-</div>`;
+@media(max-width:600px){
+
+  .page{
+    padding-bottom:80px;
+  }
+
+  .header{
+    height:60px;
+  }
+
+  .mobileMenu{
+    top:60px;
+  }
+
+  .logo{
+    font-size:23px;
+  }
+
+  .hero{
+    padding:15px 12px 7px;
+  }
+
+  .heroBox{
+    padding:17px;
+  }
+
+  .heroTitle{
+    font-size:23px;
+  }
+
+  .section{
+    padding:
+      18px 11px 0;
+  }
+
+  .sectionTitle{
+    font-size:19px;
+  }
+
+  .videoGrid{
+
+    grid-template-columns:
+      repeat(2,minmax(0,1fr));
+
+    gap:
+      17px 10px;
+
+  }
+
+  .videoTitle{
+    font-size:12px;
+  }
+
+  .videoCategory{
+    font-size:8px;
+  }
+
+  .videoMeta{
+    font-size:9px;
+  }
+
+  .randomPagination{
+    gap:5px;
+  }
+
+  .randomPageBtn{
+    min-width:36px;
+    height:36px;
+    padding:0 7px;
+    font-size:11px;
+  }
+
+}
+
+
+/* =========================
+   VERY SMALL PHONE
+========================= */
+
+@media(max-width:360px){
+
+  .logo{
+    font-size:21px;
+  }
+
+  .menuButton,
+  .searchButton{
+    width:37px;
+    height:37px;
+  }
+
+  .videoGrid{
+    gap:14px 8px;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="page">
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<header class="header">
+
+<button
+  class="menuButton"
+  id="menuButton"
+  aria-label="Menu"
+>
+  ☰
+</button>
+
+
+<div class="logo">
+  Desi<span>Vexa</span>
+</div>
+
+
+<button
+  class="searchButton"
+  id="searchButton"
+  aria-label="Search"
+>
+  🔍
+</button>
+
+</header>
+
+
+<!-- =========================
+     MOBILE MENU
+========================= -->
+
+<div
+  class="mobileMenu"
+  id="mobileMenu"
+>
+
+<a
+  href="index.html"
+  class="menuItem"
+>
+  🏠 Home
+</a>
+
+<a
+  href="trending.html"
+  class="menuItem"
+>
+  🔥 Trending
+</a>
+
+<a
+  href="new.html"
+  class="menuItem"
+>
+  🆕 New Videos
+</a>
+
+<a
+  href="recommended.html"
+  class="menuItem"
+>
+  ⭐ Recommended
+</a>
+
+</div>
+
+
+<!-- =========================
+     SEARCH
+========================= -->
+
+<div
+  class="searchBox"
+  id="searchBox"
+>
+
+<input
+  id="searchInput"
+  class="searchInput"
+  type="search"
+  placeholder="Search videos..."
+  autocomplete="off"
+>
+
+</div>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section class="hero">
+
+<div class="heroBox">
+
+<h1 class="heroTitle">
+Welcome to <span>DesiVexa</span>
+</h1>
+
+<p class="heroText">
+Discover latest, trending, recommended and random videos.
+</p>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     CATEGORIES
+========================= -->
+
+<div
+  class="categories"
+  id="categories"
+>
+
+<button
+  class="category active"
+  data-category="all"
+>
+  All
+</button>
+
+</div>
+
+
+<!-- =========================
+     TRENDING
+========================= -->
+
+<section
+  class="section"
+  id="trendingSection"
+>
+
+<div class="sectionHeader">
+
+<h2 class="sectionTitle">
+🔥 Trending
+</h2>
+
+<a
+  class="viewAll"
+  href="trending.html"
+>
+  View All →
+</a>
+
+</div>
+
+
+<div
+  class="videoGrid"
+  id="trendingVideos"
+>
+
+<div class="loadingVideos">
+Loading videos...
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     NEW
+========================= -->
+
+<section
+  class="section"
+  id="newSection"
+>
+
+<div class="sectionHeader">
+
+<h2 class="sectionTitle">
+🆕 New Videos
+</h2>
+
+<a
+  class="viewAll"
+  href="new.html"
+>
+  View All →
+</a>
+
+</div>
+
+
+<div
+  class="videoGrid"
+  id="newVideos"
+>
+
+<div class="loadingVideos">
+Loading videos...
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     RECOMMENDED
+========================= -->
+
+<section
+  class="section"
+  id="recommendedSection"
+>
+
+<div class="sectionHeader">
+
+<h2 class="sectionTitle">
+⭐ Recommended
+</h2>
+
+<a
+  class="viewAll"
+  href="recommended.html"
+>
+  View All →
+</a>
+
+</div>
+
+
+<div
+  class="videoGrid"
+  id="recommendedVideos"
+>
+
+<div class="loadingVideos">
+Loading videos...
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     RANDOM
+========================= -->
+
+<section
+  class="section"
+  id="randomSection"
+>
+
+<div class="sectionHeader">
+
+<h2 class="sectionTitle">
+🎲 Random Videos
+</h2>
+
+</div>
+
+
+<div
+  class="videoGrid"
+  id="randomVideos"
+>
+
+<div class="loadingVideos">
+Loading random videos...
+</div>
+
+</div>
+
+
+<div
+  class="randomPagination"
+  id="randomPagination"
+></div>
+
+</section>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer class="footer">
+
+<div class="footerLogo">
+Desi<span>Vexa</span>
+</div>
+
+<p>
+18+ only · Upload and publish only lawful,
+authorized content involving adults.
+</p>
+
+</footer>
+
+
+</div>
+
+
+<!-- =========================
+     BOTTOM NAV
+========================= -->
+
+<nav class="bottomNav">
+
+<div class="bottomNavInner">
+
+<a
+  class="bottomItem active"
+  href="index.html"
+>
+  <span>🏠</span>
+  <span>Home</span>
+</a>
+
+
+<a
+  class="bottomItem"
+  href="new.html"
+>
+  <span>🆕</span>
+  <span>New</span>
+</a>
+
+
+<a
+  class="bottomItem"
+  href="trending.html"
+>
+  <span>🔥</span>
+  <span>Trending</span>
+</a>
+
+
+<a
+  class="bottomItem"
+  href="recommended.html"
+>
+  <span>⭐</span>
+  <span>Recommended</span>
+</a>
+
+</div>
+
+</nav>
+
+
+
+<script type="module">
+
+
+/* =========================
+   SUPABASE
+========================= */
+
+import {
+  createClient
+}
+from
+"https://esm.sh/@supabase/supabase-js@2";
+
+
+import {
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+}
+from
+"./config.js";
+
+
+const supabase =
+  createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
+
+/* =========================
+   SETTINGS
+========================= */
+
+const RANDOM_PER_PAGE = 16;
+
+let randomPage = Math.max(
+  1,
+  parseInt(
+    new URLSearchParams(
+      location.search
+    ).get("randomPage") || "1"
+  )
+);
+
+
+let allVideos = [];
+
+let randomVideos = [];
+
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const menuButton =
+  document.getElementById(
+    "menuButton"
+  );
+
+const mobileMenu =
+  document.getElementById(
+    "mobileMenu"
+  );
+
+const searchButton =
+  document.getElementById(
+    "searchButton"
+  );
+
+const searchBox =
+  document.getElementById(
+    "searchBox"
+  );
+
+const searchInput =
+  document.getElementById(
+    "searchInput"
+  );
+
+const categoriesBox =
+  document.getElementById(
+    "categories"
+  );
+
+
+/* =========================
+   MENU
+========================= */
+
+menuButton.addEventListener(
+  "click",
+  () => {
+
+    mobileMenu.classList.toggle(
+      "open"
+    );
+
+  }
+);
+
+
+/* =========================
+   SEARCH TOGGLE
+========================= */
+
+searchButton.addEventListener(
+  "click",
+  () => {
+
+    searchBox.classList.toggle(
+      "show"
+    );
+
+    if(
+      searchBox.classList.contains(
+        "show"
+      )
+    ){
+
+      searchInput.focus();
+
+    }
+
+  }
+);
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHTML(value){
+
+  return String(
+    value ?? ""
+  )
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
+
+}
+
+
+/* =========================
+   FORMAT VIEWS
+========================= */
+
+function formatViews(value){
+
+  const n =
+    Number(value || 0);
+
+
+  if(n >= 1000000){
+
+    return (
+      n / 1000000
+    )
+    .toFixed(1)
+    .replace(
+      ".0",
+      ""
+    ) + "M";
+
+  }
+
+
+  if(n >= 1000){
+
+    return (
+      n / 1000
+    )
+    .toFixed(1)
+    .replace(
+      ".0",
+      ""
+    ) + "K";
+
+  }
+
+
+  return String(n);
+
+}
+
+
+/* =========================
+   TIME AGO
+========================= */
+
+function timeAgo(date){
+
+  if(!date){
+    return "";
+  }
+
+
+  const seconds =
+    Math.floor(
+      (
+        Date.now() -
+        new Date(date)
+      ) / 1000
+    );
+
+
+  if(seconds < 60){
+    return "just now";
+  }
+
+
+  const minutes =
+    Math.floor(
+      seconds / 60
+    );
+
+
+  if(minutes < 60){
+    return minutes + "m ago";
+  }
+
+
+  const hours =
+    Math.floor(
+      minutes / 60
+    );
+
+
+  if(hours < 24){
+    return hours + "h ago";
+  }
+
+
+  const days =
+    Math.floor(
+      hours / 24
+    );
+
+
+  if(days < 30){
+    return days + "d ago";
+  }
+
+
+  return Math.floor(
+    days / 30
+  ) + "mo ago";
+
+}
+
+
+/* =========================
+   FALLBACK THUMBNAIL
+========================= */
+
+function fallbackThumbnail(){
+
+  const svg = `
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="800"
+    height="450"
+  >
+
+    <rect
+      width="100%"
+      height="100%"
+      fill="#101d28"
+    />
+
+    <text
+      x="50%"
+      y="50%"
+      text-anchor="middle"
+      dominant-baseline="middle"
+      fill="#ff1744"
+      font-size="48"
+      font-family="Arial"
+      font-weight="bold"
+    >
+      DesiVexa
+    </text>
+
+  </svg>
+  `;
+
+
+  return (
+    "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(svg)
+  );
+
+}
+
+
+/* =========================
+   VIDEO CARD
+========================= */
+
+function videoCard(video){
+
+  const id =
+    encodeURIComponent(
+      String(video.id)
+    );
+
+
+  return `
+
+  <article
+    class="videoCard"
+    onclick="openVideo('${id}')"
+  >
+
+    <div class="videoThumb">
+
+      <img
+        src="${
+          escapeHTML(
+            video.thumbnail_url ||
+            fallbackThumbnail()
+          )
+        }"
+        alt="${
+          escapeHTML(
+            video.title ||
+            "Video"
+          )
+        }"
+        loading="lazy"
+      >
+
+      <div class="playIcon">
+        ▶
+      </div>
+
+      <div class="hdBadge">
+        HD
+      </div>
+
+    </div>
+
+
+    <div class="videoTitle">
+      ${
+        escapeHTML(
+          video.title ||
+          "Untitled Video"
+        )
+      }
+    </div>
+
+
+    <span class="videoCategory">
+      ${
+        escapeHTML(
+          video.category ||
+          "Other"
+        )
+      }
+    </span>
+
+
+    <div class="videoMeta">
+      ◉ ${
+        formatViews(
+          video.views
+        )
+      } views
+      ·
+      ${
+        timeAgo(
+          video.created_at
+        )
+      }
+    </div>
+
+  </article>
+
+  `;
 
 }
 
@@ -1141,183 +1659,927 @@ No random videos found.
 ========================= */
 
 window.openVideo =
-function(encodedId){
-
-const id =
-decodeURIComponent(encodedId);
-
-window.location.href =
-"video.html?id="+
-encodeURIComponent(id);
-
-};
-
-
-/* =========================
-   PAGE NAVIGATION
-========================= */
-
-window.goPage =
-function(page){
-
-window.location.href = page;
-
-};
-
-
-/* =========================
-   SCROLL
-========================= */
-
-window.scrollToId =
 function(id){
 
-closeMenu();
+  const videoId =
+    decodeURIComponent(id);
 
-const element =
-document.getElementById(id);
 
-if(element){
+  location.href =
+    "video.html?id=" +
+    encodeURIComponent(
+      videoId
+    );
 
-element.scrollIntoView({
-behavior:"smooth"
-});
+};
+
+
+/* =========================
+   SHUFFLE
+========================= */
+
+function shuffle(array){
+
+  const arr =
+    [...array];
+
+
+  for(
+    let i =
+      arr.length - 1;
+    i > 0;
+    i--
+  ){
+
+    const j =
+      Math.floor(
+        Math.random() *
+        (i + 1)
+      );
+
+
+    [
+      arr[i],
+      arr[j]
+    ] =
+    [
+      arr[j],
+      arr[i]
+    ];
+
+  }
+
+
+  return arr;
 
 }
 
+
+/* =========================
+   RENDER TOP SECTIONS
+========================= */
+
+function renderSections(){
+
+  const trending =
+    [...allVideos]
+    .sort(
+      (a,b) =>
+        Number(b.views || 0) -
+        Number(a.views || 0)
+    )
+    .slice(0,4);
+
+
+  const latest =
+    [...allVideos]
+    .sort(
+      (a,b) =>
+        new Date(
+          b.created_at
+        ) -
+        new Date(
+          a.created_at
+        )
+    )
+    .slice(0,4);
+
+
+  const recommended =
+    [...allVideos]
+    .sort(
+      (a,b) => {
+
+        const viewsDifference =
+          Number(b.views || 0) -
+          Number(a.views || 0);
+
+
+        if(
+          viewsDifference !== 0
+        ){
+
+          return viewsDifference;
+
+        }
+
+
+        return (
+          new Date(
+            b.created_at
+          ) -
+          new Date(
+            a.created_at
+          )
+        );
+
+      }
+    )
+    .slice(0,4);
+
+
+  document.getElementById(
+    "trendingVideos"
+  ).innerHTML =
+    trending.length
+      ? trending
+          .map(videoCard)
+          .join("")
+      : emptyMessage();
+
+
+  document.getElementById(
+    "newVideos"
+  ).innerHTML =
+    latest.length
+      ? latest
+          .map(videoCard)
+          .join("")
+      : emptyMessage();
+
+
+  document.getElementById(
+    "recommendedVideos"
+  ).innerHTML =
+    recommended.length
+      ? recommended
+          .map(videoCard)
+          .join("")
+      : emptyMessage();
+
+}
+
+
+/* =========================
+   EMPTY
+========================= */
+
+function emptyMessage(){
+
+  return `
+    <div class="emptyVideos">
+      No videos found.
+    </div>
+  `;
+
+}
+
+
+/* =========================
+   RANDOM VIDEOS
+========================= */
+
+function renderRandomVideos(){
+
+  const container =
+    document.getElementById(
+      "randomVideos"
+    );
+
+
+  const pagination =
+    document.getElementById(
+      "randomPagination"
+    );
+
+
+  const totalPages =
+    Math.ceil(
+      randomVideos.length /
+      RANDOM_PER_PAGE
+    );
+
+
+  if(
+    randomPage > totalPages &&
+    totalPages > 0
+  ){
+
+    randomPage = 1;
+
+  }
+
+
+  const start =
+    (
+      randomPage - 1
+    ) *
+    RANDOM_PER_PAGE;
+
+
+  const end =
+    start +
+    RANDOM_PER_PAGE;
+
+
+  const current =
+    randomVideos.slice(
+      start,
+      end
+    );
+
+
+  container.innerHTML =
+    current.length
+      ? current
+          .map(videoCard)
+          .join("")
+      : emptyMessage();
+
+
+  renderRandomPagination(
+    totalPages,
+    pagination
+  );
+
+}
+
+
+/* =========================
+   RANDOM PAGINATION
+========================= */
+
+function renderRandomPagination(
+  totalPages,
+  container
+){
+
+  if(
+    !container
+  ){
+    return;
+  }
+
+
+  if(
+    totalPages <= 1
+  ){
+
+    container.innerHTML =
+      "";
+
+    return;
+
+  }
+
+
+  let html = "";
+
+
+  /* Previous */
+
+  html += `
+
+    <button
+      class="randomPageBtn"
+      ${
+        randomPage <= 1
+          ? "disabled"
+          : ""
+      }
+      onclick="changeRandomPage(${
+        randomPage - 1
+      })"
+    >
+      Previous
+    </button>
+
+  `;
+
+
+  let start =
+    Math.max(
+      1,
+      randomPage - 2
+    );
+
+
+  let end =
+    Math.min(
+      totalPages,
+      randomPage + 2
+    );
+
+
+  if(
+    randomPage <= 3
+  ){
+
+    start = 1;
+
+    end =
+      Math.min(
+        totalPages,
+        5
+      );
+
+  }
+
+
+  if(
+    randomPage >=
+    totalPages - 2
+  ){
+
+    start =
+      Math.max(
+        1,
+        totalPages - 4
+      );
+
+    end =
+      totalPages;
+
+  }
+
+
+  /* Numbers */
+
+  for(
+    let i = start;
+    i <= end;
+    i++
+  ){
+
+    html += `
+
+      <button
+        class="
+          randomPageBtn
+          ${
+            i === randomPage
+              ? "active"
+              : ""
+          }
+        "
+        onclick="changeRandomPage(${i})"
+      >
+        ${i}
+      </button>
+
+    `;
+
+  }
+
+
+  /* Next */
+
+  html += `
+
+    <button
+      class="randomPageBtn"
+      ${
+        randomPage >= totalPages
+          ? "disabled"
+          : ""
+      }
+      onclick="changeRandomPage(${
+        randomPage + 1
+      })"
+    >
+      Next
+    </button>
+
+  `;
+
+
+  container.innerHTML =
+    html;
+
+}
+
+
+/* =========================
+   CHANGE RANDOM PAGE
+========================= */
+
+window.changeRandomPage =
+function(page){
+
+  if(page < 1){
+    return;
+  }
+
+
+  const totalPages =
+    Math.ceil(
+      randomVideos.length /
+      RANDOM_PER_PAGE
+    );
+
+
+  if(
+    page > totalPages
+  ){
+
+    return;
+
+  }
+
+
+  randomPage =
+    page;
+
+
+  const url =
+    new URL(
+      window.location.href
+    );
+
+
+  if(
+    randomPage === 1
+  ){
+
+    url.searchParams.delete(
+      "randomPage"
+    );
+
+  }else{
+
+    url.searchParams.set(
+      "randomPage",
+      randomPage
+    );
+
+  }
+
+
+  window.history.pushState(
+    {},
+    "",
+    url
+  );
+
+
+  renderRandomVideos();
+
+
+  const section =
+    document.getElementById(
+      "randomSection"
+    );
+
+
+  if(section){
+
+    section.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+
+  }
+
 };
 
 
 /* =========================
-   LOGIN
+   CATEGORIES
 ========================= */
 
-window.showLogin =
-function(){
+function renderCategories(){
 
-closeMenu();
+  const categories =
+    [
+      ...new Set(
+        allVideos
+          .map(
+            video =>
+              video.category
+          )
+          .filter(Boolean)
+      )
+    ]
+    .slice(0,12);
 
-alert(
-"Login page yahan connect ki ja sakti hai."
-);
 
-};
+  categoriesBox.innerHTML =
+    `
+      <button
+        class="category active"
+        data-category="all"
+      >
+        All
+      </button>
+    `;
+
+
+  categories.forEach(
+    category => {
+
+      categoriesBox.innerHTML += `
+
+        <button
+          class="category"
+          data-category="${
+            escapeHTML(category)
+          }"
+        >
+          ${
+            escapeHTML(category)
+          }
+        </button>
+
+      `;
+
+    }
+  );
+
+
+  document
+    .querySelectorAll(
+      ".category"
+    )
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            document
+              .querySelectorAll(
+                ".category"
+              )
+              .forEach(
+                item =>
+                  item.classList
+                    .remove(
+                      "active"
+                    )
+              );
+
+
+            button.classList.add(
+              "active"
+            );
+
+
+            const category =
+              button.dataset.category;
+
+
+            if(
+              category === "all"
+            ){
+
+              renderSections();
+
+              randomVideos =
+                shuffle(
+                  allVideos
+                );
+
+            }else{
+
+              const filtered =
+                allVideos.filter(
+                  video =>
+                    video.category ===
+                    category
+                );
+
+
+              const trending =
+                [...filtered]
+                .sort(
+                  (a,b) =>
+                    Number(
+                      b.views || 0
+                    ) -
+                    Number(
+                      a.views || 0
+                    )
+                )
+                .slice(0,4);
+
+
+              const latest =
+                [...filtered]
+                .sort(
+                  (a,b) =>
+                    new Date(
+                      b.created_at
+                    ) -
+                    new Date(
+                      a.created_at
+                    )
+                )
+                .slice(0,4);
+
+
+              const recommended =
+                [...filtered]
+                .sort(
+                  (a,b) =>
+                    Number(
+                      b.views || 0
+                    ) -
+                    Number(
+                      a.views || 0
+                    )
+                )
+                .slice(0,4);
+
+
+              document.getElementById(
+                "trendingVideos"
+              ).innerHTML =
+                trending.length
+                  ? trending
+                      .map(videoCard)
+                      .join("")
+                  : emptyMessage();
+
+
+              document.getElementById(
+                "newVideos"
+              ).innerHTML =
+                latest.length
+                  ? latest
+                      .map(videoCard)
+                      .join("")
+                  : emptyMessage();
+
+
+              document.getElementById(
+                "recommendedVideos"
+              ).innerHTML =
+                recommended.length
+                  ? recommended
+                      .map(videoCard)
+                      .join("")
+                  : emptyMessage();
+
+
+              randomVideos =
+                shuffle(
+                  filtered
+                );
+
+            }
+
+
+            randomPage = 1;
+
+            renderRandomVideos();
+
+          }
+        );
+
+      }
+    );
+
+}
 
 
 /* =========================
    SEARCH
 ========================= */
 
-document
-.getElementById("searchBtn")
-.addEventListener(
-"click",
-()=>{
-
-document
-.getElementById("searchArea")
-.classList.toggle("show");
-
-if(
-document
-.getElementById("searchArea")
-.classList.contains("show")
-){
-
-searchInput.focus();
-
-}
-
-}
-);
-
-
 searchInput.addEventListener(
-"input",
-render
+  "input",
+  () => {
+
+    const query =
+      searchInput.value
+        .trim()
+        .toLowerCase();
+
+
+    if(!query){
+
+      renderSections();
+
+      return;
+
+    }
+
+
+    const results =
+      allVideos.filter(
+        video => {
+
+          const title =
+            String(
+              video.title || ""
+            )
+            .toLowerCase();
+
+
+          const category =
+            String(
+              video.category || ""
+            )
+            .toLowerCase();
+
+
+          const description =
+            String(
+              video.description || ""
+            )
+            .toLowerCase();
+
+
+          return (
+            title.includes(query) ||
+            category.includes(query) ||
+            description.includes(query)
+          );
+
+        }
+      );
+
+
+    document.getElementById(
+      "trendingVideos"
+    ).innerHTML =
+      results.length
+        ? results
+            .slice(0,4)
+            .map(videoCard)
+            .join("")
+        : emptyMessage();
+
+
+    document.getElementById(
+      "newVideos"
+    ).innerHTML =
+      results.length
+        ? results
+            .slice(0,4)
+            .map(videoCard)
+            .join("")
+        : emptyMessage();
+
+
+    document.getElementById(
+      "recommendedVideos"
+    ).innerHTML =
+      results.length
+        ? results
+            .slice(0,4)
+            .map(videoCard)
+            .join("")
+        : emptyMessage();
+
+
+    randomVideos =
+      shuffle(
+        results
+      );
+
+
+    randomPage = 1;
+
+    renderRandomVideos();
+
+  }
 );
 
 
 /* =========================
-   CATEGORY
+   LOAD VIDEOS
 ========================= */
 
-document
-.querySelectorAll(".category-btn")
-.forEach(button=>{
+async function loadVideos(){
 
-button.addEventListener(
-"click",
-()=>{
+  const trendingBox =
+    document.getElementById(
+      "trendingVideos"
+    );
 
-document
-.querySelectorAll(".category-btn")
-.forEach(btn=>
-btn.classList.remove("active")
-);
+  const newBox =
+    document.getElementById(
+      "newVideos"
+    );
 
-button.classList.add("active");
+  const recommendedBox =
+    document.getElementById(
+      "recommendedVideos"
+    );
 
-activeCategory =
-button.dataset.category;
+  const randomBox =
+    document.getElementById(
+      "randomVideos"
+    );
 
-render();
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabase
+
+        .from("videos")
+
+        .select(
+          "id,title,category,description,thumbnail_url,video_url,views,created_at"
+        )
+
+        .eq(
+          "published",
+          true
+        )
+
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        )
+
+        .limit(200);
+
+
+    if(error){
+
+      console.error(
+        "Supabase error:",
+        error
+      );
+
+
+      const message = `
+        <div class="emptyVideos">
+          Videos load nahi ho paaye.
+        </div>
+      `;
+
+
+      trendingBox.innerHTML =
+        message;
+
+      newBox.innerHTML =
+        message;
+
+      recommendedBox.innerHTML =
+        message;
+
+      randomBox.innerHTML =
+        message;
+
+      return;
+
+    }
+
+
+    allVideos =
+      data || [];
+
+
+    /* Sections */
+
+    renderSections();
+
+
+    /* Categories */
+
+    renderCategories();
+
+
+    /* Random */
+
+    randomVideos =
+      shuffle(
+        allVideos
+      );
+
+
+    renderRandomVideos();
+
+
+  }catch(error){
+
+    console.error(
+      error
+    );
+
+
+    const message = `
+      <div class="emptyVideos">
+        Something went wrong.
+      </div>
+    `;
+
+
+    trendingBox.innerHTML =
+      message;
+
+    newBox.innerHTML =
+      message;
+
+    recommendedBox.innerHTML =
+      message;
+
+    randomBox.innerHTML =
+      message;
+
+  }
 
 }
-);
-
-});
-
-
-/* =========================
-   MENU
-========================= */
-
-const menuBtn =
-document.getElementById("menuBtn");
-
-const closeMenuBtn =
-document.getElementById("closeMenu");
-
-const sideMenu =
-document.getElementById("sideMenu");
-
-const overlay =
-document.getElementById("overlay");
-
-
-function openMenu(){
-
-sideMenu.classList.add("show");
-
-overlay.classList.add("show");
-
-}
-
-
-function closeMenu(){
-
-sideMenu.classList.remove("show");
-
-overlay.classList.remove("show");
-
-}
-
-
-menuBtn.addEventListener(
-"click",
-openMenu
-);
-
-closeMenuBtn.addEventListener(
-"click",
-closeMenu
-);
-
-overlay.addEventListener(
-"click",
-closeMenu
-);
 
 
 /* =========================
@@ -1326,7 +2588,36 @@ closeMenu
 
 loadVideos();
 
+
+/* =========================
+   BACK/FORWARD
+========================= */
+
+window.addEventListener(
+  "popstate",
+  () => {
+
+    const page =
+      parseInt(
+        new URLSearchParams(
+          location.search
+        ).get("randomPage") || "1"
+      );
+
+
+    randomPage =
+      Math.max(
+        1,
+        page
+      );
+
+
+    renderRandomVideos();
+
+  }
+);
+
 </script>
 
 </body>
-</html>
+  </html>
