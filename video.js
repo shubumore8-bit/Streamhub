@@ -23,7 +23,11 @@ const videoId =
 params.get("id");
 
 function escapeHTML(value) {
-if (value === null || value === undefined) {
+
+if (
+value === null ||
+value === undefined
+) {
 return "";
 }
 
@@ -33,18 +37,12 @@ return String(value)
 .replace(/>/g, ">")
 .replace(/"/g, """)
 .replace(/'/g, "'");
-}
 
-function showMessage(title, message) {
-page.innerHTML = "<div style=" padding:30px 15px; text-align:center; color:white; "> <h2>${escapeHTML(title)}</h2> <p style="color:#aaa;"> ${escapeHTML(message)} </p> <a href="index.html" style="color:#ff3344;"> Go Home </a> </div>";
 }
 
 if (!videoId) {
 
-showMessage(
-"Video ID missing",
-"Video URL me ID nahi mili."
-);
+page.innerHTML = "<div class="error"> Video ID missing. </div>";
 
 } else {
 
@@ -54,60 +52,83 @@ loadVideo();
 
 async function loadVideo() {
 
-page.innerHTML = "<div style=" padding:40px; text-align:center; color:#aaa; "> Loading video... </div>";
-
-console.log("Video ID:", videoId);
+page.innerHTML = "<div class="loading"> Loading video... </div>";
 
 const {
-data,
+data: video,
 error
 } = await supabase
 
 .from("videos")
 
-.select("*")
+.select(`
+  id,
+  title,
+  category,
+  description,
+  video_url,
+  thumbnail_url,
+  views,
+  created_at
+`)
 
 .eq("id", videoId)
 
-.maybeSingle();
+.eq("published", true)
 
-console.log("Supabase data:", data);
-console.log("Supabase error:", error);
+.maybeSingle();
 
 if (error) {
 
-showMessage(
-  "Supabase Error",
-  error.message
+console.error(
+  "Supabase error:",
+  error
 );
+
+page.innerHTML = `
+  <div class="error">
+    <h2>Could not load video</h2>
+    <p>
+      ${escapeHTML(error.message)}
+    </p>
+  </div>
+`;
 
 return;
 
 }
 
-if (!data) {
+if (!video) {
 
-showMessage(
-  "Video not found",
-  "Is ID ki koi row videos table me nahi mili."
-);
-
-return;
-
-}
-
-if (!data.video_url) {
-
-showMessage(
-  "Video URL missing",
-  "Database me video_url empty hai."
-);
+page.innerHTML = `
+  <div class="error">
+    <h2>Video not found</h2>
+    <p>
+      This video does not exist or is not published.
+    </p>
+  </div>
+`;
 
 return;
 
 }
 
-renderVideo(data);
+if (!video.video_url) {
+
+page.innerHTML = `
+  <div class="error">
+    <h2>Video file missing</h2>
+    <p>
+      This video does not have a video URL.
+    </p>
+  </div>
+`;
+
+return;
+
+}
+
+renderVideo(video);
 
 }
 
@@ -118,14 +139,14 @@ escapeHTML(
 video.title || "Untitled Video"
 );
 
-const description =
-escapeHTML(
-video.description || ""
-);
-
 const category =
 escapeHTML(
 video.category || "Video"
+);
+
+const description =
+escapeHTML(
+video.description || ""
 );
 
 const thumbnail =
@@ -134,13 +155,13 @@ video.thumbnail_url || "";
 page.innerHTML = `
 
 <div style="
+  width:100%;
   max-width:1000px;
-  margin:auto;
-  padding:10px;
-  color:white;
+  margin:0 auto;
 ">
 
   <video
+    id="mainVideo"
     controls
     playsinline
     preload="metadata"
@@ -151,26 +172,17 @@ page.innerHTML = `
     }
     style="
       width:100%;
-      max-height:75vh;
       display:block;
       background:#000;
       border-radius:8px;
     "
-  >
-
-    <source
-      src="${escapeHTML(video.video_url)}"
-      type="video/mp4"
-    >
-
-    Your browser does not support video playback.
-
-  </video>
+  ></video>
 
 
   <h1 style="
+    color:#fff;
     font-size:21px;
-    margin:15px 0 6px;
+    margin:15px 0 7px;
   ">
     ${title}
   </h1>
@@ -191,6 +203,7 @@ page.innerHTML = `
       ? `
         <div style="
           color:#ccc;
+          font-size:14px;
           line-height:1.5;
           margin-top:15px;
           white-space:pre-wrap;
@@ -204,5 +217,96 @@ page.innerHTML = `
 </div>
 
 `;
+
+/*
+
+* URL ko JavaScript se directly player
+* ke src me set kar rahe hain.
+  */
+
+const player =
+document.getElementById(
+"mainVideo"
+);
+
+player.src =
+video.video_url;
+
+player.load();
+
+/*
+
+* Agar browser video load na kar sake,
+* exact error console me milega.
+  */
+
+player.addEventListener(
+"error",
+() => {
+
+  console.error(
+    "Video playback error:",
+    player.error
+  );
+
+}
+
+);
+
+/*
+
+* Video play hone ke baad ek baar view
+* count increase karo.
+  */
+
+let counted = false;
+
+player.addEventListener(
+"play",
+async () => {
+
+  if (counted) return;
+
+  counted = true;
+
+  await increaseViews(
+    video.id,
+    Number(video.views || 0)
+  );
+
+}
+
+);
+
+}
+
+async function increaseViews(
+id,
+currentViews
+) {
+
+const newViews =
+currentViews + 1;
+
+const {
+error
+} = await supabase
+
+.from("videos")
+
+.update({
+  views: newViews
+})
+
+.eq("id", id);
+
+if (error) {
+
+console.error(
+  "View update error:",
+  error
+);
+
+}
 
 }
