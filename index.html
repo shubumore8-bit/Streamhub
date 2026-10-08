@@ -22,7 +22,6 @@
 
 <title>DesiVexa</title>
 
-
 <style>
 
 /* =========================
@@ -42,10 +41,7 @@ html{
 body{
   background:#02050a;
   color:#fff;
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
+  font-family:Arial,Helvetica,sans-serif;
   min-height:100vh;
 }
 
@@ -83,39 +79,27 @@ a{
 
 .header{
   height:64px;
-
   display:flex;
   align-items:center;
-
   padding:0 13px;
-
   background:#080d13;
-
-  border-bottom:
-    1px solid #182631;
-
+  border-bottom:1px solid #182631;
   position:sticky;
   top:0;
-
   z-index:100;
 }
 
 .menuButton,
 .searchButton{
-
   width:40px;
   height:40px;
-
   border:0;
   border-radius:9px;
-
   background:#101c26;
   color:#fff;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
 }
 
 .menuButton{
@@ -127,20 +111,16 @@ a{
 }
 
 
-/* logo */
+/* =========================
+   LOGO
+========================= */
 
 .logo{
-
   flex:1;
-
   text-align:center;
-
   font-size:25px;
-
   font-weight:900;
-
   letter-spacing:-.5px;
-
 }
 
 .logo span{
@@ -153,25 +133,15 @@ a{
 ========================= */
 
 .mobileMenu{
-
   display:none;
-
   position:fixed;
-
   top:64px;
   left:0;
-
   width:100%;
-
   background:#071019;
-
-  border-bottom:
-    1px solid #243440;
-
+  border-bottom:1px solid #243440;
   z-index:99;
-
   padding:15px;
-
 }
 
 .mobileMenu.open{
@@ -179,23 +149,14 @@ a{
 }
 
 .menuItem{
-
   display:block;
-
   width:100%;
-
   padding:14px;
-
   margin-bottom:8px;
-
   border-radius:9px;
-
   background:#0d1b25;
-
   color:#fff;
-
   font-weight:700;
-
 }
 
 .menuItem:hover{
@@ -208,16 +169,10 @@ a{
 ========================= */
 
 .searchBox{
-
   display:none;
-
   padding:12px;
-
   background:#071019;
-
-  border-bottom:
-    1px solid #1d303d;
-
+  border-bottom:1px solid #1d303d;
 }
 
 .searchBox.show{
@@ -225,23 +180,14 @@ a{
 }
 
 .searchInput{
-
   width:100%;
-
   height:45px;
-
   border:1px solid #293c49;
-
   border-radius:10px;
-
   outline:none;
-
   padding:0 14px;
-
   background:#0b1720;
-
   color:#fff;
-
 }
 
 .searchInput::placeholder{
@@ -254,35 +200,23 @@ a{
 ========================= */
 
 .hero{
-
   padding:20px 14px 10px;
-
 }
 
 .heroBox{
-
-  background:
-    linear-gradient(
-      135deg,
-      #16070c,
-      #0a141d
-    );
-
-  border:
-    1px solid #34202a;
-
+  background:linear-gradient(
+    135deg,
+    #16070c,
+    #0a141d
+  );
+  border:1px solid #34202a;
   border-radius:14px;
-
   padding:20px;
-
 }
 
 .heroTitle{
-
   font-size:27px;
-
   font-weight:900;
-
 }
 
 .heroTitle span{
@@ -290,15 +224,10 @@ a{
 }
 
 .heroText{
-
   color:#9daeba;
-
   font-size:13px;
-
   margin-top:7px;
-
   line-height:1.5;
-
 }
 
 
@@ -307,37 +236,21 @@ a{
 ========================= */
 
 .categoriesButtonWrap{
-
-  padding:
-    10px 14px 0;
-
+  padding:10px 14px 0;
 }
 
 .categoriesButton{
-
   display:flex;
-
   align-items:center;
-
   justify-content:space-between;
-
   width:100%;
-
   padding:13px 15px;
-
-  border:
-    1px solid #293d4a;
-
+  border:1px solid #293d4a;
   border-radius:10px;
-
   background:#0b1720;
-
   color:#fff;
-
   font-size:14px;
-
   font-weight:800;
-
 }
 
 .categoriesButton span:last-child{
@@ -350,17 +263,11 @@ a{
 ========================= */
 
 .categories{
-
   display:flex;
-
   gap:8px;
-
   overflow-x:auto;
-
   padding:12px 14px 5px;
-
   scrollbar-width:none;
-
 }
 
 .categories::-webkit-scrollbar{
@@ -368,33 +275,20 @@ a{
 }
 
 .category{
-
   flex-shrink:0;
-
   border:1px solid #293d4a;
-
   background:#0b1720;
-
   color:#dce5ea;
-
   padding:8px 14px;
-
   border-radius:20px;
-
   font-size:12px;
-
   font-weight:700;
-
 }
 
 .category.active{
-
   background:#ff1744;
-
   border-color:#ff1744;
-
   color:#fff;
-
 }
 
 
@@ -403,39 +297,25 @@ a{
 ========================= */
 
 .section{
-
   padding:20px 14px 0;
-
 }
 
 .sectionHeader{
-
   display:flex;
-
   align-items:center;
-
   justify-content:space-between;
-
   margin-bottom:13px;
-
 }
 
 .sectionTitle{
-
   font-size:21px;
-
   font-weight:900;
-
 }
 
 .viewAll{
-
   color:#ff4265;
-
   font-size:12px;
-
   font-weight:700;
-
 }
 
 
@@ -444,14 +324,9 @@ a{
 ========================= */
 
 .videoGrid{
-
   display:grid;
-
-  grid-template-columns:
-    repeat(4,minmax(0,1fr));
-
+  grid-template-columns:repeat(4,minmax(0,1fr));
   gap:18px;
-
 }
 
 
@@ -460,41 +335,25 @@ a{
 ========================= */
 
 .videoCard{
-
   min-width:0;
-
   cursor:pointer;
-
 }
 
 .videoThumb{
-
   position:relative;
-
   width:100%;
-
   aspect-ratio:16/9;
-
   overflow:hidden;
-
   border-radius:9px;
-
   background:#0d1821;
-
 }
 
 .videoThumb img{
-
   width:100%;
   height:100%;
-
   object-fit:cover;
-
   display:block;
-
-  transition:
-    transform .2s ease;
-
+  transition:transform .2s ease;
 }
 
 .videoCard:hover .videoThumb img{
@@ -502,111 +361,80 @@ a{
 }
 
 
-/* play */
+/* =========================
+   PLAY
+========================= */
 
 .playIcon{
-
   position:absolute;
-
   left:8px;
   bottom:8px;
-
   width:31px;
   height:31px;
-
   border-radius:50%;
-
   display:flex;
-
   align-items:center;
   justify-content:center;
-
-  background:
-    rgba(0,0,0,.75);
-
+  background:rgba(0,0,0,.75);
   font-size:12px;
-
 }
 
 
-/* HD */
+/* =========================
+   HD
+========================= */
 
 .hdBadge{
-
   position:absolute;
-
   right:7px;
   bottom:7px;
-
   padding:4px 6px;
-
   border-radius:5px;
-
-  background:
-    rgba(0,0,0,.78);
-
+  background:rgba(0,0,0,.78);
   font-size:10px;
-
   font-weight:800;
-
 }
 
 
-/* title */
+/* =========================
+   TITLE
+========================= */
 
 .videoTitle{
-
   margin-top:8px;
-
   font-size:13px;
-
   font-weight:700;
-
   line-height:1.35;
-
-  display:
-    -webkit-box;
-
+  display:-webkit-box;
   -webkit-line-clamp:2;
-
   -webkit-box-orient:vertical;
-
   overflow:hidden;
-
 }
 
 
-/* category */
+/* =========================
+   CATEGORY
+========================= */
 
 .videoCategory{
-
   display:inline-block;
-
   margin-top:6px;
-
   padding:4px 8px;
-
   border-radius:15px;
-
   background:#ff1744;
-
   font-size:9px;
-
   font-weight:800;
-
 }
 
 
-/* meta */
+/* =========================
+   META
+========================= */
 
 .videoMeta{
-
   color:#8496a3;
-
   font-size:10px;
-
   margin-top:6px;
-
 }
 
 
@@ -616,15 +444,10 @@ a{
 
 .loadingVideos,
 .emptyVideos{
-
   grid-column:1/-1;
-
   padding:35px 10px;
-
   text-align:center;
-
   color:#8798a5;
-
 }
 
 
@@ -633,61 +456,34 @@ a{
 ========================= */
 
 .randomPagination{
-
   display:flex;
-
   align-items:center;
-
   justify-content:center;
-
   flex-wrap:wrap;
-
   gap:6px;
-
   margin-top:25px;
-
 }
-
 
 .randomPageBtn{
-
   min-width:39px;
-
   height:39px;
-
   padding:0 9px;
-
-  border:
-    1px solid #293d4a;
-
+  border:1px solid #293d4a;
   border-radius:8px;
-
   background:#0b1822;
-
   color:#fff;
-
   font-size:12px;
-
   font-weight:700;
-
 }
-
 
 .randomPageBtn.active{
-
   background:#ff1744;
-
   border-color:#ff1744;
-
 }
 
-
 .randomPageBtn:disabled{
-
   opacity:.35;
-
   cursor:not-allowed;
-
 }
 
 
@@ -696,72 +492,42 @@ a{
 ========================= */
 
 .bottomNav{
-
   position:fixed;
-
   left:0;
   right:0;
   bottom:0;
-
   height:65px;
-
-  background:
-    rgba(5,10,15,.97);
-
-  border-top:
-    1px solid #1d303c;
-
+  background:rgba(5,10,15,.97);
+  border-top:1px solid #1d303c;
   display:flex;
-
   justify-content:center;
-
   z-index:90;
-
 }
 
 .bottomNavInner{
-
   width:100%;
-
   max-width:650px;
-
   display:grid;
-
-  grid-template-columns:
-    repeat(4,1fr);
-
+  grid-template-columns:repeat(4,1fr);
 }
 
 .bottomItem{
-
   display:flex;
-
   flex-direction:column;
-
   align-items:center;
-
   justify-content:center;
-
   gap:4px;
-
   color:#83939e;
-
   font-size:10px;
-
   font-weight:700;
-
 }
 
 .bottomItem span:first-child{
-
   font-size:19px;
-
 }
 
 .bottomItem.active{
-
   color:#ff1744;
-
 }
 
 
@@ -770,27 +536,17 @@ a{
 ========================= */
 
 .footer{
-
   text-align:center;
-
   padding:35px 15px 20px;
-
   color:#687985;
-
   font-size:11px;
-
 }
 
 .footerLogo{
-
   color:#fff;
-
   font-size:22px;
-
   font-weight:900;
-
   margin-bottom:8px;
-
 }
 
 .footerLogo span{
@@ -799,16 +555,13 @@ a{
 
 
 /* =========================
-   MOBILE
+   RESPONSIVE
 ========================= */
 
 @media(max-width:900px){
 
   .videoGrid{
-
-    grid-template-columns:
-      repeat(3,minmax(0,1fr));
-
+    grid-template-columns:repeat(3,minmax(0,1fr));
   }
 
 }
@@ -845,13 +598,11 @@ a{
   }
 
   .categoriesButtonWrap{
-    padding:
-      8px 12px 0;
+    padding:8px 12px 0;
   }
 
   .section{
-    padding:
-      18px 11px 0;
+    padding:18px 11px 0;
   }
 
   .sectionTitle{
@@ -859,13 +610,8 @@ a{
   }
 
   .videoGrid{
-
-    grid-template-columns:
-      repeat(2,minmax(0,1fr));
-
-    gap:
-      17px 10px;
-
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:17px 10px;
   }
 
   .videoTitle{
@@ -919,11 +665,12 @@ a{
 
 <body>
 
-
 <div class="page">
 
 
-<!-- HEADER -->
+<!-- =========================
+     HEADER
+========================= -->
 
 <header class="header">
 
@@ -935,11 +682,9 @@ a{
   ☰
 </button>
 
-
 <div class="logo">
   Desi<span>Vexa</span>
 </div>
-
 
 <button
   class="searchButton"
@@ -952,52 +697,41 @@ a{
 </header>
 
 
-<!-- MOBILE MENU -->
+<!-- =========================
+     MOBILE MENU
+========================= -->
 
 <div
   class="mobileMenu"
   id="mobileMenu"
 >
 
-<a
-  href="index.html"
-  class="menuItem"
->
+<a href="index.html" class="menuItem">
   🏠 Home
 </a>
 
-<a
-  href="trending.html"
-  class="menuItem"
->
+<a href="trending.html" class="menuItem">
   🔥 Trending
 </a>
 
-<a
-  href="new.html"
-  class="menuItem"
->
+<a href="new.html" class="menuItem">
   🆕 New Videos
 </a>
 
-<a
-  href="recommended.html"
-  class="menuItem"
->
+<a href="recommended.html" class="menuItem">
   ⭐ Recommended
 </a>
 
-<a
-  href="category.html"
-  class="menuItem"
->
+<a href="category.html" class="menuItem">
   📂 Categories
 </a>
 
 </div>
 
 
-<!-- SEARCH -->
+<!-- =========================
+     SEARCH
+========================= -->
 
 <div
   class="searchBox"
@@ -1015,7 +749,9 @@ a{
 </div>
 
 
-<!-- HERO -->
+<!-- =========================
+     HERO
+========================= -->
 
 <section class="hero">
 
@@ -1034,7 +770,9 @@ Discover latest, trending, recommended and random videos.
 </section>
 
 
-<!-- CATEGORIES BUTTON -->
+<!-- =========================
+     CATEGORIES BUTTON
+========================= -->
 
 <div class="categoriesButtonWrap">
 
@@ -1056,7 +794,9 @@ Search →
 </div>
 
 
-<!-- CATEGORY PILLS -->
+<!-- =========================
+     CATEGORY PILLS
+========================= -->
 
 <div
   class="categories"
@@ -1073,7 +813,9 @@ Search →
 </div>
 
 
-<!-- TRENDING -->
+<!-- =========================
+     TRENDING
+========================= -->
 
 <section
   class="section"
@@ -1110,7 +852,9 @@ Loading videos...
 </section>
 
 
-<!-- NEW -->
+<!-- =========================
+     NEW
+========================= -->
 
 <section
   class="section"
@@ -1147,7 +891,9 @@ Loading videos...
 </section>
 
 
-<!-- RECOMMENDED -->
+<!-- =========================
+     RECOMMENDED
+========================= -->
 
 <section
   class="section"
@@ -1184,7 +930,9 @@ Loading videos...
 </section>
 
 
-<!-- RANDOM -->
+<!-- =========================
+     RANDOM
+========================= -->
 
 <section
   class="section"
@@ -1220,7 +968,9 @@ Loading random videos...
 </section>
 
 
-<!-- FOOTER -->
+<!-- =========================
+     FOOTER
+========================= -->
 
 <footer class="footer">
 
@@ -1235,11 +985,12 @@ authorized content involving adults.
 
 </footer>
 
-
 </div>
 
 
-<!-- BOTTOM NAV -->
+<!-- =========================
+     BOTTOM NAV
+========================= -->
 
 <nav class="bottomNav">
 
@@ -1253,7 +1004,6 @@ authorized content involving adults.
 <span>Home</span>
 </a>
 
-
 <a
   class="bottomItem"
   href="new.html"
@@ -1262,7 +1012,6 @@ authorized content involving adults.
 <span>New</span>
 </a>
 
-
 <a
   class="bottomItem"
   href="trending.html"
@@ -1270,7 +1019,6 @@ authorized content involving adults.
 <span>🔥</span>
 <span>Trending</span>
 </a>
-
 
 <a
   class="bottomItem"
@@ -1287,7 +1035,6 @@ authorized content involving adults.
 
 <script type="module">
 
-
 /* =========================
    SUPABASE
 ========================= */
@@ -1297,7 +1044,6 @@ import {
 }
 from
 "https://esm.sh/@supabase/supabase-js@2";
-
 
 import {
   SUPABASE_URL,
@@ -1329,7 +1075,6 @@ let randomPage =
       ).get("randomPage") || "1"
     )
   );
-
 
 let allVideos = [];
 
@@ -1460,38 +1205,25 @@ function formatViews(value){
   const n =
     Number(value || 0);
 
-
-  if(
-    n >= 1000000
-  ){
+  if(n >= 1000000){
 
     return (
       n / 1000000
     )
     .toFixed(1)
-    .replace(
-      ".0",
-      ""
-    ) + "M";
+    .replace(".0","") + "M";
 
   }
 
-
-  if(
-    n >= 1000
-  ){
+  if(n >= 1000){
 
     return (
       n / 1000
     )
     .toFixed(1)
-    .replace(
-      ".0",
-      ""
-    ) + "K";
+    .replace(".0","") + "K";
 
   }
-
 
   return String(n);
 
@@ -1508,7 +1240,6 @@ function timeAgo(date){
     return "";
   }
 
-
   const seconds =
     Math.floor(
       (
@@ -1517,64 +1248,42 @@ function timeAgo(date){
       ) / 1000
     );
 
-
-  if(
-    seconds < 60
-  ){
-
+  if(seconds < 60){
     return "just now";
-
   }
-
 
   const minutes =
     Math.floor(
       seconds / 60
     );
 
-
-  if(
-    minutes < 60
-  ){
-
+  if(minutes < 60){
     return minutes + "m ago";
-
   }
-
 
   const hours =
     Math.floor(
       minutes / 60
     );
 
-
-  if(
-    hours < 24
-  ){
-
+  if(hours < 24){
     return hours + "h ago";
-
   }
-
 
   const days =
     Math.floor(
       hours / 24
     );
 
-
-  if(
-    days < 30
-  ){
-
+  if(days < 30){
     return days + "d ago";
-
   }
 
-
-  return Math.floor(
-    days / 30
-  ) + "mo ago";
+  return (
+    Math.floor(
+      days / 30
+    ) + "mo ago"
+  );
 
 }
 
@@ -1614,7 +1323,6 @@ function fallbackThumbnail(){
   </svg>
   `;
 
-
   return (
     "data:image/svg+xml;charset=UTF-8," +
     encodeURIComponent(svg)
@@ -1633,7 +1341,6 @@ function videoCard(video){
     encodeURIComponent(
       String(video.id)
     );
-
 
   return `
 
@@ -1670,7 +1377,6 @@ function videoCard(video){
 
     </div>
 
-
     <div class="videoTitle">
       ${
         escapeHTML(
@@ -1680,7 +1386,6 @@ function videoCard(video){
       }
     </div>
 
-
     <span class="videoCategory">
       ${
         escapeHTML(
@@ -1689,7 +1394,6 @@ function videoCard(video){
         )
       }
     </span>
-
 
     <div class="videoMeta">
       ◉ ${
@@ -1722,7 +1426,6 @@ function(id){
   const videoId =
     decodeURIComponent(id);
 
-
   location.href =
     "video.html?id=" +
     encodeURIComponent(
@@ -1741,10 +1444,8 @@ function shuffle(array){
   const arr =
     [...array];
 
-
   for(
-    let i =
-      arr.length - 1;
+    let i = arr.length - 1;
     i > 0;
     i--
   ){
@@ -1754,7 +1455,6 @@ function shuffle(array){
         Math.random() *
         (i + 1)
       );
-
 
     [
       arr[i],
@@ -1766,7 +1466,6 @@ function shuffle(array){
     ];
 
   }
-
 
   return arr;
 
@@ -1805,7 +1504,6 @@ function renderSections(
     )
     .slice(0,4);
 
-
   const latest =
     [...videos]
     .sort(
@@ -1818,7 +1516,6 @@ function renderSections(
         )
     )
     .slice(0,4);
-
 
   const recommended =
     [...videos]
@@ -1895,7 +1592,6 @@ function renderRandomVideos(){
       "randomPagination"
     );
 
-
   const totalPages =
     Math.ceil(
       randomVideos.length /
@@ -1952,19 +1648,13 @@ function renderRandomPagination(
   container
 ){
 
-  if(
-    !container
-  ){
+  if(!container){
     return;
   }
 
+  if(totalPages <= 1){
 
-  if(
-    totalPages <= 1
-  ){
-
-    container.innerHTML =
-      "";
+    container.innerHTML = "";
 
     return;
 
@@ -1999,7 +1689,6 @@ function renderRandomPagination(
       randomPage - 2
     );
 
-
   let end =
     Math.min(
       totalPages,
@@ -2007,9 +1696,7 @@ function renderRandomPagination(
     );
 
 
-  if(
-    randomPage <= 3
-  ){
+  if(randomPage <= 3){
 
     start = 1;
 
@@ -2033,8 +1720,7 @@ function renderRandomPagination(
         totalPages - 4
       );
 
-    end =
-      totalPages;
+    end = totalPages;
 
   }
 
@@ -2092,7 +1778,7 @@ function renderRandomPagination(
 
 
 /* =========================
-   CHANGE PAGE
+   CHANGE RANDOM PAGE
 ========================= */
 
 window.changeRandomPage =
@@ -2115,8 +1801,7 @@ function(page){
   }
 
 
-  randomPage =
-    page;
+  randomPage = page;
 
 
   const url =
@@ -2125,9 +1810,7 @@ function(page){
     );
 
 
-  if(
-    randomPage === 1
-  ){
+  if(randomPage === 1){
 
     url.searchParams.delete(
       "randomPage"
@@ -2277,8 +1960,7 @@ function renderCategories(){
               );
 
 
-            randomPage =
-              1;
+            randomPage = 1;
 
 
             renderRandomVideos();
@@ -2293,90 +1975,40 @@ function renderCategories(){
 
 
 /* =========================
-   SEARCH
+   SEARCH → SEARCH PAGE
 ========================= */
 
 searchInput.addEventListener(
-  "input",
-  () => {
+  "keydown",
+  function(event){
+
+    if(
+      event.key !== "Enter"
+    ){
+      return;
+    }
+
+
+    event.preventDefault();
+
 
     const query =
-      searchInput.value
-        .trim()
-        .toLowerCase();
+      searchInput.value.trim();
 
 
     if(!query){
-
-      renderSections(
-        allVideos
-      );
-
-
-      randomVideos =
-        shuffle(
-          allVideos
-        );
-
-
-      randomPage = 1;
-
-      renderRandomVideos();
 
       return;
 
     }
 
 
-    const results =
-      allVideos.filter(
-        video => {
-
-          const title =
-            String(
-              video.title || ""
-            )
-            .toLowerCase();
-
-
-          const category =
-            String(
-              video.category || ""
-            )
-            .toLowerCase();
-
-
-          const description =
-            String(
-              video.description || ""
-            )
-            .toLowerCase();
-
-
-          return (
-            title.includes(query) ||
-            category.includes(query) ||
-            description.includes(query)
-          );
-
-        }
-      );
-
-
-    renderSections(
-      results
-    );
-
-
-    randomVideos =
-      shuffle(
-        results
-      );
-
-
-    randomPage = 1;
-
-    renderRandomVideos();
+    window.location.href =
+      "search.html?q=" +
+      encodeURIComponent(
+        query
+      ) +
+      "&page=1";
 
   }
 );
@@ -2529,4 +2161,4 @@ window.addEventListener(
 </script>
 
 </body>
-  </html>
+</html>
