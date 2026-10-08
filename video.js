@@ -511,7 +511,8 @@ async function loadRelatedVideos(id, category) {
     }
 
     container.innerHTML = data.map(item => {
-      const thumb = item.thumbnail_url || item.thumbnail || "";
+      const thumb = item.thumbnail_url ||
+        item.thumbnail || "";
 
       return `
         <a href="video.html?id=${encodeURIComponent(item.id)}"
