@@ -54,8 +54,6 @@
       padding: 18px 12px 40px;
     }
 
-    /* Categories button */
-
     .categories-button {
       width: 100%;
       border: 1px solid #333;
@@ -76,8 +74,6 @@
       color: #aaa;
       font-size: 13px;
     }
-
-    /* Search area */
 
     .search-area {
       display: none;
@@ -110,19 +106,13 @@
       margin-top: 8px;
     }
 
-    /* Category suggestions */
-
     .category-list {
-      display: none;
+      display: flex;
       gap: 8px;
       overflow-x: auto;
       margin-top: 12px;
       padding-bottom: 5px;
       scrollbar-width: none;
-    }
-
-    .category-list.show {
-      display: flex;
     }
 
     .category-list::-webkit-scrollbar {
@@ -153,7 +143,16 @@
       font-weight: 700;
     }
 
-    /* Video grid */
+    .status {
+      text-align: center;
+      color: #888;
+      padding: 35px 10px;
+      font-size: 14px;
+    }
+
+    .error {
+      color: #ff526f;
+    }
 
     .video-grid {
       display: grid;
@@ -214,8 +213,6 @@
       font-size: 11px;
     }
 
-    /* No results */
-
     .empty {
       display: none;
       text-align: center;
@@ -223,8 +220,6 @@
       color: #777;
       font-size: 14px;
     }
-
-    /* Pagination */
 
     .pagination {
       display: flex;
@@ -274,14 +269,10 @@
 
 <div class="container">
 
-  <!-- Categories button -->
-
   <button class="categories-button" id="categoriesButton">
     <span>Categories</span>
     <span id="arrow">▼</span>
   </button>
-
-  <!-- Search -->
 
   <div class="search-area" id="searchArea">
 
@@ -297,28 +288,12 @@
       Video name ya category type karo.
     </div>
 
-    <!-- Category suggestions -->
-
     <div class="category-list" id="categoryList">
 
-      <button class="category-chip" data-category="all">
+      <button
+        class="category-chip active"
+        data-category="all">
         All
-      </button>
-
-      <button class="category-chip" data-category="popular">
-        Popular
-      </button>
-
-      <button class="category-chip" data-category="new">
-        New
-      </button>
-
-      <button class="category-chip" data-category="trending">
-        Trending
-      </button>
-
-      <button class="category-chip" data-category="featured">
-        Featured
       </button>
 
     </div>
@@ -329,183 +304,103 @@
     All Videos
   </div>
 
+  <div id="loading" class="status">
+    Videos loading...
+  </div>
+
   <div id="videoGrid" class="video-grid"></div>
 
   <div id="empty" class="empty">
     No videos found.
   </div>
 
-  <div class="pagination" id="pagination">
+  <div id="errorBox" class="status error" style="display:none;"></div>
 
-    <button class="page-btn active" data-page="1">1</button>
-    <button class="page-btn" data-page="2">2</button>
-    <button class="page-btn" data-page="3">3</button>
-    <button class="page-btn" data-page="4">4</button>
-    <button class="page-btn" data-page="5">5</button>
-    <button class="page-btn" id="nextBtn">Next</button>
-
-  </div>
+  <div class="pagination" id="pagination" style="display:none;"></div>
 
 </div>
 
-<script>
+<script type="module">
 
-  /*
-    ==========================================
-    VIDEO DATA
-    ==========================================
+  import { createClient }
+    from "https://esm.sh/@supabase/supabase-js@2";
 
-    title     = video ka naam
-    category  = category name
-    thumbnail = thumbnail image
-    id        = video.html me bheja jayega
-  */
-
-  const videos = [
-
-    {
-      id: "1",
-      title: "Popular Video 01",
-      category: "popular",
-      thumbnail: "https://picsum.photos/600/340?random=101",
-      views: "12K views",
-      duration: "08:21"
-    },
-
-    {
-      id: "2",
-      title: "Trending Video 02",
-      category: "trending",
-      thumbnail: "https://picsum.photos/600/340?random=102",
-      views: "9.8K views",
-      duration: "12:10"
-    },
-
-    {
-      id: "3",
-      title: "New Video 03",
-      category: "new",
-      thumbnail: "https://picsum.photos/600/340?random=103",
-      views: "8.2K views",
-      duration: "06:42"
-    },
-
-    {
-      id: "4",
-      title: "Featured Video 04",
-      category: "featured",
-      thumbnail: "https://picsum.photos/600/340?random=104",
-      views: "7.4K views",
-      duration: "10:05"
-    },
-
-    {
-      id: "5",
-      title: "Popular Video 05",
-      category: "popular",
-      thumbnail: "https://picsum.photos/600/340?random=105",
-      views: "6.7K views",
-      duration: "09:33"
-    },
-
-    {
-      id: "6",
-      title: "Trending Video 06",
-      category: "trending",
-      thumbnail: "https://picsum.photos/600/340?random=106",
-      views: "5.9K views",
-      duration: "07:18"
-    },
-
-    {
-      id: "7",
-      title: "New Video 07",
-      category: "new",
-      thumbnail: "https://picsum.photos/600/340?random=107",
-      views: "5.1K views",
-      duration: "11:24"
-    },
-
-    {
-      id: "8",
-      title: "Featured Video 08",
-      category: "featured",
-      thumbnail: "https://picsum.photos/600/340?random=108",
-      views: "4.8K views",
-      duration: "05:56"
-    },
-
-    {
-      id: "9",
-      title: "Popular Video 09",
-      category: "popular",
-      thumbnail: "https://picsum.photos/600/340?random=109",
-      views: "4.1K views",
-      duration: "08:45"
-    },
-
-    {
-      id: "10",
-      title: "Trending Video 10",
-      category: "trending",
-      thumbnail: "https://picsum.photos/600/340?random=110",
-      views: "3.9K views",
-      duration: "13:02"
-    },
-
-    {
-      id: "11",
-      title: "New Video 11",
-      category: "new",
-      thumbnail: "https://picsum.photos/600/340?random=111",
-      views: "3.4K views",
-      duration: "09:12"
-    },
-
-    {
-      id: "12",
-      title: "Featured Video 12",
-      category: "featured",
-      thumbnail: "https://picsum.photos/600/340?random=112",
-      views: "2.8K views",
-      duration: "06:31"
-    }
-
-  ];
+  import {
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  } from "./config.js";
 
 
-  const searchArea = document.getElementById("searchArea");
-  const searchInput = document.getElementById("searchInput");
-  const categoriesButton = document.getElementById("categoriesButton");
-  const categoryList = document.getElementById("categoryList");
-  const arrow = document.getElementById("arrow");
+  /* ================================
+     SUPABASE
+  ================================= */
 
-  const videoGrid = document.getElementById("videoGrid");
-  const empty = document.getElementById("empty");
-  const resultTitle = document.getElementById("resultTitle");
-  const pagination = document.getElementById("pagination");
-  const nextBtn = document.getElementById("nextBtn");
+  const supabase = createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
 
-  const perPage = 8;
+  /* ================================
+     ELEMENTS
+  ================================= */
 
-  let currentPage = 1;
+  const searchArea =
+    document.getElementById("searchArea");
+
+  const searchInput =
+    document.getElementById("searchInput");
+
+  const categoriesButton =
+    document.getElementById("categoriesButton");
+
+  const categoryList =
+    document.getElementById("categoryList");
+
+  const arrow =
+    document.getElementById("arrow");
+
+  const videoGrid =
+    document.getElementById("videoGrid");
+
+  const empty =
+    document.getElementById("empty");
+
+  const loading =
+    document.getElementById("loading");
+
+  const errorBox =
+    document.getElementById("errorBox");
+
+  const resultTitle =
+    document.getElementById("resultTitle");
+
+  const pagination =
+    document.getElementById("pagination");
+
+
+  /* ================================
+     VARIABLES
+  ================================= */
+
+  let allVideos = [];
+
+  let filteredVideos = [];
 
   let currentCategory = "all";
 
-  let filteredVideos = [...videos];
+  let currentPage = 1;
+
+  const perPage = 8;
 
 
-  /*
-    ==========================================
-    OPEN / CLOSE SEARCH
-    ==========================================
-  */
+  /* ================================
+     OPEN / CLOSE SEARCH
+  ================================= */
 
   function openSearch() {
 
     searchArea.classList.add("show");
-    categoryList.classList.add("show");
 
     arrow.textContent = "▲";
 
@@ -519,37 +414,250 @@
   function closeSearch() {
 
     searchArea.classList.remove("show");
-    categoryList.classList.remove("show");
 
     arrow.textContent = "▼";
 
   }
 
 
-  categoriesButton.addEventListener("click", () => {
-
-    if (searchArea.classList.contains("show")) {
-      closeSearch();
-    } else {
-      openSearch();
-    }
-
-  });
-
-
-  document.getElementById("topSearch").addEventListener(
+  categoriesButton.addEventListener(
     "click",
-    openSearch
+    () => {
+
+      if (
+        searchArea.classList.contains("show")
+      ) {
+        closeSearch();
+      } else {
+        openSearch();
+      }
+
+    }
   );
 
 
-  /*
-    ==========================================
-    SEARCH FUNCTION
-    ==========================================
-  */
+  document
+    .getElementById("topSearch")
+    .addEventListener(
+      "click",
+      openSearch
+    );
 
-  function applyFilter() {
+
+  /* ================================
+     LOAD VIDEOS FROM SUPABASE
+  ================================= */
+
+  async function loadVideos() {
+
+    loading.style.display = "block";
+
+    errorBox.style.display = "none";
+
+    try {
+
+      const {
+        data,
+        error
+      } = await supabase
+
+        .from("videos")
+
+        .select(`
+          id,
+          title,
+          category,
+          description,
+          thumbnail_url,
+          video_url,
+          views,
+          created_at
+        `)
+
+        .eq("published", true)
+
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        )
+
+        .limit(200);
+
+
+      if (error) {
+        throw error;
+      }
+
+
+      allVideos = data || [];
+
+      filteredVideos = [...allVideos];
+
+
+      loading.style.display = "none";
+
+
+      buildCategories();
+
+      applyFilter(false);
+
+
+    } catch (error) {
+
+      console.error(
+        "Category videos error:",
+        error
+      );
+
+      loading.style.display = "none";
+
+      errorBox.textContent =
+        "Videos load nahi ho paaye. Supabase settings check karo.";
+
+      errorBox.style.display = "block";
+
+    }
+
+  }
+
+
+  /* ================================
+     BUILD REAL CATEGORIES
+  ================================= */
+
+  function buildCategories() {
+
+    categoryList.innerHTML = "";
+
+
+    const allButton =
+      document.createElement("button");
+
+    allButton.className =
+      "category-chip active";
+
+    allButton.dataset.category =
+      "all";
+
+    allButton.textContent =
+      "All";
+
+    categoryList.appendChild(
+      allButton
+    );
+
+
+    const categories = [
+      ...new Set(
+
+        allVideos
+
+          .map(video =>
+            String(
+              video.category || ""
+            ).trim()
+          )
+
+          .filter(Boolean)
+
+      )
+    ];
+
+
+    categories.sort(
+      (a, b) =>
+        a.localeCompare(b)
+    );
+
+
+    categories.forEach(
+      category => {
+
+        const button =
+          document.createElement("button");
+
+        button.className =
+          "category-chip";
+
+        button.dataset.category =
+          category;
+
+        button.textContent =
+          category;
+
+        categoryList.appendChild(
+          button
+        );
+
+      }
+    );
+
+
+    document
+      .querySelectorAll(
+        ".category-chip"
+      )
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            currentCategory =
+              button.dataset.category;
+
+
+            document
+              .querySelectorAll(
+                ".category-chip"
+              )
+              .forEach(btn => {
+
+                btn.classList.remove(
+                  "active"
+                );
+
+              });
+
+
+            button.classList.add(
+              "active"
+            );
+
+
+            if (
+              currentCategory === "all"
+            ) {
+
+              searchInput.value = "";
+
+            } else {
+
+              searchInput.value =
+                currentCategory;
+
+            }
+
+
+            applyFilter();
+
+          }
+        );
+
+      });
+
+  }
+
+
+  /* ================================
+     SEARCH + CATEGORY FILTER
+  ================================= */
+
+  function applyFilter(
+    scrollTop = true
+  ) {
 
     const searchText =
       searchInput.value
@@ -557,122 +665,113 @@
         .toLowerCase();
 
 
-    filteredVideos = videos.filter(video => {
+    filteredVideos =
+      allVideos.filter(video => {
 
-      const title =
-        String(video.title || "").toLowerCase();
-
-      const category =
-        String(video.category || "").toLowerCase();
-
-
-      const matchesSearch =
-        !searchText ||
-        title.includes(searchText) ||
-        category.includes(searchText);
+        const title =
+          String(
+            video.title || ""
+          ).toLowerCase();
 
 
-      const matchesCategory =
-        currentCategory === "all" ||
-        category === currentCategory;
+        const category =
+          String(
+            video.category || ""
+          ).toLowerCase();
 
 
-      return matchesSearch && matchesCategory;
+        const description =
+          String(
+            video.description || ""
+          ).toLowerCase();
 
-    });
+
+        const matchesSearch =
+          !searchText ||
+          title.includes(searchText) ||
+          category.includes(searchText) ||
+          description.includes(searchText);
+
+
+        const matchesCategory =
+          currentCategory === "all" ||
+          category ===
+            currentCategory.toLowerCase();
+
+
+        return (
+          matchesSearch &&
+          matchesCategory
+        );
+
+      });
 
 
     currentPage = 1;
 
     updateResultTitle();
 
-    renderVideos();
+    renderVideos(
+      scrollTop
+    );
 
   }
 
 
-  /*
-    Search while typing
-  */
+  searchInput.addEventListener(
+    "input",
+    () => {
 
-  searchInput.addEventListener("input", () => {
+      /*
+        Agar user manually search kare,
+        category ko All kar dete hain.
+      */
 
-    applyFilter();
-
-  });
-
-
-  /*
-    ==========================================
-    CATEGORY BUTTONS
-    ==========================================
-  */
-
-  document
-    .querySelectorAll(".category-chip")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        currentCategory =
-          button.dataset.category;
+      currentCategory = "all";
 
 
-        document
-          .querySelectorAll(".category-chip")
-          .forEach(btn => {
-            btn.classList.remove("active");
-          });
+      document
+        .querySelectorAll(
+          ".category-chip"
+        )
+        .forEach(btn => {
+
+          btn.classList.toggle(
+            "active",
+            btn.dataset.category === "all"
+          );
+
+        });
 
 
-        button.classList.add("active");
+      applyFilter();
+
+    }
+  );
 
 
-        /*
-          Category select karne par
-          search box me category ka naam
-          automatically aa jayega.
-        */
-
-        if (currentCategory !== "all") {
-
-          searchInput.value =
-            currentCategory;
-
-        } else {
-
-          searchInput.value = "";
-
-        }
-
-
-        applyFilter();
-
-      });
-
-    });
-
-
-  /*
-    ==========================================
-    RESULT TITLE
-    ==========================================
-  */
+  /* ================================
+     RESULT TITLE
+  ================================= */
 
   function updateResultTitle() {
 
-    const count = filteredVideos.length;
-
-    const text =
+    const searchText =
       searchInput.value.trim();
 
 
-    if (text) {
+    const count =
+      filteredVideos.length;
+
+
+    if (searchText) {
 
       resultTitle.textContent =
-        `Results for "${text}" (${count})`;
+        `Results for "${searchText}" (${count})`;
 
-    } else if (currentCategory !== "all") {
+    } else if (
+      currentCategory !== "all"
+    ) {
 
       resultTitle.textContent =
         `${currentCategory} Videos (${count})`;
@@ -687,202 +786,543 @@
   }
 
 
-  /*
-    ==========================================
-    RENDER VIDEOS
-    ==========================================
-  */
+  /* ================================
+     FORMAT VIEWS
+  ================================= */
 
-  function renderVideos() {
+  function formatViews(views) {
+
+    const number =
+      Number(views || 0);
+
+
+    if (number >= 1000000) {
+
+      return (
+        (number / 1000000)
+          .toFixed(1)
+          .replace(".0", "")
+        + "M views"
+      );
+
+    }
+
+
+    if (number >= 1000) {
+
+      return (
+        (number / 1000)
+          .toFixed(1)
+          .replace(".0", "")
+        + "K views"
+      );
+
+    }
+
+
+    return number + " views";
+
+  }
+
+
+  /* ================================
+     TIME AGO
+  ================================= */
+
+  function timeAgo(date) {
+
+    if (!date) {
+      return "";
+    }
+
+
+    const seconds =
+      Math.floor(
+        (
+          Date.now() -
+          new Date(date).getTime()
+        ) / 1000
+      );
+
+
+    if (seconds < 60) {
+      return "Just now";
+    }
+
+
+    const minutes =
+      Math.floor(
+        seconds / 60
+      );
+
+
+    if (minutes < 60) {
+      return minutes + "m ago";
+    }
+
+
+    const hours =
+      Math.floor(
+        minutes / 60
+      );
+
+
+    if (hours < 24) {
+      return hours + "h ago";
+    }
+
+
+    const days =
+      Math.floor(
+        hours / 24
+      );
+
+
+    if (days < 30) {
+      return days + "d ago";
+    }
+
+
+    const months =
+      Math.floor(
+        days / 30
+      );
+
+
+    if (months < 12) {
+      return months + "mo ago";
+    }
+
+
+    return (
+      Math.floor(
+        months / 12
+      ) + "y ago"
+    );
+
+  }
+
+
+  /* ================================
+     THUMBNAIL FALLBACK
+  ================================= */
+
+  function thumbnailFallback() {
+
+    return `
+      data:image/svg+xml;charset=UTF-8,
+      ${encodeURIComponent(`
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="600"
+          height="340"
+          viewBox="0 0 600 340"
+        >
+          <rect
+            width="600"
+            height="340"
+            fill="#202020"
+          />
+
+          <text
+            x="300"
+            y="170"
+            fill="#777"
+            font-size="22"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            font-family="Arial"
+          >
+            DesiVexa
+          </text>
+        </svg>
+      `)}
+    `;
+
+  }
+
+
+  /* ================================
+     RENDER VIDEOS
+  ================================= */
+
+  function renderVideos(
+    scrollTop = true
+  ) {
 
     videoGrid.innerHTML = "";
 
 
-    const start =
-      (currentPage - 1) * perPage;
+    const totalPages =
+      Math.max(
+        1,
+        Math.ceil(
+          filteredVideos.length /
+          perPage
+        )
+      );
 
-    const end =
-      start + perPage;
 
+    if (
+      filteredVideos.length === 0
+    ) {
 
-    const pageVideos =
-      filteredVideos.slice(start, end);
+      empty.style.display =
+        "block";
 
-
-    if (filteredVideos.length === 0) {
-
-      empty.style.display = "block";
-
-      pagination.style.display = "none";
+      pagination.style.display =
+        "none";
 
       return;
 
     }
 
 
-    empty.style.display = "none";
-
-    pagination.style.display = "flex";
-
-
-    pageVideos.forEach(video => {
-
-      const card =
-        document.createElement("a");
+    empty.style.display =
+      "none";
 
 
-      card.className =
-        "video-card";
+    pagination.style.display =
+      "flex";
 
 
-      card.href =
-        "video.html?id=" +
-        encodeURIComponent(video.id);
+    if (
+      currentPage > totalPages
+    ) {
+      currentPage = totalPages;
+    }
 
 
-      card.innerHTML = `
-
-        <div class="thumb">
-
-          <img
-            src="${video.thumbnail}"
-            alt="${video.title}"
-            loading="lazy"
-          >
-
-          <span class="duration">
-            ${video.duration}
-          </span>
-
-        </div>
+    const start =
+      (currentPage - 1) *
+      perPage;
 
 
-        <div class="video-info">
+    const pageVideos =
+      filteredVideos.slice(
+        start,
+        start + perPage
+      );
 
-          <div class="video-title">
-            ${video.title}
+
+    pageVideos.forEach(
+      video => {
+
+        const card =
+          document.createElement("a");
+
+
+        card.className =
+          "video-card";
+
+
+        card.href =
+          "video.html?id=" +
+          encodeURIComponent(
+            video.id
+          );
+
+
+        const thumbnail =
+          video.thumbnail_url ||
+          thumbnailFallback();
+
+
+        const title =
+          video.title ||
+          "Untitled Video";
+
+
+        const category =
+          video.category ||
+          "Uncategorized";
+
+
+        card.innerHTML = `
+
+          <div class="thumb">
+
+            <img
+              src="${thumbnail}"
+              alt="${escapeHtml(title)}"
+              loading="lazy"
+              onerror="this.src='${thumbnailFallback()}'"
+            >
+
           </div>
 
-          <div class="meta">
-            ${video.views} • ${video.category}
+          <div class="video-info">
+
+            <div class="video-title">
+              ${escapeHtml(title)}
+            </div>
+
+            <div class="meta">
+              ${formatViews(video.views)}
+              •
+              ${escapeHtml(category)}
+              ${video.created_at
+                ? " • " +
+                  timeAgo(video.created_at)
+                : ""}
+            </div>
+
           </div>
 
-        </div>
-
-      `;
+        `;
 
 
-      videoGrid.appendChild(card);
+        videoGrid.appendChild(
+          card
+        );
 
-    });
+      }
+    );
 
 
     updatePagination();
 
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
+    if (scrollTop) {
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+    }
 
   }
 
 
-  /*
-    ==========================================
-    PAGINATION
-    ==========================================
-  */
+  /* ================================
+     ESCAPE HTML
+  ================================= */
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+
+  }
+
+
+  /* ================================
+     PAGINATION
+  ================================= */
 
   function updatePagination() {
 
-    const maxPage =
-      Math.max(
-        1,
-        Math.ceil(
-          filteredVideos.length / perPage
-        )
+    pagination.innerHTML = "";
+
+
+    const totalPages =
+      Math.ceil(
+        filteredVideos.length /
+        perPage
       );
 
 
-    document
-      .querySelectorAll(".page-btn[data-page]")
-      .forEach(button => {
+    if (totalPages <= 1) {
 
-        const page =
-          Number(button.dataset.page);
+      pagination.style.display =
+        "none";
 
+      return;
 
-        button.style.display =
-          page <= maxPage
-            ? "block"
-            : "none";
+    }
 
 
-        button.classList.toggle(
-          "active",
-          page === currentPage
-        );
-
-      });
+    pagination.style.display =
+      "flex";
 
 
-    nextBtn.style.display =
-      currentPage < maxPage
-        ? "block"
-        : "none";
+    /*
+      Previous
+    */
 
-  }
+    const previous =
+      document.createElement("button");
+
+    previous.className =
+      "page-btn";
+
+    previous.textContent =
+      "Previous";
+
+    previous.disabled =
+      currentPage === 1;
+
+    previous.style.opacity =
+      currentPage === 1
+        ? "0.4"
+        : "1";
 
 
-  document
-    .querySelectorAll(".page-btn[data-page]")
-    .forEach(button => {
+    previous.onclick =
+      () => {
 
-      button.addEventListener(
-        "click",
-        () => {
+        if (currentPage > 1) {
 
-          currentPage =
-            Number(button.dataset.page);
+          currentPage--;
 
           renderVideos();
 
         }
+
+      };
+
+
+    pagination.appendChild(
+      previous
+    );
+
+
+    /*
+      Page numbers
+    */
+
+    let startPage =
+      Math.max(
+        1,
+        currentPage - 2
       );
 
-    });
+
+    let endPage =
+      Math.min(
+        totalPages,
+        startPage + 4
+      );
 
 
-  nextBtn.addEventListener(
-    "click",
-    () => {
+    if (
+      endPage - startPage < 4
+    ) {
 
-      const maxPage =
-        Math.ceil(
-          filteredVideos.length / perPage
+      startPage =
+        Math.max(
+          1,
+          endPage - 4
         );
 
+    }
 
-      if (currentPage < maxPage) {
 
-        currentPage++;
+    for (
+      let page = startPage;
+      page <= endPage;
+      page++
+    ) {
 
-        renderVideos();
+      const button =
+        document.createElement("button");
+
+      button.className =
+        "page-btn";
+
+
+      if (
+        page === currentPage
+      ) {
+
+        button.classList.add(
+          "active"
+        );
 
       }
 
+
+      button.textContent =
+        page;
+
+
+      button.onclick =
+        () => {
+
+          currentPage =
+            page;
+
+          renderVideos();
+
+        };
+
+
+      pagination.appendChild(
+        button
+      );
+
     }
-  );
 
 
-  /*
-    ==========================================
-    FIRST LOAD
-    ==========================================
-  */
+    /*
+      Next
+    */
 
-  renderVideos();
+    const next =
+      document.createElement("button");
+
+    next.className =
+      "page-btn";
+
+    next.textContent =
+      "Next";
+
+
+    next.style.display =
+      currentPage < totalPages
+        ? "block"
+        : "none";
+
+
+    next.onclick =
+      () => {
+
+        if (
+          currentPage <
+          totalPages
+        ) {
+
+          currentPage++;
+
+          renderVideos();
+
+        }
+
+      };
+
+
+    pagination.appendChild(
+      next
+    );
+
+  }
+
+
+  /* ================================
+     START
+  ================================= */
+
+  loadVideos();
 
 </script>
 
