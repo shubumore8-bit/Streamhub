@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>DesiVexa - Search</title>
+<title>DesiVexa - Search Results</title>
 
 <style>
 
@@ -126,7 +126,7 @@ header{
   display:block;
 }
 
-.thumbPlaceholder{
+.placeholder{
   width:100%;
   height:100%;
   display:flex;
@@ -162,20 +162,21 @@ header{
   margin-top:7px;
 }
 
-.no-results{
+.loading,
+.no-results,
+.error{
+  grid-column:1/-1;
   background:#111;
   border:1px solid #292929;
-  padding:35px 20px;
+  padding:40px 20px;
   border-radius:10px;
   text-align:center;
   color:#888;
 }
 
-.loading{
-  grid-column:1/-1;
-  text-align:center;
-  padding:50px 20px;
-  color:#888;
+.no-results h2,
+.error h2{
+  color:#fff;
 }
 
 .pagination{
@@ -303,7 +304,6 @@ header{
       type="text"
       placeholder="Search videos..."
       autocomplete="off"
-      onkeydown="handleSearch(event)"
     >
 
   </div>
@@ -320,7 +320,7 @@ header{
   <div class="heading">
 
     <h1 id="searchTitle">
-      All Videos
+      Search Results
     </h1>
 
     <p id="resultCount">
@@ -335,7 +335,7 @@ header{
     id="resultsGrid">
 
     <div class="loading">
-      Loading videos...
+      Searching videos...
     </div>
 
   </div>
@@ -399,7 +399,7 @@ const supabase =
 
 
 /* =========================
-   SEARCH QUERY
+   SEARCH NAME
 ========================= */
 
 const params =
@@ -407,16 +407,16 @@ const params =
     window.location.search
   );
 
-let query =
+let searchName =
   params.get("q") || "";
 
-query =
-  query.trim();
+searchName =
+  searchName.trim();
 
 
 document.getElementById(
   "searchInput"
-).value = query;
+).value = searchName;
 
 
 /* =========================
@@ -439,7 +439,7 @@ if(
 }
 
 
-let results = [];
+let videos = [];
 
 
 /* =========================
@@ -462,51 +462,52 @@ function escapeHtml(value){
    FORMAT VIEWS
 ========================= */
 
-function formatViews(views){
+function formatViews(value){
 
-  const number =
-    Number(views) || 0;
+  const views =
+    Number(value) || 0;
 
-  if(number >= 1000000){
+  if(views >= 1000000){
 
     return (
-      (number / 1000000)
-      .toFixed(
-        number >= 10000000 ? 0 : 1
-      )
+      (views / 1000000)
+      .toFixed(1)
       .replace(".0","")
       + "M"
     );
 
   }
 
-  if(number >= 1000){
+  if(views >= 1000){
 
     return (
-      (number / 1000)
-      .toFixed(
-        number >= 10000 ? 0 : 1
-      )
+      (views / 1000)
+      .toFixed(1)
       .replace(".0","")
       + "K"
     );
 
   }
 
-  return String(number);
+  return String(views);
 
 }
 
 
 /* =========================
-   LOAD VIDEOS
+   LOAD SEARCH RESULTS
 ========================= */
 
-async function loadVideos(){
+async function loadSearchResults(){
 
   const grid =
     document.getElementById(
       "resultsGrid"
+    );
+
+  const title =
+    document.getElementById(
+      "searchTitle"
     );
 
   const count =
@@ -514,11 +515,19 @@ async function loadVideos(){
       "resultCount"
     );
 
+
   grid.innerHTML = `
     <div class="loading">
-      Loading videos...
+      Searching videos...
     </div>
   `;
+
+
+  /*
+    Agar naam nahi diya gaya
+    toh search page par
+    all published videos.
+  */
 
   let queryBuilder =
     supabase
@@ -532,7 +541,7 @@ async function loadVideos(){
         views,
         created_at
       `)
-      .eq("published", true)
+      .eq("published",true)
       .order(
         "created_at",
         {ascending:false}
@@ -540,24 +549,22 @@ async function loadVideos(){
 
 
   /*
-    Agar search query hai,
-    title/category dono me
-    search karenge.
+    Search:
+    title OR category
   */
 
-  if(query){
+  if(searchName){
 
-    const safeQuery =
-      query.replace(
-        /[%_]/g,
-        ""
-      );
+    const cleanName =
+      searchName
+        .replace(/[%_]/g,"")
+        .replace(/,/g," ");
 
-    if(safeQuery){
+    if(cleanName){
 
       queryBuilder =
         queryBuilder.or(
-          `title.ilike.%${safeQuery}%,category.ilike.%${safeQuery}%`
+          `title.ilike.%${cleanName}%,category.ilike.%${cleanName}%`
         );
 
     }
@@ -579,13 +586,18 @@ async function loadVideos(){
       error
     );
 
+    title.textContent =
+      "Search Results";
+
+    count.textContent =
+      "Search failed";
+
     grid.innerHTML = `
-      <div
-        class="no-results"
-        style="grid-column:1/-1">
+
+      <div class="error">
 
         <h2>
-          Failed to load videos
+          Something went wrong
         </h2>
 
         <p style="margin-top:8px">
@@ -593,22 +605,42 @@ async function loadVideos(){
         </p>
 
       </div>
+
     `;
-
-    count.textContent =
-      "Unable to load results";
-
-    document.getElementById(
-      "pagination"
-    ).innerHTML = "";
 
     return;
 
   }
 
 
-  results =
+  videos =
     data || [];
+
+
+  /*
+    Heading
+  */
+
+  if(searchName){
+
+    title.textContent =
+      `Results for "${searchName}"`;
+
+  }else{
+
+    title.textContent =
+      "All Videos";
+
+  }
+
+
+  count.textContent =
+    videos.length +
+    (
+      videos.length === 1
+      ? " video found"
+      : " videos found"
+    );
 
 
   render();
@@ -627,49 +659,21 @@ function render(){
       "resultsGrid"
     );
 
-  const title =
-    document.getElementById(
-      "searchTitle"
-    );
 
-  const count =
-    document.getElementById(
-      "resultCount"
-    );
-
-
-  if(query){
-
-    title.textContent =
-      `Search: "${query}"`;
-
-  }else{
-
-    title.textContent =
-      "All Videos";
-
-  }
-
-
-  count.textContent =
-    results.length +
-    " videos found";
-
-
-  if(results.length === 0){
+  if(videos.length === 0){
 
     grid.innerHTML = `
 
       <div
-        class="no-results"
-        style="grid-column:1/-1">
+        class="no-results">
 
         <h2>
           No videos found
         </h2>
 
         <p style="margin-top:8px">
-          Try another search.
+          No video matches
+          "${escapeHtml(searchName)}".
         </p>
 
       </div>
@@ -687,7 +691,7 @@ function render(){
 
   const totalPages =
     Math.ceil(
-      results.length /
+      videos.length /
       perPage
     );
 
@@ -708,15 +712,15 @@ function render(){
     start + perPage;
 
 
-  const pageResults =
-    results.slice(
+  const pageVideos =
+    videos.slice(
       start,
       end
     );
 
 
   grid.innerHTML =
-    pageResults
+    pageVideos
       .map(video => {
 
         const title =
@@ -736,30 +740,41 @@ function render(){
             video.views
           );
 
-        const thumbnail =
-          video.thumbnail_url
-            ? `
-              <img
-                src="${escapeHtml(video.thumbnail_url)}"
-                alt="${title}"
-                loading="lazy"
-                onerror="this.parentElement.innerHTML='<div class=&quot;thumbPlaceholder&quot;><div class=&quot;play&quot;>▶</div></div>'"
-              >
-            `
-            : `
-              <div class="thumbPlaceholder">
-                <div class="play">
-                  ▶
-                </div>
-              </div>
-            `;
+
+        let thumbnail = `
+
+          <div class="placeholder">
+
+            <div class="play">
+              ▶
+            </div>
+
+          </div>
+
+        `;
+
+
+        if(video.thumbnail_url){
+
+          thumbnail = `
+
+            <img
+              src="${escapeHtml(video.thumbnail_url)}"
+              alt="${title}"
+              loading="lazy"
+              onerror="this.style.display='none'"
+            >
+
+          `;
+
+        }
 
 
         return `
 
           <a
-            href="video.html?id=${encodeURIComponent(video.id)}"
-            class="card">
+            class="card"
+            href="video.html?id=${encodeURIComponent(video.id)}">
 
             <div class="thumb">
 
@@ -807,9 +822,10 @@ function renderPagination(){
       "pagination"
     );
 
+
   const totalPages =
     Math.ceil(
-      results.length /
+      videos.length /
       perPage
     );
 
@@ -826,10 +842,6 @@ function renderPagination(){
   let html = "";
 
 
-  /*
-    Previous
-  */
-
   html += `
 
     <button
@@ -843,35 +855,28 @@ function renderPagination(){
   `;
 
 
-  /*
-    Page numbers:
-    1 2 3 4 5
-  */
-
-  const maxButtons = 5;
-
   let startPage =
     Math.max(
       1,
       currentPage - 2
     );
 
+
   let endPage =
     Math.min(
       totalPages,
-      startPage + maxButtons - 1
+      startPage + 4
     );
 
 
   if(
-    endPage - startPage + 1
-    < maxButtons
+    endPage - startPage < 4
   ){
 
     startPage =
       Math.max(
         1,
-        endPage - maxButtons + 1
+        endPage - 4
       );
 
   }
@@ -897,10 +902,6 @@ function renderPagination(){
 
   }
 
-
-  /*
-    Next
-  */
 
   html += `
 
@@ -930,7 +931,7 @@ function(page){
 
   const totalPages =
     Math.ceil(
-      results.length /
+      videos.length /
       perPage
     );
 
@@ -955,17 +956,11 @@ function(page){
     );
 
 
-  if(query){
+  if(searchName){
 
     url.searchParams.set(
       "q",
-      query
-    );
-
-  }else{
-
-    url.searchParams.delete(
-      "q"
+      searchName
     );
 
   }
@@ -999,44 +994,48 @@ function(page){
    NEW SEARCH
 ========================= */
 
-window.handleSearch =
-function(event){
+document.getElementById(
+  "searchInput"
+).addEventListener(
+  "keydown",
+  function(event){
 
-  if(
-    event.key !== "Enter"
-  ){
+    if(
+      event.key !== "Enter"
+    ){
 
-    return;
+      return;
 
-  }
-
-
-  const value =
-    event.target.value.trim();
+    }
 
 
-  if(!value){
+    const value =
+      this.value.trim();
+
+
+    if(!value){
+
+      window.location.href =
+        "search.html";
+
+      return;
+
+    }
+
 
     window.location.href =
-      "search.html";
-
-    return;
+      "search.html?q=" +
+      encodeURIComponent(value);
 
   }
-
-
-  window.location.href =
-    "search.html?q=" +
-    encodeURIComponent(value);
-
-};
+);
 
 
 /* =========================
    START
 ========================= */
 
-loadVideos();
+loadSearchResults();
 
 </script>
 
