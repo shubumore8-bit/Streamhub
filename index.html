@@ -4,178 +4,475 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="description" content="DesiVexa - 18+ video platform">
+  <meta name="description" content="DesiVexa - Discover trending, latest and recommended videos">
 
-  <!-- ExoClick verification -->
-  <meta name="6a97888e-site-verification"
-        content="cdfc6e06389c2153c30b80c3449ad95c">
-
-  <!-- JuicyAds verification -->
-  <meta name="juicyads-site-verification"
-        content="97df17e7b5112caab5770e66ce197265">
-
-  <title>DesiVexa - 18+ Videos</title>
-
-  <link rel="preconnect" href="https://poweredby.jads.co">
-  <link rel="dns-prefetch" href="//poweredby.jads.co">
+  <title>DesiVexa - Home</title>
 
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="ads.css">
 
-  <!-- Mobile layout: desktop-style, 3 video columns, no horizontal scroll -->
   <style>
-    @media (max-width:699px){
+    * {
+      box-sizing: border-box;
+    }
 
-      html,
-      body{
-        width:100% !important;
-        max-width:100% !important;
-        overflow-x:hidden !important;
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden;
+      background: #080808;
+      color: #fff;
+    }
+
+    body {
+      padding-bottom: 72px;
+    }
+
+    .dvMain {
+      width: 100%;
+      max-width: 1280px;
+      margin: auto;
+      padding: 18px 14px 50px;
+    }
+
+    /* HEADER */
+
+    .dvHeader {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(8,8,8,.96);
+      border-bottom: 1px solid #242424;
+      backdrop-filter: blur(12px);
+    }
+
+    .dvHeaderInner {
+      width: 100%;
+      max-width: 1280px;
+      min-height: 64px;
+      margin: auto;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .dvLogo {
+      text-decoration: none;
+      color: #fff;
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .dvLogo span,
+    .footerLogo span {
+      color: #ff1744;
+    }
+
+    .headerIcon {
+      width: 42px;
+      height: 42px;
+      border: 1px solid #303030;
+      border-radius: 10px;
+      background: #141414;
+      color: #fff;
+      font-size: 21px;
+      cursor: pointer;
+    }
+
+    .dvSearchBox {
+      display: none;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 0 14px 12px;
+    }
+
+    .dvSearchBox.active {
+      display: block;
+    }
+
+    .dvSearchBox input,
+    #categorySearch {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #333;
+      outline: none;
+      background: #151515;
+      color: #fff;
+    }
+
+    /* MENU */
+
+    .mobileMenu {
+      display: none;
+      position: fixed;
+      top: 64px;
+      left: 12px;
+      right: 12px;
+      z-index: 999;
+      background: #111;
+      border: 1px solid #2c2c2c;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .mobileMenu.active {
+      display: block;
+    }
+
+    .mobileMenu a {
+      display: block;
+      padding: 14px 16px;
+      color: #fff;
+      text-decoration: none;
+      border-bottom: 1px solid #242424;
+    }
+
+    .mobileMenu a:hover {
+      background: #1d1d1d;
+    }
+
+    /* HERO */
+
+    .premiumHero {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 16px;
+      min-height: 280px;
+      margin-bottom: 24px;
+      padding: 20px;
+      border: 1px solid #292929;
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 90% 20%, rgba(229,9,20,.18), transparent 35%),
+        linear-gradient(135deg,#151515,#0b0b0b);
+    }
+
+    .heroCopy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .eyebrow,
+    .sectionLabel {
+      color: #ff1744;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.4px;
+    }
+
+    .premiumHero h1 {
+      margin: 10px 0;
+      font-size: clamp(28px,5vw,52px);
+      line-height: 1.02;
+      letter-spacing: -2px;
+    }
+
+    .premiumHero h1 span {
+      color: #ff1744;
+    }
+
+    .premiumHero p {
+      max-width: 500px;
+      color: #aaa;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .heroButton {
+      display: inline-block;
+      width: fit-content;
+      margin-top: 8px;
+      padding: 11px 16px;
+      border-radius: 9px;
+      background: #e50914;
+      color: #fff;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .featuredVideo {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .featuredLoading {
+      color: #888;
+      font-size: 13px;
+    }
+
+    /* CATEGORY */
+
+    .toolbar {
+      margin-bottom: 18px;
+    }
+
+    .categoryBtn {
+      padding: 10px 14px;
+      border: 1px solid #303030;
+      border-radius: 9px;
+      background: #151515;
+      color: #fff;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .categoryList {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .categoryList.active {
+      display: block;
+    }
+
+    #categoryItems {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 9px;
+    }
+
+    .categoryItem,
+    .catItem {
+      padding: 8px 12px;
+      border-radius: 20px;
+      background: #181818;
+      border: 1px solid #2b2b2b;
+      color: #ccc;
+      font-size: 12px;
+    }
+
+    /* SECTION */
+
+    .dvSectionTitle {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 15px;
+      margin: 30px 0 14px;
+    }
+
+    .dvSectionTitle h2 {
+      margin: 4px 0 0;
+      font-size: 24px;
+      letter-spacing: -.6px;
+    }
+
+    .dvSectionTitle a {
+      color: #aaa;
+      text-decoration: none;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .dvSectionTitle a:hover {
+      color: #fff;
+    }
+
+    /* VIDEO GRID */
+
+    .dvGrid {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 14px;
+    }
+
+    .card {
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid #252525;
+      border-radius: 11px;
+      background: #111;
+      transition: transform .15s ease,border-color .15s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: #444;
+    }
+
+    .thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      background: #181818;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card .body {
+      padding: 9px;
+    }
+
+    .card h3 {
+      margin: 0;
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .cardMeta {
+      margin-top: 5px;
+      color: #777;
+      font-size: 10px;
+    }
+
+    /* ADS */
+
+    .dvAdSlot {
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    /* FOOTER */
+
+    footer {
+      padding: 35px 15px 90px;
+      text-align: center;
+      border-top: 1px solid #222;
+      color: #777;
+    }
+
+    .footerLogo {
+      font-size: 23px;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    footer p {
+      font-size: 11px;
+    }
+
+    footer a {
+      color: #aaa;
+      font-size: 12px;
+    }
+
+    /* BOTTOM NAV */
+
+    .bottomNav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1100;
+      height: 64px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: rgba(12,12,12,.98);
+      border-top: 1px solid #292929;
+      backdrop-filter: blur(12px);
+    }
+
+    .bottomNav a {
+      min-width: 60px;
+      text-align: center;
+      color: #777;
+      text-decoration: none;
+      font-size: 10px;
+    }
+
+    .bottomNav a.active {
+      color: #ff1744;
+    }
+
+    .bottomNav .navIcon {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 20px;
+    }
+
+    /* MOBILE */
+
+    @media (max-width:699px) {
+
+      .dvMain {
+        padding: 12px 10px 40px;
       }
 
-      .dvMain{
-        width:100% !important;
-        max-width:1280px !important;
-        margin:0 auto !important;
-        padding:18px 10px 45px !important;
+      .premiumHero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        gap: 14px;
+        padding: 16px;
+        border-radius: 13px;
       }
 
-      .dvHeaderInner{
-        width:100% !important;
-        max-width:1280px !important;
-        min-height:62px !important;
-        padding:0 12px !important;
+      .premiumHero h1 {
+        font-size: clamp(25px,8vw,38px);
+        letter-spacing: -1.2px;
       }
 
-      .dvLogo{
-        font-size:24px !important;
+      .premiumHero p {
+        font-size: 12px;
       }
 
-      .headerIcon{
-        width:42px !important;
-        height:42px !important;
-        font-size:23px !important;
+      .featuredVideo {
+        min-height: 170px;
       }
 
-      /* Desktop-style hero on mobile */
-      .premiumHero{
-        grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) !important;
-        gap:14px !important;
-        min-height:250px !important;
-        padding:18px !important;
-        border-radius:14px !important;
+      .dvGrid {
+        grid-template-columns: repeat(3,minmax(0,1fr));
+        gap: 9px;
       }
 
-      .premiumHero h1{
-        font-size:clamp(24px,7vw,38px) !important;
-        letter-spacing:-1.2px !important;
+      .card {
+        border-radius: 8px;
       }
 
-      .premiumHero p{
-        font-size:12px !important;
-        line-height:1.45 !important;
+      .card .body {
+        padding: 7px;
       }
 
-      .heroButton{
-        padding:10px 13px !important;
-        font-size:12px !important;
+      .card h3 {
+        font-size: 10px;
+        line-height: 1.25;
       }
 
-      .featuredThumb{
-        aspect-ratio:16/9 !important;
+      .cardMeta {
+        font-size: 8px;
       }
 
-      .featuredInfo{
-        padding:9px !important;
+      .dvSectionTitle {
+        margin: 24px 0 12px;
       }
 
-      .featuredInfo h2{
-        font-size:14px !important;
+      .dvSectionTitle h2 {
+        font-size: 20px;
       }
 
-      /* Categories */
-      #categoryItems,
-      .categoryItems{
-        flex-wrap:wrap !important;
-        gap:6px !important;
+      .dvSectionTitle a {
+        font-size: 10px;
+      }
+    }
+
+    @media (max-width:380px) {
+      .dvGrid {
+        gap: 7px;
       }
 
-      .categoryItem,
-      .catItem{
-        padding:8px 12px !important;
-        font-size:12px !important;
-      }
-
-      /* 3 COLUMNS */
-      .dvGrid{
-        display:grid !important;
-        grid-template-columns:repeat(3,minmax(0,1fr)) !important;
-        gap:10px !important;
-        width:100% !important;
-      }
-
-      .card{
-        width:100% !important;
-        min-width:0 !important;
-        max-width:100% !important;
-        border-radius:9px !important;
-        overflow:hidden !important;
-      }
-
-      .thumb{
-        width:100% !important;
-        aspect-ratio:16/9 !important;
-        overflow:hidden !important;
-      }
-
-      .thumb img{
-        width:100% !important;
-        height:100% !important;
-        object-fit:cover !important;
-      }
-
-      .card .body{
-        padding:8px !important;
-      }
-
-      .card h3{
-        font-size:11px !important;
-        line-height:1.25 !important;
-      }
-
-      .cardMeta{
-        font-size:9px !important;
-      }
-
-      .playCircle{
-        width:34px !important;
-        height:34px !important;
-        font-size:12px !important;
-      }
-
-      .cardViews{
-        font-size:8px !important;
-        padding:3px 4px !important;
-      }
-
-      .dvSectionTitle{
-        margin:25px 0 14px !important;
-      }
-
-      .dvSectionTitle h2{
-        font-size:22px !important;
-      }
-
-      .dvAdSlot{
-        width:100% !important;
-        max-width:100% !important;
-        overflow:hidden !important;
-      }
-
-      footer{
-        width:100% !important;
-        max-width:100% !important;
-        overflow:hidden !important;
+      .card h3 {
+        font-size: 9px;
       }
     }
   </style>
@@ -185,17 +482,9 @@
 
   <!-- AGE GATE -->
   <div id="ageGate" class="gate">
-    <div class="gatebox" style="
-      width:min(430px,100%);
-      padding:28px;
-      text-align:center;
-      background:#121212;
-      border:1px solid #303030;
-      border-radius:14px;
-      box-shadow:0 8px 30px rgba(0,0,0,.35);
-    ">
-      <div style="font-size:28px;font-weight:900;">
-        Desi<span style="color:#ff1744;">Vexa</span>
+    <div class="gatebox">
+      <div style="font-size:28px;font-weight:900">
+        Desi<span style="color:#ff1744">Vexa</span>
       </div>
 
       <div style="
@@ -210,20 +499,9 @@
 
       <h2>Adults Only</h2>
 
-      <p>
-        You must be 18 years or older
-        to enter this website.
-      </p>
+      <p>You must be 18 years or older to enter this website.</p>
 
-      <button id="enter" type="button" style="
-        padding:12px 18px;
-        border:0;
-        border-radius:8px;
-        background:#e50914;
-        color:#fff;
-        cursor:pointer;
-        font-weight:700;
-      ">
+      <button id="enter" type="button">
         I am 18+ - Enter
       </button>
     </div>
@@ -232,6 +510,7 @@
 
   <!-- HEADER -->
   <header class="dvHeader">
+
     <div class="dvHeaderInner">
 
       <button
@@ -263,6 +542,7 @@
         placeholder="Search videos..."
         autocomplete="off">
     </div>
+
   </header>
 
 
@@ -271,17 +551,13 @@
 
     <a href="index.html">Home</a>
 
-    <a href="trending.html">
-      Most Viewed
-    </a>
+    <a href="trending.html">Most Viewed</a>
 
-    <a href="new.html">
-      Latest
-    </a>
+    <a href="new.html">Latest</a>
 
-    <a href="#categories">
-      Categories
-    </a>
+    <a href="recommended.html">Recommended</a>
+
+    <a href="#categories">Categories</a>
 
   </div>
 
@@ -289,7 +565,7 @@
   <!-- MAIN -->
   <main class="dvMain">
 
-    <!-- PREMIUM HERO -->
+    <!-- HERO -->
     <section class="premiumHero">
 
       <div class="heroCopy">
@@ -304,8 +580,8 @@
         </h1>
 
         <p>
-          Explore trending and latest videos
-          in a cleaner, faster and mobile-friendly layout.
+          Explore trending, latest and recommended
+          videos in a fast mobile-friendly experience.
         </p>
 
         <a class="heroButton" href="#latest">
@@ -352,34 +628,6 @@
       </div>
 
 
-      <!-- JUICYADS WIDE 1128310 -->
-      <div class="dvAdSlot dvAdWide">
-
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async
-          src="https://poweredby.jads.co/js/jads.js">
-        </script>
-
-        <ins
-          id="1128310"
-          data-width="774"
-          data-height="290">
-        </ins>
-
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async>
-          (adsbyjuicy = window.adsbyjuicy || []).push({
-            'adzone':1128310
-          });
-        </script>
-
-      </div>
-
-
       <!-- TRENDING -->
       <div class="dvSectionTitle">
 
@@ -388,9 +636,7 @@
             TRENDING
           </span>
 
-          <h2>
-            Trending Videos
-          </h2>
+          <h2>Trending Videos</h2>
         </div>
 
         <a href="trending.html">
@@ -405,34 +651,6 @@
       </div>
 
 
-      <!-- JUICYADS COMPACT 1128312 -->
-      <div class="dvAdSlot dvAdCompact">
-
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async
-          src="https://poweredby.jads.co/js/jads.js">
-        </script>
-
-        <ins
-          id="1128312"
-          data-width="300"
-          data-height="100">
-        </ins>
-
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async>
-          (adsbyjuicy = window.adsbyjuicy || []).push({
-            'adzone':1128312
-          });
-        </script>
-
-      </div>
-
-
       <!-- LATEST -->
       <div
         id="latest"
@@ -443,9 +661,7 @@
             NEW
           </span>
 
-          <h2>
-            Latest Videos
-          </h2>
+          <h2>Latest Videos</h2>
         </div>
 
         <a href="new.html">
@@ -462,79 +678,43 @@
 
       <!-- RECOMMENDED -->
       <div class="dvSectionTitle">
+
         <div>
-          <span class="sectionLabel">FOR YOU</span>
+          <span class="sectionLabel">
+            FOR YOU
+          </span>
+
           <h2>Recommended Videos</h2>
         </div>
-        <a href="recommended.html">View all ›</a>
+
+        <a href="recommended.html">
+          View all ›
+        </a>
+
       </div>
 
-      <div id="recommendations" class="dvGrid"></div>
+      <div
+        id="recommendations"
+        class="dvGrid">
+      </div>
 
 
       <!-- RANDOM -->
       <div class="dvSectionTitle">
+
         <div>
-          <span class="sectionLabel">DISCOVER</span>
+          <span class="sectionLabel">
+            DISCOVER
+          </span>
+
           <h2>Random Videos</h2>
         </div>
-      </div>
-
-      <div id="randomVideos" class="dvGrid"></div>
-
-      <!-- JUICYADS BANNER 1128301 -->
-      <div class="dvAdSlot dvAdBanner">
-
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async
-          src="https://poweredby.jads.co/js/jads.js">
-        </script>
-
-        <ins
-          id="1128301"
-          data-width="308"
-          data-height="286">
-        </ins>
-
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async>
-          (adsbyjuicy = window.adsbyjuicy || []).push({
-            'adzone':1128301
-          });
-        </script>
 
       </div>
 
-
-      <!-- JUICYADS SMALL 1128309 -->
-      <div class="dvAdSlot dvAdSmall">
-
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async
-          src="https://poweredby.jads.co/js/jads.js">
-        </script>
-
-        <ins
-          id="1128309"
-          data-width="108"
-          data-height="140">
-        </ins>
-
-        <script
-          type="text/javascript"
-          data-cfasync="false"
-          async>
-          (adsbyjuicy = window.adsbyjuicy || []).push({
-            'adzone':1128309
-          });
-        </script>
-
+      <div
+        id="randomVideos"
+        class="dvGrid">
       </div>
 
     </section>
@@ -560,32 +740,41 @@
   </footer>
 
 
+  <!-- BOTTOM NAV -->
+  <nav class="bottomNav">
+
+    <a href="index.html" class="active">
+      <span class="navIcon">⌂</span>
+      Home
+    </a>
+
+    <a href="new.html">
+      <span class="navIcon">▣</span>
+      Latest
+    </a>
+
+    <a href="trending.html">
+      <span class="navIcon">🔥</span>
+      Trending
+    </a>
+
+    <a href="recommended.html">
+      <span class="navIcon">★</span>
+      Recommended
+    </a>
+
+    <a href="legal.html">
+      <span class="navIcon">●</span>
+      Profile
+    </a>
+
+  </nav>
+
+
   <!-- APP -->
   <script
     type="module"
-    src="app.js?v=31">
-  </script>
-
-
-  <!-- JUICYADS FLOAT 1128307 -->
-  <script type="text/javascript">
-    juicy_adzone = '1128307';
-  </script>
-
-  <script
-    type="text/javascript"
-    src="https://poweredby.jads.co/js/jfc.js"
-    charset="utf-8">
-  </script>
-
-
-  <!-- JUICYADS NATIVE 1128313 -->
-  <script
-    type="text/javascript"
-    data-id="juicyads-native-ads"
-    data-ad-zone="1128313"
-    data-targets="a"
-    src="https://js.juicyads.com/juicyads.native-ads.min.js">
+    src="app.js?v=32">
   </script>
 
 </body>
