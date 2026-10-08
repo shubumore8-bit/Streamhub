@@ -1,969 +1,409 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html><html lang="en"><head>  <meta charset="UTF-8"><meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
 
-<title>Trending Videos - DesiVexa</title>
+«»
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
+  <title>Trending Videos - DesiVexa</title>  <link rel="stylesheet" href="style.css?v=31">  <style>
 
-body{
-  background:#080808;
-  color:#fff;
-  font-family:Arial,sans-serif;
-  padding-bottom:80px;
-}
+    body {
+      background: #0b0b0b;
+      color: #fff;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
 
-.app{
-  width:100%;
-  max-width:900px;
-  min-height:100vh;
-  margin:auto;
-  background:#080808;
-}
+    .page-wrap {
+      max-width: 1200px;
+      margin: auto;
+      padding: 18px 12px 90px;
+    }
 
-header{
-  height:65px;
-  padding:0 14px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:#0b0b0b;
-  border-bottom:1px solid #242424;
-  position:sticky;
-  top:0;
-  z-index:50;
-}
+    .section-title {
+      font-size: 22px;
+      font-weight: 800;
+      margin: 15px 0 6px;
+    }
 
-.logo{
-  color:#fff;
-  font-size:24px;
-  font-weight:900;
-  text-decoration:none;
-}
+    .section-subtitle {
+      color: #888;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
 
-.logo span{
-  color:#ff1744;
-}
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
 
-.back,
-.profile{
-  color:#fff;
-  text-decoration:none;
-  font-size:24px;
-}
+    .video-card {
+      display: block;
+      color: white;
+      text-decoration: none;
+      background: #151515;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #222;
+    }
 
-.ad{
-  margin:10px 12px;
-  min-height:55px;
-  border:1px solid #292929;
-  border-radius:9px;
-  background:#111;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#777;
-  font-size:11px;
-}
+    .thumb {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      display: block;
+      background: #222;
+    }
 
-.section{
-  padding:0 12px;
-  margin:22px 0;
-}
+    .video-info {
+      padding: 8px;
+    }
 
-.title{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:14px;
-}
+    .video-title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.35;
 
-.title h1{
-  font-size:22px;
-}
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
 
-.video-grid{
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:12px;
-}
+      overflow: hidden;
+    }
 
-.video-card{
-  text-decoration:none;
-  color:#fff;
-  min-width:0;
-  overflow:hidden;
-}
+    .video-meta {
+      color: #888;
+      font-size: 11px;
+      margin-top: 5px;
+    }
 
-.thumbnail{
-  position:relative;
-  width:100%;
-  aspect-ratio:16/9;
-  border-radius:8px;
-  overflow:hidden;
-  background:#171717;
-}
+    .loading,
+    .error,
+    .empty {
+      text-align: center;
+      padding: 35px 10px;
+      color: #999;
+    }
 
-.thumbnail img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
+    .error {
+      color: #ff5555;
+    }
 
-.play{
-  position:absolute;
-  z-index:2;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  background:rgba(0,0,0,.72);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:12px;
-}
+    .section {
+      margin-bottom: 35px;
+    }
 
-.duration{
-  position:absolute;
-  z-index:3;
-  right:4px;
-  bottom:4px;
-  background:#000;
-  padding:3px 5px;
-  font-size:9px;
-  border-radius:3px;
-}
+    @media (max-width: 600px) {
 
-.video-title{
-  margin:6px 2px 4px;
-  font-size:11px;
-  font-weight:bold;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
+      .video-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 7px;
+      }
 
-.tag{
-  display:inline-block;
-  background:#ff1744;
-  padding:3px 7px;
-  border-radius:8px;
-  font-size:8px;
-}
+      .video-info {
+        padding: 6px;
+      }
 
-.info{
-  color:#888;
-  font-size:9px;
-  line-height:15px;
-}
+      .video-title {
+        font-size: 11px;
+      }
 
-.loading,
-.empty,
-.error{
-  grid-column:1/-1;
-  padding:35px 10px;
-  text-align:center;
-  color:#888;
-}
+      .video-meta {
+        font-size: 9px;
+      }
 
-.error{
-  color:#ff7777;
-}
+    }
 
-.random{
-  margin-top:30px;
-}
+  </style></head><body>  <main class="page-wrap"><section class="section">
 
-.random-grid{
-  display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  gap:9px;
-}
+  <h1 class="section-title">
+    🔥 Trending Videos
+  </h1>
 
-.pagination{
-  display:flex;
-  justify-content:center;
-  flex-wrap:wrap;
-  gap:7px;
-  padding:10px 12px 30px;
-}
+  <div class="section-subtitle">
+    Most viewed videos
+  </div>
 
-.page{
-  min-width:38px;
-  height:36px;
-  border:1px solid #303030;
-  background:#151515;
-  color:#fff;
-  border-radius:7px;
-  cursor:pointer;
-}
+  <div
+    id="trendingVideos"
+    class="video-grid"
+  >
 
-.page.active{
-  background:#ff1744;
-  border-color:#ff1744;
-}
+    <div class="loading">
+      Loading trending videos...
+    </div>
 
-.page:disabled{
-  opacity:.4;
-}
+  </div>
 
-.bottom-nav{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  height:68px;
-  background:rgba(10,10,10,.98);
-  border-top:1px solid #292929;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  z-index:100;
-}
-
-.nav{
-  color:#777;
-  text-decoration:none;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:3px;
-  font-size:9px;
-}
-
-.nav-icon{
-  font-size:20px;
-}
-
-.nav.active{
-  color:#ff1744;
-}
-
-@media(max-width:600px){
-
-  .video-grid{
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:9px;
-  }
-
-  .video-title{
-    font-size:10px;
-  }
-
-  .info{
-    font-size:8px;
-  }
-
-  .random-grid{
-    grid-template-columns:repeat(3,minmax(0,1fr));
-  }
-}
-
-@media(max-width:390px){
-
-  .video-grid{
-    gap:7px;
-  }
-
-  .random-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr));
-  }
-
-  .video-title{
-    font-size:9px;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<div class="app">
-
-<header>
-
-<a href="index.html" class="back">‹</a>
-
-<a href="index.html" class="logo">
-Desi<span>Vexa</span>
-</a>
-
-<a href="profile.html" class="profile">👤</a>
-
-</header>
-
-
-<div class="ad">
-Top Banner Ad
-</div>
+</section>
 
 
 <section class="section">
 
-<div class="title">
-<h1>🔥 Trending Videos</h1>
-</div>
+  <h2 class="section-title">
+    ✨ More Videos
+  </h2>
 
-<div
-id="trending"
-class="video-grid">
+  <div class="section-subtitle">
+    Discover more videos
+  </div>
 
-<div class="loading">
-Loading trending videos...
-</div>
+  <div
+    id="randomVideos"
+    class="video-grid"
+  >
 
-</div>
+    <div class="loading">
+      Loading more videos...
+    </div>
 
-</section>
-
-
-<section class="section random">
-
-<div class="title">
-<h1>🎲 Random Videos</h1>
-</div>
-
-<div
-id="random"
-class="random-grid">
-
-<div class="loading">
-Loading random videos...
-</div>
-
-</div>
+  </div>
 
 </section>
 
-
-<div
-id="pagination"
-class="pagination">
-</div>
-
-
-<nav class="bottom-nav">
-
-<a href="index.html" class="nav">
-<span class="nav-icon">⌂</span>
-Home
-</a>
-
-<a href="new.html" class="nav">
-<span class="nav-icon">◷</span>
-Latest
-</a>
-
-<a href="trending.html" class="nav active">
-<span class="nav-icon">🔥</span>
-Trending
-</a>
-
-<a href="recommended.html" class="nav">
-<span class="nav-icon">★</span>
-Recommended
-</a>
-
-<a href="profile.html" class="nav">
-<span class="nav-icon">♙</span>
-Profile
-</a>
-
-</nav>
-
-</div>
-
-
-<script type="module">
-
-import {
-  createClient
-} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
-
-
-/*
- IMPORTANT:
- app.js mein jo SAME Supabase URL
- aur ANON KEY hai, wahi yahan paste karo.
-*/
-
-const SUPABASE_URL =
-  "YOUR_SUPABASE_URL";
-
-const SUPABASE_ANON_KEY =
-  "YOUR_SUPABASE_ANON_KEY";
-
-
-const supabase =
-  createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
-
-
-const trendingBox =
-  document.getElementById("trending");
-
-const randomBox =
-  document.getElementById("random");
-
-const paginationBox =
-  document.getElementById("pagination");
-
-
-let currentPage = 1;
-
-const perPage = 30;
-
-
-/* -------------------------
-   TRENDING
-------------------------- */
-
-async function loadTrending(){
-
-  trendingBox.innerHTML =
-    `<div class="loading">
-       Loading trending videos...
-     </div>`;
-
-
-  /*
-    views ke basis par trending.
-    Agar views column nahi hai,
-    neeche error dikhega.
-  */
-
-  const {
-    data,
-    error
-  } = await supabase
-
-    .from("videos")
-
-    .select("*")
-
-    .order(
-      "views",
-      {
-        ascending:false,
-        nullsFirst:false
-      }
-    )
-
-    .limit(30);
-
-
-  if(error){
-
-    console.error(error);
-
-    trendingBox.innerHTML =
-      `<div class="error">
-        Could not load trending videos.<br><br>
-        ${escapeHtml(error.message)}
-      </div>`;
-
-    return;
-  }
-
-
-  if(!data || data.length === 0){
-
-    trendingBox.innerHTML =
-      `<div class="empty">
-        No trending videos found.
-      </div>`;
-
-    return;
-  }
-
-
-  renderVideos(
-    trendingBox,
-    data,
-    "Trending"
-  );
-
-}
-
-
-/* -------------------------
-   RANDOM
-------------------------- */
-
-async function loadRandom(){
-
-  randomBox.innerHTML =
-    `<div class="loading">
-       Loading random videos...
-     </div>`;
-
-
-  /*
-    Database se videos lekar
-    client side shuffle.
-  */
-
-  const {
-    data,
-    error
-  } = await supabase
-
-    .from("videos")
-
-    .select("*")
-
-    .limit(150);
-
-
-  if(error){
-
-    console.error(error);
-
-    randomBox.innerHTML =
-      `<div class="error">
-        Could not load random videos.<br><br>
-        ${escapeHtml(error.message)}
-      </div>`;
-
-    return;
-  }
-
-
-  if(!data || data.length === 0){
-
-    randomBox.innerHTML =
-      `<div class="empty">
-        No videos found.
-      </div>`;
-
-    paginationBox.innerHTML = "";
-
-    return;
-  }
-
-
-  shuffle(data);
-
-  window.randomVideos = data;
-
-  renderRandom();
-
-}
-
-
-/* -------------------------
-   RENDER RANDOM
-------------------------- */
-
-function renderRandom(){
-
-  const videos =
-    window.randomVideos || [];
-
-
-  const start =
-    (currentPage - 1) * perPage;
-
-
-  const pageVideos =
-    videos.slice(
-      start,
-      start + perPage
+  </main>  <script type="module">
+
+    import { createClient }
+      from "https://esm.sh/@supabase/supabase-js@2";
+
+    import {
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    } from "./config.js";
+
+    const supabase = createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
     );
 
 
-  renderVideos(
-    randomBox,
-    pageVideos,
-    "Random"
-  );
+    function escapeHTML(value) {
+
+      if (
+        value === null ||
+        value === undefined
+      ) {
+        return "";
+      }
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
 
 
-  renderPagination(
-    videos.length
-  );
+    function formatViews(views) {
 
-}
+      const number =
+        Number(views || 0);
+
+      if (number >= 1000000) {
+
+        return (
+          number / 1000000
+        ).toFixed(1) + "M views";
+
+      }
+
+      if (number >= 1000) {
+
+        return (
+          number / 1000
+        ).toFixed(1) + "K views";
+
+      }
+
+      return number + " views";
+
+    }
 
 
-/* -------------------------
-   VIDEO CARDS
-------------------------- */
-
-function renderVideos(
-  box,
-  videos,
-  label
-){
-
-  box.innerHTML = videos.map(
-    video => {
-
-      /*
-        THIS IS THE IMPORTANT FIX.
-
-        Real Supabase UUID is used.
-        No 1, 100, 500 etc.
-      */
+    function card(video) {
 
       const id =
-        encodeURIComponent(
-          video.id
-        );
-
+        encodeURIComponent(video.id);
 
       const title =
-        escapeHtml(
-          video.title ||
-          "Untitled Video"
+        escapeHTML(
+          video.title || "Untitled Video"
         );
-
 
       const category =
-        escapeHtml(
-          video.category ||
-          "Video"
+        escapeHTML(
+          video.category || "Video"
         );
-
 
       const thumbnail =
         video.thumbnail_url ||
-        video.thumbnail ||
-        "";
-
-
-      const duration =
-        video.duration ||
-        "";
-
-
-      const views =
-        formatViews(
-          video.views
-        );
+        "https://via.placeholder.com/640x360?text=DesiVexa";
 
 
       return `
 
-<a
-  href="video.html?id=${id}"
-  class="video-card"
->
+        <a
+          class="video-card"
+          href="video.html?id=${id}"
+        >
 
-<div class="thumbnail">
+          <img
+            class="thumb"
+            src="${escapeHTML(thumbnail)}"
+            alt="${title}"
+            loading="lazy"
+            onerror="this.src='https://via.placeholder.com/640x360?text=DesiVexa'"
+          >
 
-${
-thumbnail
-?
-`
-<img
-src="${escapeAttr(thumbnail)}"
-alt="${title}"
-loading="lazy">
-`
-:
-""
-}
+          <div class="video-info">
 
-<div class="play">
-▶
-</div>
+            <div class="video-title">
+              ${title}
+            </div>
 
-${
-duration
-?
-`
-<div class="duration">
-${escapeHtml(duration)}
-</div>
-`
-:
-""
-}
+            <div class="video-meta">
+              ${category} · ${formatViews(video.views)}
+            </div>
 
-</div>
+          </div>
 
+        </a>
 
-<div class="video-title">
-${title}
-</div>
-
-
-<span class="tag">
-${category}
-</span>
-
-
-<div class="info">
-
-👁 ${views} views
-
-<br>
-
-◷ ${label}
-
-</div>
-
-</a>
-
-`;
-
-    }
-  ).join("");
-
-}
-
-
-/* -------------------------
-   PAGINATION
-------------------------- */
-
-function renderPagination(total){
-
-  const pages =
-    Math.max(
-      1,
-      Math.ceil(
-        total / perPage
-      )
-    );
-
-
-  paginationBox.innerHTML = "";
-
-
-  if(pages <= 1){
-    return;
-  }
-
-
-  const previous =
-    document.createElement(
-      "button"
-    );
-
-  previous.className = "page";
-
-  previous.textContent =
-    "‹";
-
-  previous.disabled =
-    currentPage === 1;
-
-  previous.onclick = () => {
-
-    if(currentPage > 1){
-
-      currentPage--;
-
-      renderRandom();
-
-      scrollRandom();
-
-    }
-
-  };
-
-  paginationBox.appendChild(
-    previous
-  );
-
-
-  const maxPages =
-    Math.min(
-      pages,
-      10
-    );
-
-
-  for(
-    let i = 1;
-    i <= maxPages;
-    i++
-  ){
-
-    const button =
-      document.createElement(
-        "button"
-      );
-
-    button.className =
-      "page";
-
-    button.textContent =
-      i;
-
-
-    if(i === currentPage){
-
-      button.classList.add(
-        "active"
-      );
+      `;
 
     }
 
 
-    button.onclick = () => {
+    async function loadTrending() {
 
-      currentPage = i;
-
-      renderRandom();
-
-      scrollRandom();
-
-    };
+      const container =
+        document.getElementById(
+          "trendingVideos"
+        );
 
 
-    paginationBox.appendChild(
-      button
-    );
+      const {
+        data,
+        error
+      } = await supabase
 
-  }
+        .from("videos")
+
+        .select(
+          "id,title,category,thumbnail_url,video_url,views,created_at"
+        )
+
+        .eq("published", true)
+
+        .order("views", {
+          ascending: false
+        })
+
+        .limit(30);
 
 
-  const next =
-    document.createElement(
-      "button"
-    );
+      if (error) {
 
-  next.className = "page";
+        console.error(error);
 
-  next.textContent =
-    "›";
+        container.innerHTML = `
+          <div class="error">
+            Could not load trending videos.
+          </div>
+        `;
 
-  next.disabled =
-    currentPage === pages;
+        return;
+      }
 
-  next.onclick = () => {
 
-    if(currentPage < pages){
+      if (!data || data.length === 0) {
 
-      currentPage++;
+        container.innerHTML = `
+          <div class="empty">
+            No trending videos yet.
+          </div>
+        `;
 
-      renderRandom();
+        return;
+      }
 
-      scrollRandom();
+
+      container.innerHTML =
+        data.map(card).join("");
 
     }
 
-  };
 
-  paginationBox.appendChild(
-    next
-  );
+    async function loadRandom() {
 
-}
-
-
-/* -------------------------
-   HELPERS
-------------------------- */
-
-function shuffle(array){
-
-  for(
-    let i = array.length - 1;
-    i > 0;
-    i--
-  ){
-
-    const j =
-      Math.floor(
-        Math.random() * (i + 1)
-      );
-
-    [
-      array[i],
-      array[j]
-    ] =
-    [
-      array[j],
-      array[i]
-    ];
-
-  }
-
-}
+      const container =
+        document.getElementById(
+          "randomVideos"
+        );
 
 
-function scrollRandom(){
+      const {
+        data,
+        error
+      } = await supabase
 
-  document
-    .getElementById("random")
-    .scrollIntoView({
-      behavior:"smooth"
-    });
+        .from("videos")
 
-}
+        .select(
+          "id,title,category,thumbnail_url,video_url,views,created_at"
+        )
 
+        .eq("published", true)
 
-function formatViews(value){
+        .order("created_at", {
+          ascending: false
+        })
 
-  const number =
-    Number(value) || 0;
-
-
-  if(number >= 1000000){
-
-    return (
-      number / 1000000
-    ).toFixed(1) + "M";
-
-  }
+        .limit(150);
 
 
-  if(number >= 1000){
+      if (error) {
 
-    return (
-      number / 1000
-    ).toFixed(1) + "K";
+        console.error(error);
 
-  }
+        container.innerHTML = `
+          <div class="error">
+            Could not load more videos.
+          </div>
+        `;
 
-
-  return String(number);
-
-}
-
-
-function escapeHtml(value){
-
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-
-}
+        return;
+      }
 
 
-function escapeAttr(value){
+      if (!data || data.length === 0) {
 
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;");
+        container.innerHTML = `
+          <div class="empty">
+            No more videos available.
+          </div>
+        `;
 
-}
+        return;
+      }
 
 
-/* START */
+      const shuffled =
+        [...data].sort(
+          () => Math.random() - 0.5
+        );
 
-loadTrending();
 
-loadRandom();
+      container.innerHTML =
+        shuffled.map(card).join("");
 
-</script>
+    }
 
-</body>
-</html>
+
+    loadTrending();
+
+    loadRandom();
+
+  </script></body></html>
