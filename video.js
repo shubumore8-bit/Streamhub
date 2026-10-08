@@ -1,42 +1,58 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+import {
+  createClient
+} from "https://esm.sh/@supabase/supabase-js@2";
 
-const supabase = createClient(
+import {
   SUPABASE_URL,
   SUPABASE_ANON_KEY
-);
+} from "./config.js";
+
+
+const supabase =
+  createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
+
 
 const MEDIA_FUNCTION =
   `${SUPABASE_URL}/functions/v1/get-video-media`;
 
-const page = document.getElementById("page");
+
+const page =
+  document.getElementById("page");
 
 
-// ======================================================
+// =====================================================
 // VIDEO ID
-// ======================================================
+// =====================================================
 
 function getVideoId() {
 
-  const params =
-    new URLSearchParams(
-      window.location.search
+  const url =
+    new URL(
+      window.location.href
     );
 
   let id =
-    params.get("id");
+    url.searchParams.get("id");
 
   if (!id) {
     return null;
   }
 
-  // Safety: accidental duplicate query
+  id =
+    id.trim();
+
+  // Safety for accidental duplicate query
   if (id.includes("?")) {
-    id = id.split("?")[0];
+    id =
+      id.split("?")[0];
   }
 
   if (id.includes("=")) {
-    id = id.split("=")[0];
+    id =
+      id.split("=")[0];
   }
 
   return id.trim();
@@ -53,20 +69,24 @@ console.log(
 );
 
 
-// ======================================================
-// UUID
-// ======================================================
+// =====================================================
+// UUID VALIDATION
+// =====================================================
 
 function isValidUUID(value) {
+
+  if (!value) {
+    return false;
+  }
 
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
     .test(value);
 }
 
 
-// ======================================================
+// =====================================================
 // ESCAPE HTML
-// ======================================================
+// =====================================================
 
 function escapeHtml(value) {
 
@@ -86,9 +106,9 @@ function escapeHtml(value) {
 }
 
 
-// ======================================================
+// =====================================================
 // ERROR
-// ======================================================
+// =====================================================
 
 function showError(message) {
 
@@ -153,63 +173,40 @@ function showError(message) {
       </div>
 
     </div>
+
   `;
 }
 
 
-// ======================================================
+// =====================================================
 // GET SIGNED MEDIA
-// ======================================================
+// =====================================================
 
 async function getMedia(id) {
 
-  const headers = {
+  const response =
+    await fetch(
+      MEDIA_FUNCTION,
+      {
+        method: "POST",
 
-    "Content-Type":
-      "application/json",
+        headers: {
+          "Content-Type":
+            "application/json",
 
-    "apikey":
-      SUPABASE_ANON_KEY,
+          "apikey":
+            SUPABASE_ANON_KEY,
 
-    "Authorization":
-      `Bearer ${SUPABASE_ANON_KEY}`
-  };
+          "Authorization":
+            `Bearer ${SUPABASE_ANON_KEY}`
+        },
 
-
-  console.log(
-    "MEDIA REQUEST:",
-    id
-  );
-
-
-  let response;
-
-
-  try {
-
-    response =
-      await fetch(
-        MEDIA_FUNCTION,
-        {
-          method: "POST",
-          headers,
-          body: JSON.stringify({
+        body:
+          JSON.stringify({
             videoId: id
           })
-        }
-      );
-
-  } catch (error) {
-
-    console.error(
-      "MEDIA NETWORK ERROR:",
-      error
+      }
     );
-
-    throw new Error(
-      "Media server se connection nahi ho paaya."
-    );
-  }
 
 
   const text =
@@ -221,14 +218,8 @@ async function getMedia(id) {
     response.status
   );
 
-  console.log(
-    "MEDIA RESPONSE:",
-    text
-  );
 
-
-  let result = {};
-
+  let result;
 
   try {
 
@@ -240,6 +231,7 @@ async function getMedia(id) {
     result = {
       error: text
     };
+
   }
 
 
@@ -250,6 +242,7 @@ async function getMedia(id) {
       result.message ||
       `Media request failed (${response.status})`
     );
+
   }
 
 
@@ -258,6 +251,7 @@ async function getMedia(id) {
     throw new Error(
       "Signed video URL nahi mili."
     );
+
   }
 
 
@@ -265,18 +259,108 @@ async function getMedia(id) {
 }
 
 
-// ======================================================
+// =====================================================
+// THUMBNAIL
+// =====================================================
+
+async function getThumbnail(id) {
+
+  try {
+
+    const media =
+      await getMedia(id);
+
+    return (
+      media.thumbnailUrl ||
+      ""
+    );
+
+  } catch (error) {
+
+    console.log(
+      "Thumbnail error:",
+      id,
+      error
+    );
+
+    return "";
+
+  }
+}
+
+
+// =====================================================
+// FALLBACK THUMBNAIL
+// =====================================================
+
+function fallbackThumbnail(title) {
+
+  const safeTitle =
+    String(
+      title || "DesiVexa"
+    )
+      .substring(0, 28)
+      .replace(
+        /[<>&"']/g,
+        ""
+      );
+
+
+  const svg = `
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="640"
+      height="360"
+      viewBox="0 0 640 360"
+    >
+
+      <rect
+        width="640"
+        height="360"
+        fill="#181818"
+      />
+
+      <text
+        x="320"
+        y="170"
+        text-anchor="middle"
+        fill="#e50914"
+        font-size="34"
+        font-family="Arial"
+        font-weight="700"
+      >
+        DesiVexa
+      </text>
+
+      <text
+        x="320"
+        y="215"
+        text-anchor="middle"
+        fill="#777"
+        font-size="17"
+        font-family="Arial"
+      >
+        ${safeTitle}
+      </text>
+
+    </svg>
+  `;
+
+
+  return (
+    "data:image/svg+xml;charset=UTF-8," +
+    encodeURIComponent(svg)
+  );
+}
+
+
+// =====================================================
 // LOAD VIDEO
-// ======================================================
+// =====================================================
 
 async function loadVideo() {
 
   if (!page) {
-
-    console.error(
-      "#page element nahi mila."
-    );
-
     return;
   }
 
@@ -303,13 +387,7 @@ async function loadVideo() {
 
   page.innerHTML = `
 
-    <div style="
-      min-height:60vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#aaa;
-    ">
+    <div class="loading">
       Loading video...
     </div>
 
@@ -318,9 +396,9 @@ async function loadVideo() {
 
   try {
 
-    // ==================================================
-    // DATABASE VIDEO
-    // ==================================================
+    // -------------------------------------------------
+    // DATABASE
+    // -------------------------------------------------
 
     const {
       data: video,
@@ -329,18 +407,18 @@ async function loadVideo() {
       await supabase
         .from("videos")
         .select("*")
-        .eq("id", videoId)
-        .eq("published", true)
+        .eq(
+          "id",
+          videoId
+        )
+        .eq(
+          "published",
+          true
+        )
         .maybeSingle();
 
 
     if (videoError) {
-
-      console.error(
-        "DATABASE ERROR:",
-        videoError
-      );
-
       throw new Error(
         videoError.message
       );
@@ -352,6 +430,7 @@ async function loadVideo() {
       throw new Error(
         "Published video nahi mila."
       );
+
     }
 
 
@@ -361,9 +440,9 @@ async function loadVideo() {
     );
 
 
-    // ==================================================
+    // -------------------------------------------------
     // SIGNED VIDEO + THUMBNAIL
-    // ==================================================
+    // -------------------------------------------------
 
     const media =
       await getMedia(
@@ -371,25 +450,15 @@ async function loadVideo() {
       );
 
 
-    console.log(
-      "MEDIA:",
-      media
-    );
-
-
-    // ==================================================
-    // RENDER
-    // ==================================================
-
     renderVideo(
       video,
       media
     );
 
 
-    // ==================================================
+    // -------------------------------------------------
     // VIEWS
-    // ==================================================
+    // -------------------------------------------------
 
     increaseViews(
       video.id,
@@ -397,27 +466,27 @@ async function loadVideo() {
     );
 
 
-    // ==================================================
+    // -------------------------------------------------
     // COMMENTS
-    // ==================================================
+    // -------------------------------------------------
 
     loadComments(
       video.id
     );
 
 
-    // ==================================================
+    // -------------------------------------------------
     // LIKE
-    // ==================================================
+    // -------------------------------------------------
 
     setupLikeButton(
       video.id
     );
 
 
-    // ==================================================
-    // RANDOM
-    // ==================================================
+    // -------------------------------------------------
+    // RANDOM VIDEOS
+    // -------------------------------------------------
 
     loadRandomVideos(
       video.id
@@ -431,17 +500,20 @@ async function loadVideo() {
       error
     );
 
+
     showError(
       error.message ||
       "Unknown error"
     );
+
   }
+
 }
 
 
-// ======================================================
-// RENDER MAIN VIDEO
-// ======================================================
+// =====================================================
+// RENDER VIDEO PAGE
+// =====================================================
 
 function renderVideo(
   video,
@@ -455,8 +527,7 @@ function renderVideo(
       padding:12px;
     ">
 
-
-      <!-- VIDEO -->
+      <!-- VIDEO PLAYER -->
 
       <div style="
         width:100%;
@@ -470,6 +541,7 @@ function renderVideo(
           controls
           playsinline
           preload="metadata"
+          poster=""
           style="
             display:block;
             width:100%;
@@ -536,21 +608,21 @@ function renderVideo(
         </div>
 
 
-        <!-- ACTIONS -->
+        <!-- ACTION BUTTONS -->
 
         <div style="
           display:grid;
           grid-template-columns:
-            repeat(3,1fr);
+            repeat(3,minmax(0,1fr));
           gap:8px;
           margin-bottom:20px;
         ">
-
 
           <button
             id="likeBtn"
             type="button"
             style="
+              min-width:0;
               padding:11px 5px;
               background:#151515;
               border:1px solid #333;
@@ -567,6 +639,7 @@ function renderVideo(
             id="commentScrollBtn"
             type="button"
             style="
+              min-width:0;
               padding:11px 5px;
               background:#151515;
               border:1px solid #333;
@@ -583,6 +656,7 @@ function renderVideo(
             id="shareBtn"
             type="button"
             style="
+              min-width:0;
               padding:11px 5px;
               background:#151515;
               border:1px solid #333;
@@ -593,7 +667,6 @@ function renderVideo(
           >
             ↗ Share
           </button>
-
 
         </div>
 
@@ -647,17 +720,19 @@ function renderVideo(
 
 
           <div id="commentsList">
+
             <div style="
               color:#777;
             ">
               Loading comments...
             </div>
+
           </div>
 
         </section>
 
 
-        <!-- RANDOM -->
+        <!-- RANDOM VIDEOS -->
 
         <section style="
           margin-top:35px;
@@ -668,7 +743,7 @@ function renderVideo(
             font-size:19px;
             color:#fff;
           ">
-            Random Videos
+            Related Videos
           </h2>
 
 
@@ -684,6 +759,7 @@ function renderVideo(
 
             <div style="
               color:#777;
+              grid-column:1/-1;
             ">
               Loading...
             </div>
@@ -692,16 +768,16 @@ function renderVideo(
 
         </section>
 
-
       </div>
 
     </section>
+
   `;
 
 
-  // ====================================================
-  // VIDEO
-  // ====================================================
+  // ===================================================
+  // VIDEO PLAYER
+  // ===================================================
 
   const player =
     document.getElementById(
@@ -715,12 +791,17 @@ function renderVideo(
       media.videoUrl;
 
 
-    // IMPORTANT:
-    // Signed thumbnail URL
     if (media.thumbnailUrl) {
 
       player.poster =
         media.thumbnailUrl;
+
+    } else {
+
+      player.poster =
+        fallbackThumbnail(
+          video.title
+        );
 
     }
 
@@ -751,12 +832,13 @@ function renderVideo(
 
       }
     );
+
   }
 
 
-  // ====================================================
-  // COMMENTS SCROLL
-  // ====================================================
+  // ===================================================
+  // COMMENT SCROLL
+  // ===================================================
 
   const commentButton =
     document.getElementById(
@@ -779,20 +861,24 @@ function renderVideo(
         if (section) {
 
           section.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
+            behavior:
+              "smooth",
+
+            block:
+              "start"
           });
 
         }
 
       }
     );
+
   }
 
 
-  // ====================================================
+  // ===================================================
   // SHARE
-  // ====================================================
+  // ===================================================
 
   const shareButton =
     document.getElementById(
@@ -817,9 +903,13 @@ function renderVideo(
           ) {
 
             await navigator.share({
+
               title:
                 video.title,
-              url: url
+
+              url:
+                url
+
             });
 
           } else {
@@ -831,6 +921,7 @@ function renderVideo(
             alert(
               "Video link copied!"
             );
+
           }
 
         } catch (error) {
@@ -844,13 +935,15 @@ function renderVideo(
 
       }
     );
+
   }
+
 }
 
 
-// ======================================================
+// =====================================================
 // VIEWS
-// ======================================================
+// =====================================================
 
 async function increaseViews(
   id,
@@ -859,13 +952,23 @@ async function increaseViews(
 
   try {
 
+    const newViews =
+      Number(
+        currentViews || 0
+      ) + 1;
+
+
     await supabase
       .from("videos")
       .update({
         views:
-          Number(currentViews || 0) + 1
+          newViews
       })
-      .eq("id", id);
+      .eq(
+        "id",
+        id
+      );
+
 
   } catch (error) {
 
@@ -873,13 +976,15 @@ async function increaseViews(
       "Views error:",
       error
     );
+
   }
+
 }
 
 
-// ======================================================
+// =====================================================
 // VISITOR ID
-// ======================================================
+// =====================================================
 
 function getVisitorId() {
 
@@ -893,7 +998,8 @@ function getVisitorId() {
 
     if (
       window.crypto &&
-      crypto.randomUUID
+      typeof crypto.randomUUID ===
+        "function"
     ) {
 
       id =
@@ -908,6 +1014,7 @@ function getVisitorId() {
         Math.random()
           .toString(36)
           .substring(2);
+
     }
 
 
@@ -915,6 +1022,7 @@ function getVisitorId() {
       "desivexa_visitor_id",
       id
     );
+
   }
 
 
@@ -922,9 +1030,9 @@ function getVisitorId() {
 }
 
 
-// ======================================================
+// =====================================================
 // LIKE
-// ======================================================
+// =====================================================
 
 async function setupLikeButton(
   id
@@ -941,36 +1049,77 @@ async function setupLikeButton(
   }
 
 
-  let liked = false;
+  const visitorId =
+    getVisitorId();
+
+
+  // Check existing like
+  try {
+
+    const {
+      data
+    } =
+      await supabase
+        .from("video_likes")
+        .select("video_id")
+        .eq(
+          "video_id",
+          id
+        )
+        .eq(
+          "visitor_id",
+          visitorId
+        )
+        .maybeSingle();
+
+
+    if (data) {
+
+      button.innerHTML =
+        "❤️ Liked";
+
+      button.style.borderColor =
+        "#e50914";
+
+      button.dataset.liked =
+        "true";
+
+    } else {
+
+      button.dataset.liked =
+        "false";
+
+    }
+
+  } catch (error) {
+
+    console.log(
+      "LIKE CHECK ERROR:",
+      error
+    );
+
+    button.dataset.liked =
+      "false";
+
+  }
 
 
   button.addEventListener(
     "click",
     async () => {
 
-      liked =
-        !liked;
+      const currentlyLiked =
+        button.dataset.liked ===
+        "true";
 
 
-      button.innerHTML =
-        liked
-          ? "❤️ Liked"
-          : "❤️ Like";
-
-
-      button.style.borderColor =
-        liked
-          ? "#e50914"
-          : "#333";
+      button.disabled =
+        true;
 
 
       try {
 
-        const visitorId =
-          getVisitorId();
-
-
-        if (liked) {
+        if (!currentlyLiked) {
 
           const {
             error
@@ -978,18 +1127,32 @@ async function setupLikeButton(
             await supabase
               .from("video_likes")
               .insert({
-                video_id: id,
+
+                video_id:
+                  id,
+
                 visitor_id:
                   visitorId
+
               });
 
 
           if (error) {
-            console.log(
-              "Like insert:",
-              error
-            );
+            throw error;
           }
+
+
+          button.dataset.liked =
+            "true";
+
+
+          button.innerHTML =
+            "❤️ Liked";
+
+
+          button.style.borderColor =
+            "#e50914";
+
 
         } else {
 
@@ -1010,29 +1173,46 @@ async function setupLikeButton(
 
 
           if (error) {
-            console.log(
-              "Like delete:",
-              error
-            );
+            throw error;
           }
+
+
+          button.dataset.liked =
+            "false";
+
+
+          button.innerHTML =
+            "❤️ Like";
+
+
+          button.style.borderColor =
+            "#333";
+
         }
 
       } catch (error) {
 
-        console.log(
+        console.error(
           "LIKE ERROR:",
           error
         );
+
+      } finally {
+
+        button.disabled =
+          false;
+
       }
 
     }
   );
+
 }
 
 
-// ======================================================
+// =====================================================
 // COMMENTS
-// ======================================================
+// =====================================================
 
 async function loadComments(
   id
@@ -1067,6 +1247,7 @@ async function loadComments(
         type="text"
         maxlength="500"
         placeholder="Write a comment..."
+        autocomplete="off"
         style="
           flex:1;
           min-width:0;
@@ -1090,12 +1271,14 @@ async function loadComments(
           background:#e50914;
           color:#fff;
           font-weight:600;
+          cursor:pointer;
         "
       >
         Post
       </button>
 
     </div>
+
   `;
 
 
@@ -1111,7 +1294,7 @@ async function loadComments(
     );
 
 
-  if (submit) {
+  if (submit && input) {
 
     submit.addEventListener(
       "click",
@@ -1130,6 +1313,10 @@ async function loadComments(
           true;
 
 
+        submit.textContent =
+          "Posting...";
+
+
         try {
 
           const visitorId =
@@ -1142,10 +1329,16 @@ async function loadComments(
             await supabase
               .from("video_comments")
               .insert({
-                video_id: id,
+
+                video_id:
+                  id,
+
                 visitor_id:
                   visitorId,
-                body: body
+
+                body:
+                  body
+
               });
 
 
@@ -1154,7 +1347,8 @@ async function loadComments(
           }
 
 
-          input.value = "";
+          input.value =
+            "";
 
 
           await fetchComments(
@@ -1174,26 +1368,53 @@ async function loadComments(
             "Comment post nahi hua."
           );
 
+
         } finally {
 
           submit.disabled =
             false;
+
+          submit.textContent =
+            "Post";
+
         }
 
       }
     );
+
+
+    // Enter key
+    input.addEventListener(
+      "keydown",
+      event => {
+
+        if (
+          event.key ===
+          "Enter"
+        ) {
+
+          event.preventDefault();
+
+          submit.click();
+
+        }
+
+      }
+    );
+
   }
 
 
   await fetchComments(
     id
   );
+
 }
 
 
-// ======================================================
+// =====================================================
 // FETCH COMMENTS
-// ======================================================
+// =====================================================
 
 async function fetchComments(
   id
@@ -1226,7 +1447,8 @@ async function fetchComments(
         .order(
           "created_at",
           {
-            ascending: false
+            ascending:
+              false
           }
         );
 
@@ -1314,13 +1536,15 @@ async function fetchComments(
       </div>
 
     `;
+
   }
+
 }
 
 
-// ======================================================
-// RANDOM VIDEOS + SIGNED THUMBNAILS
-// ======================================================
+// =====================================================
+// RANDOM / RELATED VIDEOS
+// =====================================================
 
 async function loadRandomVideos(
   currentVideoId
@@ -1359,7 +1583,8 @@ async function loadRandomVideos(
         .order(
           "created_at",
           {
-            ascending: false
+            ascending:
+              false
           }
         )
         .limit(20);
@@ -1390,58 +1615,20 @@ async function loadRandomVideos(
     }
 
 
+    // -------------------------------------------------
+    // Create cards immediately
+    // -------------------------------------------------
+
     container.innerHTML = "";
 
 
-    // ==================================================
-    // LOAD CARDS ONE BY ONE
-    // ==================================================
+    const cards =
+      new Map();
+
 
     for (
       const video of data
     ) {
-
-      let thumbnailUrl =
-        "";
-
-
-      // ----------------------------------------------
-      // GET SIGNED THUMBNAIL
-      // ----------------------------------------------
-
-      if (
-        video.thumbnail_url
-      ) {
-
-        try {
-
-          const media =
-            await getMedia(
-              video.id
-            );
-
-
-          thumbnailUrl =
-            media.thumbnailUrl ||
-            "";
-
-        } catch (error) {
-
-          console.log(
-            "THUMBNAIL ERROR:",
-            video.id,
-            error
-          );
-
-          thumbnailUrl =
-            "";
-        }
-      }
-
-
-      // ----------------------------------------------
-      // CARD
-      // ----------------------------------------------
 
       const card =
         document.createElement(
@@ -1466,20 +1653,19 @@ async function loadRandomVideos(
       `;
 
 
-      // ----------------------------------------------
-      // IMAGE
-      // ----------------------------------------------
+      card.innerHTML = `
 
-      let imageHTML;
-
-
-      if (thumbnailUrl) {
-
-        imageHTML = `
+        <div style="
+          position:relative;
+          aspect-ratio:16/9;
+          background:#181818;
+          overflow:hidden;
+        ">
 
           <img
-            src="${escapeHtml(
-              thumbnailUrl
+            class="related-thumb"
+            src="${fallbackThumbnail(
+              video.title
             )}"
             alt="${escapeHtml(
               video.title
@@ -1492,46 +1678,6 @@ async function loadRandomVideos(
               display:block;
             "
           >
-
-        `;
-
-      } else {
-
-        imageHTML = `
-
-          <div style="
-            width:100%;
-            height:100%;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            background:#181818;
-            color:#e50914;
-            font-size:14px;
-            font-weight:700;
-          ">
-            DesiVexa
-          </div>
-
-        `;
-      }
-
-
-      // ----------------------------------------------
-      // CARD HTML
-      // ----------------------------------------------
-
-      card.innerHTML = `
-
-        <div style="
-          position:relative;
-          aspect-ratio:16/9;
-          background:#181818;
-          overflow:hidden;
-        ">
-
-          ${imageHTML}
-
 
           ${
             video.duration
@@ -1596,7 +1742,64 @@ async function loadRandomVideos(
       container.appendChild(
         card
       );
+
+
+      cards.set(
+        video.id,
+        card
+      );
+
     }
+
+
+    // -------------------------------------------------
+    // Load all thumbnails in parallel
+    // -------------------------------------------------
+
+    await Promise.all(
+
+      data.map(
+        async video => {
+
+          const thumbnailUrl =
+            await getThumbnail(
+              video.id
+            );
+
+
+          if (!thumbnailUrl) {
+            return;
+          }
+
+
+          const card =
+            cards.get(
+              video.id
+            );
+
+
+          if (!card) {
+            return;
+          }
+
+
+          const image =
+            card.querySelector(
+              ".related-thumb"
+            );
+
+
+          if (image) {
+
+            image.src =
+              thumbnailUrl;
+
+          }
+
+        }
+      )
+
+    );
 
 
   } catch (error) {
@@ -1613,16 +1816,18 @@ async function loadRandomVideos(
         color:#777;
         grid-column:1/-1;
       ">
-        Random videos unavailable.
+        Related videos unavailable.
       </div>
 
     `;
+
   }
+
 }
 
 
-// ======================================================
+// =====================================================
 // START
-// ======================================================
+// =====================================================
 
 loadVideo();
