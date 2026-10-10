@@ -1,0 +1,1466 @@
+/* =====================================================
+   DESIVEXA - MAIN STYLE
+   Dark / Red Premium Theme
+===================================================== */
+
+:root{
+  --bg:#080808;
+  --panel:#111111;
+  --panel2:#171717;
+  --text:#f5f5f5;
+  --muted:#a5a5a5;
+  --red:#e50914;
+  --red2:#ff1b25;
+  --line:#292929;
+  --shadow:0 8px 30px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:15px;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+button,input{font:inherit}
+
+/* HEADER */
+
+.dvHeader{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:#0b0b0bf5;
+  border-bottom:1px solid #242424;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+
+.dvHeaderInner{
+  min-height:62px;
+  display:grid;
+  grid-template-columns:48px 1fr 48px;
+  align-items:center;
+  max-width:1250px;
+  margin:auto;
+  padding:0 12px;
+}
+
+.dvLogo{
+  justify-self:center;
+  font-size:25px;
+  font-weight:900;
+  letter-spacing:-.8px;
+}
+
+.dvLogo span{color:var(--red)}
+
+.headerIcon{
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:9px;
+  background:transparent;
+  color:#fff;
+  cursor:pointer;
+  font-size:23px;
+}
+
+.headerIcon:hover{background:#1d1d1d}
+
+/* SEARCH */
+
+.dvSearchBox{
+  display:none;
+  max-width:1250px;
+  margin:auto;
+  padding:10px 14px 13px;
+  border-top:1px solid #202020;
+}
+
+.dvSearchBox.show{display:block}
+
+.dvSearchBox input{
+  width:100%;
+  padding:13px 15px;
+  border:1px solid #333;
+  border-radius:9px;
+  outline:none;
+  background:#151515;
+  color:#fff;
+}
+
+.dvSearchBox input:focus{border-color:var(--red)}
+
+/* MOBILE MENU */
+
+.mobileMenu{
+  display:none;
+  position:fixed;
+  top:63px;
+  left:10px;
+  right:10px;
+  z-index:60;
+  background:#111;
+  border:1px solid #303030;
+  border-radius:12px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.mobileMenu.show{display:block}
+
+.mobileMenu a{
+  display:block;
+  padding:14px 16px;
+  border-bottom:1px solid #252525;
+  color:#eee;
+  font-weight:600;
+}
+
+.mobileMenu a:last-child{border-bottom:0}
+
+.mobileMenu a:hover{
+  background:#1d1d1d;
+  color:#fff;
+}
+
+/* MAIN */
+
+.dvMain{
+  width:100%;
+  max-width:1250px;
+  margin:auto;
+  padding:18px 14px 45px;
+}
+
+/* SECTION TITLE */
+
+.dvSectionTitle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  margin:25px 0 16px;
+}
+
+.dvSectionTitle h2{
+  margin:3px 0 0;
+  font-size:23px;
+  line-height:1.2;
+}
+
+.dvSectionTitle a{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.dvSectionTitle a:hover{color:#fff}
+
+.sectionLabel{
+  color:var(--red);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:1.5px;
+}
+
+/* CATEGORIES */
+
+.categoryWrap{
+  position:relative;
+  margin:12px 0 20px;
+}
+
+#categoryBtn,
+.categoryBtn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  padding:10px 16px;
+  border:1px solid #333;
+  border-radius:9px;
+  background:#151515;
+  color:#fff;
+  cursor:pointer;
+  font-weight:700;
+  transition:background .2s ease,border-color .2s ease,transform .2s ease;
+}
+
+#categoryBtn:hover,
+.categoryBtn:hover{
+  background:#1d1d1d;
+  border-color:#555;
+}
+
+#categoryBtn:active,
+.categoryBtn:active{
+  transform:scale(.98);
+}
+
+#categoryList,
+.categoryList{
+  display:none;
+  width:100%;
+  margin-top:10px;
+  padding:12px;
+  background:#111;
+  border:1px solid #2c2c2c;
+  border-radius:12px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+#categoryList.show,
+.categoryList.show{display:block}
+
+#categorySearch,
+.categorySearch{
+  width:100%;
+  margin-bottom:11px;
+  padding:11px 13px;
+  border:1px solid #333;
+  border-radius:8px;
+  outline:none;
+  background:#181818;
+  color:#fff;
+}
+
+#categorySearch:focus,
+.categorySearch:focus{border-color:var(--red)}
+
+#categoryItems,
+.categoryItems{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  max-height:260px;
+  overflow-y:auto;
+  padding-right:2px;
+}
+
+.categoryItem{
+  border:1px solid #303030;
+  border-radius:999px;
+  padding:9px 14px;
+  background:#181818;
+  color:#ddd;
+  cursor:pointer;
+  font-size:13px;
+  font-weight:700;
+  transition:background .2s ease,color .2s ease,border-color .2s ease;
+}
+
+.categoryItem:hover{
+  background:#252525;
+  border-color:#555;
+  color:#fff;
+}
+
+.categoryItem.active{
+  background:var(--red);
+  border-color:var(--red);
+  color:#fff;
+}
+
+/* VIDEO GRID */
+
+.dvGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+
+/* VIDEO CARD */
+
+.card{
+  display:block;
+  min-width:0;
+  overflow:hidden;
+  background:var(--panel);
+  border:1px solid #242424;
+  border-radius:10px;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+
+.card:hover{
+  transform:translateY(-2px);
+  border-color:#3b3b3b;
+  box-shadow:0 8px 25px rgba(0,0,0,.35);
+}
+
+/* THUMBNAIL */
+
+.thumb{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  overflow:hidden;
+  background:#222 center/cover no-repeat;
+}
+
+.thumb img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+
+.thumbOverlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.65),transparent 55%);
+  pointer-events:none;
+}
+
+.playCircle{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:rgba(0,0,0,.72);
+  color:#fff;
+  font-size:16px;
+  opacity:.9;
+}
+
+.card:hover .playCircle{background:var(--red)}
+
+.cardViews{
+  position:absolute;
+  right:7px;
+  bottom:7px;
+  padding:4px 7px;
+  border-radius:5px;
+  background:rgba(0,0,0,.78);
+  color:#fff;
+  font-size:10px;
+  font-weight:700;
+}
+
+/* CARD BODY */
+
+.card .body{padding:10px}
+
+.card h3{
+  margin:0 0 7px;
+  color:#fff;
+  font-size:14px;
+  line-height:1.35;
+  font-weight:700;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+}
+
+.cardMeta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:7px;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.cardMeta span{
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+
+.noThumb{
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  background:#202020;
+  color:#777;
+  font-size:12px;
+  font-weight:800;
+}
+
+.muted{color:var(--muted)}
+
+.videoError{
+  grid-column:1/-1;
+  padding:30px 15px;
+  text-align:center;
+  color:var(--muted);
+}
+
+/* VIDEO PAGE */
+
+.videoWatch{width:100%}
+
+.videoPlayerWrap{
+  width:100%;
+  margin-top:10px;
+  background:#000;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.videoPlayerWrap video,
+.videoWatch video{
+  display:block;
+  width:100%;
+  max-width:100%;
+  background:#000;
+}
+
+.videoInfo{padding:15px 2px}
+
+.videoInfo h1{
+  margin:0 0 9px;
+  font-size:21px;
+  line-height:1.3;
+}
+
+.videoMeta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.videoDescription{
+  color:#c7c7c7;
+  line-height:1.55;
+}
+
+/* RANDOM VIDEOS */
+
+#randomVideos{margin-top:25px}
+
+#randomVideos .dvGrid{margin-top:12px}
+
+/* ADS */
+
+.dvAdSlot{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:15px auto;
+  overflow:hidden;
+  text-align:center;
+  clear:both;
+}
+
+.dvAdSlot ins{
+  display:block;
+  max-width:100%;
+}
+
+.dvAdWide{
+  max-width:774px;
+  min-height:60px;
+}
+
+.dvAdBanner{
+  max-width:308px;
+  min-height:20px;
+}
+
+.dvAdSmall{
+  max-width:108px;
+  min-height:20px;
+}
+
+.dvAdCompact{
+  max-width:300px;
+  min-height:20px;
+}
+
+/* FOOTER */
+
+footer{
+  margin-top:35px;
+  padding:30px 15px;
+  text-align:center;
+  border-top:1px solid #242424;
+  color:var(--muted);
+}
+
+.footerLogo{
+  margin-bottom:8px;
+  color:#fff;
+  font-size:22px;
+  font-weight:900;
+}
+
+.footerLogo span{color:var(--red)}
+
+footer p{
+  margin:7px 0 12px;
+  font-size:12px;
+}
+
+footer a{
+  color:#ddd;
+  font-size:12px;
+}
+
+footer a:hover{color:#fff}
+
+/* AGE GATE */
+
+.gate{
+  position:fixed;
+  inset:0;
+  z-index:999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(0,0,0,.96);
+}
+
+.gate.hidden{display:none}
+
+.gateBox{
+  width:min(430px,100%);
+  padding:28px;
+  text-align:center;
+  background:#121212;
+  border:1px solid #303030;
+  border-radius:14px;
+  box-shadow:var(--shadow);
+}
+
+.gateBox h1{margin-top:0}
+
+.gateBox button{
+  padding:12px 18px;
+  border:0;
+  border-radius:8px;
+  background:var(--red);
+  color:#fff;
+  cursor:pointer;
+  font-weight:700;
+}
+
+/* DESKTOP */
+
+@media(min-width:700px){
+
+  .dvHeaderInner{
+    padding-left:20px;
+    padding-right:20px;
+  }
+
+  .dvMain{
+    padding-left:20px;
+    padding-right:20px;
+  }
+
+  .dvGrid{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:18px;
+  }
+
+  .card h3{font-size:15px}
+
+  .mobileMenu{
+    left:auto;
+    right:20px;
+    width:240px;
+  }
+}
+
+@media(min-width:1100px){
+
+  .dvGrid{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:20px;
+  }
+
+  .dvMain{padding-top:25px}
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+  .dvHeaderInner{min-height:58px}
+
+  .dvLogo{font-size:22px}
+
+  .headerIcon{
+    width:38px;
+    height:38px;
+    font-size:21px;
+  }
+
+  .mobileMenu{top:59px}
+
+  .dvMain{
+    padding:14px 10px 35px;
+  }
+
+  .dvSectionTitle h2{font-size:20px}
+
+  .categoryItem{
+    padding:8px 12px;
+    font-size:12px;
+  }
+
+  .dvGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:9px;
+  }
+
+  .card{border-radius:8px}
+
+  .card .body{padding:8px}
+
+  .card h3{font-size:12px}
+
+  .cardMeta{font-size:10px}
+
+  .playCircle{
+    width:35px;
+    height:35px;
+    font-size:13px;
+  }
+
+  .cardViews{
+    font-size:9px;
+    padding:3px 5px;
+  }
+
+  .dvAdSlot{
+    margin:12px auto;
+    padding:0 5px;
+  }
+}
+
+@media(max-width:360px){
+
+  .dvGrid{gap:7px}
+
+  .card h3{font-size:11px}
+
+  .cardMeta{font-size:9px}
+
+  .dvLogo{font-size:20px}
+}
+
+/* =====================================================
+   DESIVEXA V2 - PREMIUM HOMEPAGE
+===================================================== */
+
+:root{
+  --dv-red:#ff1744;
+  --dv-red-dark:#d90429;
+  --dv-bg:#05070a;
+  --dv-card:#0d1117;
+  --dv-card2:#111722;
+  --dv-line:#202733;
+  --dv-soft:#9aa4b2;
+}
+
+body{
+  background:
+    radial-gradient(circle at 50% -10%,rgba(255,23,68,.10),transparent 35%),
+    var(--dv-bg);
+}
+
+.dvHeader{
+  background:rgba(5,7,10,.88);
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+
+.dvLogo{font-size:24px}
+
+.dvLogo span{color:var(--dv-red)}
+
+.headerIcon{border:1px solid transparent}
+
+.headerIcon:hover{
+  background:#111722;
+  border-color:#252d39;
+}
+
+.dvMain{
+  max-width:1280px;
+  padding-left:18px;
+  padding-right:18px;
+}
+
+/* PREMIUM HERO */
+
+.premiumHero{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(340px,1.15fr);
+  gap:22px;
+  align-items:stretch;
+  margin:8px 0 26px;
+  padding:24px;
+  min-height:330px;
+  border:1px solid #202733;
+  border-radius:18px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 82% 45%,rgba(255,23,68,.20),transparent 35%),
+    linear-gradient(135deg,#0c1017,#080b10);
+  box-shadow:0 18px 55px rgba(0,0,0,.35);
+}
+
+.heroCopy{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  min-width:0;
+}
+
+.premiumHero .eyebrow{
+  color:var(--dv-red);
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:1.8px;
+}
+
+.premiumHero h1{
+  margin:10px 0 12px;
+  font-size:clamp(34px,5vw,58px);
+  line-height:1.02;
+  letter-spacing:-1.8px;
+}
+
+.premiumHero h1 span{color:var(--dv-red)}
+
+.premiumHero p{
+  max-width:570px;
+  margin:0 0 22px;
+  color:#aab2bf;
+  line-height:1.6;
+}
+
+.heroButton{
+  width:max-content;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:12px 18px;
+  border-radius:10px;
+  background:var(--dv-red);
+  color:#fff;
+  font-weight:800;
+  box-shadow:0 8px 25px rgba(255,23,68,.22);
+  transition:transform .2s ease,background .2s ease;
+}
+
+.heroButton:hover{
+  background:#ff3158;
+  transform:translateY(-1px);
+}
+
+/* FEATURED */
+
+.featuredVideo{
+  min-width:0;
+  display:flex;
+}
+
+.featuredLoading,
+.featuredEmpty{
+  width:100%;
+  min-height:270px;
+  display:grid;
+  place-items:center;
+  border:1px solid #27303d;
+  border-radius:14px;
+  background:#111722;
+  color:#8f99a8;
+}
+
+.featuredCard{
+  width:100%;
+  display:block;
+  overflow:hidden;
+  border:1px solid #293241;
+  border-radius:14px;
+  background:#0b0f15;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+
+.featuredCard:hover{
+  transform:translateY(-2px);
+  border-color:#424d5e;
+  box-shadow:0 18px 40px rgba(0,0,0,.4);
+}
+
+.featuredThumb{
+  position:relative;
+  aspect-ratio:16/9;
+  overflow:hidden;
+  background:#151b24;
+}
+
+.featuredThumb img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+
+.featuredNoThumb{
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  color:#596273;
+  font-size:24px;
+  font-weight:900;
+}
+
+.featuredShade{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.8),transparent 65%);
+}
+
+.featuredBadge{
+  position:absolute;
+  top:12px;
+  left:12px;
+  padding:6px 9px;
+  border-radius:6px;
+  background:var(--dv-red);
+  color:#fff;
+  font-size:10px;
+  font-weight:900;
+}
+
+.featuredPlay{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:58px;
+  height:58px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:rgba(0,0,0,.65);
+  border:1px solid rgba(255,255,255,.18);
+  color:#fff;
+  font-size:20px;
+}
+
+.featuredViews{
+  position:absolute;
+  right:12px;
+  bottom:12px;
+  padding:5px 8px;
+  border-radius:6px;
+  background:rgba(0,0,0,.75);
+  color:#fff;
+  font-size:11px;
+  font-weight:700;
+}
+
+.featuredInfo{padding:14px 15px 16px}
+
+.featuredCategory{
+  color:var(--dv-red);
+  font-size:11px;
+  font-weight:800;
+  text-transform:uppercase;
+}
+
+.featuredInfo h2{
+  margin:5px 0 9px;
+  color:#fff;
+  font-size:20px;
+  line-height:1.25;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.featuredWatch{
+  color:#cbd2dc;
+  font-size:12px;
+  font-weight:800;
+}
+
+.dvSectionTitle{margin:30px 0 14px}
+
+.dvSectionTitle h2{font-size:22px}
+
+.sectionLabel{color:var(--dv-red)}
+
+#categoryBtn,
+.categoryBtn{
+  background:#10151d;
+  border-color:#27303d;
+}
+
+#categoryBtn:hover,
+.categoryBtn:hover{
+  background:#171d27;
+  border-color:#3b4656;
+}
+
+.dvGrid{gap:14px}
+
+.card{
+  background:linear-gradient(180deg,#0e131a,#0b0f14);
+  border-color:#202833;
+  border-radius:12px;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+  border-color:#394555;
+  box-shadow:0 14px 30px rgba(0,0,0,.4);
+}
+
+.thumb{background:#151a22}
+
+.playCircle{
+  width:46px;
+  height:46px;
+  background:rgba(0,0,0,.70);
+  border:1px solid rgba(255,255,255,.15);
+}
+
+.card:hover .playCircle{background:var(--dv-red)}
+
+.cardViews{background:rgba(0,0,0,.78)}
+
+.card .body{padding:11px 12px 13px}
+
+.card h3{font-size:14px}
+
+.cardMeta{color:#8e98a7}
+
+.dvAdSlot{border-radius:10px}
+
+footer{
+  background:#06080b;
+  border-top:1px solid #1c232d;
+}
+
+#categoryItems,
+.categoryItems{
+  scrollbar-width:thin;
+}
+
+/* MOBILE V2 */
+
+@media(max-width:760px){
+
+  .dvMain{padding:12px 10px 34px}
+
+  .premiumHero{
+    grid-template-columns:1fr;
+    gap:14px;
+    padding:17px;
+    min-height:0;
+    border-radius:14px;
+  }
+
+  .premiumHero h1{
+    font-size:34px;
+    letter-spacing:-1px;
+  }
+
+  .premiumHero p{font-size:13px}
+
+  .featuredThumb{aspect-ratio:16/9}
+
+  .featuredInfo h2{font-size:17px}
+
+  .dvGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:9px;
+  }
+
+  .card{border-radius:9px}
+
+  .card .body{padding:8px}
+
+  .card h3{font-size:12px}
+
+  .cardMeta{font-size:10px}
+
+  .playCircle{
+    width:36px;
+    height:36px;
+    font-size:13px;
+  }
+}
+
+@media(max-width:380px){
+
+  .premiumHero h1{font-size:30px}
+
+  .dvGrid{gap:7px}
+
+  .card h3{font-size:11px}
+   }
+
+/* =====================================================
+   DESIVEXA - MOBILE RESPONSIVE STYLE
+   2 COLUMNS / NO HORIZONTAL SCROLL
+===================================================== */
+
+@media (max-width: 600px) {
+
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    overflow-x: hidden !important;
+  }
+
+  .dvMain {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 auto;
+    padding: 14px 8px 35px !important;
+    box-sizing: border-box;
+  }
+
+  /* Two video columns on mobile */
+  .dvGrid {
+    display: grid !important;
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+
+  /* Video card */
+  .card {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden;
+  }
+
+  /* Thumbnail */
+  .thumb {
+    width: 100% !important;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+
+  .thumb img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+  }
+
+  /* Card text */
+  .card .body {
+    padding: 5px !important;
+  }
+
+  .card h3 {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .cardMeta {
+    font-size: 8px !important;
+    gap: 3px;
+  }
+
+  /* Play button */
+  .playCircle {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 11px !important;
+  }
+
+  /* Views */
+  .cardViews {
+    font-size: 8px !important;
+    padding: 3px 4px !important;
+  }
+
+  /* Section title */
+  .dvSectionTitle {
+    margin: 20px 0 12px;
+  }
+
+  .dvSectionTitle h2 {
+    font-size: 18px !important;
+  }
+
+  .sectionLabel {
+    font-size: 9px !important;
+  }
+
+  /* Category area */
+  .categoryItem,
+  .catItem {
+    font-size: 11px !important;
+    padding: 7px 10px !important;
+  }
+
+  /* Ads stay inside screen */
+  .dvAdSlot {
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .dvAdSlot ins {
+    max-width: 100% !important;
+  }
+
+  /* Header */
+  .dvHeaderInner {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 0 8px !important;
+  }
+
+  .dvLogo {
+    font-size: 22px !important;
+  }
+
+  .headerIcon {
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 21px !important;
+  }
+
+  /* Search */
+  .dvSearchBox {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  /* Footer */
+  footer {
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+}
+
+/* =========================================
+   MOBILE - DESKTOP STYLE / 3 COLUMNS
+   No horizontal scrolling
+========================================= */
+
+@media (max-width: 699px){
+
+  html,
+  body{
+    width:100% !important;
+    max-width:100% !important;
+    overflow-x:hidden !important;
+  }
+
+  .dvMain{
+    width:100% !important;
+    max-width:1280px !important;
+    margin:0 auto !important;
+    padding:18px 10px 45px !important;
+  }
+
+  /* Header */
+  .dvHeaderInner{
+    width:100% !important;
+    max-width:1280px !important;
+    min-height:62px !important;
+    padding:0 12px !important;
+  }
+
+  .dvLogo{
+    font-size:24px !important;
+  }
+
+  .headerIcon{
+    width:42px !important;
+    height:42px !important;
+    font-size:23px !important;
+  }
+
+  /* Hero - desktop style */
+  .premiumHero{
+    grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) !important;
+    gap:14px !important;
+    min-height:250px !important;
+    padding:18px !important;
+    border-radius:14px !important;
+  }
+
+  .premiumHero h1{
+    font-size:clamp(24px,7vw,38px) !important;
+    letter-spacing:-1.2px !important;
+  }
+
+  .premiumHero p{
+    font-size:12px !important;
+    line-height:1.45 !important;
+  }
+
+  .heroButton{
+    padding:10px 13px !important;
+    font-size:12px !important;
+  }
+
+  /* Categories */
+  #categoryItems,
+  .categoryItems{
+    flex-wrap:wrap !important;
+    gap:6px !important;
+  }
+
+  .categoryItem,
+  .catItem{
+    padding:8px 12px !important;
+    font-size:12px !important;
+  }
+
+  /* =====================================
+     VIDEO GRID - 2 COLUMNS
+  ===================================== */
+
+  .dvGrid{
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:10px !important;
+    width:100% !important;
+  }
+
+  .card{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    border-radius:9px !important;
+    overflow:hidden !important;
+  }
+
+  .thumb{
+    width:100% !important;
+    aspect-ratio:16/9 !important;
+    overflow:hidden !important;
+  }
+
+  .thumb img{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+  }
+
+  .card .body{
+    padding:8px !important;
+  }
+
+  .card h3{
+    font-size:11px !important;
+    line-height:1.25 !important;
+  }
+
+  .cardMeta{
+    font-size:9px !important;
+  }
+
+  .playCircle{
+    width:34px !important;
+    height:34px !important;
+    font-size:12px !important;
+  }
+
+  .cardViews{
+    font-size:8px !important;
+    padding:3px 4px !important;
+  }
+
+  .dvSectionTitle{
+    margin:25px 0 14px !important;
+  }
+
+  .dvSectionTitle h2{
+    font-size:22px !important;
+  }
+
+  /* Ads */
+  .dvAdSlot{
+    width:100% !important;
+    max-width:100% !important;
+    overflow:hidden !important;
+  }
+
+  /* Footer */
+  footer{
+    width:100% !important;
+    max-width:100% !important;
+    overflow:hidden !important;
+  }
+}
+
+/* =========================================
+   DESIVEXA MOBILE - FORCE 2 COLUMNS
+========================================= */
+
+@media (max-width:699px){
+
+  html,
+  body{
+    width:100% !important;
+    max-width:100% !important;
+    overflow-x:hidden !important;
+  }
+
+  .dvGrid,
+  #trendingVideos,
+  #videos,
+  #recommendations{
+    display:grid !important;
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:4px !important;
+    width:100% !important;
+  }
+
+  .dvGrid .card,
+  #trendingVideos .card,
+  #videos .card,
+  #recommendations .card{
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+  }
+
+  .dvGrid .thumb,
+  #trendingVideos .thumb,
+  #videos .thumb,
+  #recommendations .thumb{
+    width:100% !important;
+    aspect-ratio:16/10 !important;
+    overflow:hidden !important;
+  }
+
+  .dvGrid .thumb img,
+  #trendingVideos .thumb img,
+  #videos .thumb img,
+  #recommendations .thumb img{
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+  }
+
+  .dvGrid .card h3,
+  #trendingVideos .card h3,
+  #videos .card h3,
+  #recommendations .card h3{
+    font-size:11px !important;
+    line-height:1.25 !important;
+  }
+
+}
+
+
+/* =====================================================
+   FINAL RESPONSIVE FIX - ALL DESIVEXA PAGES
+   Mobile: exactly 2 columns; tablet/desktop rules above remain.
+===================================================== */
+@media (max-width: 699px) {
+  html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden !important;
+  }
+
+  .dvMain, .dvHeaderInner, .dvSearchBox {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .dvGrid, .video-grid, .videoGrid, .random-grid, .randomGrid,
+  #trendingVideos, #videos, #recommendations, #randomVideos .dvGrid,
+  #relatedVideos, .relatedVideos, .related-grid, .relatedGrid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 9px !important;
+    width: 100%;
+  }
+
+  .dvGrid > *, .video-grid > *, .videoGrid > *, .random-grid > *,
+  .randomGrid > *, #trendingVideos > *, #videos > *,
+  #recommendations > *, #relatedVideos > *, .relatedVideos > * {
+    min-width: 0 !important;
+    max-width: 100%;
+  }
+
+  .card, .video-card, .videoCard, .related-card {
+    min-width: 0 !important;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .thumb, .thumbnail, .video-thumbnail, .videoThumbnail {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+  }
+
+  .thumb img, .thumbnail img, .video-thumbnail img, .videoThumbnail img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .premiumHero {
+    grid-template-columns: minmax(0, 1fr) !important;
+    min-width: 0;
+  }
+
+  #mainVideo, .videoPlayerWrap, .videoWatch, video {
+    max-width: 100%;
+  }
+
+  .videoInfo h1 {
+    font-size: 19px;
+    overflow-wrap: anywhere;
+  }
+
+  .pagination, .paginationWrap, .pageNumbers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .dvGrid, .video-grid, .videoGrid, .random-grid, .randomGrid,
+  #trendingVideos, #videos, #recommendations, #relatedVideos, .relatedVideos {
+    gap: 6px !important;
+  }
+  .card .body { padding: 6px !important; }
+  .card h3 { font-size: 10px !important; }
+}
