@@ -47,8 +47,7 @@ function setBusy(button, state, busyText = "Please wait…") {
     button.textContent = busyText;
     button.disabled = true;
   } else {
-    button.textContent =
-      button.dataset.originalText || button.textContent;
+    button.textContent = button.dataset.originalText || button.textContent;
     button.disabled = false;
   }
 }
@@ -73,11 +72,7 @@ function safeURL(value) {
 }
 
 function fileExtension(file, fallback) {
-  const ext = String(file?.name || "")
-    .split(".")
-    .pop()
-    .toLowerCase();
-
+  const ext = String(file?.name || "").split(".").pop().toLowerCase();
   return /^[a-z0-9]{1,8}$/.test(ext) ? ext : fallback;
 }
 
@@ -95,7 +90,6 @@ function objectPathFromURL(value, bucket) {
   }
 
   let url;
-
   try {
     url = new URL(raw);
   } catch {
@@ -143,19 +137,13 @@ async function getPlayableURL(bucket, storedValue) {
       .from(bucket)
       .createSignedUrl(path, 3600);
 
-    if (error) {
-      throw new Error("Video URL nahi bana: " + error.message);
-    }
-
-    if (!data?.signedUrl) {
-      throw new Error("Signed URL return nahi hua.");
-    }
+    if (error) throw new Error("Video URL nahi bana: " + error.message);
+    if (!data?.signedUrl) throw new Error("Signed URL return nahi hua.");
 
     return data.signedUrl;
   }
 
   const url = safeURL(value);
-
   if (url) return url;
 
   throw new Error("Video URL valid nahi hai.");
@@ -177,13 +165,16 @@ function showDashboard() {
   $("logoutBtn")?.classList.remove("hidden");
 }
 
+function isAdmin(user) {
+  return Boolean(user && user.id === ADMIN_UID);
+}
+
 async function checkSession() {
   if (sessionCheckStarted) return;
   sessionCheckStarted = true;
 
   try {
     const { data, error } = await supabase.auth.getSession();
-
     if (error) throw error;
 
     const user = data.session?.user || null;
@@ -194,7 +185,7 @@ async function checkSession() {
       return;
     }
 
-    if (user.id !== ADMIN_UID) {
+    if (!isAdmin(user)) {
       currentUser = null;
       showLogin();
       message(loginMessage, "Is account ko admin access nahi hai.");
@@ -215,7 +206,6 @@ async function checkSession() {
 // LOGIN
 $("loginForm")?.addEventListener("submit", async (event) => {
   event.preventDefault();
-
   if (busy) return;
 
   const button = $("loginBtn");
@@ -238,7 +228,7 @@ $("loginForm")?.addEventListener("submit", async (event) => {
 
     if (error) throw error;
 
-    if (!data.user || data.user.id !== ADMIN_UID) {
+    if (!isAdmin(data.user)) {
       await supabase.auth.signOut();
       throw new Error("Is account ko Admin access nahi hai.");
     }
@@ -258,7 +248,6 @@ $("loginForm")?.addEventListener("submit", async (event) => {
 $("logoutBtn")?.addEventListener("click", async () => {
   try {
     const { error } = await supabase.auth.signOut();
-
     if (error) throw error;
 
     currentUser = null;
@@ -272,10 +261,9 @@ $("logoutBtn")?.addEventListener("click", async () => {
 
 // LOAD VIDEOS
 async function loadVideos() {
-  if (!currentUser || currentUser.id !== ADMIN_UID) return;
+  if (!isAdmin(currentUser)) return;
 
   message(listMessage, "Videos load ho rahe hain…");
-
   if ($("videoList")) $("videoList").innerHTML = "";
   if ($("pager")) $("pager").innerHTML = "";
 
@@ -288,19 +276,15 @@ async function loadVideos() {
     if (error) throw error;
 
     videos = data || [];
-    currentPage = Math.min(
-      currentPage,
-      Math.max(1, Math.ceil(videos.length / PAGE_SIZE))
-    );
+    const pages = Math.max(1, Math.ceil(filteredVideos().length / PAGE_SIZE));
+    currentPage = Math.min(currentPage, pages);
 
     updateStats();
     renderVideos();
 
     message(
       listMessage,
-      videos.length
-        ? `${videos.length} videos loaded.`
-        : "Abhi koi video nahi mila."
+      videos.length ? `${videos.length} videos loaded.` : "Abhi koi video nahi mila."
     );
   } catch (error) {
     message(listMessage, "Videos load nahi hue: " + error.message);
@@ -308,7 +292,9 @@ async function loadVideos() {
 }
 
 function updateStats() {
-  if ($("totalCount")) $("totalCount").textContent = videos.length;
+  if ($("totalCount")) {
+    $("totalCount").textContent = videos.length;
+  }
 
   if ($("publishedCount")) {
     $("publishedCount").textContent =
@@ -328,6 +314,16 @@ function updateStats() {
   }
 }
 
+function getApprovalStatus(video) {
+  const status = String(video.approval_status || "").toLowerCase();
+
+  if (status === "rejected") return "rejected";
+  if (video.published === true) return "approved";
+  if (status === "approved") return "approved";
+
+  return "pending";
+}
+
 function filteredVideos() {
   const query = ($("searchInput")?.value || "").trim().toLowerCase();
   const filter = $("filterSelect")?.value || "all";
@@ -337,9 +333,15 @@ function filteredVideos() {
       String(video.title || "").toLowerCase().includes(query) ||
       String(video.category || "").toLowerCase().includes(query);
 
+    const status = getApprovalStatus(video);
+
     const matchesStatus =
       filter === "all" ||
       (filter === "published" && video.published === true) ||
+      (filter === "pending" &&
+        video.published !== true &&
+        status !== "rejected") ||
+      (filter === "rejected" && status === "rejected") ||
       (filter === "unpublished" && video.published !== true);
 
     return matchesText && matchesStatus;
@@ -350,13 +352,12 @@ function filteredVideos() {
 function renderVideos() {
   const list = $("videoList");
   const pager = $("pager");
-
   if (!list || !pager) return;
 
   const filtered = filteredVideos();
   const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
 
-  currentPage = Math.min(currentPage, pages);
+  currentPage = Math.max(1, Math.min(currentPage, pages));
 
   const start = (currentPage - 1) * PAGE_SIZE;
   const pageVideos = filtered.slice(start, start + PAGE_SIZE);
@@ -371,7 +372,19 @@ function renderVideos() {
   list.innerHTML = pageVideos.map((video) => {
     const thumbnail = safeURL(video.thumbnail_url);
     const published = video.published === true;
+    const status = getApprovalStatus(video);
     const id = escapeHTML(video.id);
+    const statusLabel = {
+      approved: "Approved",
+      pending: "Pending approval",
+      rejected: "Rejected"
+    }[status];
+
+    const statusClass = {
+      approved: "live",
+      pending: "pending",
+      rejected: "rejected"
+    }[status];
 
     return `
       <article class="video-card">
@@ -380,17 +393,22 @@ function renderVideos() {
             ? `<img class="thumb" src="${escapeHTML(thumbnail)}" alt="Thumbnail" loading="lazy">`
             : `<div class="thumb"></div>`
         }
+
         <div class="card-body">
           <div class="video-title">${escapeHTML(video.title || "Untitled")}</div>
-          <div class="meta">${escapeHTML(video.category || "Uncategorized")}</div>
+          <div class="meta">Category: ${escapeHTML(video.category || "Uncategorized")}</div>
           <div class="meta">Views: ${Number(video.views) || 0}</div>
-          <div class="meta">${escapeHTML(video.id || "")}</div>
-          <span class="status ${published ? "live" : "off"}">
-            ${published ? "Published" : "Pending / Unpublished"}
-          </span>
+          <div class="meta">ID: ${escapeHTML(video.id || "")}</div>
+          <div class="meta">Created: ${escapeHTML(video.created_at || "Unknown")}</div>
+
+          <span class="status ${statusClass}">${statusLabel}</span>
+          <div class="meta">Website status: ${published ? "Published" : "Not published"}</div>
+
           <div class="actions">
             <button type="button" data-action="preview" data-id="${id}">Preview</button>
             <button type="button" class="secondary" data-action="edit" data-id="${id}">Edit</button>
+            <button type="button" class="approve" data-action="approve" data-id="${id}">Approve</button>
+            <button type="button" class="danger" data-action="reject" data-id="${id}">Reject</button>
             <button type="button" class="secondary" data-action="toggle" data-id="${id}">
               ${published ? "Unpublish" : "Publish"}
             </button>
@@ -424,6 +442,12 @@ $("videoList")?.addEventListener("click", async (event) => {
     case "edit":
       openEdit(video);
       break;
+    case "approve":
+      await setApprovalStatus(video, "approved", button);
+      break;
+    case "reject":
+      await setApprovalStatus(video, "rejected", button);
+      break;
     case "toggle":
       await togglePublished(video, button);
       break;
@@ -453,10 +477,9 @@ $("filterSelect")?.addEventListener("change", () => {
 
 $("refreshBtn")?.addEventListener("click", () => loadVideos());
 
-// PREVIEW
+// VIDEO PREVIEW
 async function openPreview(video) {
   const player = $("previewVideo");
-
   if (!player || !previewDialog) return;
 
   player.pause();
@@ -470,9 +493,6 @@ async function openPreview(video) {
   try {
     const playableURL = await getPlayableURL(VIDEO_BUCKET, video.video_url);
 
-    player.src = playableURL;
-    player.load();
-
     player.onerror = () => {
       message(
         previewMessage,
@@ -480,13 +500,15 @@ async function openPreview(video) {
       );
     };
 
+    player.src = playableURL;
+    player.load();
     message(previewMessage, "Play button dabakar video dekho.");
   } catch (error) {
     message(previewMessage, "Preview error: " + error.message);
   }
 }
 
-$("closePreviewBtn")?.addEventListener("click", () => {
+function stopPreview() {
   const player = $("previewVideo");
 
   if (player) {
@@ -494,26 +516,18 @@ $("closePreviewBtn")?.addEventListener("click", () => {
     player.removeAttribute("src");
     player.load();
   }
+}
 
+$("closePreviewBtn")?.addEventListener("click", () => {
+  stopPreview();
   previewDialog?.close();
 });
 
-previewDialog?.addEventListener("close", () => {
-  const player = $("previewVideo");
-
-  if (player) {
-    player.pause();
-    player.removeAttribute("src");
-    player.load();
-  }
-});
+previewDialog?.addEventListener("close", stopPreview);
 
 // EDIT VIDEO
 function openEdit(video) {
-  if (!editDialog) {
-    alert("admin.html mein editDialog nahi mila.");
-    return;
-  }
+  if (!editDialog) return;
 
   $("editId").value = video.id;
   $("editTitle").value = video.title || "";
@@ -524,13 +538,10 @@ function openEdit(video) {
   editDialog.showModal();
 }
 
-$("cancelEditBtn")?.addEventListener("click", () => {
-  editDialog?.close();
-});
+$("cancelEditBtn")?.addEventListener("click", () => editDialog?.close());
 
 $("editForm")?.addEventListener("submit", async (event) => {
   event.preventDefault();
-
   if (busy) return;
 
   const button = $("saveEditBtn");
@@ -540,7 +551,6 @@ $("editForm")?.addEventListener("submit", async (event) => {
 
   try {
     const id = $("editId").value;
-
     const changes = {
       title: $("editTitle").value.trim(),
       category: $("editCategory").value.trim(),
@@ -559,7 +569,7 @@ $("editForm")?.addEventListener("submit", async (event) => {
 
     if (error) throw error;
     if (!data?.length) {
-      throw new Error("Video update nahi hui. ID aur permissions check karo.");
+      throw new Error("Video update nahi hui. Permissions check karo.");
     }
 
     editDialog.close();
@@ -572,9 +582,85 @@ $("editForm")?.addEventListener("submit", async (event) => {
   }
 });
 
+// APPROVE / REJECT
+async function setApprovalStatus(video, status, button) {
+  if (busy || !isAdmin(currentUser)) return;
+
+  if (status === "rejected") {
+    const confirmed = confirm(
+      `"${video.title || "Video"}" ko reject karna hai? Video publish nahi rahegi.`
+    );
+    if (!confirmed) return;
+  }
+
+  busy = true;
+  setBusy(button, true, "Saving…");
+
+  try {
+    const { data: sessionData, error: sessionError } =
+      await supabase.auth.getSession();
+
+    if (sessionError) throw sessionError;
+    if (!isAdmin(sessionData.session?.user)) {
+      throw new Error("Admin session valid nahi hai. Dobara login karo.");
+    }
+
+    const updates = {
+      approval_status: status,
+      published: status === "approved"
+    };
+
+    const { data, error } = await supabase
+      .from("videos")
+      .update(updates)
+      .eq("id", video.id)
+      .select("id, published, approval_status");
+
+    if (error) throw error;
+    if (!data?.length) {
+      throw new Error(
+        "Status save nahi hua. Supabase UPDATE policy check karo."
+      );
+    }
+
+    const saved = data[0];
+
+    if (
+      saved.approval_status !== status ||
+      saved.published !== (status === "approved")
+    ) {
+      throw new Error("Database mein status expected value se match nahi hua.");
+    }
+
+    await loadVideos();
+
+    alert(
+      status === "approved"
+        ? "Video approve aur publish ho gayi!"
+        : "Video reject ho gayi aur unpublished hai."
+    );
+  } catch (error) {
+    console.error("Approval status error:", error);
+    alert("Status error: " + error.message);
+  } finally {
+    busy = false;
+    setBusy(button, false);
+  }
+}
+
 // PUBLISH / UNPUBLISH
 async function togglePublished(video, button) {
-  if (busy) return;
+  if (busy || !isAdmin(currentUser)) return;
+
+  const nextPublished = video.published !== true;
+
+  if (
+    nextPublished &&
+    getApprovalStatus(video) === "rejected"
+  ) {
+    alert("Rejected video ko pehle Approve karo.");
+    return;
+  }
 
   busy = true;
   setBusy(button, true, "Updating…");
@@ -584,70 +670,33 @@ async function togglePublished(video, button) {
       await supabase.auth.getSession();
 
     if (sessionError) throw sessionError;
-
-    const user = sessionData.session?.user;
-
-    if (!user || user.id !== ADMIN_UID) {
-      throw new Error("Admin session valid nahi hai. Logout karke dobara login karo.");
+    if (!isAdmin(sessionData.session?.user)) {
+      throw new Error("Admin session valid nahi hai. Dobara login karo.");
     }
-
-    const nextPublished = video.published !== true;
 
     const updates = {
       published: nextPublished,
       approval_status: nextPublished ? "approved" : "pending"
     };
 
-    const { error: updateError } = await supabase
+    const { data, error } = await supabase
       .from("videos")
       .update(updates)
-      .eq("id", video.id);
-
-    if (updateError) {
-      throw new Error(
-        "Supabase UPDATE error: " +
-        updateError.message +
-        (updateError.code ? " | Code: " + updateError.code : "")
-      );
-    }
-
-    const { data: savedVideo, error: readError } = await supabase
-      .from("videos")
-      .select("id, published, approval_status")
       .eq("id", video.id)
-      .maybeSingle();
+      .select("id, published, approval_status");
 
-    if (readError) {
-      throw new Error("Update ke baad verify nahi hua: " + readError.message);
-    }
-
-    if (!savedVideo) {
-      throw new Error(
-        "Video row read nahi hui. ID aur SELECT policy check karo."
-      );
-    }
-
-    if (savedVideo.published !== nextPublished) {
-      throw new Error(
-        "Database mein status change save nahi hua. Saved published value: " +
-        String(savedVideo.published)
-      );
+    if (error) throw error;
+    if (!data?.length) {
+      throw new Error("Update save nahi hua. Permissions check karo.");
     }
 
     await loadVideos();
 
-    alert(
-      savedVideo.published
-        ? "Video successfully Published!"
-        : "Video successfully Unpublished!"
-    );
+    alert(nextPublished
+      ? "Video successfully published!"
+      : "Video unpublished ho gayi.");
   } catch (error) {
-    console.error("DesiVexa publish/unpublish:", error);
-    alert(
-      "Publish error:\n" +
-      (error.message || String(error)) +
-      (error.code ? "\nCode: " + error.code : "")
-    );
+    alert("Publish error: " + error.message);
   } finally {
     busy = false;
     setBusy(button, false);
@@ -656,10 +705,10 @@ async function togglePublished(video, button) {
 
 // DELETE VIDEO
 async function deleteVideo(video, button) {
-  if (busy) return;
+  if (busy || !isAdmin(currentUser)) return;
 
   if (!confirm(
-    `Kya tum "${video.title || "is video"}" ko delete karna chahte ho? Ye action undo nahi hoga.`
+    `"${video.title || "is video"}" ko permanently delete karna hai? Ye action undo nahi hoga.`
   )) return;
 
   busy = true;
@@ -673,7 +722,6 @@ async function deleteVideo(video, button) {
       .select("id");
 
     if (error) throw error;
-
     if (!data?.length) {
       throw new Error("Video delete nahi hui. Permissions check karo.");
     }
@@ -703,7 +751,7 @@ async function deleteVideo(video, button) {
     }
 
     await loadVideos();
-    alert("Video delete ho gayi.");
+    alert("Video database se delete ho gayi.");
   } catch (error) {
     alert("Delete error: " + error.message);
   } finally {
@@ -739,10 +787,9 @@ async function uploadToBucket(bucket, file, folder) {
 // ADMIN VIDEO UPLOAD
 $("uploadForm")?.addEventListener("submit", async (event) => {
   event.preventDefault();
-
   if (busy) return;
 
-  if (!currentUser || currentUser.id !== ADMIN_UID) {
+  if (!isAdmin(currentUser)) {
     message(uploadMessage, "Pehle admin login karo.");
     return;
   }
@@ -798,11 +845,7 @@ $("uploadForm")?.addEventListener("submit", async (event) => {
       thumbnailURL = uploadedThumb.publicUrl || uploadedThumb.path;
     }
 
-    // Public URL store karo, agar bucket public hai.
-    // Private bucket ke liye video player ko signed URL banana hoga.
-    const videoURL = uploadedVideo.publicUrl;
-
-    if (!videoURL) {
+    if (!uploadedVideo.publicUrl) {
       throw new Error("Video public URL create nahi hua.");
     }
 
@@ -811,18 +854,15 @@ $("uploadForm")?.addEventListener("submit", async (event) => {
       title,
       category,
       description,
-      video_url: videoURL,
+      video_url: uploadedVideo.publicUrl,
       thumbnail_url: thumbnailURL,
       published,
       approval_status: published ? "approved" : "pending",
       views: 0
     };
 
-    const { error: insertError } = await supabase
-      .from("videos")
-      .insert(row);
-
-    if (insertError) throw insertError;
+    const { error } = await supabase.from("videos").insert(row);
+    if (error) throw error;
 
     $("uploadForm").reset();
 
@@ -830,12 +870,12 @@ $("uploadForm")?.addEventListener("submit", async (event) => {
       uploadMessage,
       published
         ? "Video upload aur publish ho gayi."
-        : "Video upload ho gayi; Pending hai."
+        : "Video upload ho gayi; approval pending hai."
     );
 
     await loadVideos();
   } catch (error) {
-    message(uploadMessage, "Upload error: " + (error.message || "Unknown error"));
+    message(uploadMessage, "Upload error: " + error.message);
 
     if (uploadedVideoPath) {
       await supabase.storage.from(VIDEO_BUCKET).remove([uploadedVideoPath]);
@@ -863,7 +903,7 @@ supabase.auth.onAuthStateChange((event, session) => {
     return;
   }
 
-  if (user.id !== ADMIN_UID) {
+  if (!isAdmin(user)) {
     currentUser = null;
     showLogin();
     return;
@@ -873,9 +913,7 @@ supabase.auth.onAuthStateChange((event, session) => {
   showDashboard();
 
   if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
-    setTimeout(() => {
-      loadVideos();
-    }, 0);
+    loadVideos();
   }
 });
 
