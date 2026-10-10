@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Video Approvals - DesiVexa</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101010;color:#fff;font-family:Arial,sans-serif;padding:18px}
+main{max-width:800px;margin:auto}
+h1{color:#ff3030}
+.card{background:#1c1c1c;border:1px solid #333;border-radius:12px;padding:16px;margin:14px 0}
+button{border:0;border-radius:7px;padding:12px;margin:5px 5px 5px 0;color:#fff;background:#e50914;font-weight:bold}
+.secondary{background:#444}
+p{overflow-wrap:anywhere;color:#ccc}
+a{color:#ff5555}
+#msg{color:#ffcf70}
+</style>
+</head>
+<body>
+<main>
+<h1>DesiVexa · Video Approvals</h1>
+<p>Admin only — review submissions before publishing.</p>
+<p><a href="admin.html">← Admin Dashboard</a></p>
+<p id="msg">Checking admin account...</p>
+<div id="list"></div>
+</main>
+
+<script type="module">
+import { createClient } from
+'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+
+const ADMIN_UID = '3ec24639-7bbf-4acc-84a8-b0ce18c75159';
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const $ = id => document.getElementById(id);
+
+async function init() {
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error || !data.user) {
+    $('msg').textContent = 'Please login with the admin account.';
+    return;
+  }
+
+  if (data.user.id !== ADMIN_UID) {
+    $('msg').textContent = 'Access denied: this account is not the admin.';
+    return;
+  }
+
+  $('msg').textContent = 'Admin verified. Loading pending videos...';
+  await loadPending();
+}
+
+async function loadPending() {
+  const { data, error } = await supabase
+    .from('videos')
+    .select('id,title,category,description,created_at,user_id,thumbnail_url')
+    .eq('published', false)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    $('msg').textContent = 'Could not load submissions: ' + error.message;
+    return;
+  }
+
+  $('list').replaceChildren();
+
+  if (!data.length) {
+    $('msg').textContent = 'No pending videos right now.';
+    return;
+  }
+
+  $('msg').textContent = data.length + ' pending submission(s).';
+
+  for (const v of data) {
+    const card = document.createElement('section');
+    card.className = 'card';
+
+    const title = document.createElement('h3');
+    title.textContent = v.title || 'Untitled video';
+
+    const category = document.createElement('p');
+    category.textContent = 'Category: ' + (v.category || '—');
+
+    const description = document.createElement('p');
+    description.textContent = v.description || 'No description';
+
+    const owner = document.createElement('p');
+    owner.textContent = 'Uploader ID: ' + (v.user_id || 'Not recorded');
+
+    const date = document.createElement('p');
+    date.textContent = 'Submitted: ' +
+      (v.created_at ? new Date(v.created_at).toLocaleString() : 'Unknown');
+
+    card.append(title, category, description, owner, date);
+
+    const approve = document.createElement('button');
+    approve.textContent = 'Approve & Publish';
+    approve.onclick = async () => {
+      if (!confirm('Approve this video and make it public?')) return;
+
+      approve.disabled = true;
+      const { error } = await supabase
+        .from('videos')
+        .update({ published: true })
+        .eq('id', v.id)
+        .eq('published', false);
+
+      if (error) {
+        alert('Approval failed: ' + error.message);
+        approve.disabled = false;
+        return;
+      }
+
+      alert('Video approved.');
+      await loadPending();
+    };
+
+    card.append(approve);
+    $('list').append(card);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
