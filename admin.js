@@ -1,53 +1,91 @@
-
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
+/* ==============================
+   DESIVEXA ADMIN CONFIG
+============================== */
+
 const ADMIN_UID = "3ec24639-7bbf-4acc-84a8-b0ce18c75159";
+
 const VIDEO_BUCKET = "videos";
 const THUMB_BUCKET = "thumbnails";
 const PER_PAGE = 12;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const $ = (selector, root = document) => root.querySelector(selector);
+/* ==============================
+   ELEMENTS
+============================== */
 
-const authBox = $("#auth");
-const panel = $("#panel");
-const manage = $("#manage");
-const pagination = $("#adminPagination");
-const uploadForm = $("#upload");
-const uploadBtn = $("#uploadBtn");
-const statusBox = $("#status");
+const $ = (id) => document.getElementById(id);
 
-const statTotal = $("#statTotal");
-const statPublished = $("#statPublished");
-const statHidden = $("#statHidden");
-const statViews = $("#statViews");
+const authBox = $("auth");
+const panel = $("panel");
+const loginForm = $("loginForm");
+const loginBtn = $("loginBtn");
+const logoutBtn = $("logoutBtn");
+const globalStatus = $("globalStatus");
 
-const searchInput = $("#adminSearch");
-const filterInput = $("#adminFilter");
+const uploadForm = $("uploadForm");
+const uploadBtn = $("uploadBtn");
+const uploadStatus = $("uploadStatus");
 
-let videos = [];
+const videoList = $("videoList");
+const pagination = $("pagination");
+const searchInput = $("searchInput");
+const filterSelect = $("filterSelect");
+const manageStatus = $("manageStatus");
+
+const previewModal = $("videoPreviewModal");
+const previewVideo = $("previewVideo");
+const previewInfo = $("previewInfo");
+
+const editModal = $("editModal");
+const editForm = $("editForm");
+const editStatus = $("editStatus");
+
+/* ==============================
+   STATE
+============================== */
+
+let allVideos = [];
 let currentPage = 1;
 let busy = false;
+let eventsAttached = false;
 
-/* ===============================
+/* ==============================
    HELPERS
-================================ */
+============================== */
 
-function message(text, type = "info") {
-  if (!statusBox) {
-    console.log(text);
-    return;
-  }
+function showStatus(element, message, type = "") {
+  if (!element) return;
 
-  statusBox.textContent = text;
-  statusBox.dataset.type = type;
-  statusBox.style.display = "block";
+  element.textContent = message;
+  element.className = "status" + (type ? " " + type : "");
+  element.hidden = false;
 }
 
-function escapeHTML(value = "") {
-  return String(value).replace(/[&<>"']/g, char => ({
+function clearStatus(element) {
+  if (!element) return;
+  element.textContent = "";
+  element.hidden = true;
+}
+
+function setButtonBusy(button, isBusy, busyText = "Please wait...") {
+  if (!button) return;
+
+  if (isBusy) {
+    button.dataset.originalText = button.textContent;
+    button.textContent = busyText;
+    button.disabled = true;
+  } else {
+    button.textContent = button.dataset.originalText || button.textContent;
+    button.disabled = false;
+  }
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
@@ -56,263 +94,204 @@ function escapeHTML(value = "") {
   })[char]);
 }
 
-function getStoragePath(bucket, value) {
-  if (!value) return null;
+function formatNumber(value) {
+  return Number(value || 0).toLocaleString("en-IN");
+}
 
-  let path = String(value).trim();
+function formatDate(value) {
+  if (!value) return "Date unavailable";
 
-  if (/^https?:\/\//i.test(path)) {
-    let url;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Date unavailable";
 
-    try {
-      url = new URL(path);
-    } catch {
-      throw new Error("Storage URL valid nahi hai.");
-    }
+  return date.toLocaleString("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short"
+  });
+}
 
-    if (!url.hostname.endsWith(".supabase.co")) {
-      throw new Error("External URL ko Supabase Storage se delete nahi kar sakte.");
-    }
+function isPublished(video) {
+  return video.published === true;
+}
 
-    const match = url.pathname.match(
-      /\/storage\/v1\/object\/(?:public|authenticated|sign)\/([^/]+)\/(.+)$/
+function fileExtension(file, fallback) {
+  const name = file?.name || "";
+  const match = name.match(/\.([a-zA-Z0-9]{1,8})$/);
+  return match ? match[1].toLowerCase() : fallback;
+}
+
+function storagePathFromUrl(url, bucket) {
+  if (!url) return null;
+
+  try {
+    const parsed = new URL(url);
+    const marker = `/storage/v1/object/`;
+    const markerIndex = parsed.pathname.indexOf(marker);
+
+    if (markerIndex === -1) return null;
+
+    const rest = parsed.pathname.slice(markerIndex + marker.length);
+    const parts = rest.split("/");
+    const objectIndex = parts.findIndex((part) =>
+      part === "public" ||
+      part === "sign" ||
+      part === "authenticated"
     );
 
-    if (!match) {
-      throw new Error("Storage URL se file path nahi mila.");
-    }
+    if (objectIndex === -1) return null;
 
-    const urlBucket = decodeURIComponent(match[1]);
+    const bucketName = parts[objectIndex + 1];
 
-    if (urlBucket !== bucket) {
-      throw new Error(`Galat bucket: ${urlBucket}`);
-    }
+    if (bucketName !== bucket) return null;
 
-    path = decodeURIComponent(match[2]);
+    return parts.slice(objectIndex + 2)
+      .map((part) => decodeURIComponent(part))
+      .join("/");
+  } catch {
+    return null;
   }
-
-  path = path.replace(/^\/+/, "");
-
-  if (path.startsWith(bucket + "/")) {
-    path = path.slice(bucket.length + 1);
-  }
-
-  if (!path) throw new Error("Storage file path khaali hai.");
-
-  return path;
 }
 
-/* ===============================
-   STEP 2: STORAGE URL
-================================ */
+function getPublicUrl(bucket, path) {
+  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+  return data?.publicUrl || "";
+}
 
-async function storageUrl(bucket, value) {
-  if (!value) return "";
+async function getPlayableUrl(bucket, storedUrl) {
+  if (!storedUrl) return "";
 
-  const raw = String(value).trim();
+  const path = storagePathFromUrl(storedUrl, bucket);
 
-  if (/^https?:\/\//i.test(raw)) {
-    let url;
-
-    try {
-      url = new URL(raw);
-    } catch {
-      throw new Error("Video ya thumbnail URL valid nahi hai.");
-    }
-
-    if (!url.hostname.endsWith(".supabase.co")) {
-      return raw;
-    }
-
-    if (
-      /\/storage\/v1\/object\/(?:public|authenticated|sign)\//.test(
-        url.pathname
-      )
-    ) {
-      // Existing signed/public URL ko reuse karo.
-      return raw;
-    }
-  }
-
-  const path = getStoragePath(bucket, raw);
-
-  // Private bucket: signed URL.
-  const { data: signedData, error: signedError } =
-    await supabase.storage
+  if (path) {
+    const { data, error } = await supabase.storage
       .from(bucket)
-      .createSignedUrl(path, 3600);
+      .createSignedUrl(path, 60 * 60);
 
-  if (!signedError && signedData?.signedUrl) {
-    return signedData.signedUrl;
+    if (!error && data?.signedUrl) {
+      return data.signedUrl;
+    }
   }
 
-  // Public bucket fallback.
-  const { data: publicData } = supabase.storage
-    .from(bucket)
-    .getPublicUrl(path);
-
-  if (publicData?.publicUrl) {
-    return publicData.publicUrl;
-  }
-
-  throw signedError || new Error("Storage URL generate nahi hui.");
+  // Public buckets ke liye saved URL fallback.
+  return storedUrl;
 }
 
-/* ===============================
-   ADMIN AUTH
-================================ */
+function getErrorMessage(error) {
+  return error?.message || String(error || "Unknown error");
+}
 
-async function checkAdmin() {
+/* ==============================
+   AUTH / PAGE VISIBILITY
+============================== */
+
+function showLogin(message = "") {
+  authBox.hidden = false;
+  authBox.style.display = "block";
+
+  panel.hidden = true;
+  panel.style.display = "none";
+
+  logoutBtn.hidden = true;
+
+  if (message) {
+    showStatus($("loginStatus"), message, "error");
+  } else {
+    clearStatus($("loginStatus"));
+  }
+}
+
+function showDashboard() {
+  authBox.hidden = true;
+  authBox.style.display = "none";
+
+  panel.hidden = false;
+  panel.style.display = "block";
+
+  logoutBtn.hidden = false;
+  clearStatus(globalStatus);
+}
+
+async function requireAdmin() {
   const { data, error } = await supabase.auth.getUser();
 
   if (error) throw error;
 
-  if (!data.user || data.user.id !== ADMIN_UID) {
-    throw new Error("Admin permission nahi hai. Sahi account se login karo.");
+  const user = data?.user;
+
+  if (!user) {
+    throw new Error("Please log in first.");
   }
 
-  return data.user;
+  if (user.id !== ADMIN_UID) {
+    await supabase.auth.signOut();
+    throw new Error("This account is not authorized as the admin.");
+  }
+
+  return user;
 }
 
-function showLogin() {
-  if (!authBox) {
-    message("admin.html mein #auth element missing hai.", "error");
-    return;
-  }
+/* ==============================
+   LOGIN / LOGOUT
+============================== */
 
-  if (panel) panel.style.display = "none";
+loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  clearStatus($("loginStatus"));
 
-  authBox.style.display = "block";
+  const email = $("email").value.trim();
+  const password = $("password").value;
 
-  authBox.innerHTML = `
-    <div class="admin-login-card">
-      <h2>DesiVexa Admin</h2>
-      <p>Admin account se login karo.</p>
-
-      <form id="adminLoginForm">
-        <label>Email</label>
-        <input id="adminEmail" type="email"
-          autocomplete="username" required placeholder="Admin email">
-
-        <label>Password</label>
-        <input id="adminPassword" type="password"
-          autocomplete="current-password" required placeholder="Password">
-
-        <button id="adminLoginBtn" type="submit">Login</button>
-        <p id="adminLoginMessage" role="status"></p>
-      </form>
-    </div>
-  `;
-
-  $("#adminLoginForm").addEventListener("submit", async event => {
-    event.preventDefault();
-
-    const btn = $("#adminLoginBtn");
-    const output = $("#adminLoginMessage");
-
-    btn.disabled = true;
-    output.textContent = "Login ho raha hai...";
-
-    try {
-      const email = $("#adminEmail").value.trim();
-      const password = $("#adminPassword").value;
-
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-
-      if (error) throw error;
-
-      await checkAdmin();
-
-      authBox.style.display = "none";
-      if (panel) panel.style.display = "block";
-
-      setupEvents();
-      await load();
-    } catch (error) {
-      await supabase.auth.signOut();
-      output.textContent = error.message || "Login failed.";
-    } finally {
-      btn.disabled = false;
-    }
-  });
-}
-
-async function boot() {
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    message("config.js ki settings check karo.", "error");
-    return;
-  }
-
-  const { data, error } = await supabase.auth.getSession();
-
-  if (error || !data.session) {
-    showLogin();
-    return;
-  }
+  setButtonBusy(loginBtn, true, "Logging in...");
 
   try {
-    await checkAdmin();
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
 
-    if (authBox) authBox.style.display = "none";
-    if (panel) panel.style.display = "block";
+    if (error) throw error;
 
-    setupEvents();
-    await load();
-  } catch {
-    await supabase.auth.signOut();
-    showLogin();
+    await requireAdmin();
+    showDashboard();
+    attachEvents();
+    await loadVideos();
+
+  } catch (error) {
+    await supabase.auth.signOut().catch(() => {});
+    showLogin(getErrorMessage(error));
+  } finally {
+    setButtonBusy(loginBtn, false);
   }
-}
+});
 
-/* ===============================
-   EVENTS
-================================ */
+logoutBtn.addEventListener("click", async () => {
+  logoutBtn.disabled = true;
 
-function setupEvents() {
-  if (setupEvents.done) return;
-  setupEvents.done = true;
-
-  searchInput?.addEventListener("input", () => {
-    currentPage = 1;
-    render();
-  });
-
-  filterInput?.addEventListener("change", () => {
-    currentPage = 1;
-    render();
-  });
-
-  $("#refreshVideos")?.addEventListener("click", load);
-
-  $("#adminLogout")?.addEventListener("click", async () => {
+  try {
     await supabase.auth.signOut();
-    showLogin();
-  });
+    allVideos = [];
+    videoList.innerHTML = "";
+    pagination.innerHTML = "";
+    showLogin("You have been logged out.");
+  } catch (error) {
+    showStatus(globalStatus, getErrorMessage(error), "error");
+  } finally {
+    logoutBtn.disabled = false;
+  }
+});
 
-  $("#closeVideoPreview")?.addEventListener("click", closePreview);
-
-  $("#videoPreviewModal")?.addEventListener("click", event => {
-    if (event.target.id === "videoPreviewModal") closePreview();
-  });
-
-  uploadForm?.addEventListener("submit", uploadVideo);
-}
-
-/* ===============================
+/* ==============================
    LOAD VIDEOS
-================================ */
+============================== */
 
-async function load() {
+async function loadVideos() {
   if (busy) return;
-  busy = true;
 
-  if (manage) manage.innerHTML = "<p>Videos load ho rahi hain...</p>";
+  busy = true;
+  showStatus(manageStatus, "Loading videos...");
 
   try {
-    await checkAdmin();
+    await requireAdmin();
 
     const { data, error } = await supabase
       .from("videos")
@@ -321,494 +300,236 @@ async function load() {
 
     if (error) throw error;
 
-    videos = data || [];
+    allVideos = data || [];
     currentPage = 1;
 
     updateStats();
-    render();
+    renderVideos();
 
-    message(`${videos.length} videos load ho gayi.`, "success");
-  } catch (error) {
-    console.error(error);
+    clearStatus(manageStatus);
 
-    if (manage) {
-      manage.innerHTML =
-        `<p>Load error: ${escapeHTML(error.message)}</p>`;
+    if (allVideos.length === 0) {
+      showStatus(manageStatus, "Abhi videos table mein koi video nahi hai.");
     }
-
-    message("Videos load nahi hui: " + error.message, "error");
+  } catch (error) {
+    showStatus(manageStatus, "Videos load nahi hue: " + getErrorMessage(error), "error");
   } finally {
     busy = false;
   }
 }
 
-/* ===============================
-   STATS
-================================ */
+/* ==============================
+   DASHBOARD STATS
+============================== */
 
 function updateStats() {
-  const published = videos.filter(v => v.published === true);
-  const hidden = videos.filter(v => v.published !== true);
+  const total = allVideos.length;
+  const published = allVideos.filter(isPublished).length;
+  const hidden = total - published;
 
-  if (statTotal) statTotal.textContent = videos.length;
-  if (statPublished) statPublished.textContent = published.length;
-  if (statHidden) statHidden.textContent = hidden.length;
+  const views = allVideos.reduce((sum, video) => {
+    return sum + (Number(video.views) || 0);
+  }, 0);
 
-  const totalViews = videos.reduce(
-    (sum, video) => sum + (Number(video.views) || 0),
-    0
-  );
-
-  if (statViews) statViews.textContent = totalViews.toLocaleString();
+  $("statTotal").textContent = formatNumber(total);
+  $("statPublished").textContent = formatNumber(published);
+  $("statHidden").textContent = formatNumber(hidden);
+  $("statViews").textContent = formatNumber(views);
 }
 
-/* ===============================
-   FILTER
-================================ */
+/* ==============================
+   SEARCH / FILTER / PAGINATION
+============================== */
 
-function filteredVideos() {
-  const term = (searchInput?.value || "").trim().toLowerCase();
-  const filter = filterInput?.value || "all";
+function getFilteredVideos() {
+  const search = searchInput.value.trim().toLowerCase();
+  const filter = filterSelect.value;
 
-  return videos.filter(video => {
-    const searchable = [
-      video.title,
-      video.category,
-      video.description,
-      video.id
-    ].join(" ").toLowerCase();
+  return allVideos.filter((video) => {
+    const title = String(video.title || "").toLowerCase();
+    const category = String(video.category || "").toLowerCase();
 
-    if (term && !searchable.includes(term)) return false;
+    const matchesSearch =
+      !search ||
+      title.includes(search) ||
+      category.includes(search);
 
-    if (filter === "published" && video.published !== true) return false;
+    const matchesFilter =
+      filter === "all" ||
+      (filter === "published" && isPublished(video)) ||
+      (filter === "hidden" && !isPublished(video));
 
-    if (filter === "pending" && video.published === true) return false;
-
-    if (filter === "hidden" && video.published === true) return false;
-
-    return true;
+    return matchesSearch && matchesFilter;
   });
 }
 
-/* ===============================
-   RENDER + PAGINATION
-================================ */
+function renderVideos() {
+  const filtered = getFilteredVideos();
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
 
-function render() {
-  if (!manage) return;
-
-  const list = filteredVideos();
-  const totalPages = Math.max(1, Math.ceil(list.length / PER_PAGE));
-
-  currentPage = Math.min(currentPage, totalPages);
+  if (currentPage > totalPages) currentPage = totalPages;
+  if (currentPage < 1) currentPage = 1;
 
   const start = (currentPage - 1) * PER_PAGE;
-  const pageVideos = list.slice(start, start + PER_PAGE);
+  const pageVideos = filtered.slice(start, start + PER_PAGE);
 
-  if (!list.length) {
-    manage.innerHTML = "<p>Koi video nahi mili.</p>";
-    renderPagination(0);
-    return;
-  }
+  if (filtered.length === 0) {
+    videoList.innerHTML = '<div class="card empty">Koi video nahi mila.</div>';
+  } else {
+    videoList.innerHTML = pageVideos.map((video) => {
+      const published = isPublished(video);
 
-  manage.innerHTML = pageVideos.map(video => {
-    const id = escapeHTML(video.id);
-    const title = escapeHTML(video.title || "Untitled");
-    const category = escapeHTML(video.category || "Uncategorized");
-    const published = video.published === true;
+      const thumbnail = video.thumbnail_url
+        ? escapeHTML(video.thumbnail_url)
+        : "";
 
-    return `
-      <article class="admin-video-card" data-video-card="${id}">
-        <img
-          data-thumb-id="${id}"
-          alt="${title}"
-          loading="lazy"
-          style="width:100%;aspect-ratio:16/9;object-fit:cover"
-        >
+      return `
+        <article class="admin-video-card">
+          <div class="video-row">
+            <img
+              class="thumb"
+              src="${thumbnail}"
+              alt="Video thumbnail"
+              loading="lazy"
+              onerror="this.style.visibility='hidden'"
+            >
 
-        <div class="admin-video-info">
-          <h3>${title}</h3>
-          <p>Category: ${category}</p>
-          <p>Status: <strong>${published ? "Published" : "Pending / Hidden"}</strong></p>
-          <p>Views: ${Number(video.views) || 0}</p>
+            <div class="video-info">
+              <div class="video-title">${escapeHTML(video.title || "Untitled video")}</div>
 
-          <div class="admin-video-actions">
-            <button data-action="preview" data-id="${id}" type="button">Preview</button>
-            <button data-action="edit" data-id="${id}" type="button">Edit</button>
-            <button data-action="publish" data-id="${id}" type="button">
+              <div class="meta">
+                Category: ${escapeHTML(video.category || "Uncategorized")}<br>
+                Status: ${published ? "Published" : "Hidden / Pending"}<br>
+                Views: ${formatNumber(video.views)}<br>
+                Added: ${escapeHTML(formatDate(video.created_at))}
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn" data-action="preview" data-id="${escapeHTML(video.id)}">
+              Preview
+            </button>
+
+            <button class="btn" data-action="edit" data-id="${escapeHTML(video.id)}">
+              Edit
+            </button>
+
+            <button class="btn ${published ? "" : "btn-green"}"
+                    data-action="toggle" data-id="${escapeHTML(video.id)}">
               ${published ? "Unpublish" : "Publish"}
             </button>
-            <button data-action="delete" data-id="${id}" type="button">Delete</button>
+
+            <button class="btn btn-danger" data-action="delete"
+                    data-id="${escapeHTML(video.id)}">
+              Delete
+            </button>
           </div>
-        </div>
-      </article>
-    `;
-  }).join("");
-
-  for (const video of pageVideos) {
-    const image = manage.querySelector(
-      `[data-thumb-id="${CSS.escape(String(video.id))}"]`
-    );
-
-    if (!image || !video.thumbnail_url) continue;
-
-    storageUrl(THUMB_BUCKET, video.thumbnail_url)
-      .then(url => { image.src = url; })
-      .catch(error => {
-        console.warn("Thumbnail error:", error);
-        image.alt = "Thumbnail unavailable";
-      });
+        </article>
+      `;
+    }).join("");
   }
 
-  manage.querySelectorAll("[data-action]").forEach(button => {
-    button.addEventListener("click", async () => {
-      const { id, action } = button.dataset;
-
-      if (action === "preview") await previewVideo(id);
-      if (action === "edit") await editVideo(id);
-
-      if (action === "publish") {
-        const video = videos.find(v => String(v.id) === String(id));
-        if (video) await setPublished(id, video.published !== true);
-      }
-
-      if (action === "delete") await deleteVideo(id);
-    });
-  });
-
-  renderPagination(list.length);
+  renderPagination(totalPages, filtered.length);
 }
 
-function renderPagination(totalItems) {
-  if (!pagination) return;
+function renderPagination(totalPages, totalItems) {
+  pagination.innerHTML = "";
 
-  const totalPages = Math.max(1, Math.ceil(totalItems / PER_PAGE));
+  if (totalItems <= PER_PAGE) return;
 
-  pagination.innerHTML = `
-    <button type="button" data-page="${currentPage - 1}"
-      ${currentPage <= 1 ? "disabled" : ""}>Previous</button>
-    <span>Page ${currentPage} / ${totalPages}</span>
-    <button type="button" data-page="${currentPage + 1}"
-      ${currentPage >= totalPages ? "disabled" : ""}>Next</button>
-  `;
+  const addButton = (label, page, disabled = false, active = false) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "page-btn" + (active ? " active" : "");
+    button.textContent = label;
+    button.disabled = disabled;
 
-  pagination.querySelectorAll("[data-page]").forEach(button => {
     button.addEventListener("click", () => {
-      const page = Number(button.dataset.page);
-
-      if (page < 1 || page > totalPages) return;
-
       currentPage = page;
-      render();
-
-      manage?.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
+      renderVideos();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
-  });
-}
 
-/* ===============================
-   VIDEO PREVIEW
-================================ */
+    pagination.appendChild(button);
+  };
 
-async function previewVideo(id) {
-  const video = videos.find(v => String(v.id) === String(id));
-  if (!video) return;
+  addButton("Prev", currentPage - 1, currentPage === 1);
 
-  const modal = $("#videoPreviewModal");
-  const player = $("#previewPlayer");
-  const title = $("#previewTitle");
-  const info = $("#previewInfo");
-  const errorBox = $("#previewError");
+  // Show first page, nearby pages, and last page.
+  const pages = new Set([1, totalPages]);
 
-  if (!modal || !player) {
-    alert("Preview elements admin.html mein missing hain.");
-    return;
+  for (let page = currentPage - 2; page <= currentPage + 2; page++) {
+    if (page >= 1 && page <= totalPages) pages.add(page);
   }
 
-  if (title) title.textContent = video.title || "Untitled";
+  const sortedPages = [...pages].sort((a, b) => a - b);
+  let previous = 0;
 
-  if (info) {
-    info.textContent =
-      `Category: ${video.category || "N/A"} | Views: ${Number(video.views) || 0}`;
-  }
-
-  if (errorBox) errorBox.textContent = "Video load ho rahi hai...";
-
-  modal.style.display = "flex";
-  player.pause();
-  player.removeAttribute("src");
-  player.load();
-
-  try {
-    const url = await storageUrl(VIDEO_BUCKET, video.video_url);
-    if (!url) throw new Error("Video URL nahi mili.");
-
-    player.src = url;
-    player.load();
-
-    if (errorBox) errorBox.textContent = "";
-
-    player.play().catch(() => {});
-  } catch (error) {
-    if (errorBox) errorBox.textContent = "Preview error: " + error.message;
-  }
-}
-
-function closePreview() {
-  const modal = $("#videoPreviewModal");
-  const player = $("#previewPlayer");
-
-  if (player) {
-    player.pause();
-    player.removeAttribute("src");
-    player.load();
-  }
-
-  if (modal) modal.style.display = "none";
-}
-
-/* ===============================
-   PUBLISH / UNPUBLISH
-================================ */
-
-async function setPublished(id, published) {
-  try {
-    await checkAdmin();
-
-    const { error } = await supabase
-      .from("videos")
-      .update({ published })
-      .eq("id", id);
-
-    if (error) throw error;
-
-    message(
-      published ? "Video publish ho gayi." : "Video unpublish ho gayi.",
-      "success"
-    );
-
-    await load();
-  } catch (error) {
-    message("Status update failed: " + error.message, "error");
-  }
-}
-
-/* ===============================
-   EDIT VIDEO
-================================ */
-
-async function editVideo(id) {
-  const video = videos.find(v => String(v.id) === String(id));
-  if (!video) return;
-
-  const title = prompt("Video title:", video.title || "");
-  if (title === null) return;
-
-  const category = prompt("Category:", video.category || "");
-  if (category === null) return;
-
-  const description = prompt("Description:", video.description || "");
-  if (description === null) return;
-
-  if (!title.trim()) {
-    alert("Title khaali nahi ho sakta.");
-    return;
-  }
-
-  try {
-    await checkAdmin();
-
-    const { error } = await supabase
-      .from("videos")
-      .update({
-        title: title.trim(),
-        category: category.trim(),
-        description: description.trim()
-      })
-      .eq("id", id);
-
-    if (error) throw error;
-
-    message("Video details update ho gayi.", "success");
-    await load();
-  } catch (error) {
-    message("Edit failed: " + error.message, "error");
-  }
-}
-
-/* ===============================
-   PERMANENT DELETE
-================================ */
-
-async function deleteVideo(id) {
-  const video = videos.find(v => String(v.id) === String(id));
-
-  if (!video) {
-    alert("Video nahi mili. Dashboard refresh karo.");
-    return;
-  }
-
-  const confirmed = confirm(
-    "PERMANENT DELETE\n\n" +
-    `Video: ${video.title || "Untitled"}\n\n` +
-    "Database record, video file aur thumbnail file delete karne ki " +
-    "koshish hogi. Yeh action undo nahi kiya ja sakta.\n\n" +
-    "Kya tum sure ho?"
-  );
-
-  if (!confirmed) return;
-
-  const card = manage?.querySelector(
-    `[data-video-card="${CSS.escape(String(id))}"]`
-  );
-  const buttons = card ? card.querySelectorAll("button") : [];
-
-  buttons.forEach(button => { button.disabled = true; });
-
-  try {
-    await checkAdmin();
-
-    const videoPath = getStoragePath(VIDEO_BUCKET, video.video_url);
-    const thumbPath = getStoragePath(THUMB_BUCKET, video.thumbnail_url);
-
-    if (videoPath) {
-      const { error } = await supabase.storage
-        .from(VIDEO_BUCKET)
-        .remove([videoPath]);
-
-      if (error) {
-        throw new Error("Video file delete nahi hui: " + error.message);
-      }
+  for (const page of sortedPages) {
+    if (previous && page - previous > 1) {
+      const dots = document.createElement("span");
+      dots.className = "page-btn";
+      dots.textContent = "...";
+      dots.disabled = true;
+      pagination.appendChild(dots);
     }
 
-    if (thumbPath) {
-      const { error } = await supabase.storage
-        .from(THUMB_BUCKET)
-        .remove([thumbPath]);
-
-      if (error) {
-        throw new Error("Thumbnail delete nahi hui: " + error.message);
-      }
-    }
-
-    const { data, error } = await supabase
-      .from("videos")
-      .delete()
-      .eq("id", id)
-      .select("id");
-
-    if (error) {
-      throw new Error("Database record delete nahi hua: " + error.message);
-    }
-
-    if (!data?.length) {
-      throw new Error("Database record delete nahi hua. DELETE policy check karo.");
-    }
-
-    alert("Video file, thumbnail aur database record delete ho gaye.");
-    await load();
-  } catch (error) {
-    console.error("Delete failed:", error);
-
-    alert(
-      "Delete poora nahi ho saka:\n" +
-      error.message +
-      "\n\nSupabase permissions aur Storage paths check karo."
-    );
-
-    await load();
-  } finally {
-    buttons.forEach(button => { button.disabled = false; });
-  }
-}
-
-/* ===============================
-   UPLOAD HELPERS
-================================ */
-
-function findField(names, type = null) {
-  for (const name of names) {
-    const element =
-      document.getElementById(name) ||
-      uploadForm?.querySelector(`[name="${name}"]`);
-
-    if (element) return element;
+    addButton(String(page), page, false, page === currentPage);
+    previous = page;
   }
 
-  return type
-    ? uploadForm?.querySelector(`input[type="${type}"]`) || null
-    : null;
+  addButton("Next", currentPage + 1, currentPage === totalPages);
 }
 
-/* ===============================
+/* ==============================
    UPLOAD VIDEO
-================================ */
+============================== */
 
-async function uploadVideo(event) {
+uploadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  clearStatus(uploadStatus);
 
-  if (busy) return;
+  const title = $("uploadTitle").value.trim();
+  const category = $("uploadCategory").value.trim();
+  const description = $("uploadDescription").value.trim();
 
-  const titleField = findField(["uploadTitle", "videoTitle", "title"]);
-  const categoryField = findField(["uploadCategory", "videoCategory", "category"]);
-  const descriptionField = findField([
-    "uploadDescription", "videoDescription", "description"
-  ]);
-  const videoField = findField([
-    "uploadVideoFile", "videoFile", "video", "video_file"
-  ], "file");
-  const thumbField = findField([
-    "uploadThumbnailFile", "thumbnailFile", "thumbnail", "thumbnail_file"
-  ], "file");
+  const thumbnailFile = $("uploadThumbnail").files?.[0];
+  const videoFile = $("uploadVideo").files?.[0];
+  const published = $("uploadPublished").checked;
+  const rightsConfirmed = $("rightsConfirm").checked;
 
-  const title = titleField?.value?.trim() || "";
-  const category = categoryField?.value?.trim() || "";
-  const description = descriptionField?.value?.trim() || "";
-  const videoFile = videoField?.files?.[0];
-  const thumbFile = thumbField?.files?.[0];
-
-  if (!title) {
-    message("Video title daalo.", "error");
-    titleField?.focus();
+  if (!title || !category) {
+    showStatus(uploadStatus, "Title aur category bharna zaroori hai.", "error");
     return;
   }
 
-  if (!videoFile) {
-    message("Video file select karo.", "error");
-    videoField?.focus();
+  if (!thumbnailFile || !videoFile) {
+    showStatus(uploadStatus, "Thumbnail aur video dono select karein.", "error");
     return;
   }
 
-  if (!thumbFile) {
-    message("Thumbnail image select karo.", "error");
-    thumbField?.focus();
+  if (!rightsConfirmed) {
+    showStatus(uploadStatus, "Upload karne se pehle rights confirmation select karein.", "error");
     return;
   }
 
-  busy = true;
-
-  if (uploadBtn) {
-    uploadBtn.disabled = true;
-    uploadBtn.textContent = "Uploading...";
-  }
+  setButtonBusy(uploadBtn, true, "Uploading...");
 
   let uploadedVideoPath = null;
   let uploadedThumbPath = null;
 
   try {
-    const user = await checkAdmin();
-    const randomId = crypto.randomUUID();
+    await requireAdmin();
 
-    const safeExt = file =>
-      (file.name.split(".").pop() || "bin")
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, "");
+    const uniqueId = crypto.randomUUID();
+    const videoExt = fileExtension(videoFile, "mp4");
+    const thumbExt = fileExtension(thumbnailFile, "jpg");
 
-    uploadedVideoPath = `${user.id}/${randomId}.${safeExt(videoFile)}`;
-    uploadedThumbPath = `${user.id}/${randomId}.${safeExt(thumbFile)}`;
+    uploadedVideoPath = `${uniqueId}.${videoExt}`;
+    uploadedThumbPath = `${uniqueId}.${thumbExt}`;
+
+    showStatus(uploadStatus, "Video file upload ho rahi hai...");
 
     const { error: videoError } = await supabase.storage
       .from(VIDEO_BUCKET)
@@ -820,67 +541,357 @@ async function uploadVideo(event) {
 
     if (videoError) throw videoError;
 
+    showStatus(uploadStatus, "Thumbnail upload ho raha hai...");
+
     const { error: thumbError } = await supabase.storage
       .from(THUMB_BUCKET)
-      .upload(uploadedThumbPath, thumbFile, {
+      .upload(uploadedThumbPath, thumbnailFile, {
         cacheControl: "3600",
         upsert: false,
-        contentType: thumbFile.type || "image/jpeg"
+        contentType: thumbnailFile.type || "image/jpeg"
       });
 
     if (thumbError) throw thumbError;
+
+    const videoUrl = getPublicUrl(VIDEO_BUCKET, uploadedVideoPath);
+    const thumbnailUrl = getPublicUrl(THUMB_BUCKET, uploadedThumbPath);
+
+    if (!videoUrl || !thumbnailUrl) {
+      throw new Error("Storage URL create nahi hua. Bucket settings check karein.");
+    }
+
+    showStatus(uploadStatus, "Database mein video save ho raha hai...");
 
     const { error: insertError } = await supabase
       .from("videos")
       .insert({
         title,
         category,
-        description,
-        video_url: uploadedVideoPath,
-        thumbnail_url: uploadedThumbPath,
-        published: false,
-        views: 0,
-        user_id: user.id
+        description: description || "",
+        video_url: videoUrl,
+        thumbnail_url: thumbnailUrl,
+        published,
+        views: 0
       });
 
     if (insertError) throw insertError;
 
     uploadForm.reset();
 
-    message("Upload successful! Video Pending status mein hai.", "success");
-    await load();
+    showStatus(uploadStatus, "Video successfully upload ho gaya!", "success");
+    await loadVideos();
+
   } catch (error) {
-    console.error("Upload failed:", error);
-
+    // Failed DB insert ke baad uploaded objects ko clean up karne ki koshish.
     if (uploadedVideoPath) {
-      const { error: cleanupError } = await supabase.storage
-        .from(VIDEO_BUCKET)
-        .remove([uploadedVideoPath]);
-
-      if (cleanupError) console.warn(cleanupError);
+      await supabase.storage.from(VIDEO_BUCKET)
+        .remove([uploadedVideoPath]).catch(() => {});
     }
 
     if (uploadedThumbPath) {
-      const { error: cleanupError } = await supabase.storage
-        .from(THUMB_BUCKET)
-        .remove([uploadedThumbPath]);
-
-      if (cleanupError) console.warn(cleanupError);
+      await supabase.storage.from(THUMB_BUCKET)
+        .remove([uploadedThumbPath]).catch(() => {});
     }
 
-    message("Upload failed: " + error.message, "error");
+    showStatus(
+      uploadStatus,
+      "Upload fail hua: " + getErrorMessage(error) +
+      " — agar Storage policy error hai to Supabase permissions check karein.",
+      "error"
+    );
   } finally {
-    busy = false;
+    setButtonBusy(uploadBtn, false);
+  }
+});
 
-    if (uploadBtn) {
-      uploadBtn.disabled = false;
-      uploadBtn.textContent = "Upload Video";
-    }
+/* ==============================
+   VIDEO LIST ACTIONS
+============================== */
+
+videoList.addEventListener("click", async (event) => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+
+  const action = button.dataset.action;
+  const id = button.dataset.id;
+  const video = allVideos.find((item) => String(item.id) === String(id));
+
+  if (!video) {
+    showStatus(manageStatus, "Video record nahi mila. List refresh karein.", "error");
+    return;
+  }
+
+  if (action === "preview") {
+    await openPreview(video);
+  } else if (action === "edit") {
+    openEdit(video);
+  } else if (action === "toggle") {
+    await togglePublished(video, button);
+  } else if (action === "delete") {
+    await deleteVideo(video, button);
+  }
+});
+
+/* ==============================
+   PREVIEW
+============================== */
+
+async function openPreview(video) {
+  clearStatus(globalStatus);
+  previewVideo.pause();
+  previewVideo.removeAttribute("src");
+  previewVideo.load();
+
+  $("previewTitle").textContent = video.title || "Video Preview";
+  previewInfo.textContent =
+    `Category: ${video.category || "Uncategorized"} · ` +
+    `Status: ${isPublished(video) ? "Published" : "Hidden / Pending"}`;
+
+  previewModal.hidden = false;
+  previewModal.style.display = "flex";
+
+  try {
+    const url = await getPlayableUrl(VIDEO_BUCKET, video.video_url);
+
+    if (!url) throw new Error("Video URL database mein nahi hai.");
+
+    previewVideo.src = url;
+    previewVideo.load();
+  } catch (error) {
+    showStatus(globalStatus, "Preview error: " + getErrorMessage(error), "error");
   }
 }
 
-/* ===============================
-   START
-================================ */
+function closePreview() {
+  previewVideo.pause();
+  previewVideo.removeAttribute("src");
+  previewVideo.load();
+  previewModal.hidden = true;
+  previewModal.style.display = "none";
+}
+
+$("closePreviewBtn").addEventListener("click", closePreview);
+
+previewModal.addEventListener("click", (event) => {
+  if (event.target === previewModal) closePreview();
+});
+
+/* ==============================
+   EDIT VIDEO
+============================== */
+
+function openEdit(video) {
+  $("editId").value = video.id;
+  $("editVideoTitle").value = video.title || "";
+  $("editCategory").value = video.category || "";
+  $("editDescription").value = video.description || "";
+
+  clearStatus(editStatus);
+  editModal.hidden = false;
+  editModal.style.display = "flex";
+}
+
+function closeEdit() {
+  editModal.hidden = true;
+  editModal.style.display = "none";
+}
+
+$("closeEditBtn").addEventListener("click", closeEdit);
+
+editModal.addEventListener("click", (event) => {
+  if (event.target === editModal) closeEdit();
+});
+
+editForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  clearStatus(editStatus);
+
+  const id = $("editId").value;
+  const title = $("editVideoTitle").value.trim();
+  const category = $("editCategory").value.trim();
+  const description = $("editDescription").value.trim();
+
+  if (!title || !category) {
+    showStatus(editStatus, "Title aur category required hain.", "error");
+    return;
+  }
+
+  setButtonBusy($("saveEditBtn"), true, "Saving...");
+
+  try {
+    await requireAdmin();
+
+    const { error } = await supabase
+      .from("videos")
+      .update({ title, category, description })
+      .eq("id", id);
+
+    if (error) throw error;
+
+    closeEdit();
+    await loadVideos();
+    showStatus(manageStatus, "Video details update ho gayi hain.", "success");
+
+  } catch (error) {
+    showStatus(editStatus, "Update fail hua: " + getErrorMessage(error), "error");
+  } finally {
+    setButtonBusy($("saveEditBtn"), false);
+  }
+});
+
+/* ==============================
+   PUBLISH / UNPUBLISH
+============================== */
+
+async function togglePublished(video, button) {
+  const newValue = !isPublished(video);
+  const actionText = newValue ? "publish" : "unpublish";
+
+  if (!confirm(`Kya aap is video ko ${actionText} karna chahte hain?`)) {
+    return;
+  }
+
+  button.disabled = true;
+
+  try {
+    await requireAdmin();
+
+    const { error } = await supabase
+      .from("videos")
+      .update({ published: newValue })
+      .eq("id", video.id);
+
+    if (error) throw error;
+
+    await loadVideos();
+    showStatus(
+      manageStatus,
+      newValue ? "Video publish ho gaya." : "Video unpublish ho gaya.",
+      "success"
+    );
+
+  } catch (error) {
+    showStatus(manageStatus, "Status update fail hua: " + getErrorMessage(error), "error");
+  } finally {
+    button.disabled = false;
+  }
+}
+
+/* ==============================
+   DELETE VIDEO + STORAGE FILES
+============================== */
+
+async function deleteVideo(video, button) {
+  const confirmed = confirm(
+    `Kya aap "${video.title || "this video"}" ko permanently delete karna chahte hain?\n\n` +
+    "Database record aur matching Storage files delete karne ki koshish hogi."
+  );
+
+  if (!confirmed) return;
+
+  button.disabled = true;
+
+  try {
+    await requireAdmin();
+
+    // Pehle database record delete karte hain.
+    const { error: deleteError } = await supabase
+      .from("videos")
+      .delete()
+      .eq("id", video.id);
+
+    if (deleteError) throw deleteError;
+
+    // Uske baad URL se original Storage paths nikalte hain.
+    const videoPath = storagePathFromUrl(video.video_url, VIDEO_BUCKET);
+    const thumbPath = storagePathFromUrl(video.thumbnail_url, THUMB_BUCKET);
+
+    const videoFiles = videoPath ? [videoPath] : [];
+    const thumbFiles = thumbPath ? [thumbPath] : [];
+
+    let storageWarning = "";
+
+    if (videoFiles.length) {
+      const { error } = await supabase.storage
+        .from(VIDEO_BUCKET)
+        .remove(videoFiles);
+
+      if (error) storageWarning += " Video file delete nahi hui: " + error.message;
+    }
+
+    if (thumbFiles.length) {
+      const { error } = await supabase.storage
+        .from(THUMB_BUCKET)
+        .remove(thumbFiles);
+
+      if (error) storageWarning += " Thumbnail delete nahi hui: " + error.message;
+    }
+
+    await loadVideos();
+
+    if (storageWarning) {
+      showStatus(
+        manageStatus,
+        "Database se video delete ho gayi, lekin Storage mein cleanup issue hai." + storageWarning,
+        "error"
+      );
+    } else {
+      showStatus(manageStatus, "Video delete ho gayi.", "success");
+    }
+
+  } catch (error) {
+    showStatus(manageStatus, "Delete fail hua: " + getErrorMessage(error), "error");
+  } finally {
+    button.disabled = false;
+  }
+}
+
+/* ==============================
+   SEARCH / FILTER EVENTS
+============================== */
+
+function attachEvents() {
+  if (eventsAttached) return;
+  eventsAttached = true;
+
+  searchInput.addEventListener("input", () => {
+    currentPage = 1;
+    renderVideos();
+  });
+
+  filterSelect.addEventListener("change", () => {
+    currentPage = 1;
+    renderVideos();
+  });
+}
+
+/* ==============================
+   STARTUP
+============================== */
+
+async function boot() {
+  // Login section ko default mein visible rakho.
+  showLogin();
+
+  try {
+    const { data, error } = await supabase.auth.getSession();
+
+    if (error) throw error;
+
+    if (!data?.session) {
+      showLogin();
+      return;
+    }
+
+    await requireAdmin();
+    showDashboard();
+    attachEvents();
+    await loadVideos();
+
+  } catch (error) {
+    await supabase.auth.signOut().catch(() => {});
+    showLogin(getErrorMessage(error));
+  }
+}
 
 boot();
