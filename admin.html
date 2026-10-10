@@ -1,465 +1,427 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080808">
-  <title>DesiVexa Admin</title>
+  <title>DesiVexa Admin Dashboard</title>
 
   <style>
     :root {
-      --bg: #080808;
-      --panel: #121212;
-      --panel2: #1a1a1a;
-      --border: #303030;
-      --text: #f5f5f5;
-      --muted: #aaa;
-      --red: #e50914;
-      --green: #19b56b;
+      --bg:#080808;
+      --panel:#121212;
+      --panel2:#1b1b1b;
+      --red:#ed1735;
+      --text:#f5f5f5;
+      --muted:#aaa;
+      --border:#303030;
+      --green:#23c483;
     }
 
-    * { box-sizing: border-box; }
-
-    [hidden] { display: none !important; }
+    * { box-sizing:border-box; }
 
     body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Arial, sans-serif;
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:Arial,Helvetica,sans-serif;
     }
 
-    button, input, textarea, select {
-      font: inherit;
-    }
+    button,input,textarea,select { font:inherit; }
 
     button {
-      border: 0;
-      cursor: pointer;
+      border:0;
+      border-radius:8px;
+      background:var(--red);
+      color:#fff;
+      padding:11px 14px;
+      font-weight:700;
+      cursor:pointer;
     }
 
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 15px;
-      background: #101010;
-      border-bottom: 1px solid var(--border);
+    button:disabled { opacity:.55; cursor:wait; }
+
+    .secondary { background:#292929; }
+    .danger { background:#b9162b; }
+    .success { background:#126e4b; }
+
+    header {
+      position:sticky;
+      top:0;
+      z-index:5;
+      background:#101010;
+      border-bottom:1px solid var(--border);
+      padding:15px;
     }
 
-    .brand {
-      font-size: 21px;
-      font-weight: 800;
+    .header-inner {
+      max-width:1200px;
+      margin:auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
     }
 
-    .brand span { color: var(--red); }
+    .brand { font-size:21px; font-weight:900; }
+    .brand span { color:var(--red); }
 
-    .container {
-      width: min(1100px, 100%);
-      margin: auto;
-      padding: 16px;
+    main {
+      max-width:1200px;
+      margin:auto;
+      padding:16px;
     }
 
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
+    h1 { font-size:24px; margin:8px 0 18px; }
+    h2 { font-size:19px; margin-top:0; }
+
+    .panel {
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:13px;
+      padding:17px;
+      margin-bottom:18px;
+      min-width:0;
     }
 
-    h1 { font-size: 23px; margin: 4px 0 16px; }
-    h2 { font-size: 18px; margin: 0 0 14px; }
-
-    .muted { color: var(--muted); font-size: 13px; }
-
-    .field {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      padding: 12px;
-      color: var(--text);
-      background: #090909;
-      border: 1px solid #393939;
-      border-radius: 8px;
+    .login-wrap {
+      max-width:450px;
+      margin:50px auto;
     }
 
-    textarea.field {
-      min-height: 85px;
-      resize: vertical;
+    .field { margin-bottom:14px; }
+
+    label {
+      display:block;
+      margin-bottom:7px;
+      font-size:13px;
+      color:#ddd;
     }
 
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 10px 13px;
-      border-radius: 8px;
-      color: white;
-      background: #303030;
-      font-weight: 700;
+    input,textarea,select {
+      width:100%;
+      background:#080808;
+      color:white;
+      border:1px solid #3a3a3a;
+      border-radius:8px;
+      padding:12px;
+      outline:none;
     }
 
-    .btn-red { background: var(--red); }
-    .btn-green { background: #137c4c; }
-    .btn-danger { background: #8d171d; }
-    .btn:disabled { opacity: .55; cursor: wait; }
+    input:focus,textarea:focus,select:focus {
+      border-color:var(--red);
+    }
 
-    .full { width: 100%; }
+    textarea { min-height:85px; resize:vertical; }
+
+    .check-row {
+      display:flex;
+      align-items:center;
+      gap:9px;
+      margin:12px 0;
+      font-size:13px;
+    }
+
+    .check-row input {
+      width:auto;
+      accent-color:var(--red);
+    }
+
+    .check-row label { margin:0; }
 
     .stats {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 16px;
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:10px;
+      margin-bottom:18px;
     }
 
     .stat {
-      padding: 14px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      background:var(--panel);
+      border:1px solid var(--border);
+      padding:15px 12px;
+      border-radius:12px;
+      min-width:0;
     }
 
-    .stat strong {
-      display: block;
-      font-size: 25px;
-      margin-top: 7px;
-    }
+    .stat small { display:block; color:var(--muted); margin-bottom:8px; }
+    .stat strong { font-size:23px; overflow-wrap:anywhere; }
 
     .toolbar {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 8px;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 180px;
+      gap:10px;
+      margin-bottom:14px;
     }
-
-    .toolbar .field { margin: 0; }
 
     .video-list {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
     }
 
-    .admin-video-card {
-      min-width: 0;
-      padding: 12px;
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-    }
-
-    .video-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
+    .video-card {
+      background:#171717;
+      border:1px solid var(--border);
+      border-radius:11px;
+      overflow:hidden;
+      min-width:0;
     }
 
     .thumb {
-      width: 112px;
-      height: 82px;
-      flex: 0 0 112px;
-      object-fit: cover;
-      background: #222;
-      border-radius: 7px;
+      width:100%;
+      aspect-ratio:16/9;
+      object-fit:cover;
+      background:#252525;
+      display:block;
     }
 
-    .video-info {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .video-title {
-      font-weight: 700;
-      overflow-wrap: anywhere;
-      margin-bottom: 7px;
-    }
-
-    .meta {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.6;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-top: 12px;
-    }
-
-    .actions .btn {
-      padding: 8px 10px;
-      font-size: 12px;
-    }
+    .card-body { padding:12px; }
+    .video-title { font-weight:700; overflow-wrap:anywhere; }
+    .meta { font-size:12px; color:var(--muted); margin:8px 0; }
+    .card-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+    .card-actions button { font-size:12px; padding:9px 10px; }
 
     .status {
-      margin: 10px 0;
-      padding: 11px;
-      border-radius: 8px;
-      background: #202020;
-      color: var(--text);
-      overflow-wrap: anywhere;
+      display:none;
+      padding:12px;
+      border-radius:8px;
+      margin:12px 0;
+      white-space:pre-wrap;
+      overflow-wrap:anywhere;
+      font-size:13px;
     }
 
-    .status.error {
-      background: #3a1114;
-      color: #ffb8bc;
-    }
-
-    .status.success {
-      background: #10291d;
-      color: #a5f0c6;
-    }
+    .status.ok { display:block; background:#123c2c; color:#a6f5ce; }
+    .status.error { display:block; background:#4a1720; color:#ffd0d7; }
+    .status.info { display:block; background:#202d42; color:#cde1ff; }
 
     .pagination {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 7px;
-      margin: 18px 0;
+      display:flex;
+      flex-wrap:wrap;
+      gap:7px;
+      align-items:center;
+      justify-content:center;
+      margin-top:18px;
     }
 
-    .page-btn {
-      min-width: 38px;
-      padding: 9px 11px;
-      border-radius: 7px;
-      background: #242424;
-      color: white;
-    }
-
-    .page-btn.active { background: var(--red); }
-
-    .checkline {
-      display: flex;
-      gap: 9px;
-      align-items: flex-start;
-      margin: 12px 0;
-      font-size: 13px;
-      color: #ddd;
-    }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 14px;
-      background: rgba(0, 0, 0, .88);
-    }
+    .pagination button.active { outline:2px solid white; }
+    .muted { color:var(--muted); font-size:13px; }
+    .empty { text-align:center; padding:30px 12px; color:var(--muted); }
 
     .modal {
-      width: min(720px, 100%);
-      max-height: 90vh;
-      overflow: auto;
-      padding: 15px;
-      background: #141414;
-      border: 1px solid #383838;
-      border-radius: 12px;
+      position:fixed;
+      inset:0;
+      z-index:20;
+      background:rgba(0,0,0,.88);
+      padding:14px;
+      overflow:auto;
+      display:none;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .modal-box {
+      width:min(760px,100%);
+      max-height:95vh;
+      overflow:auto;
+      background:#121212;
+      border:1px solid #383838;
+      border-radius:13px;
+      padding:16px;
+    }
+
+    .modal-top {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:12px;
     }
 
     .modal video {
-      display: block;
-      width: 100%;
-      max-height: 60vh;
-      background: black;
-      border-radius: 8px;
+      display:block;
+      width:100%;
+      max-height:65vh;
+      background:#000;
+      border-radius:9px;
     }
 
-    .modal-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 12px;
+    .modal img {
+      max-width:100%;
+      max-height:60vh;
+      display:block;
+      margin:auto;
     }
 
-    .empty {
-      padding: 25px 10px;
-      text-align: center;
-      color: var(--muted);
+    [hidden] { display:none !important; }
+
+    @media(max-width:760px) {
+      main { padding:12px; }
+      .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .video-list { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+      .toolbar { grid-template-columns:1fr; }
+      .stat strong { font-size:21px; }
+      .panel { padding:13px; }
+      .card-body { padding:9px; }
+      .card-actions button { flex:1; }
+      .brand { font-size:18px; }
     }
 
-    @media (min-width: 650px) {
-      .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-      .toolbar { grid-template-columns: 1fr 190px; }
-      .video-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .container { padding: 22px; }
+    @media(max-width:380px) {
+      .video-list { grid-template-columns:1fr; }
     }
   </style>
 </head>
 
 <body>
-  <header class="topbar">
-    <div class="brand">Desi<span>Vexa</span> Admin</div>
-    <button id="logoutBtn" class="btn" type="button" hidden>Logout</button>
+  <header>
+    <div class="header-inner">
+      <div class="brand">Desi<span>Vexa</span> Admin</div>
+      <button id="logoutBtn" class="secondary" hidden>Logout</button>
+    </div>
   </header>
 
-  <main class="container">
-    <div id="globalStatus" class="status" role="status" hidden></div>
-
-    <!-- LOGIN -->
-    <section id="auth" class="card">
+  <main>
+    <section id="auth" class="login-wrap panel">
       <h1>Admin Login</h1>
       <p class="muted">Apne authorized admin account se login karein.</p>
 
       <form id="loginForm">
-        <label for="email">Email</label>
-        <input class="field" id="email" name="email" type="email"
-               autocomplete="username" placeholder="Admin email" required>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="username" required>
+        </div>
 
-        <label for="password">Password</label>
-        <input class="field" id="password" name="password" type="password"
-               autocomplete="current-password" placeholder="Password" required>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" required>
+        </div>
 
-        <button id="loginBtn" class="btn btn-red full" type="submit">
-          Login
-        </button>
+        <button id="loginBtn" type="submit" style="width:100%">Login</button>
       </form>
 
-      <div id="loginStatus" class="status" role="status" hidden></div>
+      <div id="loginStatus" class="status"></div>
     </section>
 
-    <!-- DASHBOARD -->
     <section id="panel" hidden>
       <h1>Dashboard</h1>
 
       <div class="stats">
-        <div class="stat">
-          <span class="muted">Total Videos</span>
-          <strong id="statTotal">0</strong>
-        </div>
-        <div class="stat">
-          <span class="muted">Published</span>
-          <strong id="statPublished">0</strong>
-        </div>
-        <div class="stat">
-          <span class="muted">Hidden / Pending</span>
-          <strong id="statHidden">0</strong>
-        </div>
-        <div class="stat">
-          <span class="muted">Total Views</span>
-          <strong id="statViews">0</strong>
-        </div>
+        <div class="stat"><small>Total videos</small><strong id="statTotal">0</strong></div>
+        <div class="stat"><small>Published</small><strong id="statPublished">0</strong></div>
+        <div class="stat"><small>Hidden / Pending</small><strong id="statHidden">0</strong></div>
+        <div class="stat"><small>Total views</small><strong id="statViews">0</strong></div>
       </div>
 
-      <section class="card">
+      <section class="panel">
         <h2>Upload New Video</h2>
-        <p class="muted">
-          Thumbnail aur video file select karein. Upload ke baad video
-          published ya hidden rakha ja sakta hai.
-        </p>
 
-        <form id="uploadForm">
-          <label for="uploadTitle">Video title</label>
-          <input class="field" id="uploadTitle" name="title"
-                 maxlength="200" placeholder="Video title" required>
+        <form id="upload">
+          <div class="field">
+            <label for="uploadTitle">Video title</label>
+            <input id="uploadTitle" name="title" maxlength="250" required>
+          </div>
 
-          <label for="uploadCategory">Category</label>
-          <input class="field" id="uploadCategory" name="category"
-                 maxlength="100" placeholder="Category" required>
+          <div class="field">
+            <label for="uploadCategory">Category</label>
+            <input id="uploadCategory" name="category" placeholder="Example: Trending" required>
+          </div>
 
-          <label for="uploadDescription">Description</label>
-          <textarea class="field" id="uploadDescription" name="description"
-                    maxlength="5000" placeholder="Description (optional)"></textarea>
+          <div class="field">
+            <label for="uploadDescription">Description</label>
+            <textarea id="uploadDescription" name="description"></textarea>
+          </div>
 
-          <label for="uploadThumbnail">Thumbnail image</label>
-          <input class="field" id="uploadThumbnail" name="thumb"
-                 type="file" accept="image/*" required>
+          <div class="field">
+            <label for="uploadThumb">Thumbnail image</label>
+            <input id="uploadThumb" name="thumb" type="file" accept="image/*" required>
+          </div>
 
-          <label for="uploadVideo">Video file</label>
-          <input class="field" id="uploadVideo" name="video"
-                 type="file" accept="video/*" required>
+          <div class="field">
+            <label for="uploadVideo">Video file</label>
+            <input id="uploadVideo" name="video" type="file" accept="video/*" required>
+          </div>
 
-          <label class="checkline">
-            <input id="uploadPublished" type="checkbox">
-            <span>Upload ke baad video publish karna hai</span>
-          </label>
+          <div class="check-row">
+            <input id="uploadPublished" type="checkbox" checked>
+            <label for="uploadPublished">Publish immediately</label>
+          </div>
 
-          <label class="checkline">
+          <div class="check-row">
             <input id="rightsConfirm" type="checkbox" required>
-            <span>Confirm karta/karti hoon ki mujhe is video ko upload aur share karne ka adhikar hai.</span>
-          </label>
+            <label for="rightsConfirm">I have the rights or permission to upload this content.</label>
+          </div>
 
-          <button id="uploadBtn" class="btn btn-red full" type="submit">
-            Upload Video
-          </button>
+          <button id="uploadBtn" type="submit">Upload Video</button>
         </form>
 
-        <div id="uploadStatus" class="status" role="status" hidden></div>
+        <div id="uploadStatus" class="status"></div>
       </section>
 
-      <section class="card">
+      <section class="panel" id="manage">
         <h2>Manage Videos</h2>
 
         <div class="toolbar">
-          <input id="searchInput" class="field" type="search"
-                 placeholder="Title ya category search...">
-          <select id="filterSelect" class="field" aria-label="Filter videos">
+          <input id="adminSearch" type="search" placeholder="Search title or category...">
+          <select id="adminFilter">
             <option value="all">All videos</option>
-            <option value="published">Published only</option>
-            <option value="hidden">Hidden / pending</option>
+            <option value="published">Published</option>
+            <option value="hidden">Hidden / Pending</option>
           </select>
         </div>
 
-        <div id="manageStatus" class="status" role="status" hidden></div>
+        <div id="globalStatus" class="status"></div>
+        <div id="videoList" class="video-list"></div>
+        <div id="pagination" class="pagination"></div>
       </section>
-
-      <div id="videoList" class="video-list"></div>
-      <div id="pagination" class="pagination"></div>
     </section>
   </main>
 
-  <!-- VIDEO PREVIEW -->
-  <div id="videoPreviewModal" class="modal-backdrop" hidden>
-    <section class="modal" role="dialog" aria-modal="true"
-             aria-labelledby="previewTitle">
-      <div class="modal-head">
+  <div id="previewModal" class="modal" hidden>
+    <div class="modal-box">
+      <div class="modal-top">
         <h2 id="previewTitle">Video Preview</h2>
-        <button id="closePreviewBtn" class="btn" type="button">Close</button>
+        <button id="closePreview" class="secondary" type="button">Close</button>
       </div>
-      <video id="previewVideo" controls playsinline></video>
-      <div id="previewInfo" class="meta"></div>
-    </section>
+      <video id="previewVideo" controls playsinline preload="metadata"></video>
+      <p id="previewInfo" class="muted">Video loading...</p>
+    </div>
   </div>
 
-  <!-- EDIT VIDEO -->
-  <div id="editModal" class="modal-backdrop" hidden>
-    <section class="modal" role="dialog" aria-modal="true"
-             aria-labelledby="editTitle">
-      <div class="modal-head">
-        <h2 id="editTitle">Edit Video</h2>
-        <button id="closeEditBtn" class="btn" type="button">Close</button>
+  <div id="editModal" class="modal" hidden>
+    <div class="modal-box">
+      <div class="modal-top">
+        <h2>Edit Video</h2>
+        <button id="closeEdit" class="secondary" type="button">Close</button>
       </div>
 
       <form id="editForm">
         <input id="editId" type="hidden">
 
-        <label for="editVideoTitle">Title</label>
-        <input id="editVideoTitle" class="field" maxlength="200" required>
+        <div class="field">
+          <label for="editTitle">Title</label>
+          <input id="editTitle" maxlength="250" required>
+        </div>
 
-        <label for="editCategory">Category</label>
-        <input id="editCategory" class="field" maxlength="100" required>
+        <div class="field">
+          <label for="editCategory">Category</label>
+          <input id="editCategory" required>
+        </div>
 
-        <label for="editDescription">Description</label>
-        <textarea id="editDescription" class="field" maxlength="5000"></textarea>
+        <div class="field">
+          <label for="editDescription">Description</label>
+          <textarea id="editDescription"></textarea>
+        </div>
 
-        <button id="saveEditBtn" class="btn btn-red full" type="submit">
-          Save Changes
-        </button>
+        <button id="saveEditBtn" type="submit">Save Changes</button>
       </form>
 
-      <div id="editStatus" class="status" role="status" hidden></div>
-    </section>
+      <div id="editStatus" class="status"></div>
+    </div>
   </div>
 
-  <script type="module" src="admin.js?v=6"></script>
+  <script type="module" src="admin.js?v=7"></script>
 </body>
 </html>
