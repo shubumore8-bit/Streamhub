@@ -6,140 +6,338 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080808">
   <title>DesiVexa Admin</title>
+
   <style>
     :root {
       color-scheme: dark;
-      --bg:#080808; --panel:#141414; --line:#292929;
-      --text:#f5f5f5; --muted:#aaa; --red:#ed1736;
+      --bg: #080808;
+      --panel: #141414;
+      --line: #292929;
+      --text: #f5f5f5;
+      --muted: #aaa;
+      --red: #ed1736;
     }
-    * { box-sizing:border-box }
+
+    * { box-sizing: border-box; }
+
     body {
-      margin:0; background:var(--bg); color:var(--text);
-      font:15px Arial,sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 15px Arial, sans-serif;
     }
+
     header {
-      padding:16px; background:#111; border-bottom:1px solid var(--line);
-      display:flex; justify-content:space-between; align-items:center;
-      gap:10px; flex-wrap:wrap;
+      padding: 16px;
+      background: #111;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
     }
-    h1 { margin:0; font-size:22px }
-    h2 { font-size:19px; margin-top:0 }
-    .brand { color:var(--red) }
-    main { max-width:1200px; margin:auto; padding:16px }
+
+    h1 { margin: 0; font-size: 22px; }
+    h2 { font-size: 19px; margin-top: 0; }
+    .brand { color: var(--red); }
+
+    main {
+      max-width: 1200px;
+      margin: auto;
+      padding: 16px;
+    }
+
     .panel {
-      background:var(--panel); border:1px solid var(--line);
-      border-radius:12px; padding:16px; margin-bottom:16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
     }
+
     .grid {
-      display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:10px; margin-bottom:16px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
     }
-    .stat { background:var(--panel); border:1px solid var(--line);
-      padding:14px; border-radius:10px; min-width:0 }
-    .stat small { color:var(--muted) }
-    .stat strong { display:block; font-size:25px; margin-top:8px }
-    input,select,textarea {
-      width:100%; padding:12px; margin:6px 0 12px;
-      background:#090909; color:white; border:1px solid #393939;
-      border-radius:8px; font:inherit;
+
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      padding: 14px;
+      border-radius: 10px;
+      min-width: 0;
     }
-    textarea { min-height:85px; resize:vertical }
-    label { display:block; color:#ddd; font-size:14px }
+
+    .stat small { color: var(--muted); }
+
+    .stat strong {
+      display: block;
+      font-size: 25px;
+      margin-top: 8px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 6px 0 12px;
+      background: #090909;
+      color: white;
+      border: 1px solid #393939;
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    textarea { min-height: 85px; resize: vertical; }
+    label { display: block; color: #ddd; font-size: 14px; }
+
     button {
-      border:0; border-radius:8px; padding:11px 14px;
-      background:var(--red); color:white; font-weight:bold;
-      cursor:pointer; margin:3px;
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 14px;
+      background: var(--red);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 3px;
     }
-    button.secondary { background:#303030 }
-    button.danger { background:#a90d24 }
-    button:disabled { opacity:.5; cursor:wait }
-    .hidden { display:none!important }
-    .message { white-space:pre-wrap; overflow-wrap:anywhere; color:#ffb8c2 }
-    .video-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px }
-    .video-card { border:1px solid var(--line); border-radius:10px; overflow:hidden; min-width:0 }
-    .thumb { width:100%; aspect-ratio:16/9; object-fit:cover; background:#222; display:block }
-    .card-body { padding:10px }
-    .video-title { font-weight:bold; overflow-wrap:anywhere; margin-bottom:8px }
-    .meta { color:var(--muted); font-size:12px; margin:6px 0 }
-    .actions { display:flex; flex-wrap:wrap; gap:4px }
-    .actions button { font-size:12px; padding:9px }
-    .toolbar { display:grid; grid-template-columns:2fr 1fr; gap:8px }
-    .status { display:inline-block; padding:4px 7px; border-radius:5px; background:#292929; font-size:12px }
-    .status.live { color:#7ff0a1 }
-    .status.off { color:#ffb0b0 }
-    .pager { display:flex; justify-content:center; align-items:center; flex-wrap:wrap; margin:14px 0 }
-    dialog { width:min(700px,94vw); background:#111; color:white; border:1px solid #444; border-radius:12px; padding:16px }
-    dialog::backdrop { background:#000c }
-    dialog video { width:100%; max-height:65vh; background:#000 }
-    .dialog-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; margin-top:10px }
-    @media(max-width:800px) { .video-list { grid-template-columns:repeat(2,minmax(0,1fr)) } .grid { grid-template-columns:repeat(2,minmax(0,1fr)) } }
-    @media(max-width:420px) { main { padding:10px } .video-list { grid-template-columns:1fr 1fr; gap:7px } .card-body { padding:7px } .actions button { padding:8px 6px; font-size:11px } h1 { font-size:19px } }
+
+    button.secondary { background: #303030; }
+    button.danger { background: #a90d24; }
+    button.approve { background: #168348; }
+    button:disabled { opacity: .5; cursor: wait; }
+
+    .hidden { display: none !important; }
+
+    .message {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: #ffb8c2;
+    }
+
+    .video-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .video-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .thumb {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      background: #222;
+      display: block;
+    }
+
+    .card-body { padding: 10px; }
+
+    .video-title {
+      font-weight: bold;
+      overflow-wrap: anywhere;
+      margin-bottom: 8px;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 12px;
+      margin: 6px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 8px;
+    }
+
+    .actions button {
+      font-size: 12px;
+      padding: 9px;
+      margin: 0;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 8px;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 4px 7px;
+      border-radius: 5px;
+      background: #292929;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .status.live { color: #7ff0a1; }
+    .status.off { color: #ffb0b0; }
+    .status.pending { color: #ffd580; }
+    .status.rejected { color: #ff8e8e; }
+
+    .pager {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    dialog {
+      width: min(700px, 94vw);
+      background: #111;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    dialog::backdrop { background: #000c; }
+
+    dialog video {
+      width: 100%;
+      max-height: 65vh;
+      background: #000;
+    }
+
+    .dialog-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 800px) {
+      .video-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 420px) {
+      main { padding: 10px; }
+      .video-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+      .card-body { padding: 7px; }
+      .actions button { padding: 8px 6px; font-size: 11px; }
+      h1 { font-size: 19px; }
+      .toolbar { grid-template-columns: 1fr; gap: 0; }
+    }
   </style>
 </head>
+
 <body>
   <header>
     <h1><span class="brand">DesiVexa</span> Admin</h1>
-    <button id="logoutBtn" class="secondary hidden" type="button">Logout</button>
+    <button id="logoutBtn" class="secondary hidden" type="button">
+      Logout
+    </button>
   </header>
 
   <main>
     <section id="loginPanel" class="panel">
       <h2>Admin Login</h2>
+
       <form id="loginForm">
         <label>Email
           <input id="email" type="email" autocomplete="username" required>
         </label>
+
         <label>Password
-          <input id="password" type="password" autocomplete="current-password" required>
+          <input id="password" type="password"
+                 autocomplete="current-password" required>
         </label>
+
         <button id="loginBtn" type="submit">Login</button>
       </form>
+
       <p id="loginMessage" class="message"></p>
     </section>
 
     <section id="dashboard" class="hidden">
       <div class="grid">
-        <div class="stat"><small>Total videos</small><strong id="totalCount">0</strong></div>
-        <div class="stat"><small>Published</small><strong id="publishedCount">0</strong></div>
-        <div class="stat"><small>Unpublished</small><strong id="hiddenCount">0</strong></div>
-        <div class="stat"><small>Total views</small><strong id="viewsCount">0</strong></div>
+        <div class="stat">
+          <small>Total videos</small>
+          <strong id="totalCount">0</strong>
+        </div>
+        <div class="stat">
+          <small>Published</small>
+          <strong id="publishedCount">0</strong>
+        </div>
+        <div class="stat">
+          <small>Unpublished</small>
+          <strong id="hiddenCount">0</strong>
+        </div>
+        <div class="stat">
+          <small>Total views</small>
+          <strong id="viewsCount">0</strong>
+        </div>
       </div>
 
       <section class="panel">
         <h2>Upload video</h2>
+
         <form id="uploadForm">
           <label>Video title
             <input id="videoTitle" maxlength="200" required>
           </label>
+
           <label>Category
             <input id="videoCategory" placeholder="e.g. Trending" required>
           </label>
+
           <label>Description
             <textarea id="videoDescription"></textarea>
           </label>
+
           <label>Video file
             <input id="videoFile" type="file" accept="video/*" required>
           </label>
+
           <label>Thumbnail image (optional)
             <input id="thumbnailFile" type="file" accept="image/*">
           </label>
-          <label><input id="publishNow" type="checkbox" checked style="width:auto;margin-right:8px">Publish immediately</label>
+
+          <label>
+            <input id="publishNow" type="checkbox"
+                   style="width:auto;margin-right:8px">
+            Publish immediately
+          </label>
+
           <button id="uploadBtn" type="submit">Upload video</button>
         </form>
+
         <p id="uploadMessage" class="message"></p>
       </section>
 
       <section class="panel">
         <h2>Manage videos</h2>
+
         <div class="toolbar">
           <input id="searchInput" placeholder="Search title or category">
+
           <select id="filterSelect">
             <option value="all">All videos</option>
+            <option value="pending">Pending approval</option>
             <option value="published">Published</option>
-            <option value="unpublished">Unpublished</option>
+            <option value="rejected">Rejected</option>
+            <option value="unpublished">All unpublished</option>
           </select>
         </div>
-        <button id="refreshBtn" class="secondary" type="button">Refresh list</button>
+
+        <button id="refreshBtn" class="secondary" type="button">
+          Refresh list
+        </button>
+
         <p id="listMessage" class="message"></p>
         <div id="videoList" class="video-list"></div>
         <div id="pager" class="pager"></div>
@@ -151,26 +349,43 @@
     <h2 id="previewTitle">Video preview</h2>
     <video id="previewVideo" controls playsinline preload="metadata"></video>
     <p id="previewMessage" class="message"></p>
+
     <div class="dialog-actions">
-      <button id="closePreviewBtn" class="secondary" type="button">Close</button>
+      <button id="closePreviewBtn" class="secondary" type="button">
+        Close
+      </button>
     </div>
   </dialog>
 
   <dialog id="editDialog">
     <h2>Edit video</h2>
+
     <form id="editForm">
       <input id="editId" type="hidden">
-      <label>Title<input id="editTitle" required maxlength="200"></label>
-      <label>Category<input id="editCategory" required></label>
-      <label>Description<textarea id="editDescription"></textarea></label>
+
+      <label>Title
+        <input id="editTitle" required maxlength="200">
+      </label>
+
+      <label>Category
+        <input id="editCategory" required>
+      </label>
+
+      <label>Description
+        <textarea id="editDescription"></textarea>
+      </label>
+
       <div class="dialog-actions">
-        <button id="cancelEditBtn" class="secondary" type="button">Cancel</button>
+        <button id="cancelEditBtn" class="secondary" type="button">
+          Cancel
+        </button>
         <button id="saveEditBtn" type="submit">Save changes</button>
       </div>
     </form>
+
     <p id="editMessage" class="message"></p>
   </dialog>
 
-  <script type="module" src="admin.js?v=10"></script>
+  <script type="module" src="admin.js?v=11"></script>
 </body>
 </html>
