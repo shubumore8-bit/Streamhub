@@ -1,32 +1,28 @@
 
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const MEDIA_FUNCTION = `${SUPABASE_URL}/functions/v1/get-video-media`;
 
-const MEDIA_FUNCTION =
-  "https://mfrbbclweacgjqmyoiub.supabase.co/functions/v1/get-video-media";
-
-const BUCKET = "thumbnails";
-const RELATED_LIMIT = 20;
-
-const params = new URLSearchParams(location.search);
+const params = new URLSearchParams(window.location.search);
 const videoId = params.get("id");
 
-const visitorId = getVisitorId();
+let currentVideo = null;
+let visitorId = localStorage.getItem("desivexa_visitor_id");
 
-function getVisitorId() {
-  try {
-    let id = localStorage.getItem("desivexa_visitor_id");
-    if (!id) {
-      id = crypto.randomUUID();
-      localStorage.setItem("desivexa_visitor_id", id);
-    }
-    return id;
-  } catch {
-    return "visitor-" + Math.random().toString(36).slice(2);
-  }
+if (!visitorId) {
+  visitorId = crypto.randomUUID();
+  localStorage.setItem("desivexa_visitor_id", visitorId);
 }
+
+const root =
+  document.getElementById("videoContent") ||
+  document.getElementById("videoPage") ||
+  document.getElementById("videoApp") ||
+  document.getElementById("app") ||
+  document.querySelector("main") ||
+  document.body.appendChild(document.createElement("main"));
 
 function escapeHTML(value = "") {
   return String(value).replace(/[&<>"']/g, char => ({
@@ -35,378 +31,419 @@ function escapeHTML(value = "") {
     ">": "&gt;",
     '"': "&quot;",
     "'": "&#39;"
-  }[char]));
-}
-
-function formatDate(value) {
-  if (!value) return "";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-  return date.toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric"
-  });
+  })[char]);
 }
 
 function formatViews(value) {
-  const n = Number(value || 0);
-  if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
-  if (n >= 1000) return (n / 1000).toFixed(1) + "K";
-  return String(n);
+  return Number(value || 0).toLocaleString("en-IN");
 }
 
-/*
- * Supports:
- * 1. Complete public URL
- * 2. Storage path inside thumbnails bucket
- * 3. Path beginning with thumbnails/
- *
- * Do not store temporary signed URLs permanently in the database.
- */
-function getThumbnailUrl(value) {
-  if (!value || typeof value !== "string") return "";
-
-  const input = value.trim();
-  if (!input) return "";
-
-  if (/^https?:\/\//i.test(input)) return input;
-
-  let path = input.replace(/^\/+/, "");
-  path = path.replace(
-    /^storage\/v1\/object\/public\/thumbnails\//i,
-    ""
-  );
-  path = path.replace(
-    /^storage\/v1\/object\/sign\/thumbnails\//i,
-    ""
-  );
-  path = path.replace(/^thumbnails\//i, "");
-
-  if (!path || path.includes("..")) return "";
-
-  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
-  return data?.publicUrl || "";
-}
-
-async function getMedia(id) {
-  try {
-    const { data: { session } } = await supabase.auth.getSession();
-
-    const response = await fetch(MEDIA_FUNCTION, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: "Bearer " + (session?.access_token || SUPABASE_ANON_KEY)
-      },
-      body: JSON.stringify({ videoId: id, id })
-    });
-
-    if (!response.ok) return {};
-
-    const data = await response.json();
-    return data && typeof data === "object" ? data : {};
-  } catch (error) {
-    console.error("Media request failed:", error);
-    return {};
-  }
-}
-
-function addStyles() {
-  if (document.getElementById("desivexa-video-styles")) return;
-
-  const style = document.createElement("style");
-  style.id = "desivexa-video-styles";
-  style.textContent = `
-    :root { color-scheme: dark; }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; background: #090909; color: #f5f5f5;
-      font-family: Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .dv-wrap { max-width: 1200px; margin: auto; padding: 14px; padding-bottom: 80px; }
-    .dv-header {
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px; padding:10px 0 16px; border-bottom:1px solid #262626;
-    }
-    .dv-logo { color:#ff3038; font-size:23px; font-weight:800; }
-    .dv-back { background:#202020; border:1px solid #333; color:white;
-      padding:9px 12px; border-radius:9px; }
-    .dv-player-box { width:100%; background:#000; border-radius:12px; overflow:hidden; }
-    .dv-player { display:block; width:100%; max-height:70vh; aspect-ratio:16/9; background:#000; }
-    .dv-title { font-size:22px; line-height:1.35; margin:14px 0 8px; }
-    .dv-meta { color:#aaa; font-size:13px; margin-bottom:14px; }
-    .dv-actions { display:flex; flex-wrap:wrap; gap:9px; margin:12px 0 20px; }
-    .dv-btn { border:1px solid #343434; background:#1b1b1b; color:#fff;
-      border-radius:22px; padding:10px 14px; cursor:pointer; font-size:14px; }
-    .dv-btn:active { transform:scale(.98); }
-    .dv-primary { background:#e92332; border-color:#e92332; }
-    .dv-section { margin-top:25px; }
-    .dv-section h2 { font-size:19px; margin:0 0 14px; }
-    .dv-description { white-space:pre-wrap; line-height:1.5; color:#ccc; }
-    .dv-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px 10px; }
-    .dv-card { min-width:0; cursor:pointer; }
-    .dv-thumb-wrap { aspect-ratio:16/9; background:#1d1d1d; border-radius:8px;
-      overflow:hidden; position:relative; }
-    .dv-thumb { width:100%; height:100%; object-fit:cover; display:block; }
-    .dv-thumb-fallback { display:flex; width:100%; height:100%; align-items:center;
-      justify-content:center; color:#aaa; font-size:12px; text-align:center; padding:8px; }
-    .dv-card-title { font-size:13px; font-weight:600; line-height:1.4; margin-top:7px;
-      display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-    .dv-card-meta { font-size:11px; color:#999; margin-top:5px; }
-    .dv-comments { border-top:1px solid #292929; padding-top:18px; }
-    .dv-comment-form { display:flex; flex-direction:column; gap:9px; margin-bottom:18px; }
-    .dv-input, .dv-textarea { width:100%; background:#171717; color:white;
-      border:1px solid #383838; border-radius:9px; padding:12px; font:inherit; }
-    .dv-textarea { min-height:85px; resize:vertical; }
-    .dv-comment { padding:12px 0; border-bottom:1px solid #252525; }
-    .dv-comment-body { white-space:pre-wrap; line-height:1.5; overflow-wrap:anywhere; }
-    .dv-small { font-size:12px; color:#999; margin-top:6px; }
-    .dv-status { color:#aaa; padding:14px 0; font-size:14px; }
-    .dv-error { color:#ff7b82; }
-    .dv-footer-nav { display:flex; justify-content:space-around; gap:6px;
-      position:fixed; bottom:0; left:0; right:0; background:#101010;
-      border-top:1px solid #292929; padding:11px 5px calc(11px + env(safe-area-inset-bottom));
-      z-index:20; }
-    .dv-footer-nav a { font-size:12px; color:#ddd; padding:3px 6px; }
-    @media (min-width:700px) {
-      .dv-wrap { padding:22px; }
-      .dv-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px 14px; }
-      .dv-title { font-size:26px; }
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-function ensureRoot() {
-  let root = document.getElementById("videoContainer") ||
-             document.getElementById("video-content") ||
-             document.getElementById("app");
-
-  if (!root) {
-    root = document.createElement("main");
-    root.id = "videoContainer";
-    document.body.appendChild(root);
-  }
-  return root;
-}
-
-function renderShell() {
-  const root = ensureRoot();
+function showMessage(message) {
   root.innerHTML = `
-    <div class="dv-wrap">
-      <header class="dv-header">
-        <a class="dv-logo" href="index.html">DesiVexa</a>
-        <a class="dv-back" href="index.html">← Home</a>
+    <div style="background:#111;color:#fff;padding:25px;
+      text-align:center;border-radius:10px;margin:15px;">
+      ${escapeHTML(message)}
+    </div>`;
+}
+
+// Resolve video and thumbnail URLs through Supabase Edge Function.
+async function getMedia(id) {
+  const response = await fetch(MEDIA_FUNCTION, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "apikey": SUPABASE_ANON_KEY,
+      "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+    },
+    body: JSON.stringify({ videoId: id, id })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Media function error: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  return {
+    videoUrl:
+      data.videoUrl ||
+      data.signedUrl ||
+      data.url ||
+      "",
+    thumbnailUrl:
+      data.thumbnailUrl ||
+      data.thumbnail_url ||
+      data.thumbnail ||
+      ""
+  };
+}
+
+async function loadVideo() {
+  if (!videoId) {
+    showMessage("Video ID nahi mili. Homepage se video open karein.");
+    return;
+  }
+
+  try {
+    const { data: video, error } = await supabase
+      .from("videos")
+      .select("*")
+      .eq("id", videoId)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (!video) {
+      showMessage("Video nahi mila ya delete ho chuka hai.");
+      return;
+    }
+
+    currentVideo = video;
+
+    let media = { videoUrl: "", thumbnailUrl: "" };
+
+    try {
+      media = await getMedia(video.id);
+    } catch (error) {
+      console.error("Main video media error:", error);
+    }
+
+    renderVideo(video, media);
+
+    recordView(video.id);
+    loadLikes(video.id);
+    loadComments(video.id);
+    loadRelatedVideos(video.id, video.category);
+  } catch (error) {
+    console.error("Video loading error:", error);
+    showMessage("Video load nahi ho paaya. Please dobara try karein.");
+  }
+}
+
+function renderVideo(video, media) {
+  const thumbnail =
+    media.thumbnailUrl ||
+    video.thumbnail_url ||
+    video.thumbnail ||
+    "";
+
+  root.innerHTML = `
+    <div style="background:#080808;color:#fff;min-height:100vh;
+      padding:12px 12px 90px;box-sizing:border-box;
+      font-family:Arial,sans-serif;">
+
+      <header style="display:flex;align-items:center;
+        justify-content:space-between;gap:10px;margin-bottom:15px;">
+        <a href="/" style="color:#ff3030;font-size:25px;
+          font-weight:bold;text-decoration:none;">DesiVexa</a>
+
+        <a href="/" style="background:#202020;color:white;
+          padding:9px 13px;border-radius:7px;text-decoration:none;">
+          Home
+        </a>
       </header>
 
-      <div id="dv-status" class="dv-status">Loading video...</div>
-      <section id="dv-main" hidden>
-        <div class="dv-player-box">
-          <video id="dv-player" class="dv-player" controls playsinline preload="metadata"></video>
+      <div style="width:100%;background:#000;border-radius:10px;overflow:hidden;">
+        <video id="mainVideo" controls playsinline preload="metadata"
+          poster="${escapeHTML(thumbnail)}"
+          style="display:block;width:100%;max-height:70vh;
+          min-height:200px;background:#000;">
+          ${media.videoUrl
+            ? `<source src="${escapeHTML(media.videoUrl)}">`
+            : ""}
+          Your browser does not support video playback.
+        </video>
+      </div>
+
+      ${!media.videoUrl ? `
+        <p style="color:#ff7777;margin:10px 0;">
+          Video URL load nahi hui. Supabase media function check karein.
+        </p>` : ""}
+
+      <h1 style="font-size:21px;line-height:1.4;margin:15px 0 8px;">
+        ${escapeHTML(video.title || "Untitled video")}
+      </h1>
+
+      <div style="display:flex;flex-wrap:wrap;gap:8px;
+        color:#aaa;font-size:13px;margin-bottom:15px;">
+        <span>👁 <span id="viewsCount">${formatViews(video.views)}</span> views</span>
+        ${video.category
+          ? `<span>• ${escapeHTML(video.category)}</span>`
+          : ""}
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:9px;margin:15px 0 20px;">
+        <button id="likeButton" type="button"
+          style="background:#242424;color:white;border:0;
+          padding:11px 15px;border-radius:8px;font-size:14px;">
+          ❤️ Like <span id="likeCount">0</span>
+        </button>
+
+        <button id="commentButton" type="button"
+          style="background:#242424;color:white;border:0;
+          padding:11px 15px;border-radius:8px;font-size:14px;">
+          💬 Comments
+        </button>
+
+        <button id="shareButton" type="button"
+          style="background:#242424;color:white;border:0;
+          padding:11px 15px;border-radius:8px;font-size:14px;">
+          🔗 Share
+        </button>
+      </div>
+
+      ${video.description ? `
+        <section style="background:#151515;padding:14px;
+          border-radius:9px;margin-bottom:25px;">
+          <h3 style="font-size:16px;margin:0 0 8px;">Description</h3>
+          <p style="color:#ccc;line-height:1.6;margin:0;white-space:pre-wrap;">
+            ${escapeHTML(video.description)}
+          </p>
+        </section>` : ""}
+
+      <!-- RELATED VIDEOS FIRST -->
+      <section id="relatedSection" style="margin-top:28px;">
+        <h2 style="font-size:19px;margin:0 0 15px;">Related Videos</h2>
+
+        <div id="randomVideos"
+          style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+          gap:10px;">
+          <p style="color:#888;grid-column:1/-1;">
+            Loading related videos...
+          </p>
         </div>
-        <h1 id="dv-title" class="dv-title"></h1>
-        <div id="dv-meta" class="dv-meta"></div>
-        <div class="dv-actions">
-          <button id="dv-like" class="dv-btn" type="button">♡ Like</button>
-          <button id="dv-comment-jump" class="dv-btn" type="button">💬 Comments</button>
-          <button id="dv-share" class="dv-btn" type="button">↗ Share</button>
-        </div>
-        <section class="dv-section">
-          <h2>Description</h2>
-          <div id="dv-description" class="dv-description"></div>
-        </section>
-        <section class="dv-section">
-          <h2>Related Videos</h2>
-          <div id="dv-related" class="dv-grid"></div>
-          <div id="dv-related-status" class="dv-status"></div>
-        </section>
-        <section id="dv-comments-section" class="dv-section dv-comments">
-          <h2>Comments</h2>
-          <form id="dv-comment-form" class="dv-comment-form">
-            <textarea id="dv-comment-input" class="dv-textarea"
-              maxlength="2000" placeholder="Write a comment..." required></textarea>
-            <button class="dv-btn dv-primary" type="submit">Post Comment</button>
-          </form>
-          <div id="dv-comments-list" class="dv-status">Loading comments...</div>
-        </section>
       </section>
-    </div>
-    <nav class="dv-footer-nav">
-      <a href="index.html">⌂ Home</a>
-      <a href="new.html">New</a>
-      <a href="trending.html">Trending</a>
-      <a href="recommended.html">Recommended</a>
-    </nav>
-  `;
-  return root;
-}
 
-function showStatus(message, isError = false) {
-  const el = document.getElementById("dv-status");
-  if (!el) return;
-  el.hidden = false;
-  el.textContent = message;
-  el.classList.toggle("dv-error", isError);
-}
+      <!-- COMMENTS BELOW RELATED VIDEOS -->
+      <section id="commentsSection"
+        style="margin-top:35px;scroll-margin-top:20px;">
+        <h2 style="font-size:19px;margin:0 0 15px;">Comments</h2>
 
-async function getCurrentVideo(id) {
-  const { data, error } = await supabase
-    .from("videos")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
+        <form id="commentForm" style="margin-bottom:18px;">
+          <textarea id="commentInput" maxlength="2000" required
+            placeholder="Apna comment likhein..."
+            style="box-sizing:border-box;width:100%;min-height:90px;
+            background:#171717;color:#fff;border:1px solid #333;
+            border-radius:9px;padding:12px;font-size:14px;resize:vertical;">
+          </textarea>
 
-  if (error) throw error;
-  return data;
-}
+          <button type="submit"
+            style="margin-top:9px;background:#e5242a;color:#fff;
+            border:0;border-radius:8px;padding:11px 17px;font-weight:bold;">
+            Post Comment
+          </button>
+        </form>
 
-async function getRelatedVideos(current) {
-  let query = supabase
-    .from("videos")
-    .select("id,title,category,thumbnail_url,views,created_at,published")
-    .neq("id", current.id)
-    .order("created_at", { ascending: false })
-    .limit(RELATED_LIMIT);
-
-  if (current.category) {
-    query = query.eq("category", current.category);
-  }
-
-  let result = await query;
-
-  if (result.error || !result.data?.length) {
-    result = await supabase
-      .from("videos")
-      .select("id,title,category,thumbnail_url,views,created_at,published")
-      .neq("id", current.id)
-      .order("created_at", { ascending: false })
-      .limit(RELATED_LIMIT);
-  }
-
-  if (result.error) throw result.error;
-
-  return (result.data || []).filter(item =>
-    item.published === true ||
-    item.published === "true" ||
-    item.published === 1
-  ).slice(0, RELATED_LIMIT);
-}
-
-function renderRelated(items) {
-  const grid = document.getElementById("dv-related");
-  const status = document.getElementById("dv-related-status");
-
-  if (!items.length) {
-    grid.innerHTML = "";
-    status.textContent = "No related videos found.";
-    return;
-  }
-
-  status.textContent = "";
-
-  grid.innerHTML = items.map(item => {
-    const title = escapeHTML(item.title || "Untitled video");
-    const thumb = getThumbnailUrl(item.thumbnail_url);
-    const href = "video.html?id=" + encodeURIComponent(item.id);
-
-    return `
-      <a class="dv-card" href="${href}">
-        <div class="dv-thumb-wrap">
-          ${
-            thumb
-              ? `<img class="dv-thumb" src="${escapeHTML(thumb)}"
-                    alt="${title}" loading="lazy"
-                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-              : ""
-          }
-          <div class="dv-thumb-fallback" style="${thumb ? "display:none" : "display:flex"}">
-            Thumbnail unavailable
-          </div>
+        <div id="commentsList" style="color:#aaa;">
+          Loading comments...
         </div>
-        <div class="dv-card-title">${title}</div>
-        <div class="dv-card-meta">${formatViews(item.views)} views · ${escapeHTML(item.category || "Video")}</div>
-      </a>
-    `;
-  }).join("");
+      </section>
+
+      <footer style="text-align:center;color:#777;font-size:12px;
+        margin-top:35px;padding:15px 0;">
+        © ${new Date().getFullYear()} DesiVexa
+      </footer>
+    </div>
+  `;
+
+  document.getElementById("likeButton").addEventListener("click", () => {
+    toggleLike(video.id);
+  });
+
+  document.getElementById("commentButton").addEventListener("click", () => {
+    document.getElementById("commentsSection").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+    setTimeout(() => {
+      document.getElementById("commentInput")?.focus({
+        preventScroll: true
+      });
+    }, 350);
+  });
+
+  document.getElementById("shareButton").addEventListener("click", shareVideo);
+
+  document.getElementById("commentForm").addEventListener("submit", event => {
+    submitComment(event, video.id);
+  });
 }
 
-async function loadVideoSource(video) {
-  const player = document.getElementById("dv-player");
+async function recordView(id) {
+  try {
+    const { data, error } = await supabase
+      .from("videos")
+      .select("views")
+      .eq("id", id)
+      .maybeSingle();
 
-  // A direct video URL may already be stored in the database.
-  if (video.video_url && /^https?:\/\//i.test(video.video_url)) {
-    player.src = video.video_url;
-    return;
+    if (error || !data) return;
+
+    const nextViews = Number(data.views || 0) + 1;
+
+    const { error: updateError } = await supabase
+      .from("videos")
+      .update({ views: nextViews })
+      .eq("id", id);
+
+    if (updateError) {
+      console.warn("View count update failed:", updateError);
+      return;
+    }
+
+    const element = document.getElementById("viewsCount");
+    if (element) element.textContent = formatViews(nextViews);
+  } catch (error) {
+    console.error("View count error:", error);
   }
+}
 
-  // Otherwise ask the existing Edge Function for its playback URL.
-  const media = await getMedia(video.id);
-  const source =
-    media.videoUrl ||
-    media.video_url ||
-    media.url ||
-    media.signedUrl ||
-    media.signed_url;
+async function loadLikes(id) {
+  const countElement = document.getElementById("likeCount");
+  if (!countElement) return;
 
-  if (source && /^https?:\/\//i.test(source)) {
-    player.src = source;
-  } else {
-    player.insertAdjacentHTML(
-      "afterend",
-      '<div class="dv-status dv-error">Video URL could not be loaded. Check the get-video-media function.</div>'
-    );
+  try {
+    const { count, error } = await supabase
+      .from("video_likes")
+      .select("*", { count: "exact", head: true })
+      .eq("video_id", id);
+
+    if (error) throw error;
+
+    countElement.textContent = formatViews(count || 0);
+
+    const { data: mine, error: mineError } = await supabase
+      .from("video_likes")
+      .select("id")
+      .eq("video_id", id)
+      .eq("visitor_id", visitorId)
+      .maybeSingle();
+
+    if (!mineError && mine) {
+      document.getElementById("likeButton").style.color = "#ff4040";
+    }
+  } catch (error) {
+    console.error("Likes load error:", error);
+  }
+}
+
+async function toggleLike(id) {
+  const button = document.getElementById("likeButton");
+  if (!button) return;
+
+  button.disabled = true;
+
+  try {
+    const { data: existing, error: findError } = await supabase
+      .from("video_likes")
+      .select("id")
+      .eq("video_id", id)
+      .eq("visitor_id", visitorId)
+      .maybeSingle();
+
+    if (findError) throw findError;
+
+    if (existing) {
+      const { error } = await supabase
+        .from("video_likes")
+        .delete()
+        .eq("id", existing.id);
+
+      if (error) throw error;
+      button.style.color = "#fff";
+    } else {
+      const { error } = await supabase
+        .from("video_likes")
+        .insert({
+          video_id: id,
+          visitor_id: visitorId
+        });
+
+      if (error) throw error;
+      button.style.color = "#ff4040";
+    }
+
+    await loadLikes(id);
+  } catch (error) {
+    console.error("Like error:", error);
+    alert("Like update nahi hua. Supabase video_likes table aur policies check karein.");
+  } finally {
+    button.disabled = false;
   }
 }
 
 async function loadComments(id) {
-  const list = document.getElementById("dv-comments-list");
-  list.textContent = "Loading comments...";
+  const list = document.getElementById("commentsList");
+  if (!list) return;
 
-  const { data, error } = await supabase
-    .from("video_comments")
-    .select("*")
-    .eq("video_id", id)
-    .order("created_at", { ascending: false })
-    .limit(100);
+  list.innerHTML = `<p style="color:#888;">Loading comments...</p>`;
 
-  if (error) {
-    list.innerHTML =
-      '<div class="dv-status">Comments could not be loaded. Check video_comments table policies and column names.</div>';
-    console.error("Comments query failed:", error);
-    return;
+  try {
+    const { data, error } = await supabase
+      .from("video_comments")
+      .select("*")
+      .eq("video_id", id)
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      list.innerHTML = `
+        <p style="color:#888;background:#151515;padding:14px;border-radius:8px;">
+          Abhi koi comment nahi hai. Pehla comment karein!
+        </p>`;
+      return;
+    }
+
+    list.innerHTML = data.map(comment => {
+      const body = comment.body ?? comment.comment ?? "";
+      const date = comment.created_at
+        ? new Date(comment.created_at).toLocaleString("en-IN")
+        : "";
+
+      return `
+        <article style="background:#151515;border-radius:9px;
+          padding:13px;margin-bottom:10px;">
+          <div style="color:#ff5555;font-size:12px;margin-bottom:7px;">
+            Viewer · ${escapeHTML(date)}
+          </div>
+          <div style="color:#eee;line-height:1.5;white-space:pre-wrap;
+            overflow-wrap:anywhere;">
+            ${escapeHTML(body)}
+          </div>
+        </article>`;
+    }).join("");
+  } catch (error) {
+    console.error("Comments load error:", error);
+    list.innerHTML = `
+      <p style="color:#ff8888;">
+        Comments load nahi hue. video_comments table aur RLS policies check karein.
+      </p>`;
   }
-
-  if (!data?.length) {
-    list.textContent = "No comments yet. Be the first to comment.";
-    return;
-  }
-
-  list.innerHTML = data.map(comment => `
-    <article class="dv-comment">
-      <div class="dv-comment-body">${escapeHTML(comment.body || comment.comment || "")}</div>
-      <div class="dv-small">${formatDate(comment.created_at)}</div>
-    </article>
-  `).join("");
 }
 
-async function postComment(event) {
+async function submitComment(event, id) {
   event.preventDefault();
 
-  const input = document.getElementById("dv-comment-input");
+  const input = document.getElementById("commentInput");
+  const button = document.querySelector('#commentForm button[type="submit"]');
   const body = input.value.trim();
-  if (!body) return;
 
-  const button = event.submitter;
-  if (button) button.disabled = true;
+  if (!body) {
+    alert("Pehle comment likhein.");
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Posting...";
 
   try {
     const { error } = await supabase
       .from("video_comments")
       .insert({
-        video_id: videoId,
+        video_id: id,
         visitor_id: visitorId,
         body
       });
@@ -414,132 +451,176 @@ async function postComment(event) {
     if (error) throw error;
 
     input.value = "";
-    await loadComments(videoId);
+    await loadComments(id);
   } catch (error) {
-    console.error("Comment insert failed:", error);
-    alert("Comment post nahi hua. Table columns aur Supabase policies check karo.");
-  } finally {
-    if (button) button.disabled = false;
-  }
-}
-
-async function handleLike() {
-  const button = document.getElementById("dv-like");
-  button.disabled = true;
-
-  try {
-    // This assumes video_likes has video_id and visitor_id columns.
-    const { data: existing, error: findError } = await supabase
-      .from("video_likes")
-      .select("id")
-      .eq("video_id", videoId)
-      .eq("visitor_id", visitorId)
-      .limit(1);
-
-    if (findError) throw findError;
-
-    if (existing?.length) {
-      const { error } = await supabase
-        .from("video_likes")
-        .delete()
-        .eq("video_id", videoId)
-        .eq("visitor_id", visitorId);
-
-      if (error) throw error;
-      button.textContent = "♡ Like";
-    } else {
-      const { error } = await supabase
-        .from("video_likes")
-        .insert({ video_id: videoId, visitor_id: visitorId });
-
-      if (error) throw error;
-      button.textContent = "♥ Liked";
-    }
-  } catch (error) {
-    console.error("Like action failed:", error);
-    alert("Like feature ke table columns/policies tumhare database se match nahi kar rahe.");
+    console.error("Comment submit error:", error);
+    alert("Comment post nahi hua. Supabase columns aur policies check karein.");
   } finally {
     button.disabled = false;
+    button.textContent = "Post Comment";
   }
 }
 
-async function init() {
-  addStyles();
-  renderShell();
+// Load related videos and resolve their thumbnail URLs.
+async function loadRelatedVideos(id, category) {
+  const container = document.getElementById("randomVideos");
+  if (!container) return;
 
-  if (!videoId) {
-    showStatus("Video ID missing. Homepage se video dobara kholo.", true);
-    return;
-  }
+  container.innerHTML = `
+    <p style="color:#888;grid-column:1/-1;">
+      Loading related videos...
+    </p>`;
 
   try {
-    const video = await getCurrentVideo(videoId);
+    let query = supabase
+      .from("videos")
+      .select("id,title,category,thumbnail_url,views,created_at")
+      .eq("published", true)
+      .neq("id", id)
+      .order("created_at", { ascending: false })
+      .limit(20);
 
-    if (!video) {
-      showStatus("Video nahi mila. Link ya video ID check karo.", true);
+    if (category) {
+      query = query.eq("category", category);
+    }
+
+    let { data, error } = await query;
+    if (error) throw error;
+
+    // If category has fewer videos, fill with other recent videos.
+    if ((!data || data.length < 20) && category) {
+      const existingIds = new Set([id, ...(data || []).map(v => v.id)]);
+
+      const fallbackResult = await supabase
+        .from("videos")
+        .select("id,title,category,thumbnail_url,views,created_at")
+        .eq("published", true)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (!fallbackResult.error && fallbackResult.data) {
+        const extra = fallbackResult.data.filter(
+          item => !existingIds.has(item.id)
+        );
+
+        data = [...(data || []), ...extra].slice(0, 20);
+      }
+    }
+
+    if (!data || data.length === 0) {
+      container.innerHTML = `
+        <p style="color:#888;grid-column:1/-1;">
+          Abhi koi related video available nahi hai.
+        </p>`;
       return;
     }
 
-    document.getElementById("dv-status").hidden = true;
-    document.getElementById("dv-main").hidden = false;
+    // Try the stored thumbnail URL first, then ask the media function.
+    const videos = await Promise.all(
+      data.map(async item => {
+        let thumbnail =
+          item.thumbnail_url ||
+          item.thumbnail ||
+          "";
 
-    document.getElementById("dv-title").textContent =
-      video.title || "Untitled video";
+        // A normal HTTP(S) URL can be used directly.
+        const isDirectURL = /^https?:\/\//i.test(thumbnail);
 
-    document.getElementById("dv-meta").textContent =
-      `${formatViews(video.views)} views` +
-      (video.created_at ? " · " + formatDate(video.created_at) : "") +
-      (video.category ? " · " + video.category : "");
-
-    document.getElementById("dv-description").textContent =
-      video.description || "No description available.";
-
-    document.getElementById("dv-like").addEventListener("click", handleLike);
-
-    document.getElementById("dv-comment-jump").addEventListener("click", () => {
-      document.getElementById("dv-comments-section").scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    });
-
-    document.getElementById("dv-share").addEventListener("click", async () => {
-      try {
-        if (navigator.share) {
-          await navigator.share({ title: video.title || "DesiVexa", url: location.href });
-        } else if (navigator.clipboard) {
-          await navigator.clipboard.writeText(location.href);
-          alert("Video link copied!");
-        } else {
-          prompt("Copy this video link:", location.href);
+        // For missing/non-URL thumbnail values, resolve via the Edge Function.
+        if (!thumbnail || !isDirectURL) {
+          try {
+            const media = await getMedia(item.id);
+            thumbnail = media.thumbnailUrl || thumbnail;
+          } catch (error) {
+            console.warn("Thumbnail resolution failed:", item.id, error);
+          }
         }
-      } catch (error) {
-        if (error?.name !== "AbortError") {
-          prompt("Copy this video link:", location.href);
-        }
-      }
-    });
 
-    document.getElementById("dv-comment-form")
-      .addEventListener("submit", postComment);
+        return {
+          ...item,
+          resolvedThumbnail: thumbnail
+        };
+      })
+    );
 
-    await Promise.allSettled([
-      loadVideoSource(video),
-      loadComments(videoId)
-    ]);
+    container.innerHTML = videos.map(item => {
+      const thumb = item.resolvedThumbnail || "";
 
-    try {
-      const related = await getRelatedVideos(video);
-      renderRelated(related);
-    } catch (error) {
-      console.error("Related videos failed:", error);
-      document.getElementById("dv-related-status").textContent =
-        "Related videos could not be loaded. Check the videos table query and RLS policies.";
-    }
+      return `
+        <a href="video.html?id=${encodeURIComponent(item.id)}"
+          style="display:block;text-decoration:none;color:#fff;
+          background:#151515;border-radius:8px;overflow:hidden;min-width:0;">
+
+          <div style="position:relative;aspect-ratio:16/10;
+            background:#252525;overflow:hidden;">
+
+            ${thumb ? `
+              <img
+                src="${escapeHTML(thumb)}"
+                alt="${escapeHTML(item.title || "Video thumbnail")}"
+                loading="lazy"
+                style="width:100%;height:100%;object-fit:cover;display:block;"
+                onerror="this.style.display='none';
+                  this.nextElementSibling.style.display='flex';"
+              >
+              <div style="display:none;position:absolute;inset:0;
+                align-items:center;justify-content:center;
+                color:#ff4444;font-weight:bold;font-size:12px;">
+                Thumbnail unavailable
+              </div>
+            ` : `
+              <div style="height:100%;display:flex;align-items:center;
+                justify-content:center;color:#ff4444;font-weight:bold;">
+                DesiVexa
+              </div>
+            `}
+          </div>
+
+          <div style="padding:9px;">
+            <div style="font-size:13px;font-weight:bold;line-height:1.4;
+              display:-webkit-box;-webkit-line-clamp:2;
+              -webkit-box-orient:vertical;overflow:hidden;">
+              ${escapeHTML(item.title || "Untitled video")}
+            </div>
+
+            <div style="font-size:11px;color:#999;margin-top:6px;">
+              👁 ${formatViews(item.views)} views
+            </div>
+          </div>
+        </a>`;
+    }).join("");
+
   } catch (error) {
-    console.error("Video load failed:", error);
-    showStatus("Could not load video. Check video ID, Supabase config, and videos table.", true);
+    console.error("Related videos error:", error);
+
+    container.innerHTML = `
+      <p style="color:#ff8888;grid-column:1/-1;">
+        Related videos load nahi hue. Videos table aur published column check karein.
+      </p>`;
   }
 }
 
-init();
+async function shareVideo() {
+  const shareData = {
+    title: currentVideo?.title || "DesiVexa",
+    text: currentVideo?.title || "Watch this video on DesiVexa",
+    url: window.location.href
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(window.location.href);
+      alert("Video link copy ho gaya!");
+    } else {
+      prompt("Video link copy karein:", window.location.href);
+    }
+  } catch (error) {
+    if (error.name !== "AbortError") {
+      console.error("Share error:", error);
+    }
+  }
+}
+
+loadVideo();
