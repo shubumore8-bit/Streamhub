@@ -480,27 +480,58 @@ $("editForm").addEventListener("submit", async (event) => {
   }
 });
 
+
 async function togglePublished(video, button) {
   if (busy) return;
 
   busy = true;
-  setBusy(button, true, "Updating…");
+  setBusy(button, true, "Publishing…");
 
   try {
-    const { error } = await supabase
-      .from("videos")
-      .update({ published: video.published !== true })
-      .eq("id", video.id);
+    const nextPublished = video.published !== true;
 
-    if (error) throw error;
+    const updates = {
+      published: nextPublished
+    };
+
+    // Approval column available ho to usko bhi update karo.
+    if ("approval_status" in video) {
+      updates.approval_status = nextPublished
+        ? "approved"
+        : "pending";
+    }
+
+    const { data, error } = await supabase
+      .from("videos")
+      .update(updates)
+      .eq("id", video.id)
+      .select();
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+      throw new Error(
+        "Video update nahi hui. Supabase RLS policy aur admin login check karo."
+      );
+    }
+
     await loadVideos();
+
+    alert(
+      nextPublished
+        ? "Video publish ho gayi!"
+        : "Video unpublish ho gayi."
+    );
   } catch (error) {
-    alert("Publish status update nahi hua: " + error.message);
+    alert("Publish error: " + error.message);
   } finally {
     busy = false;
     setBusy(button, false);
   }
 }
+
 
 async function deleteVideo(video, button) {
   if (busy) return;
