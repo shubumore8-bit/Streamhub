@@ -495,11 +495,10 @@ async function togglePublished(video, button) {
     };
 
     // Approval column available ho to usko bhi update karo.
-    if ("approval_status" in video) {
-      updates.approval_status = nextPublished
-        ? "approved"
-        : "pending";
-    }
+     updates.approval_status = nextPublished
+  ? "approved"
+  : "pending";
+  }
 
     const { data, error } = await supabase
       .from("videos")
