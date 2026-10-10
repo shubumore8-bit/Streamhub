@@ -1,0 +1,342 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User Panel - DesiVexa</title>
+<style>
+:root{color-scheme:dark;--bg:#090909;--panel:#151515;--red:#ed1935;--text:#f5f5f5;--muted:#aaa}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif}
+header{background:#111;border-bottom:1px solid #292929;padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{font-size:24px;font-weight:900;color:#fff;text-decoration:none}.logo span{color:var(--red)}
+a{color:#ff5266}
+main{width:min(760px,94%);margin:24px auto 70px}
+.panel{background:var(--panel);padding:20px;border:1px solid #292929;border-radius:14px;margin-bottom:18px}
+h1{font-size:25px;margin:0 0 8px}h2{font-size:20px;margin:0 0 15px}
+.muted{color:var(--muted);line-height:1.5}
+label{display:block;margin:13px 0 6px;color:#ddd}
+input,textarea,select{width:100%;padding:13px;border-radius:8px;border:1px solid #383838;background:#0b0b0b;color:white;font-size:15px}
+textarea{min-height:90px;resize:vertical}
+button,.btn{border:0;border-radius:8px;padding:12px 16px;background:var(--red);color:white;font-weight:bold;cursor:pointer;font-size:14px}
+button:disabled{opacity:.5;cursor:wait}
+.secondary{background:#303030}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
+.tabs{display:flex;gap:8px;margin:16px 0}.tabs button{flex:1}
+.status{padding:12px;border-radius:8px;background:#202020;margin:12px 0;overflow-wrap:anywhere}
+.item{padding:14px 0;border-bottom:1px solid #333}.item:last-child{border:0}
+.item h3{margin:0 0 8px;font-size:17px}.tag{font-size:12px;color:#ff687a}
+.hidden{display:none!important}
+small{color:var(--muted)}
+@media(max-width:480px){.panel{padding:15px}h1{font-size:22px}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="./index.html">Desi<span>Vexa</span></a>
+  <a href="./index.html">Watch videos</a>
+</header>
+
+<main>
+  <section class="panel">
+    <h1>User Panel</h1>
+    <p class="muted">Watch videos without an account. Sign in to upload your own videos for admin approval.</p>
+    <div id="message" class="status hidden" role="status"></div>
+  </section>
+
+  <section id="authPanel" class="panel">
+    <div class="tabs">
+      <button id="loginTab" type="button" class="secondary">Login</button>
+      <button id="registerTab" type="button">Register</button>
+    </div>
+    <form id="authForm">
+      <div id="nameWrap" class="hidden">
+        <label for="name">Your name</label>
+        <input id="name" maxlength="80" autocomplete="name">
+      </div>
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="email" required>
+      <label for="password">Password</label>
+      <input id="password" type="password" minlength="8" autocomplete="current-password" required>
+      <div class="actions">
+        <button id="authSubmit" type="submit">Login</button>
+        <button id="forgotBtn" class="secondary" type="button">Forgot password?</button>
+      </div>
+    </form>
+    <p class="muted">Registration sends an email confirmation link. Check your inbox and spam folder.</p>
+  </section>
+
+  <section id="accountPanel" class="panel hidden">
+    <h2>Your account</h2>
+    <div id="accountEmail" class="muted"></div>
+    <div class="actions">
+      <button id="logoutBtn" type="button" class="secondary">Logout</button>
+    </div>
+  </section>
+
+  <section id="uploadPanel" class="panel hidden">
+    <h2>Upload a video</h2>
+    <p class="muted">Your video will remain pending until the admin approves it.</p>
+    <form id="uploadForm">
+      <label for="title">Video title</label>
+      <input id="title" maxlength="150" required>
+      <label for="category">Category</label>
+      <input id="category" maxlength="80" required>
+      <label for="description">Description</label>
+      <textarea id="description" maxlength="3000"></textarea>
+      <label for="videoFile">Video file</label>
+      <input id="videoFile" type="file" accept="video/mp4,video/webm,video/quicktime,video/x-matroska" required>
+      <small>Choose a video format supported by your website and browser. Upload limits depend on your Supabase storage settings.</small>
+      <label for="thumbnailFile">Thumbnail (optional)</label>
+      <input id="thumbnailFile" type="file" accept="image/jpeg,image/png,image/webp">
+      <div class="actions">
+        <button id="uploadBtn" type="submit">Submit for approval</button>
+      </div>
+    </form>
+  </section>
+
+  <section id="myVideosPanel" class="panel hidden">
+    <h2>My uploads</h2>
+    <div id="myVideos" class="muted">Loading uploads...</div>
+    <button id="refreshBtn" type="button" class="secondary">Refresh status</button>
+  </section>
+</main>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const $ = id => document.getElementById(id);
+
+let mode = "login";
+let currentUser = null;
+
+function message(text, error = false) {
+  const el = $("message");
+  el.textContent = text;
+  el.classList.remove("hidden");
+  el.style.border = error ? "1px solid #ff5367" : "1px solid #555";
+}
+
+function clearMessage() {
+  $("message").classList.add("hidden");
+}
+
+function setMode(next) {
+  mode = next;
+  $("nameWrap").classList.toggle("hidden", mode !== "register");
+  $("name").required = mode === "register";
+  $("authSubmit").textContent = mode === "register" ? "Create account" : "Login";
+  $("loginTab").classList.toggle("secondary", mode !== "login");
+  $("registerTab").classList.toggle("secondary", mode !== "register");
+  $("password").autocomplete = mode === "register" ? "new-password" : "current-password";
+}
+
+$("loginTab").onclick = () => setMode("login");
+$("registerTab").onclick = () => setMode("register");
+
+$("authForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  clearMessage();
+  const email = $("email").value.trim();
+  const password = $("password").value;
+
+  $("authSubmit").disabled = true;
+  try {
+    if (mode === "register") {
+      const name = $("name").value.trim();
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { display_name: name },
+          emailRedirectTo: window.location.origin + "/user-panel.html"
+        }
+      });
+      if (error) throw error;
+
+      if (data.session) {
+        message("Account created. You are signed in.");
+      } else {
+        message("Registration submitted! Open the confirmation link sent to your email, then return here to log in.");
+      }
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      message("Login successful.");
+      await refreshUser();
+    }
+  } catch (error) {
+    message(error.message || "Something went wrong.", true);
+  } finally {
+    $("authSubmit").disabled = false;
+  }
+});
+
+$("forgotBtn").onclick = async () => {
+  clearMessage();
+  const email = $("email").value.trim();
+  if (!email) return message("Enter your email first.", true);
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + "/user-panel.html"
+  });
+  if (error) return message(error.message, true);
+  message("If the email is registered, a password-reset email will be sent.");
+};
+
+async function refreshUser() {
+  const { data, error } = await supabase.auth.getUser();
+  if (error) {
+    currentUser = null;
+  } else {
+    currentUser = data.user;
+  }
+
+  $("authPanel").classList.toggle("hidden", !!currentUser);
+  $("accountPanel").classList.toggle("hidden", !currentUser);
+  $("uploadPanel").classList.toggle("hidden", !currentUser);
+  $("myVideosPanel").classList.toggle("hidden", !currentUser);
+
+  if (currentUser) {
+    $("accountEmail").textContent = currentUser.email || "Signed in";
+    await loadMyVideos();
+  }
+}
+
+function safeText(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[char]));
+}
+
+async function loadMyVideos() {
+  if (!currentUser) return;
+  $("myVideos").textContent = "Loading uploads...";
+
+  const { data, error } = await supabase
+    .from("videos")
+    .select("id,title,approval_status,published,created_at")
+    .eq("user_id", currentUser.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    $("myVideos").textContent = "Could not load uploads: " + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    $("myVideos").textContent = "You have not uploaded any videos yet.";
+    return;
+  }
+
+  $("myVideos").innerHTML = data.map(video => {
+    const status = video.approval_status || (video.published ? "approved" : "pending");
+    return `<div class="item">
+      <h3>${safeText(video.title)}</h3>
+      <div class="tag">Status: ${safeText(status.toUpperCase())}</div>
+      <small>${safeText(video.created_at ? new Date(video.created_at).toLocaleString() : "")}</small>
+    </div>`;
+  }).join("");
+}
+
+$("uploadForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  clearMessage();
+
+  if (!currentUser) return message("Please log in first.", true);
+
+  const videoFile = $("videoFile").files[0];
+  const thumbnailFile = $("thumbnailFile").files[0];
+
+  if (!videoFile) return message("Choose a video file.", true);
+  if (!videoFile.type.startsWith("video/")) return message("Choose a valid video file.", true);
+  if (videoFile.size > 100 * 1024 * 1024) {
+    return message("This example allows videos up to 100 MB. Larger videos need a resumable upload setup.", true);
+  }
+  if (thumbnailFile && !thumbnailFile.type.startsWith("image/")) {
+    return message("Choose a valid image thumbnail.", true);
+  }
+
+  $("uploadBtn").disabled = true;
+  let videoPath = null;
+  let thumbnailPath = null;
+
+  try {
+    const { data: authData, error: authError } = await supabase.auth.getUser();
+    if (authError || !authData.user || authData.user.id !== currentUser.id) {
+      throw new Error("Your session expired. Please log in again.");
+    }
+
+    const safeName = videoFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+    videoPath = `${currentUser.id}/${Date.now()}-${safeName}`;
+
+    const { error: videoError } = await supabase.storage
+      .from("videos")
+      .upload(videoPath, videoFile, { upsert: false, contentType: videoFile.type });
+
+    if (videoError) throw videoError;
+
+    const { data: videoUrlData } = supabase.storage.from("videos").getPublicUrl(videoPath);
+    let thumbnailUrl = null;
+
+    if (thumbnailFile) {
+      const safeThumb = thumbnailFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+      thumbnailPath = `${currentUser.id}/${Date.now()}-${safeThumb}`;
+
+      const { error: thumbError } = await supabase.storage
+        .from("thumbnails")
+        .upload(thumbnailPath, thumbnailFile, { upsert: false, contentType: thumbnailFile.type });
+
+      if (thumbError) throw thumbError;
+
+      thumbnailUrl = supabase.storage.from("thumbnails").getPublicUrl(thumbnailPath).data.publicUrl;
+    }
+
+    const { error: insertError } = await supabase.from("videos").insert({
+      user_id: currentUser.id,
+      title: $("title").value.trim(),
+      category: $("category").value.trim(),
+      description: $("description").value.trim(),
+      video_url: videoUrlData.publicUrl,
+      thumbnail_url: thumbnailUrl,
+      published: false,
+      approval_status: "pending",
+      views: 0
+    });
+
+    if (insertError) throw insertError;
+
+    message("Video submitted successfully! It will appear publicly only after admin approval.");
+    $("uploadForm").reset();
+    await loadMyVideos();
+  } catch (error) {
+    message(
+      (error.message || "Upload failed.") +
+      (videoPath ? " If the file uploaded but submission failed, check your Storage and table policies before retrying." : ""),
+      true
+    );
+  } finally {
+    $("uploadBtn").disabled = false;
+  }
+});
+
+$("logoutBtn").onclick = async () => {
+  const { error } = await supabase.auth.signOut();
+  if (error) return message(error.message, true);
+  message("You have logged out.");
+  await refreshUser();
+};
+
+$("refreshBtn").onclick = loadMyVideos;
+
+supabase.auth.onAuthStateChange((_event, _session) => {
+  setTimeout(() => refreshUser(), 0);
+});
+
+setMode("login");
+await refreshUser();
+</script>
+</body>
+</html>
