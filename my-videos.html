@@ -1,0 +1,303 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Videos - DesiVexa</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101010;color:#fff;font-family:Arial,sans-serif}
+header{padding:16px;background:#191919;border-bottom:2px solid #e50914}
+header h2{margin:0;color:#ff3030}
+main{max-width:850px;margin:auto;padding:16px}
+.card{background:#1c1c1c;border:1px solid #333;border-radius:12px;padding:16px;margin:16px 0}
+h3{margin-top:0}
+input,textarea,select,button{width:100%;padding:12px;margin:7px 0;border-radius:7px;font-size:15px}
+input,textarea,select{background:#292929;color:white;border:1px solid #444}
+textarea{min-height:85px;resize:vertical}
+button{border:0;background:#e50914;color:white;font-weight:bold;cursor:pointer}
+.secondary{background:#444}
+.item{padding:14px 0;border-bottom:1px solid #383838}
+.item:last-child{border-bottom:0}
+.status{color:#ffb84d;font-size:13px}
+.published{color:#65df92}
+.small{font-size:13px;color:#bbb}
+a{color:#ff5656}
+#message{overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header>
+  <h2>DesiVexa · My Videos</h2>
+</header>
+
+<main>
+  <p><a href="index.html">← Back to Home</a></p>
+  <p id="account" class="small">Checking login...</p>
+
+  <section class="card" id="uploadCard" hidden>
+    <h3>Upload a Video</h3>
+    <p class="small">Your upload will remain private from the public until the admin approves it.</p>
+
+    <form id="uploadForm">
+      <input id="title" maxlength="150" placeholder="Video title" required>
+      <input id="category" maxlength="80" placeholder="Category" required>
+      <textarea id="description" maxlength="5000" placeholder="Description"></textarea>
+
+      <label for="thumbnail">Thumbnail image (max 10 MB)</label>
+      <input id="thumbnail" type="file" accept="image/*" required>
+
+      <label for="video">Video file (max 500 MB)</label>
+      <input id="video" type="file" accept="video/*" required>
+
+      <button id="uploadButton" type="submit">Upload for Approval</button>
+    </form>
+    <p id="message" class="small"></p>
+  </section>
+
+  <section class="card">
+    <h3>My Uploaded Videos</h3>
+    <button class="secondary" id="refreshButton" type="button">Refresh List</button>
+    <div id="list">Loading videos...</div>
+  </section>
+</main>
+
+<script type="module">
+import { createClient } from
+'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const $ = id => document.getElementById(id);
+
+let currentUser = null;
+
+function showMessage(message) {
+  $('message').textContent = message;
+}
+
+function safeText(value) {
+  return String(value ?? '');
+}
+
+async function start() {
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error || !data.user) {
+    $('account').textContent = 'Please login first.';
+    $('list').textContent = 'Login required.';
+    const link = document.createElement('a');
+    link.href = 'login.html';
+    link.textContent = 'Go to Login';
+    $('list').replaceChildren(link);
+    return;
+  }
+
+  currentUser = data.user;
+  $('account').textContent = 'Logged in: ' + currentUser.email;
+  $('uploadCard').hidden = false;
+  await loadVideos();
+}
+
+async function loadVideos() {
+  $('list').textContent = 'Loading...';
+
+  const { data, error } = await supabase
+    .from('videos')
+    .select('id,title,category,description,published,created_at')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    $('list').textContent = 'Could not load videos: ' + error.message;
+    return;
+  }
+
+  if (!data.length) {
+    $('list').textContent = 'You have not uploaded any videos yet.';
+    return;
+  }
+
+  const container = document.createElement('div');
+
+  for (const video of data) {
+    const item = document.createElement('div');
+    item.className = 'item';
+
+    const title = document.createElement('h3');
+    title.textContent = video.title || 'Untitled video';
+
+    const category = document.createElement('p');
+    category.textContent = 'Category: ' + safeText(video.category);
+
+    const status = document.createElement('p');
+    status.className = 'status ' + (video.published ? 'published' : '');
+    status.textContent = video.published
+      ? '✓ Approved / Published'
+      : '⏳ Pending admin approval';
+
+    item.append(title, category, status);
+
+    if (!video.published) {
+      const edit = document.createElement('button');
+      edit.className = 'secondary';
+      edit.textContent = 'Edit Details';
+      edit.onclick = async () => {
+        const newTitle = prompt('New title:', video.title || '');
+        if (newTitle === null) return;
+        if (!newTitle.trim()) {
+          alert('Title cannot be empty.');
+          return;
+        }
+
+        const newCategory = prompt('Category:', video.category || '');
+        if (newCategory === null) return;
+
+        const newDescription = prompt('Description:', video.description || '');
+        if (newDescription === null) return;
+
+        const { error } = await supabase
+          .from('videos')
+          .update({
+            title: newTitle.trim(),
+            category: newCategory.trim(),
+            description: newDescription.trim()
+          })
+          .eq('id', video.id)
+          .eq('user_id', currentUser.id)
+          .eq('published', false);
+
+        if (error) alert('Edit failed: ' + error.message);
+        else {
+          alert('Video details updated.');
+          await loadVideos();
+        }
+      };
+      item.append(edit);
+    }
+
+    const remove = document.createElement('button');
+    remove.className = 'secondary';
+    remove.textContent = 'Delete Video';
+    remove.onclick = async () => {
+      if (!confirm('Delete this video record? This cannot be undone.')) return;
+
+      const { error } = await supabase
+        .from('videos')
+        .delete()
+        .eq('id', video.id)
+        .eq('user_id', currentUser.id);
+
+      if (error) {
+        alert('Delete failed: ' + error.message);
+      } else {
+        alert('Video record deleted.');
+        await loadVideos();
+      }
+    };
+    item.append(remove);
+
+    container.append(item);
+  }
+
+  $('list').replaceChildren(container);
+}
+
+$('uploadForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  if (!currentUser) return;
+
+  const title = $('title').value.trim();
+  const category = $('category').value.trim();
+  const description = $('description').value.trim();
+  const thumbnail = $('thumbnail').files[0];
+  const video = $('video').files[0];
+
+  if (!title || !category || !thumbnail || !video) {
+    showMessage('Please fill in all required fields.');
+    return;
+  }
+  if (thumbnail.size > 10 * 1024 * 1024) {
+    showMessage('Thumbnail must be 10 MB or smaller.');
+    return;
+  }
+  if (video.size > 500 * 1024 * 1024) {
+    showMessage('Video must be 500 MB or smaller.');
+    return;
+  }
+  if (!thumbnail.type.startsWith('image/')) {
+    showMessage('Choose a valid image thumbnail.');
+    return;
+  }
+  if (!video.type.startsWith('video/')) {
+    showMessage('Choose a valid video file.');
+    return;
+  }
+
+  const button = $('uploadButton');
+  button.disabled = true;
+  showMessage('Uploading files... Please keep this page open.');
+
+  let thumbnailPath = null;
+  let videoPath = null;
+
+  try {
+    const folder = currentUser.id + '/' + crypto.randomUUID();
+    const thumbExt = (thumbnail.name.split('.').pop() || 'jpg')
+      .toLowerCase().replace(/[^a-z0-9]/g, '');
+    const videoExt = (video.name.split('.').pop() || 'mp4')
+      .toLowerCase().replace(/[^a-z0-9]/g, '');
+
+    thumbnailPath = folder + '/thumbnail.' + (thumbExt || 'jpg');
+    videoPath = folder + '/video.' + (videoExt || 'mp4');
+
+    const thumbResult = await supabase.storage
+      .from('thumbnails')
+      .upload(thumbnailPath, thumbnail, {
+        upsert: false,
+        contentType: thumbnail.type
+      });
+
+    if (thumbResult.error) throw thumbResult.error;
+
+    const videoResult = await supabase.storage
+      .from('videos')
+      .upload(videoPath, video, {
+        upsert: false,
+        contentType: video.type
+      });
+
+    if (videoResult.error) throw videoResult.error;
+
+    showMessage('Saving submission...');
+
+    const { error } = await supabase.from('videos').insert({
+      user_id: currentUser.id,
+      title,
+      category,
+      description,
+      thumbnail_url: thumbnailPath,
+      video_url: videoPath,
+      published: false,
+      views: 0
+    });
+
+    if (error) throw error;
+
+    $('uploadForm').reset();
+    showMessage('Submitted successfully! Your video is waiting for admin approval.');
+    await loadVideos();
+  } catch (error) {
+    showMessage('Upload failed: ' + (error.message || 'Unknown error') +
+      '. If a file uploaded before the error, it may remain in Storage.');
+  } finally {
+    button.disabled = false;
+  }
+});
+
+$('refreshButton').addEventListener('click', loadVideos);
+start();
+</script>
+</body>
+</html>
