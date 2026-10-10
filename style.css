@@ -699,6 +699,41 @@ body{
   border-color:#252d39;
 }
 
+
+/* USER PANEL BUTTON */
+
+.userPanelButton{
+  width:42px;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid #293d4a;
+  border-radius:9px;
+  background:transparent;
+  color:#fff;
+  font-size:21px;
+  text-decoration:none;
+  cursor:pointer;
+  flex-shrink:0;
+}
+
+.userPanelButton:hover{
+  background:#111722;
+  border-color:#ff1744;
+}
+
+/* MOBILE USER PANEL */
+
+@media(max-width:600px){
+  .userPanelButton{
+    width:38px;
+    height:38px;
+    font-size:19px;
+  }
+}
+
+
 .dvMain{
   max-width:1280px;
   padding-left:18px;
