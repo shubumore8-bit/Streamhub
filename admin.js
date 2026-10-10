@@ -113,9 +113,7 @@ function objectPathFromURL(value, bucket) {
     const index = url.pathname.indexOf(marker);
 
     if (index !== -1) {
-      const encodedPath = url.pathname.slice(
-        index + marker.length
-      );
+      const encodedPath = url.pathname.slice(index + marker.length);
 
       try {
         return encodedPath
@@ -168,14 +166,14 @@ function storagePathForDelete(value, bucket) {
 }
 
 function showLogin() {
-  if (loginPanel) loginPanel.classList.remove("hidden");
-  if (dashboard) dashboard.classList.add("hidden");
+  loginPanel?.classList.remove("hidden");
+  dashboard?.classList.add("hidden");
   $("logoutBtn")?.classList.add("hidden");
 }
 
 function showDashboard() {
-  if (loginPanel) loginPanel.classList.add("hidden");
-  if (dashboard) dashboard.classList.remove("hidden");
+  loginPanel?.classList.add("hidden");
+  dashboard?.classList.remove("hidden");
   $("logoutBtn")?.classList.remove("hidden");
 }
 
@@ -233,24 +231,23 @@ $("loginForm")?.addEventListener("submit", async (event) => {
       throw new Error("Email aur password dono bharo.");
     }
 
-    const { data, error } = await supabase.auth
-      .signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
 
     if (error) throw error;
 
     if (!data.user || data.user.id !== ADMIN_UID) {
       await supabase.auth.signOut();
-      throw new Error(
-        "Login hua, lekin is account ko Admin access nahi hai."
-      );
+      throw new Error("Is account ko Admin access nahi hai.");
     }
 
     currentUser = data.user;
     showDashboard();
-
     await loadVideos();
   } catch (error) {
-    message(loginMessage, error.message || "Login failed.");
+    message(loginMessage, "Login error: " + error.message);
   } finally {
     busy = false;
     setBusy(button, false);
@@ -261,6 +258,7 @@ $("loginForm")?.addEventListener("submit", async (event) => {
 $("logoutBtn")?.addEventListener("click", async () => {
   try {
     const { error } = await supabase.auth.signOut();
+
     if (error) throw error;
 
     currentUser = null;
@@ -274,9 +272,7 @@ $("logoutBtn")?.addEventListener("click", async () => {
 
 // LOAD VIDEOS
 async function loadVideos() {
-  if (!currentUser || currentUser.id !== ADMIN_UID) {
-    return;
-  }
+  if (!currentUser || currentUser.id !== ADMIN_UID) return;
 
   message(listMessage, "Videos load ho rahe hain…");
 
@@ -292,14 +288,19 @@ async function loadVideos() {
     if (error) throw error;
 
     videos = data || [];
-    currentPage = 1;
+    currentPage = Math.min(
+      currentPage,
+      Math.max(1, Math.ceil(videos.length / PAGE_SIZE))
+    );
 
     updateStats();
     renderVideos();
 
     message(
       listMessage,
-      videos.length ? `${videos.length} videos loaded.` : "Abhi koi video nahi mila."
+      videos.length
+        ? `${videos.length} videos loaded.`
+        : "Abhi koi video nahi mila."
     );
   } catch (error) {
     message(listMessage, "Videos load nahi hue: " + error.message);
@@ -307,9 +308,7 @@ async function loadVideos() {
 }
 
 function updateStats() {
-  if ($("totalCount")) {
-    $("totalCount").textContent = videos.length;
-  }
+  if ($("totalCount")) $("totalCount").textContent = videos.length;
 
   if ($("publishedCount")) {
     $("publishedCount").textContent =
@@ -330,10 +329,7 @@ function updateStats() {
 }
 
 function filteredVideos() {
-  const query = ($("searchInput")?.value || "")
-    .trim()
-    .toLowerCase();
-
+  const query = ($("searchInput")?.value || "").trim().toLowerCase();
   const filter = $("filterSelect")?.value || "all";
 
   return videos.filter((video) => {
@@ -350,7 +346,7 @@ function filteredVideos() {
   });
 }
 
-// RENDER VIDEOS
+// RENDER VIDEO CARDS
 function renderVideos() {
   const list = $("videoList");
   const pager = $("pager");
@@ -416,12 +412,9 @@ function renderVideos() {
 // VIDEO BUTTONS
 $("videoList")?.addEventListener("click", async (event) => {
   const button = event.target.closest("button[data-action]");
-  if (!button) return;
+  if (!button || busy) return;
 
-  const video = videos.find(
-    (v) => String(v.id) === button.dataset.id
-  );
-
+  const video = videos.find((v) => String(v.id) === button.dataset.id);
   if (!video) return;
 
   switch (button.dataset.action) {
@@ -442,7 +435,6 @@ $("videoList")?.addEventListener("click", async (event) => {
 
 $("pager")?.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-page]");
-
   if (!button || button.disabled) return;
 
   currentPage = Number(button.dataset.page);
@@ -459,7 +451,7 @@ $("filterSelect")?.addEventListener("change", () => {
   renderVideos();
 });
 
-$("refreshBtn")?.addEventListener("click", loadVideos);
+$("refreshBtn")?.addEventListener("click", () => loadVideos());
 
 // PREVIEW
 async function openPreview(video) {
@@ -476,10 +468,7 @@ async function openPreview(video) {
   previewDialog.showModal();
 
   try {
-    const playableURL = await getPlayableURL(
-      VIDEO_BUCKET,
-      video.video_url
-    );
+    const playableURL = await getPlayableURL(VIDEO_BUCKET, video.video_url);
 
     player.src = playableURL;
     player.load();
@@ -521,6 +510,11 @@ previewDialog?.addEventListener("close", () => {
 
 // EDIT VIDEO
 function openEdit(video) {
+  if (!editDialog) {
+    alert("admin.html mein editDialog nahi mila.");
+    return;
+  }
+
   $("editId").value = video.id;
   $("editTitle").value = video.title || "";
   $("editCategory").value = video.category || "";
@@ -564,7 +558,9 @@ $("editForm")?.addEventListener("submit", async (event) => {
       .select("id");
 
     if (error) throw error;
-    if (!data?.length) throw new Error("Video update nahi hui.");
+    if (!data?.length) {
+      throw new Error("Video update nahi hui. ID aur permissions check karo.");
+    }
 
     editDialog.close();
     await loadVideos();
@@ -581,9 +577,20 @@ async function togglePublished(video, button) {
   if (busy) return;
 
   busy = true;
-  setBusy(button, true, "Publishing…");
+  setBusy(button, true, "Updating…");
 
   try {
+    const { data: sessionData, error: sessionError } =
+      await supabase.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    const user = sessionData.session?.user;
+
+    if (!user || user.id !== ADMIN_UID) {
+      throw new Error("Admin session valid nahi hai. Logout karke dobara login karo.");
+    }
+
     const nextPublished = video.published !== true;
 
     const updates = {
@@ -591,29 +598,56 @@ async function togglePublished(video, button) {
       approval_status: nextPublished ? "approved" : "pending"
     };
 
-    const { data, error } = await supabase
+    const { error: updateError } = await supabase
       .from("videos")
       .update(updates)
-      .eq("id", video.id)
-      .select("id, published, approval_status");
+      .eq("id", video.id);
 
-    if (error) throw error;
-
-    if (!data?.length) {
+    if (updateError) {
       throw new Error(
-        "Database update nahi hui. Admin UID aur RLS policies check karo."
+        "Supabase UPDATE error: " +
+        updateError.message +
+        (updateError.code ? " | Code: " + updateError.code : "")
+      );
+    }
+
+    const { data: savedVideo, error: readError } = await supabase
+      .from("videos")
+      .select("id, published, approval_status")
+      .eq("id", video.id)
+      .maybeSingle();
+
+    if (readError) {
+      throw new Error("Update ke baad verify nahi hua: " + readError.message);
+    }
+
+    if (!savedVideo) {
+      throw new Error(
+        "Video row read nahi hui. ID aur SELECT policy check karo."
+      );
+    }
+
+    if (savedVideo.published !== nextPublished) {
+      throw new Error(
+        "Database mein status change save nahi hua. Saved published value: " +
+        String(savedVideo.published)
       );
     }
 
     await loadVideos();
 
     alert(
-      nextPublished
+      savedVideo.published
         ? "Video successfully Published!"
-        : "Video Unpublished!"
+        : "Video successfully Unpublished!"
     );
   } catch (error) {
-    alert("Publish error: " + error.message);
+    console.error("DesiVexa publish/unpublish:", error);
+    alert(
+      "Publish error:\n" +
+      (error.message || String(error)) +
+      (error.code ? "\nCode: " + error.code : "")
+    );
   } finally {
     busy = false;
     setBusy(button, false);
@@ -624,11 +658,9 @@ async function togglePublished(video, button) {
 async function deleteVideo(video, button) {
   if (busy) return;
 
-  const confirmed = confirm(
+  if (!confirm(
     `Kya tum "${video.title || "is video"}" ko delete karna chahte ho? Ye action undo nahi hoga.`
-  );
-
-  if (!confirmed) return;
+  )) return;
 
   busy = true;
   setBusy(button, true, "Deleting…");
@@ -646,10 +678,7 @@ async function deleteVideo(video, button) {
       throw new Error("Video delete nahi hui. Permissions check karo.");
     }
 
-    const videoPath = storagePathForDelete(
-      video.video_url,
-      VIDEO_BUCKET
-    );
+    const videoPath = storagePathForDelete(video.video_url, VIDEO_BUCKET);
 
     if (videoPath) {
       const { error: storageError } = await supabase.storage
@@ -661,10 +690,7 @@ async function deleteVideo(video, button) {
       }
     }
 
-    const thumbPath = storagePathForDelete(
-      video.thumbnail_url,
-      THUMB_BUCKET
-    );
+    const thumbPath = storagePathForDelete(video.thumbnail_url, THUMB_BUCKET);
 
     if (thumbPath) {
       const { error: thumbError } = await supabase.storage
@@ -677,6 +703,7 @@ async function deleteVideo(video, button) {
     }
 
     await loadVideos();
+    alert("Video delete ho gayi.");
   } catch (error) {
     alert("Delete error: " + error.message);
   } finally {
@@ -701,9 +728,7 @@ async function uploadToBucket(bucket, file, folder) {
 
   if (error) throw error;
 
-  const { data } = supabase.storage
-    .from(bucket)
-    .getPublicUrl(path);
+  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
 
   return {
     path,
@@ -723,8 +748,8 @@ $("uploadForm")?.addEventListener("submit", async (event) => {
   }
 
   const button = $("uploadBtn");
-  const videoFile = $("videoFile").files[0];
-  const thumbnailFile = $("thumbnailFile").files[0];
+  const videoFile = $("videoFile")?.files?.[0];
+  const thumbnailFile = $("thumbnailFile")?.files?.[0];
 
   if (!videoFile) {
     message(uploadMessage, "Pehle video file select karo.");
@@ -773,17 +798,12 @@ $("uploadForm")?.addEventListener("submit", async (event) => {
       thumbnailURL = uploadedThumb.publicUrl || uploadedThumb.path;
     }
 
-    const { data: signedData, error: signedError } =
-      await supabase.storage
-        .from(VIDEO_BUCKET)
-        .createSignedUrl(uploadedVideoPath, 60 * 60 * 24 * 7);
-
-    if (signedError) throw signedError;
-
-    const videoURL = signedData?.signedUrl;
+    // Public URL store karo, agar bucket public hai.
+    // Private bucket ke liye video player ko signed URL banana hoga.
+    const videoURL = uploadedVideo.publicUrl;
 
     if (!videoURL) {
-      throw new Error("Video URL create nahi hua.");
+      throw new Error("Video public URL create nahi hua.");
     }
 
     const row = {
@@ -815,21 +835,14 @@ $("uploadForm")?.addEventListener("submit", async (event) => {
 
     await loadVideos();
   } catch (error) {
-    message(
-      uploadMessage,
-      "Upload error: " + (error.message || "Unknown error")
-    );
+    message(uploadMessage, "Upload error: " + (error.message || "Unknown error"));
 
     if (uploadedVideoPath) {
-      await supabase.storage
-        .from(VIDEO_BUCKET)
-        .remove([uploadedVideoPath]);
+      await supabase.storage.from(VIDEO_BUCKET).remove([uploadedVideoPath]);
     }
 
     if (uploadedThumbPath) {
-      await supabase.storage
-        .from(THUMB_BUCKET)
-        .remove([uploadedThumbPath]);
+      await supabase.storage.from(THUMB_BUCKET).remove([uploadedThumbPath]);
     }
   } finally {
     busy = false;
@@ -859,8 +872,7 @@ supabase.auth.onAuthStateChange((event, session) => {
   currentUser = user;
   showDashboard();
 
-  // Auth callback ke andar Supabase request ko directly await na karo.
-  if (event === "SIGNED_IN") {
+  if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
     setTimeout(() => {
       loadVideos();
     }, 0);
