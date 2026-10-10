@@ -17,18 +17,19 @@ main{width:min(760px,94%);margin:24px auto 70px}
 h1{font-size:25px;margin:0 0 8px}h2{font-size:20px;margin:0 0 15px}
 .muted{color:var(--muted);line-height:1.5}
 label{display:block;margin:13px 0 6px;color:#ddd}
-input,textarea,select{width:100%;padding:13px;border-radius:8px;border:1px solid #383838;background:#0b0b0b;color:white;font-size:15px}
+input,textarea{width:100%;padding:13px;border-radius:8px;border:1px solid #383838;background:#0b0b0b;color:white;font-size:15px}
 textarea{min-height:90px;resize:vertical}
-button,.btn{border:0;border-radius:8px;padding:12px 16px;background:var(--red);color:white;font-weight:bold;cursor:pointer;font-size:14px}
+button{border:0;border-radius:8px;padding:12px 16px;background:var(--red);color:white;font-weight:bold;cursor:pointer;font-size:14px}
 button:disabled{opacity:.5;cursor:wait}
 .secondary{background:#303030}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
 .tabs{display:flex;gap:8px;margin:16px 0}.tabs button{flex:1}
-.status{padding:12px;border-radius:8px;background:#202020;margin:12px 0;overflow-wrap:anywhere}
+.status{padding:12px;border-radius:8px;background:#202020;margin:12px 0;overflow-wrap:anywhere;line-height:1.5}
 .item{padding:14px 0;border-bottom:1px solid #333}.item:last-child{border:0}
 .item h3{margin:0 0 8px;font-size:17px}.tag{font-size:12px;color:#ff687a}
 .hidden{display:none!important}
-small{color:var(--muted)}
+small{color:var(--muted);line-height:1.5}
+.preview{width:100%;max-width:360px;display:block;margin-top:12px;border-radius:9px;border:1px solid #333}
 @media(max-width:480px){.panel{padding:15px}h1{font-size:22px}}
 </style>
 </head>
@@ -39,68 +40,66 @@ small{color:var(--muted)}
 </header>
 
 <main>
-  <section class="panel">
-    <h1>User Panel</h1>
-    <p class="muted">Watch videos without an account. Sign in to upload your own videos for admin approval.</p>
-    <div id="message" class="status hidden" role="status"></div>
-  </section>
+<section class="panel">
+  <h1>User Panel</h1>
+  <p class="muted">Sign in to upload your videos for admin approval.</p>
+  <div id="message" class="status hidden" role="status" aria-live="polite"></div>
+</section>
 
-  <section id="authPanel" class="panel">
-    <div class="tabs">
-      <button id="loginTab" type="button" class="secondary">Login</button>
-      <button id="registerTab" type="button">Register</button>
+<section id="authPanel" class="panel">
+  <div class="tabs">
+    <button id="loginTab" type="button" class="secondary">Login</button>
+    <button id="registerTab" type="button">Register</button>
+  </div>
+  <form id="authForm">
+    <div id="nameWrap" class="hidden">
+      <label for="name">Your name</label>
+      <input id="name" maxlength="80" autocomplete="name">
     </div>
-    <form id="authForm">
-      <div id="nameWrap" class="hidden">
-        <label for="name">Your name</label>
-        <input id="name" maxlength="80" autocomplete="name">
-      </div>
-      <label for="email">Email</label>
-      <input id="email" type="email" autocomplete="email" required>
-      <label for="password">Password</label>
-      <input id="password" type="password" minlength="8" autocomplete="current-password" required>
-      <div class="actions">
-        <button id="authSubmit" type="submit">Login</button>
-        <button id="forgotBtn" class="secondary" type="button">Forgot password?</button>
-      </div>
-    </form>
-    <p class="muted">Registration sends an email confirmation link. Check your inbox and spam folder.</p>
-  </section>
-
-  <section id="accountPanel" class="panel hidden">
-    <h2>Your account</h2>
-    <div id="accountEmail" class="muted"></div>
+    <label for="email">Email</label>
+    <input id="email" type="email" autocomplete="email" required>
+    <label for="password">Password</label>
+    <input id="password" type="password" minlength="8" autocomplete="current-password" required>
     <div class="actions">
-      <button id="logoutBtn" type="button" class="secondary">Logout</button>
+      <button id="authSubmit" type="submit">Login</button>
+      <button id="forgotBtn" class="secondary" type="button">Forgot password?</button>
     </div>
-  </section>
+  </form>
+  <p class="muted">Registration requires email confirmation.</p>
+</section>
 
-  <section id="uploadPanel" class="panel hidden">
-    <h2>Upload a video</h2>
-    <p class="muted">Your video will remain pending until the admin approves it.</p>
-    <form id="uploadForm">
-      <label for="title">Video title</label>
-      <input id="title" maxlength="150" required>
-      <label for="category">Category</label>
-      <input id="category" maxlength="80" required>
-      <label for="description">Description</label>
-      <textarea id="description" maxlength="3000"></textarea>
-      <label for="videoFile">Video file</label>
-      <input id="videoFile" type="file" accept="video/mp4,video/webm,video/quicktime,video/x-matroska" required>
-      <small>Choose a video format supported by your website and browser. Upload limits depend on your Supabase storage settings.</small>
-      <label for="thumbnailFile">Thumbnail (optional)</label>
-      <input id="thumbnailFile" type="file" accept="image/jpeg,image/png,image/webp">
-      <div class="actions">
-        <button id="uploadBtn" type="submit">Submit for approval</button>
-      </div>
-    </form>
-  </section>
+<section id="accountPanel" class="panel hidden">
+  <h2>Your account</h2>
+  <div id="accountEmail" class="muted"></div>
+  <div class="actions"><button id="logoutBtn" type="button" class="secondary">Logout</button></div>
+</section>
 
-  <section id="myVideosPanel" class="panel hidden">
-    <h2>My uploads</h2>
-    <div id="myVideos" class="muted">Loading uploads...</div>
-    <button id="refreshBtn" type="button" class="secondary">Refresh status</button>
-  </section>
+<section id="uploadPanel" class="panel hidden">
+  <h2>Upload a video</h2>
+  <p class="muted">Thumbnail optional hai. Agar tum thumbnail select nahi karoge, video se random frame generate hoga.</p>
+  <form id="uploadForm">
+    <label for="title">Video title</label>
+    <input id="title" maxlength="150" required>
+    <label for="category">Category</label>
+    <input id="category" maxlength="80" required>
+    <label for="description">Description</label>
+    <textarea id="description" maxlength="3000"></textarea>
+    <label for="videoFile">Video file</label>
+    <input id="videoFile" type="file" accept="video/*" required>
+    <small>Maximum video size: 100 MB.</small>
+    <label for="thumbnailFile">Thumbnail (optional)</label>
+    <input id="thumbnailFile" type="file" accept="image/jpeg,image/png,image/webp">
+    <div id="thumbnailStatus" class="status hidden" aria-live="polite"></div>
+    <img id="thumbnailPreview" class="preview hidden" alt="Thumbnail preview">
+    <div class="actions"><button id="uploadBtn" type="submit">Submit for approval</button></div>
+  </form>
+</section>
+
+<section id="myVideosPanel" class="panel hidden">
+  <h2>My uploads</h2>
+  <div id="myVideos" class="muted">Loading uploads...</div>
+  <button id="refreshBtn" type="button" class="secondary">Refresh status</button>
+</section>
 </main>
 
 <script type="module">
@@ -112,6 +111,7 @@ const $ = id => document.getElementById(id);
 
 let mode = "login";
 let currentUser = null;
+let previewURL = null;
 
 function message(text, error = false) {
   const el = $("message");
@@ -119,9 +119,25 @@ function message(text, error = false) {
   el.classList.remove("hidden");
   el.style.border = error ? "1px solid #ff5367" : "1px solid #555";
 }
-
 function clearMessage() {
   $("message").classList.add("hidden");
+}
+function thumbnailMessage(text) {
+  $("thumbnailStatus").textContent = text;
+  $("thumbnailStatus").classList.remove("hidden");
+}
+function resetThumbnailPreview() {
+  if (previewURL) URL.revokeObjectURL(previewURL);
+  previewURL = null;
+  $("thumbnailPreview").removeAttribute("src");
+  $("thumbnailPreview").classList.add("hidden");
+}
+function showThumbnailPreview(file) {
+  resetThumbnailPreview();
+  if (!file) return;
+  previewURL = URL.createObjectURL(file);
+  $("thumbnailPreview").src = previewURL;
+  $("thumbnailPreview").classList.remove("hidden");
 }
 
 function setMode(next) {
@@ -133,34 +149,137 @@ function setMode(next) {
   $("registerTab").classList.toggle("secondary", mode !== "register");
   $("password").autocomplete = mode === "register" ? "new-password" : "current-password";
 }
-
 $("loginTab").onclick = () => setMode("login");
 $("registerTab").onclick = () => setMode("register");
+
+/* Video se random frame ka JPG thumbnail generate karo. */
+async function generateVideoThumbnail(videoFile) {
+  return new Promise((resolve, reject) => {
+    const video = document.createElement("video");
+    const objectURL = URL.createObjectURL(videoFile);
+    let finished = false;
+    let timeoutId;
+
+    video.preload = "auto";
+    video.muted = true;
+    video.playsInline = true;
+
+    function cleanup() {
+      clearTimeout(timeoutId);
+      video.onloadedmetadata = null;
+      video.onseeked = null;
+      video.onerror = null;
+      video.pause();
+      video.removeAttribute("src");
+      video.load();
+      URL.revokeObjectURL(objectURL);
+    }
+    function fail(error) {
+      if (finished) return;
+      finished = true;
+      cleanup();
+      reject(error instanceof Error ? error : new Error("Thumbnail generate nahi hua."));
+    }
+
+    timeoutId = setTimeout(() => {
+      fail(new Error("Video frame load nahi hua. MP4 format try karo."));
+    }, 30000);
+
+    video.onerror = () => fail(new Error("Browser video format read nahi kar paaya. MP4 try karo."));
+
+    video.onloadedmetadata = () => {
+      const duration = video.duration;
+      if (!Number.isFinite(duration) || duration <= 0 || !video.videoWidth || !video.videoHeight) {
+        fail(new Error("Video ki details read nahi ho paayi."));
+        return;
+      }
+
+      const start = Math.min(0.5, duration * 0.1);
+      const end = Math.max(start, duration - 0.25);
+      video.onseeked = () => {
+        if (finished) return;
+        try {
+          const scale = Math.min(1, 640 / video.videoWidth);
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.max(1, Math.round(video.videoWidth * scale));
+          canvas.height = Math.max(1, Math.round(video.videoHeight * scale));
+
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            fail(new Error("Thumbnail canvas create nahi hua."));
+            return;
+          }
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          canvas.toBlob(blob => {
+            if (finished) return;
+            if (!blob) {
+              fail(new Error("Thumbnail image nahi ban paayi."));
+              return;
+            }
+            finished = true;
+            cleanup();
+            resolve(new File([blob], `thumbnail-${Date.now()}.jpg`, {
+              type: "image/jpeg"
+            }));
+          }, "image/jpeg", 0.85);
+        } catch (error) {
+          fail(error);
+        }
+      };
+      video.currentTime = start + Math.random() * (end - start);
+    };
+
+    video.src = objectURL;
+    video.load();
+  });
+}
+
+$("thumbnailFile").addEventListener("change", () => {
+  const file = $("thumbnailFile").files[0];
+  if (!file) {
+    resetThumbnailPreview();
+    $("thumbnailStatus").classList.add("hidden");
+    return;
+  }
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    $("thumbnailFile").value = "";
+    resetThumbnailPreview();
+    thumbnailMessage("JPG, PNG ya WebP select karo.");
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    $("thumbnailFile").value = "";
+    resetThumbnailPreview();
+    thumbnailMessage("Thumbnail maximum 5 MB ka hona chahiye.");
+    return;
+  }
+  thumbnailMessage("Custom thumbnail select ho gaya.");
+  showThumbnailPreview(file);
+});
 
 $("authForm").addEventListener("submit", async event => {
   event.preventDefault();
   clearMessage();
-  const email = $("email").value.trim();
-  const password = $("password").value;
-
   $("authSubmit").disabled = true;
   try {
+    const email = $("email").value.trim();
+    const password = $("password").value;
+
     if (mode === "register") {
-      const name = $("name").value.trim();
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: { display_name: name },
-          emailRedirectTo: window.location.origin + "/user-panel.html"
+          data: { display_name: $("name").value.trim() },
+          emailRedirectTo: location.origin + "/user-panel.html"
         }
       });
       if (error) throw error;
-
       if (data.session) {
-        message("Account created. You are signed in.");
+        message("Account created.");
+        await refreshUser();
       } else {
-        message("Registration submitted! Open the confirmation link sent to your email, then return here to log in.");
+        message("Confirmation email check karo, phir login karo.");
       }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -178,21 +297,21 @@ $("authForm").addEventListener("submit", async event => {
 $("forgotBtn").onclick = async () => {
   clearMessage();
   const email = $("email").value.trim();
-  if (!email) return message("Enter your email first.", true);
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: window.location.origin + "/user-panel.html"
-  });
-  if (error) return message(error.message, true);
-  message("If the email is registered, a password-reset email will be sent.");
+  if (!email) return message("Pehle email enter karo.", true);
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: location.origin + "/user-panel.html"
+    });
+    if (error) throw error;
+    message("Agar email registered hai to reset link bhej diya jayega.");
+  } catch (error) {
+    message(error.message, true);
+  }
 };
 
 async function refreshUser() {
   const { data, error } = await supabase.auth.getUser();
-  if (error) {
-    currentUser = null;
-  } else {
-    currentUser = data.user;
-  }
+  currentUser = error ? null : data.user;
 
   $("authPanel").classList.toggle("hidden", !!currentUser);
   $("accountPanel").classList.toggle("hidden", !currentUser);
@@ -215,8 +334,7 @@ async function loadMyVideos() {
   if (!currentUser) return;
   $("myVideos").textContent = "Loading uploads...";
 
-  const { data, error } = await supabase
-    .from("videos")
+  const { data, error } = await supabase.from("videos")
     .select("id,title,approval_status,published,created_at")
     .eq("user_id", currentUser.id)
     .order("created_at", { ascending: false });
@@ -225,7 +343,6 @@ async function loadMyVideos() {
     $("myVideos").textContent = "Could not load uploads: " + error.message;
     return;
   }
-
   if (!data || data.length === 0) {
     $("myVideos").textContent = "You have not uploaded any videos yet.";
     return;
@@ -248,15 +365,17 @@ $("uploadForm").addEventListener("submit", async event => {
   if (!currentUser) return message("Please log in first.", true);
 
   const videoFile = $("videoFile").files[0];
-  const thumbnailFile = $("thumbnailFile").files[0];
+  const manualThumbnail = $("thumbnailFile").files[0];
 
   if (!videoFile) return message("Choose a video file.", true);
-  if (!videoFile.type.startsWith("video/")) return message("Choose a valid video file.", true);
-  if (videoFile.size > 100 * 1024 * 1024) {
-    return message("This example allows videos up to 100 MB. Larger videos need a resumable upload setup.", true);
+  if (!videoFile.type.startsWith("video/")) return message("Choose a valid video.", true);
+  if (videoFile.size > 100 * 1024 * 1024) return message("Video maximum 100 MB ka hona chahiye.", true);
+
+  if (manualThumbnail && !["image/jpeg", "image/png", "image/webp"].includes(manualThumbnail.type)) {
+    return message("JPG, PNG ya WebP thumbnail select karo.", true);
   }
-  if (thumbnailFile && !thumbnailFile.type.startsWith("image/")) {
-    return message("Choose a valid image thumbnail.", true);
+  if (manualThumbnail && manualThumbnail.size > 5 * 1024 * 1024) {
+    return message("Thumbnail maximum 5 MB ka hona chahiye.", true);
   }
 
   $("uploadBtn").disabled = true;
@@ -266,55 +385,67 @@ $("uploadForm").addEventListener("submit", async event => {
   try {
     const { data: authData, error: authError } = await supabase.auth.getUser();
     if (authError || !authData.user || authData.user.id !== currentUser.id) {
-      throw new Error("Your session expired. Please log in again.");
+      throw new Error("Session expire ho gaya. Dobara login karo.");
+    }
+
+    let thumbnailToUpload = manualThumbnail;
+
+    if (!thumbnailToUpload) {
+      thumbnailMessage("Video se random thumbnail ban raha hai...");
+      thumbnailToUpload = await generateVideoThumbnail(videoFile);
+      showThumbnailPreview(thumbnailToUpload);
+      thumbnailMessage("Automatic thumbnail ready hai.");
     }
 
     const safeName = videoFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
     videoPath = `${currentUser.id}/${Date.now()}-${safeName}`;
 
-    const { error: videoError } = await supabase.storage
-      .from("videos")
-      .upload(videoPath, videoFile, { upsert: false, contentType: videoFile.type });
-
+    message("Video upload ho raha hai...");
+    const { error: videoError } = await supabase.storage.from("videos")
+      .upload(videoPath, videoFile, {
+        upsert: false,
+        contentType: videoFile.type
+      });
     if (videoError) throw videoError;
 
-    const { data: videoUrlData } = supabase.storage.from("videos").getPublicUrl(videoPath);
-    let thumbnailUrl = null;
+    const videoUrl = supabase.storage.from("videos").getPublicUrl(videoPath).data.publicUrl;
 
-    if (thumbnailFile) {
-      const safeThumb = thumbnailFile.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-      thumbnailPath = `${currentUser.id}/${Date.now()}-${safeThumb}`;
+    thumbnailPath = `${currentUser.id}/${Date.now()}-thumbnail.jpg`;
+    message("Thumbnail upload ho raha hai...");
 
-      const { error: thumbError } = await supabase.storage
-        .from("thumbnails")
-        .upload(thumbnailPath, thumbnailFile, { upsert: false, contentType: thumbnailFile.type });
+    const { error: thumbError } = await supabase.storage.from("thumbnails")
+      .upload(thumbnailPath, thumbnailToUpload, {
+        upsert: false,
+        contentType: thumbnailToUpload.type
+      });
+    if (thumbError) throw thumbError;
 
-      if (thumbError) throw thumbError;
-
-      thumbnailUrl = supabase.storage.from("thumbnails").getPublicUrl(thumbnailPath).data.publicUrl;
-    }
+    const thumbnailUrl = supabase.storage.from("thumbnails")
+      .getPublicUrl(thumbnailPath).data.publicUrl;
 
     const { error: insertError } = await supabase.from("videos").insert({
       user_id: currentUser.id,
       title: $("title").value.trim(),
       category: $("category").value.trim(),
       description: $("description").value.trim(),
-      video_url: videoUrlData.publicUrl,
+      video_url: videoUrl,
       thumbnail_url: thumbnailUrl,
       published: false,
       approval_status: "pending",
       views: 0
     });
-
     if (insertError) throw insertError;
 
-    message("Video submitted successfully! It will appear publicly only after admin approval.");
+    message("Video aur thumbnail upload ho gaye! Admin approval ke baad public hoga.");
     $("uploadForm").reset();
+    resetThumbnailPreview();
+    $("thumbnailStatus").classList.add("hidden");
     await loadMyVideos();
+
   } catch (error) {
     message(
       (error.message || "Upload failed.") +
-      (videoPath ? " If the file uploaded but submission failed, check your Storage and table policies before retrying." : ""),
+      " Supabase buckets aur permissions check karo.",
       true
     );
   } finally {
@@ -325,13 +456,14 @@ $("uploadForm").addEventListener("submit", async event => {
 $("logoutBtn").onclick = async () => {
   const { error } = await supabase.auth.signOut();
   if (error) return message(error.message, true);
+  currentUser = null;
   message("You have logged out.");
   await refreshUser();
 };
 
 $("refreshBtn").onclick = loadMyVideos;
 
-supabase.auth.onAuthStateChange((_event, _session) => {
+supabase.auth.onAuthStateChange(() => {
   setTimeout(() => refreshUser(), 0);
 });
 
