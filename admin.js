@@ -14,7 +14,6 @@ const $ = (id) => document.getElementById(id);
 let allVideos = [];
 let currentPage = 1;
 let busy = false;
-let currentPreviewUrl = "";
 let previewRequest = 0;
 
 const authSection = $("auth");
@@ -37,6 +36,7 @@ const editForm = $("editForm");
 const editStatus = $("editStatus");
 
 function message(element, text = "", type = "") {
+  if (!element) return;
   element.textContent = text;
   element.className = "status" + (type ? " " + type : "");
 }
@@ -53,12 +53,8 @@ function formatNumber(value) {
   return Number(value || 0).toLocaleString();
 }
 
-function safeText(value) {
-  return String(value ?? "");
-}
-
 function escapeHtml(value) {
-  return safeText(value).replace(/[&<>"']/g, (character) => ({
+  return String(value ?? "").replace(/[&<>"']/g, (character) => ({
     "&": "&amp;",
     "<": "&lt;",
     ">": "&gt;",
@@ -67,34 +63,40 @@ function escapeHtml(value) {
   })[character]);
 }
 
+/*
+  URL se bucket aur file path nikalta hai.
+  Public, signed aur authenticated URL formats supported hain.
+*/
 function storagePathFromUrl(url, bucket) {
   if (!url) return null;
 
   try {
     const parsed = new URL(url, SUPABASE_URL);
-    const marker = "/storage/v1/object/";
-    const markerIndex = parsed.pathname.indexOf(marker);
+    const prefix = "/storage/v1/object/";
+    const index = parsed.pathname.indexOf(prefix);
 
-    if (markerIndex === -1) return null;
+    if (index === -1) return null;
 
-    const rest = parsed.pathname.slice(markerIndex + marker.length);
+    const rest = parsed.pathname.slice(index + prefix.length);
     const parts = rest.split("/");
-    const objectIndex = parts.findIndex((part) =>
-      ["public", "sign", "authenticated"].includes(part)
+    const modes = ["public", "sign", "authenticated"];
+
+    const modeIndex = parts.findIndex((part) =>
+      modes.includes(part)
     );
 
-    if (objectIndex === -1) return null;
-    if (parts[objectIndex + 1] !== bucket) return null;
+    if (modeIndex === -1) return null;
+    if (parts[modeIndex + 1] !== bucket) return null;
 
-    return parts.slice(objectIndex + 2)
-      .map((part) => {
-        try {
-          return decodeURIComponent(part);
-        } catch {
-          return part;
-        }
-      })
-      .join("/");
+    const encodedPath = parts.slice(modeIndex + 2).join("/");
+
+    return encodedPath.split("/").map((part) => {
+      try {
+        return decodeURIComponent(part);
+      } catch {
+        return part;
+      }
+    }).join("/");
   } catch {
     return null;
   }
@@ -105,24 +107,53 @@ function getPublicUrl(bucket, path) {
   return data?.publicUrl || "";
 }
 
+/*
+  Signed URL agar pehle se database mein hai,
+  to uska token preserve kiya jata hai.
+*/
 async function getPlayableUrl(bucket, storedUrl) {
   if (!storedUrl) {
-    throw new Error("Database mein file URL nahi hai.");
+    throw new Error("Database mein video URL nahi hai.");
+  }
+
+  let parsed;
+
+  try {
+    parsed = new URL(storedUrl);
+  } catch {
+    throw new Error("Video URL valid nahi hai.");
+  }
+
+  const expectedHost = new URL(SUPABASE_URL).host;
+
+  if (parsed.host !== expectedHost) {
+    // Supabase ke bahar ka direct URL.
+    if (/^https?:$/.test(parsed.protocol)) return storedUrl;
+    throw new Error("Video URL ka protocol supported nahi hai.");
   }
 
   const path = storagePathFromUrl(storedUrl, bucket);
 
   if (!path) {
-    if (/^https?:\/\//i.test(storedUrl)) {
-      return storedUrl;
-    }
-
     throw new Error(
-      "Storage path nahi mila. Database ke video_url ko check karein."
+      "Storage path nahi mila. URL mein bucket ya file path check karein."
     );
   }
 
-  // Private aur public buckets dono ke liye signed URL try karein.
+  // Pehle se signed URL hai: existing token use karo.
+  if (
+    parsed.pathname.includes("/storage/v1/object/sign/") &&
+    parsed.searchParams.has("token")
+  ) {
+    return storedUrl;
+  }
+
+  // Public URL ko direct use karna signed URL se zyada seedha hai.
+  if (parsed.pathname.includes("/storage/v1/object/public/")) {
+    return storedUrl;
+  }
+
+  // Private/authenticated object ke liye naya signed URL.
   const { data, error } = await supabase.storage
     .from(bucket)
     .createSignedUrl(path, 3600);
@@ -131,14 +162,22 @@ async function getPlayableUrl(bucket, storedUrl) {
     return data.signedUrl;
   }
 
-  // Public bucket ho to public URL bhi try karein.
-  const publicUrl = getPublicUrl(bucket, path);
-
-  if (publicUrl) return publicUrl;
-
   throw new Error(
-    "Supabase file access error: " + (error?.message || "URL nahi bana")
+    "Supabase Storage access error: " +
+    (error?.message || "Signed URL generate nahi hua.")
   );
+}
+
+function showLogin() {
+  authSection.hidden = false;
+  panel.hidden = true;
+  logoutBtn.hidden = true;
+}
+
+function showPanel() {
+  authSection.hidden = true;
+  panel.hidden = false;
+  logoutBtn.hidden = false;
 }
 
 async function requireAdmin() {
@@ -164,20 +203,9 @@ async function requireAdmin() {
   return true;
 }
 
-function showLogin() {
-  authSection.hidden = false;
-  panel.hidden = true;
-  logoutBtn.hidden = true;
-}
-
-function showPanel() {
-  authSection.hidden = true;
-  panel.hidden = false;
-  logoutBtn.hidden = false;
-}
-
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+
   if (busy) return;
 
   busy = true;
@@ -185,19 +213,14 @@ loginForm.addEventListener("submit", async (event) => {
   message(loginStatus, "Login ho raha hai...", "info");
 
   try {
-    const email = $("email").value.trim();
-    const password = $("password").value;
-
     const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password
+      email: $("email").value.trim(),
+      password: $("password").value
     });
 
     if (error) throw error;
 
-    const ok = await requireAdmin();
-
-    if (ok) {
+    if (await requireAdmin()) {
       message(loginStatus);
       await loadVideos();
     }
@@ -221,7 +244,6 @@ logoutBtn.addEventListener("click", async () => {
 
   allVideos = [];
   showLogin();
-  message(loginStatus, "Logout ho gaya.", "ok");
 });
 
 async function loadVideos() {
@@ -240,31 +262,26 @@ async function loadVideos() {
     updateStats();
     renderVideos();
 
-    message(globalStatus, `Total ${allVideos.length} videos mil gaye.`, "ok");
+    message(globalStatus, `${allVideos.length} videos mil gaye.`, "ok");
   } catch (error) {
-    message(
-      globalStatus,
-      "Videos load nahi hue: " + errorText(error),
-      "error"
-    );
+    message(globalStatus, "Load error: " + errorText(error), "error");
   }
 }
 
 function updateStats() {
   $("statTotal").textContent = formatNumber(allVideos.length);
 
-  const published = allVideos.filter(isPublished);
-  const hidden = allVideos.filter((video) => !isPublished(video));
-
-  $("statPublished").textContent = formatNumber(published.length);
-  $("statHidden").textContent = formatNumber(hidden.length);
-
-  const views = allVideos.reduce(
-    (total, video) => total + Number(video.views || 0),
-    0
+  $("statPublished").textContent = formatNumber(
+    allVideos.filter(isPublished).length
   );
 
-  $("statViews").textContent = formatNumber(views);
+  $("statHidden").textContent = formatNumber(
+    allVideos.filter((video) => !isPublished(video)).length
+  );
+
+  $("statViews").textContent = formatNumber(
+    allVideos.reduce((total, video) => total + Number(video.views || 0), 0)
+  );
 }
 
 function filteredVideos() {
@@ -300,11 +317,9 @@ function renderVideos() {
   } else {
     videoList.innerHTML = pageVideos.map((video) => {
       const id = escapeHtml(video.id);
-      const title = escapeHtml(video.title || "Untitled video");
+      const title = escapeHtml(video.title || "Untitled");
       const category = escapeHtml(video.category || "Uncategorized");
       const thumbnail = escapeHtml(video.thumbnail_url || "");
-      const status = isPublished(video) ? "Published" : "Hidden / Pending";
-      const views = formatNumber(video.views);
 
       return `
         <article class="video-card">
@@ -317,27 +332,18 @@ function renderVideos() {
           <div class="card-body">
             <div class="video-title">${title}</div>
             <div class="meta">${category}</div>
-            <div class="meta">${status} · ${views} views</div>
+            <div class="meta">
+              ${isPublished(video) ? "Published" : "Hidden / Pending"}
+              · ${formatNumber(video.views)} views
+            </div>
 
             <div class="card-actions">
-              <button type="button" data-action="preview" data-id="${id}">
-                Preview
-              </button>
-
-              <button type="button" class="secondary"
-                      data-action="edit" data-id="${id}">
-                Edit
-              </button>
-
-              <button type="button" class="success"
-                      data-action="toggle" data-id="${id}">
+              <button data-action="preview" data-id="${id}">Preview</button>
+              <button class="secondary" data-action="edit" data-id="${id}">Edit</button>
+              <button class="success" data-action="toggle" data-id="${id}">
                 ${isPublished(video) ? "Hide" : "Publish"}
               </button>
-
-              <button type="button" class="danger"
-                      data-action="delete" data-id="${id}">
-                Delete
-              </button>
+              <button class="danger" data-action="delete" data-id="${id}">Delete</button>
             </div>
           </div>
         </article>
@@ -351,7 +357,7 @@ function renderVideos() {
 function renderPagination(pageCount) {
   pagination.innerHTML = "";
 
-  const addButton = (label, page, disabled = false, active = false) => {
+  function addButton(label, page, disabled = false, active = false) {
     const button = document.createElement("button");
     button.type = "button";
     button.textContent = label;
@@ -369,7 +375,7 @@ function renderPagination(pageCount) {
     });
 
     pagination.appendChild(button);
-  };
+  }
 
   addButton("Previous", Math.max(1, currentPage - 1), currentPage === 1);
 
@@ -399,17 +405,22 @@ videoList.addEventListener("click", async (event) => {
     (item) => String(item.id) === button.dataset.id
   );
 
-  if (!video) {
-    message(globalStatus, "Video record nahi mila.", "error");
-    return;
+  if (!video) return;
+
+  switch (button.dataset.action) {
+    case "preview":
+      await openPreview(video);
+      break;
+    case "edit":
+      openEdit(video);
+      break;
+    case "toggle":
+      await togglePublished(video);
+      break;
+    case "delete":
+      await deleteVideo(video);
+      break;
   }
-
-  const action = button.dataset.action;
-
-  if (action === "preview") await openPreview(video);
-  if (action === "edit") openEdit(video);
-  if (action === "toggle") await togglePublished(video);
-  if (action === "delete") await deleteVideo(video);
 });
 
 async function openPreview(video) {
@@ -419,9 +430,8 @@ async function openPreview(video) {
   previewVideo.removeAttribute("src");
   previewVideo.load();
 
-  currentPreviewUrl = "";
   $("previewTitle").textContent = video.title || "Video Preview";
-  previewInfo.textContent = "Video URL mil rahi hai...";
+  previewInfo.textContent = "Video load ho rahi hai...";
   previewModal.hidden = false;
   previewModal.style.display = "flex";
 
@@ -429,17 +439,17 @@ async function openPreview(video) {
     if (requestId !== previewRequest) return;
 
     previewInfo.textContent =
-      "Video play nahi hui. Storage file, permissions, URL aur video format check karein.";
+      "Video play nahi hui. Signed URL expire ho sakta hai, file missing ho sakti hai ya Storage access denied hai.";
   };
 
   previewVideo.onloadedmetadata = () => {
     if (requestId !== previewRequest) return;
 
-    const duration = Number.isFinite(previewVideo.duration)
-      ? Math.round(previewVideo.duration) + " seconds"
-      : "Duration unavailable";
-
-    previewInfo.textContent = "Video ready · " + duration;
+    previewInfo.textContent =
+      "Video ready · " +
+      (Number.isFinite(previewVideo.duration)
+        ? Math.round(previewVideo.duration) + " seconds"
+        : "Duration unavailable");
   };
 
   try {
@@ -447,13 +457,14 @@ async function openPreview(video) {
 
     if (requestId !== previewRequest) return;
 
-    currentPreviewUrl = url;
     previewVideo.src = url;
     previewVideo.load();
+
     previewInfo.textContent =
-      "URL mil gaya. Play button dabayein; agar error aaye to neeche message dekhein.";
+      "Video URL mil gaya. Play dabayein.";
   } catch (error) {
     if (requestId !== previewRequest) return;
+
     previewInfo.textContent = "Preview error: " + errorText(error);
   }
 }
@@ -465,7 +476,6 @@ async function closePreview() {
   previewVideo.load();
   previewVideo.onerror = null;
   previewVideo.onloadedmetadata = null;
-  currentPreviewUrl = "";
   previewModal.hidden = true;
   previewModal.style.display = "none";
 }
@@ -501,24 +511,22 @@ editModal.addEventListener("click", (event) => {
 editForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const id = $("editId").value;
-  const title = $("editTitle").value.trim();
-  const category = $("editCategory").value.trim();
-  const description = $("editDescription").value.trim();
   const saveButton = $("saveEditBtn");
-
   saveButton.disabled = true;
-  message(editStatus, "Save ho raha hai...", "info");
 
   try {
     const { error } = await supabase
       .from("videos")
-      .update({ title, category, description })
-      .eq("id", id);
+      .update({
+        title: $("editTitle").value.trim(),
+        category: $("editCategory").value.trim(),
+        description: $("editDescription").value.trim()
+      })
+      .eq("id", $("editId").value);
 
     if (error) throw error;
 
-    message(editStatus, "Video details update ho gayi.", "ok");
+    message(editStatus, "Details update ho gayi.", "ok");
     await loadVideos();
     setTimeout(closeEdit, 700);
   } catch (error) {
@@ -529,19 +537,16 @@ editForm.addEventListener("submit", async (event) => {
 });
 
 async function togglePublished(video) {
-  const newValue = !isPublished(video);
-  const action = newValue ? "publish" : "hide";
+  const published = !isPublished(video);
 
-  if (!confirm(`Kya aap is video ko ${action} karna chahte hain?`)) {
+  if (!confirm(`Video ko ${published ? "publish" : "hide"} karein?`)) {
     return;
   }
-
-  message(globalStatus, "Video status update ho raha hai...", "info");
 
   try {
     const { error } = await supabase
       .from("videos")
-      .update({ published: newValue })
+      .update({ published })
       .eq("id", video.id);
 
     if (error) throw error;
@@ -557,13 +562,11 @@ async function uploadToStorage(bucket, file) {
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
   const path = `${Date.now()}-${crypto.randomUUID()}-${safeName}`;
 
-  const { error } = await supabase.storage
-    .from(bucket)
-    .upload(path, file, {
-      cacheControl: "3600",
-      upsert: false,
-      contentType: file.type || undefined
-    });
+  const { error } = await supabase.storage.from(bucket).upload(path, file, {
+    cacheControl: "3600",
+    upsert: false,
+    contentType: file.type || undefined
+  });
 
   if (error) throw error;
 
@@ -572,6 +575,7 @@ async function uploadToStorage(bucket, file) {
 
 uploadForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+
   if (busy) return;
 
   const title = $("uploadTitle").value.trim();
@@ -582,18 +586,17 @@ uploadForm.addEventListener("submit", async (event) => {
   const published = $("uploadPublished").checked;
 
   if (!videoFile || !thumbFile) {
-    message(uploadStatus, "Video aur thumbnail dono select karein.", "error");
+    message(uploadStatus, "Video aur thumbnail select karein.", "error");
     return;
   }
 
   if (!$("rightsConfirm").checked) {
-    message(uploadStatus, "Pehle upload permission confirm karein.", "error");
+    message(uploadStatus, "Upload permission confirm karein.", "error");
     return;
   }
 
   busy = true;
   uploadBtn.disabled = true;
-  message(uploadStatus, "Files upload ho rahi hain. Page band na karein...", "info");
 
   try {
     const { data: sessionData } = await supabase.auth.getSession();
@@ -602,37 +605,31 @@ uploadForm.addEventListener("submit", async (event) => {
       throw new Error("Admin session nahi hai. Dobara login karein.");
     }
 
+    message(uploadStatus, "Thumbnail upload ho rahi hai...", "info");
     const thumbnailUrl = await uploadToStorage(THUMB_BUCKET, thumbFile);
-    message(uploadStatus, "Thumbnail upload ho gayi. Video upload ho rahi hai...", "info");
 
+    message(uploadStatus, "Video upload ho rahi hai...", "info");
     const videoUrl = await uploadToStorage(VIDEO_BUCKET, videoFile);
 
-    const { error } = await supabase
-      .from("videos")
-      .insert({
-        title,
-        category,
-        description,
-        video_url: videoUrl,
-        thumbnail_url: thumbnailUrl,
-        published,
-        views: 0
-      });
+    const { error } = await supabase.from("videos").insert({
+      title,
+      category,
+      description,
+      video_url: videoUrl,
+      thumbnail_url: thumbnailUrl,
+      published,
+      views: 0
+    });
 
     if (error) throw error;
 
     uploadForm.reset();
     $("uploadPublished").checked = true;
 
-    message(uploadStatus, "Video successfully upload ho gayi!", "ok");
+    message(uploadStatus, "Video upload ho gayi!", "ok");
     await loadVideos();
   } catch (error) {
-    message(
-      uploadStatus,
-      "Upload error: " + errorText(error) +
-      "\nSupabase table columns, Storage buckets aur policies check karein.",
-      "error"
-    );
+    message(uploadStatus, "Upload error: " + errorText(error), "error");
   } finally {
     busy = false;
     uploadBtn.disabled = false;
@@ -644,23 +641,15 @@ async function removeStorageFile(bucket, storedUrl) {
 
   if (!path) return;
 
-  const { error } = await supabase.storage
-    .from(bucket)
-    .remove([path]);
+  const { error } = await supabase.storage.from(bucket).remove([path]);
 
-  if (error) {
-    throw new Error(`${bucket} file delete error: ${error.message}`);
-  }
+  if (error) throw error;
 }
 
 async function deleteVideo(video) {
-  const confirmed = confirm(
-    `Kya aap "${video.title || "this video"}" ko permanently delete karna chahte hain?\n\nDatabase record aur Storage files delete ho sakti hain.`
-  );
-
-  if (!confirmed) return;
-
-  message(globalStatus, "Delete ho raha hai...", "info");
+  if (!confirm(
+    `"${video.title || "Video"}" ko permanently delete karna hai?`
+  )) return;
 
   try {
     const { error } = await supabase
@@ -669,8 +658,6 @@ async function deleteVideo(video) {
       .eq("id", video.id);
 
     if (error) throw error;
-
-    message(globalStatus, "Database record delete ho gaya. Storage cleanup ho rahi hai...", "info");
 
     const cleanupErrors = [];
 
@@ -690,12 +677,12 @@ async function deleteVideo(video) {
     if (cleanupErrors.length) {
       message(
         globalStatus,
-        "Video record delete ho gaya, lekin kuch Storage files delete nahi hui:\n" +
-        cleanupErrors.join("\n"),
+        "Database record delete ho gaya, lekin Storage cleanup mein error: " +
+        cleanupErrors.join(" | "),
         "error"
       );
     } else {
-      message(globalStatus, "Video aur Storage files delete ho gayi.", "ok");
+      message(globalStatus, "Video delete ho gayi.", "ok");
     }
   } catch (error) {
     message(globalStatus, "Delete error: " + errorText(error), "error");
@@ -710,9 +697,7 @@ supabase.auth.onAuthStateChange((event, session) => {
 
 (async function init() {
   try {
-    const isAdmin = await requireAdmin();
-
-    if (isAdmin) {
+    if (await requireAdmin()) {
       await loadVideos();
     }
   } catch (error) {
