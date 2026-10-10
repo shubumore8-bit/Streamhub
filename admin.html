@@ -1,364 +1,279 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080808">
-  <meta name="description" content="DesiVexa admin dashboard">
-  <title>Admin Dashboard — DesiVexa</title>
-  <link rel="stylesheet" href="style.css">
+  <title>DesiVexa Admin</title>
 
   <style>
+    :root {
+      --bg: #080808;
+      --panel: #121212;
+      --panel2: #1a1a1a;
+      --border: #303030;
+      --text: #f5f5f5;
+      --muted: #aaa;
+      --red: #e50914;
+      --green: #19b56b;
+    }
+
+    * { box-sizing: border-box; }
+
     [hidden] { display: none !important; }
 
-    :root {
-      --admin-bg: #080808;
-      --admin-card: #121212;
-      --admin-card2: #191919;
-      --admin-border: #2b2b2b;
-      --admin-red: #e50914;
-      --admin-muted: #a5a5a5;
-      --admin-green: #4ade80;
-      --admin-yellow: #fbbf24;
-    }
-
-    .admin {
-      width: min(1200px, 100%);
-      margin: auto;
-      padding-top: 18px;
-      padding-bottom: 60px;
-    }
-
-    .adminTop {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      margin: 16px 0 22px;
-    }
-
-    .adminTop h1 {
-      margin: 5px 0 8px;
-      font-size: clamp(25px, 5vw, 36px);
-    }
-
-    .adminTop p {
+    body {
       margin: 0;
-      color: var(--admin-muted);
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
     }
 
-    .sectionLabel {
-      color: #ff414a;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 2px;
-    }
-
-    .adminAccount {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin: 14px 0;
-    }
-
-    .adminStats {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      margin-bottom: 22px;
-    }
-
-    .adminStat {
-      min-width: 0;
-      padding: 17px;
-      background: linear-gradient(145deg, #181818, #101010);
-      border: 1px solid var(--admin-border);
-      border-radius: 13px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .adminStat::before {
-      content: "";
-      position: absolute;
-      inset: 0 auto 0 0;
-      width: 3px;
-      background: var(--admin-red);
-    }
-
-    .adminStat span {
-      display: block;
-      color: var(--admin-muted);
-      font-size: 12px;
-      margin-bottom: 9px;
-    }
-
-    .adminStat strong {
-      display: block;
-      font-size: clamp(21px, 3vw, 30px);
-      overflow-wrap: anywhere;
-    }
-
-    .adminBox {
-      background: var(--admin-card);
-      border: 1px solid var(--admin-border);
-      border-radius: 14px;
-      padding: 18px;
-      margin-bottom: 20px;
-      min-width: 0;
-    }
-
-    .adminBoxHead {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .adminBoxHead h2 {
-      margin: 5px 0 0;
-      font-size: 21px;
-    }
-
-    .adminForm,
-    .adminFormGrid {
-      display: grid;
-      gap: 14px;
-    }
-
-    .adminFormGrid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .adminForm label {
-      display: grid;
-      gap: 8px;
-      min-width: 0;
-      font-size: 13px;
-      color: #ddd;
-    }
-
-    .adminForm input:not([type="checkbox"]),
-    .adminForm textarea,
-    .adminTools input,
-    .adminTools select {
-      width: 100%;
-      min-width: 0;
-      box-sizing: border-box;
-      background: #090909;
-      color: #fff;
-      border: 1px solid #363636;
-      border-radius: 9px;
-      padding: 12px;
+    button, input, textarea, select {
       font: inherit;
-      outline: none;
     }
 
-    .adminForm input:focus,
-    .adminForm textarea:focus,
-    .adminTools input:focus,
-    .adminTools select:focus {
-      border-color: var(--admin-red);
-    }
-
-    .adminForm input[type="file"] {
-      padding: 9px;
-      font-size: 12px;
-    }
-
-    .adminForm .check {
-      display: flex;
-      align-items: flex-start;
-      gap: 9px;
-      line-height: 1.5;
-    }
-
-    .adminForm .check input {
-      margin-top: 3px;
-      accent-color: var(--admin-red);
-    }
-
-    .adminStatus {
-      min-height: 20px;
-      color: #ddd;
-      font-size: 13px;
-      overflow-wrap: anywhere;
-      line-height: 1.6;
-    }
-
-    .adminTools {
-      display: grid;
-      grid-template-columns: minmax(0, 2fr) minmax(150px, 1fr);
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .adminTools input,
-    .adminTools select {
-      min-height: 44px;
-    }
-
-    .manage {
-      display: grid;
-      grid-template-columns: 145px minmax(0, 1fr);
-      gap: 12px;
-      padding: 15px 0;
-      border-bottom: 1px solid var(--admin-border);
-    }
-
-    .manage:last-child {
-      border-bottom: 0;
-    }
-
-    .manageThumb {
-      width: 100%;
-      aspect-ratio: 16 / 10;
-      background: #1b1b1b;
-      border-radius: 9px;
-      overflow: hidden;
-    }
-
-    .manageThumb img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .adminThumbEmpty {
-      height: 100%;
-      display: grid;
-      place-items: center;
-      color: #ff414a;
-      font-size: 30px;
-    }
-
-    .manageInfo {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 7px;
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-
-    .manageInfo strong {
-      line-height: 1.45;
-    }
-
-    .manageInfo span,
-    .manageInfo small {
-      color: var(--admin-muted);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .manageInfo .published {
-      color: var(--admin-green);
-    }
-
-    .manageInfo .hidden {
-      color: var(--admin-yellow);
-    }
-
-    .manageActions {
-      grid-column: 1 / -1;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 2px;
-    }
-
-    .manageActions button {
-      min-height: 38px;
-    }
-
-    .admin button {
+    button {
+      border: 0;
       cursor: pointer;
     }
 
-    .admin .btn {
-      min-height: 40px;
-    }
-
-    .admin .adminDanger {
-      background: #a71919 !important;
-      color: #fff !important;
-    }
-
-    .admin .ghost {
-      border: 1px solid #393939;
-    }
-
-    .adminPagination {
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
       display: flex;
-      justify-content: center;
       align-items: center;
-      gap: 7px;
-      flex-wrap: wrap;
-      padding-top: 18px;
-      margin-top: 8px;
-      border-top: 1px solid var(--admin-border);
+      justify-content: space-between;
+      gap: 12px;
+      padding: 15px;
+      background: #101010;
+      border-bottom: 1px solid var(--border);
     }
 
-    .adminPagination button {
-      min-width: 39px;
-      min-height: 39px;
-      padding: 8px 11px;
-      border: 1px solid #383838;
+    .brand {
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .brand span { color: var(--red); }
+
+    .container {
+      width: min(1100px, 100%);
+      margin: auto;
+      padding: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    h1 { font-size: 23px; margin: 4px 0 16px; }
+    h2 { font-size: 18px; margin: 0 0 14px; }
+
+    .muted { color: var(--muted); font-size: 13px; }
+
+    .field {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      color: var(--text);
+      background: #090909;
+      border: 1px solid #393939;
       border-radius: 8px;
-      color: #eee;
-      background: #191919;
     }
 
-    .adminPagination button.active {
-      color: #fff;
-      background: var(--admin-red);
-      border-color: var(--admin-red);
+    textarea.field {
+      min-height: 85px;
+      resize: vertical;
     }
 
-    .adminPagination button:disabled {
-      opacity: .35;
-      cursor: not-allowed;
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 13px;
+      border-radius: 8px;
+      color: white;
+      background: #303030;
+      font-weight: 700;
     }
 
-    .adminPageInfo {
-      flex-basis: 100%;
-      text-align: center;
-      color: var(--admin-muted);
+    .btn-red { background: var(--red); }
+    .btn-green { background: #137c4c; }
+    .btn-danger { background: #8d171d; }
+    .btn:disabled { opacity: .55; cursor: wait; }
+
+    .full { width: 100%; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      padding: 14px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 25px;
+      margin-top: 7px;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .toolbar .field { margin: 0; }
+
+    .video-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .admin-video-card {
+      min-width: 0;
+      padding: 12px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .video-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .thumb {
+      width: 112px;
+      height: 82px;
+      flex: 0 0 112px;
+      object-fit: cover;
+      background: #222;
+      border-radius: 7px;
+    }
+
+    .video-info {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .video-title {
+      font-weight: 700;
+      overflow-wrap: anywhere;
+      margin-bottom: 7px;
+    }
+
+    .meta {
+      color: var(--muted);
       font-size: 12px;
-      padding-top: 4px;
+      line-height: 1.6;
     }
 
-    .adminPreviewBackdrop {
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .actions .btn {
+      padding: 8px 10px;
+      font-size: 12px;
+    }
+
+    .status {
+      margin: 10px 0;
+      padding: 11px;
+      border-radius: 8px;
+      background: #202020;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+
+    .status.error {
+      background: #3a1114;
+      color: #ffb8bc;
+    }
+
+    .status.success {
+      background: #10291d;
+      color: #a5f0c6;
+    }
+
+    .pagination {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 7px;
+      margin: 18px 0;
+    }
+
+    .page-btn {
+      min-width: 38px;
+      padding: 9px 11px;
+      border-radius: 7px;
+      background: #242424;
+      color: white;
+    }
+
+    .page-btn.active { background: var(--red); }
+
+    .checkline {
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      margin: 12px 0;
+      font-size: 13px;
+      color: #ddd;
+    }
+
+    .modal-backdrop {
       position: fixed;
       inset: 0;
-      z-index: 99999;
-      background: rgba(0, 0, 0, .94);
-      padding: 14px;
+      z-index: 100;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .adminPreviewBox {
-      width: 100%;
-      max-width: 900px;
-      max-height: 95vh;
-      overflow: auto;
-      background: #151515;
-      border: 1px solid #333;
-      border-radius: 14px;
       padding: 14px;
-      color: #fff;
+      background: rgba(0, 0, 0, .88);
     }
 
-    .adminPreviewTop {
+    .modal {
+      width: min(720px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      padding: 15px;
+      background: #141414;
+      border: 1px solid #383838;
+      border-radius: 12px;
+    }
+
+    .modal video {
+      display: block;
+      width: 100%;
+      max-height: 60vh;
+      background: black;
+      border-radius: 8px;
+    }
+
+    .modal-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -366,351 +281,185 @@
       margin-bottom: 12px;
     }
 
-    .adminPreviewPlayer {
-      display: block;
-      width: 100%;
-      max-height: 72vh;
-      background: #000;
-      border-radius: 8px;
+    .empty {
+      padding: 25px 10px;
+      text-align: center;
+      color: var(--muted);
     }
 
-    .adminPreviewNote {
-      font-size: 13px;
-      color: #bbb;
-      overflow-wrap: anywhere;
-      line-height: 1.6;
-    }
-
-    @media (max-width: 700px) {
-      .admin {
-        padding-left: 12px;
-        padding-right: 12px;
-      }
-
-      .adminStats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 9px;
-      }
-
-      .adminStat {
-        padding: 13px;
-      }
-
-      .adminBox {
-        padding: 13px;
-      }
-
-      .adminTools {
-        grid-template-columns: 1fr;
-      }
-
-      .manage {
-        grid-template-columns: 105px minmax(0, 1fr);
-        gap: 10px;
-      }
-
-      .manageActions button {
-        flex: 1 1 40%;
-      }
-
-      .adminPreviewBox {
-        padding: 10px;
-      }
-    }
-
-    @media (max-width: 360px) {
-      .manage {
-        grid-template-columns: 85px minmax(0, 1fr);
-      }
-
-      .adminStat strong {
-        font-size: 21px;
-      }
-
-      .adminBoxHead h2 {
-        font-size: 18px;
-      }
+    @media (min-width: 650px) {
+      .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .toolbar { grid-template-columns: 1fr 190px; }
+      .video-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .container { padding: 22px; }
     }
   </style>
 </head>
 
 <body>
-<header>
-  <div class="headerInner">
-    <a href="index.html" class="logo">Desi<span>Vexa</span></a>
-    <nav>
-      <a href="index.html">View Site</a>
-    </nav>
-  </div>
-</header>
+  <header class="topbar">
+    <div class="brand">Desi<span>Vexa</span> Admin</div>
+    <button id="logoutBtn" class="btn" type="button" hidden>Logout</button>
+  </header>
 
-<main class="wrap admin">
-  <div id="auth"></div>
+  <main class="container">
+    <div id="globalStatus" class="status" role="status" hidden></div>
 
-  <div id="panel" hidden>
-    <div class="adminTop">
-      <div>
-        <span class="sectionLabel">DESIVEXA CONTROL CENTER</span>
-        <h1>Admin Dashboard</h1>
-        <p>Manage, review and preview your video library.</p>
-      </div>
-      <button id="refreshVideos" class="btn ghost" type="button">
-        ↻ Refresh
-      </button>
-    </div>
+    <!-- LOGIN -->
+    <section id="auth" class="card">
+      <h1>Admin Login</h1>
+      <p class="muted">Apne authorized admin account se login karein.</p>
 
-    <div class="adminStats">
-      <div class="adminStat">
-        <span>Total Videos</span>
-        <strong id="statTotal">0</strong>
-      </div>
-      <div class="adminStat">
-        <span>Published</span>
-        <strong id="statPublished">0</strong>
-      </div>
-      <div class="adminStat">
-        <span>Pending / Hidden</span>
-        <strong id="statHidden">0</strong>
-      </div>
-      <div class="adminStat">
-        <span>Total Views</span>
-        <strong id="statViews">0</strong>
-      </div>
-    </div>
+      <form id="loginForm">
+        <label for="email">Email</label>
+        <input class="field" id="email" name="email" type="email"
+               autocomplete="username" placeholder="Admin email" required>
 
-    <section class="adminBox">
-      <div class="adminBoxHead">
-        <div>
-          <span class="sectionLabel">CONTENT MANAGEMENT</span>
-          <h2>Upload New Video</h2>
-        </div>
-      </div>
+        <label for="password">Password</label>
+        <input class="field" id="password" name="password" type="password"
+               autocomplete="current-password" placeholder="Password" required>
 
-      <form id="upload" class="adminForm">
-        <div class="adminFormGrid">
-          <label>
-            Video Title
-            <input name="title" type="text"
-              placeholder="Enter video title"
-              maxlength="200" required>
-          </label>
-
-          <label>
-            Category
-            <input name="category" type="text"
-              placeholder="Enter category"
-              maxlength="100" required>
-          </label>
-        </div>
-
-        <label>
-          Description
-          <textarea name="description" rows="4"
-            maxlength="10000"
-            placeholder="Write video description..."></textarea>
-        </label>
-
-        <div class="adminFormGrid">
-          <label>
-            Thumbnail (optional)
-            <input name="thumb" type="file" accept="image/*">
-          </label>
-
-          <label>
-            Video File
-            <input name="video" type="file" accept="video/*" required>
-          </label>
-        </div>
-
-        <label class="check">
-          <input name="confirm" type="checkbox" required>
-          <span>
-            I confirm I have the legal rights and required consent
-            for this content.
-          </span>
-        </label>
-
-        <button class="btn" id="uploadBtn" type="submit">
-          Upload for Approval
+        <button id="loginBtn" class="btn btn-red full" type="submit">
+          Login
         </button>
-
-        <div id="status" class="adminStatus"
-          role="status" aria-live="polite"></div>
       </form>
+
+      <div id="loginStatus" class="status" role="status" hidden></div>
     </section>
 
-    <section class="adminBox">
-      <div class="adminBoxHead">
-        <div>
-          <span class="sectionLabel">VIDEO LIBRARY</span>
-          <h2>Manage Videos</h2>
-          <p class="muted">Search, filter, preview and manage uploads.</p>
+    <!-- DASHBOARD -->
+    <section id="panel" hidden>
+      <h1>Dashboard</h1>
+
+      <div class="stats">
+        <div class="stat">
+          <span class="muted">Total Videos</span>
+          <strong id="statTotal">0</strong>
+        </div>
+        <div class="stat">
+          <span class="muted">Published</span>
+          <strong id="statPublished">0</strong>
+        </div>
+        <div class="stat">
+          <span class="muted">Hidden / Pending</span>
+          <strong id="statHidden">0</strong>
+        </div>
+        <div class="stat">
+          <span class="muted">Total Views</span>
+          <strong id="statViews">0</strong>
         </div>
       </div>
 
-      <div class="adminTools">
-        <input id="adminSearch" type="search"
-          placeholder="Search title, category or description..."
-          autocomplete="off" aria-label="Search videos">
+      <section class="card">
+        <h2>Upload New Video</h2>
+        <p class="muted">
+          Thumbnail aur video file select karein. Upload ke baad video
+          published ya hidden rakha ja sakta hai.
+        </p>
 
-        <select id="adminFilter" aria-label="Filter videos">
-          <option value="all">All videos</option>
-          <option value="pending">Pending approval</option>
-          <option value="published">Published</option>
-          <option value="hidden">Hidden / unpublished</option>
-        </select>
+        <form id="uploadForm">
+          <label for="uploadTitle">Video title</label>
+          <input class="field" id="uploadTitle" name="title"
+                 maxlength="200" placeholder="Video title" required>
+
+          <label for="uploadCategory">Category</label>
+          <input class="field" id="uploadCategory" name="category"
+                 maxlength="100" placeholder="Category" required>
+
+          <label for="uploadDescription">Description</label>
+          <textarea class="field" id="uploadDescription" name="description"
+                    maxlength="5000" placeholder="Description (optional)"></textarea>
+
+          <label for="uploadThumbnail">Thumbnail image</label>
+          <input class="field" id="uploadThumbnail" name="thumb"
+                 type="file" accept="image/*" required>
+
+          <label for="uploadVideo">Video file</label>
+          <input class="field" id="uploadVideo" name="video"
+                 type="file" accept="video/*" required>
+
+          <label class="checkline">
+            <input id="uploadPublished" type="checkbox">
+            <span>Upload ke baad video publish karna hai</span>
+          </label>
+
+          <label class="checkline">
+            <input id="rightsConfirm" type="checkbox" required>
+            <span>Confirm karta/karti hoon ki mujhe is video ko upload aur share karne ka adhikar hai.</span>
+          </label>
+
+          <button id="uploadBtn" class="btn btn-red full" type="submit">
+            Upload Video
+          </button>
+        </form>
+
+        <div id="uploadStatus" class="status" role="status" hidden></div>
+      </section>
+
+      <section class="card">
+        <h2>Manage Videos</h2>
+
+        <div class="toolbar">
+          <input id="searchInput" class="field" type="search"
+                 placeholder="Title ya category search...">
+          <select id="filterSelect" class="field" aria-label="Filter videos">
+            <option value="all">All videos</option>
+            <option value="published">Published only</option>
+            <option value="hidden">Hidden / pending</option>
+          </select>
+        </div>
+
+        <div id="manageStatus" class="status" role="status" hidden></div>
+      </section>
+
+      <div id="videoList" class="video-list"></div>
+      <div id="pagination" class="pagination"></div>
+    </section>
+  </main>
+
+  <!-- VIDEO PREVIEW -->
+  <div id="videoPreviewModal" class="modal-backdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true"
+             aria-labelledby="previewTitle">
+      <div class="modal-head">
+        <h2 id="previewTitle">Video Preview</h2>
+        <button id="closePreviewBtn" class="btn" type="button">Close</button>
       </div>
-
-      <div id="manage" aria-live="polite"></div>
-
-      <div id="adminPagination" class="adminPagination"
-        aria-label="Video list pagination" hidden></div>
+      <video id="previewVideo" controls playsinline></video>
+      <div id="previewInfo" class="meta"></div>
     </section>
   </div>
-</main>
 
-<div id="videoPreviewModal" class="adminPreviewBackdrop" hidden>
-  <div class="adminPreviewBox" role="dialog" aria-modal="true"
-    aria-labelledby="previewTitle">
-
-    <div class="adminPreviewTop">
-      <strong id="previewTitle">Video Preview</strong>
-      <button id="closeVideoPreview"
-        class="btn adminDanger" type="button">✕ Close</button>
-    </div>
-
-    <video id="previewPlayer" class="adminPreviewPlayer"
-      controls playsinline preload="metadata"></video>
-
-    <p id="previewInfo" class="adminPreviewNote"></p>
-    <p id="previewError" class="adminPreviewNote"
-      role="status" aria-live="polite"></p>
-  </div>
-</div>
-
-<!-- Client-side pagination for the currently rendered video list -->
-<script>
-(() => {
-  const list = document.getElementById("manage");
-  const pager = document.getElementById("adminPagination");
-  const search = document.getElementById("adminSearch");
-  const filter = document.getElementById("adminFilter");
-
-  if (!list || !pager) return;
-
-  const PER_PAGE = 12;
-  let page = 1;
-  let scheduled = false;
-
-  function getRows() {
-    return Array.from(list.children).filter(el =>
-      el.classList && el.classList.contains("manage")
-    );
-  }
-
-  function render() {
-    const rows = getRows();
-    const total = rows.length;
-    const pages = Math.max(1, Math.ceil(total / PER_PAGE));
-
-    page = Math.min(Math.max(1, page), pages);
-
-    rows.forEach((row, index) => {
-      row.style.display =
-        index >= (page - 1) * PER_PAGE &&
-        index < page * PER_PAGE ? "" : "none";
-    });
-
-    if (total <= PER_PAGE) {
-      pager.hidden = true;
-      pager.innerHTML = "";
-      return;
-    }
-
-    pager.hidden = false;
-
-    const start = (page - 1) * PER_PAGE + 1;
-    const end = Math.min(page * PER_PAGE, total);
-
-    let html = `
-      <button type="button" data-page="${page - 1}"
-        ${page === 1 ? "disabled" : ""}>‹ Prev</button>
-    `;
-
-    let first = Math.max(1, page - 2);
-    let last = Math.min(pages, page + 2);
-
-    if (first > 1) {
-      html += `<button type="button" data-page="1">1</button>`;
-      if (first > 2) html += `<span>…</span>`;
-    }
-
-    for (let n = first; n <= last; n++) {
-      html += `
-        <button type="button" data-page="${n}"
-          class="${n === page ? "active" : ""}"
-          ${n === page ? 'aria-current="page"' : ""}>${n}</button>
-      `;
-    }
-
-    if (last < pages) {
-      if (last < pages - 1) html += `<span>…</span>`;
-      html += `<button type="button" data-page="${pages}">${pages}</button>`;
-    }
-
-    html += `
-      <button type="button" data-page="${page + 1}"
-        ${page === pages ? "disabled" : ""}>Next ›</button>
-      <div class="adminPageInfo">
-        Showing ${start}–${end} of ${total} loaded videos
+  <!-- EDIT VIDEO -->
+  <div id="editModal" class="modal-backdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true"
+             aria-labelledby="editTitle">
+      <div class="modal-head">
+        <h2 id="editTitle">Edit Video</h2>
+        <button id="closeEditBtn" class="btn" type="button">Close</button>
       </div>
-    `;
 
-    pager.innerHTML = html;
-  }
+      <form id="editForm">
+        <input id="editId" type="hidden">
 
-  function scheduleRender(resetPage) {
-    if (resetPage) page = 1;
-    if (scheduled) return;
+        <label for="editVideoTitle">Title</label>
+        <input id="editVideoTitle" class="field" maxlength="200" required>
 
-    scheduled = true;
-    requestAnimationFrame(() => {
-      scheduled = false;
-      render();
-    });
-  }
+        <label for="editCategory">Category</label>
+        <input id="editCategory" class="field" maxlength="100" required>
 
-  pager.addEventListener("click", event => {
-    const button = event.target.closest("button[data-page]");
-    if (!button || button.disabled) return;
+        <label for="editDescription">Description</label>
+        <textarea id="editDescription" class="field" maxlength="5000"></textarea>
 
-    const nextPage = Number(button.dataset.page);
-    if (!Number.isFinite(nextPage)) return;
+        <button id="saveEditBtn" class="btn btn-red full" type="submit">
+          Save Changes
+        </button>
+      </form>
 
-    page = nextPage;
-    render();
+      <div id="editStatus" class="status" role="status" hidden></div>
+    </section>
+  </div>
 
-    const box = list.closest(".adminBox");
-    if (box) box.scrollIntoView({ behavior: "smooth", block: "start" });
-  });
-
-  if (search) {
-    search.addEventListener("input", () => scheduleRender(true));
-  }
-
-  if (filter) {
-    filter.addEventListener("change", () => scheduleRender(true));
-  }
-
-  new MutationObserver(() => scheduleRender(false)).observe(list, {
-    childList: true,
-    subtree: true
-  });
-
-  scheduleRender(false);
-})();
-</script>
-
-<script type="module" src="admin.js?v=5"></script>
+  <script type="module" src="admin.js?v=6"></script>
 </body>
 </html>
