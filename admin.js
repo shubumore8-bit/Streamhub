@@ -291,9 +291,34 @@ async function previewVideo(id) {
     player.load();
 
     if (errorBox) {
-      errorBox.textContent =
-        "Agar video play nahi hoti, Storage mein file path aur format check karo.";
-    }
+  errorBox.textContent = "Video load ho rahi hai...";
+}
+
+player.onerror = () => {
+  const mediaError = player.error;
+  const messages = {
+    1: "Video loading cancel hui.",
+    2: "Network ya Storage se video load nahi hui.",
+    3: "Video format decode nahi ho paaya.",
+    4: "Video URL ya format browser support nahi karta."
+  };
+
+  if (errorBox) {
+    errorBox.textContent =
+      messages[mediaError?.code] || "Video play nahi hui. URL aur Storage permissions check karo.";
+  }
+};
+
+player.onloadedmetadata = () => {
+  if (errorBox) {
+    errorBox.textContent =
+      `Video ready: ${player.videoWidth} × ${player.videoHeight}`;
+  }
+};
+
+player.oncanplay = () => {
+  if (errorBox) errorBox.textContent = "Video play karne ke liye ready hai.";
+};
 
     player.play().catch(() => {});
   } catch (error) {
