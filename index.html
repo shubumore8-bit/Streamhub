@@ -1,600 +1,918 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#05070b">
-<meta name="description" content="DesiVexa — Latest, trending, recommended and random videos.">
-<title>DesiVexa</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080808">
+  <meta name="description" content="Discover trending, latest, recommended and random videos on DesiVexa.">
+  <title>DesiVexa - Watch Trending Videos</title>
 
-<style>
-:root{
-  --bg:#02050a;
-  --panel:#08121b;
-  --panel2:#101c26;
-  --border:#293d4a;
-  --text:#fff;
-  --muted:#8b9ca8;
-  --red:#ff1744;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;scroll-padding-top:75px}
-body{background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif;min-height:100vh}
-button,input{font:inherit}
-button,a{-webkit-tap-highlight-color:transparent}
-button{cursor:pointer}
-a{color:inherit;text-decoration:none}
-.page{min-height:100vh;max-width:1200px;margin:auto;background:#061019;padding-bottom:90px}
+  <style>
+    :root {
+      --bg: #080808;
+      --panel: #121212;
+      --panel2: #1b1b1b;
+      --text: #f5f5f5;
+      --muted: #a4a4a4;
+      --red: #f21d35;
+      --border: #292929;
+    }
 
-/* HEADER */
-.header{
-  height:64px;display:flex;align-items:center;gap:9px;padding:0 12px;
-  background:#080d13;border-bottom:1px solid #182631;
-  position:sticky;top:0;z-index:100
-}
-.menuButton,.searchButton,.userPanelTop{
-  width:40px;height:40px;flex-shrink:0;border:1px solid var(--border);
-  border-radius:9px;background:var(--panel2);color:#fff;
-  display:flex;align-items:center;justify-content:center
-}
-.menuButton,.searchButton{font-size:20px}
-.userPanelTop{font-size:20px}
-.menuButton:hover,.searchButton:hover,.userPanelTop:hover{background:var(--red);border-color:var(--red)}
-.logo{flex:1;min-width:0;text-align:center;font-size:25px;font-weight:900;letter-spacing:-.5px;white-space:nowrap}
-.logo span,.footerLogo span{color:var(--red)}
+    * { box-sizing: border-box; }
 
-/* MENU */
-.mobileMenu{
-  display:none;position:fixed;top:64px;left:0;width:100%;
-  max-height:calc(100vh - 130px);overflow:auto;background:#071019;
-  border-bottom:1px solid #243440;z-index:99;padding:14px
-}
-.mobileMenu.open{display:block}
-.menuItem{display:block;padding:14px;margin-bottom:8px;border-radius:9px;background:#0d1b25;font-weight:700}
-.menuItem:hover{background:var(--red)}
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 75px;
+    }
 
-/* SEARCH */
-.searchBox{display:none;padding:12px;background:#071019;border-bottom:1px solid #1d303d}
-.searchBox.show{display:block}
-.searchInput{width:100%;height:45px;border:1px solid var(--border);border-radius:10px;outline:none;padding:0 14px;background:#0b1720;color:#fff}
-.searchInput:focus{border-color:var(--red)}
-.searchInput::placeholder{color:#81919d}
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      padding-bottom: 75px;
+    }
 
-/* HERO */
-.hero{padding:20px 14px 10px}
-.heroBox{background:linear-gradient(135deg,#16070c,#0a141d);border:1px solid #34202a;border-radius:14px;padding:20px}
-.heroTitle{font-size:27px;font-weight:900}
-.heroTitle span{color:var(--red)}
-.heroText{color:#9daeba;font-size:13px;margin-top:7px;line-height:1.5}
+    button, input, a { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
 
-/* CATEGORIES */
-.categoriesButtonWrap{padding:10px 14px 0}
-.categoriesButton{
-  display:flex;align-items:center;justify-content:space-between;width:100%;
-  padding:13px 15px;border:1px solid var(--border);border-radius:10px;
-  background:#0b1720;color:#fff;font-size:14px;font-weight:800
-}
-.categoriesButton .arrow{color:var(--red)}
-.categories{display:flex;gap:8px;overflow-x:auto;padding:12px 14px 5px;scrollbar-width:none}
-.categories::-webkit-scrollbar{display:none}
-.category{flex-shrink:0;border:1px solid var(--border);background:#0b1720;color:#dce5ea;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700}
-.category.active{background:var(--red);border-color:var(--red);color:#fff}
+    .header {
+      height: 62px;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(8, 8, 8, .97);
+      border-bottom: 1px solid var(--border);
+    }
 
-/* SECTIONS */
-.section{padding:20px 14px 0}
-.sectionHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
-.sectionTitle{font-size:21px;font-weight:900}
-.viewAll{color:#ff4265;font-size:12px;font-weight:700;white-space:nowrap}
-.videoGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+    .logo {
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -.8px;
+      white-space: nowrap;
+    }
 
-/* VIDEO CARD */
-.videoCard{min-width:0;cursor:pointer}
-.videoThumb{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:9px;background:#0d1821}
-.videoThumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s}
-.videoCard:hover .videoThumb img{transform:scale(1.03)}
-.playIcon{position:absolute;left:8px;bottom:8px;width:31px;height:31px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#000b;font-size:12px}
-.hdBadge{position:absolute;right:7px;bottom:7px;padding:4px 6px;border-radius:5px;background:#000c;font-size:10px;font-weight:800}
-.videoTitle{margin-top:8px;font-size:13px;font-weight:700;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.videoCategory{display:inline-block;margin-top:6px;padding:4px 8px;border-radius:15px;background:var(--red);font-size:9px;font-weight:800}
-.videoMeta{color:#8496a3;font-size:10px;margin-top:6px}
-.loadingVideos,.emptyVideos{grid-column:1/-1;padding:30px 10px;text-align:center;color:#8798a5}
+    .logo span { color: var(--red); }
 
-/* PAGINATION */
-.randomPagination{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;margin-top:25px}
-.randomPageBtn{min-width:39px;min-height:39px;padding:0 9px;border:1px solid var(--border);border-radius:8px;background:#0b1822;color:#fff;font-size:12px;font-weight:700}
-.randomPageBtn.active{background:var(--red);border-color:var(--red)}
-.randomPageBtn:disabled{opacity:.35;cursor:not-allowed}
+    .headerButton, .userPanelTop {
+      border: 1px solid var(--border);
+      color: white;
+      background: var(--panel);
+      min-width: 39px;
+      height: 39px;
+      border-radius: 10px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 19px;
+      flex-shrink: 0;
+    }
 
-/* BOTTOM NAV */
-.bottomNav{position:fixed;left:0;right:0;bottom:0;height:65px;background:#050a0ff7;border-top:1px solid #1d303c;display:flex;justify-content:center;z-index:90}
-.bottomNavInner{width:100%;max-width:650px;display:grid;grid-template-columns:repeat(4,1fr)}
-.bottomItem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#83939e;font-size:10px;font-weight:700}
-.bottomItem span:first-child{font-size:19px}
-.bottomItem.active{color:var(--red)}
+    .headerButton:hover, .userPanelTop:hover {
+      border-color: var(--red);
+    }
 
-/* FOOTER */
-.footer{text-align:center;padding:35px 15px 20px;color:#687985;font-size:11px;line-height:1.6}
-.footerLogo{color:#fff;font-size:22px;font-weight:900;margin-bottom:8px}
+    .headerLeft, .headerRight {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-/* RESPONSIVE */
-@media(max-width:900px){.videoGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:600px){
-  .page{padding-bottom:80px}
-  .header{height:60px;gap:7px;padding:0 9px}
-  .mobileMenu{top:60px}
-  .logo{font-size:22px}
-  .menuButton,.searchButton,.userPanelTop{width:37px;height:37px}
-  .hero{padding:15px 12px 7px}
-  .heroBox{padding:17px}
-  .heroTitle{font-size:23px}
-  .categoriesButtonWrap{padding:8px 12px 0}
-  .section{padding:18px 11px 0}
-  .sectionTitle{font-size:19px}
-  .videoGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:17px 10px}
-  .videoTitle{font-size:12px}
-  .videoCategory{font-size:8px}
-  .videoMeta{font-size:9px}
-  .randomPageBtn{min-width:35px;min-height:35px;padding:0 6px;font-size:11px}
-}
-@media(max-width:340px){
-  .header{gap:5px;padding:0 6px}
-  .logo{font-size:19px}
-  .menuButton,.searchButton,.userPanelTop{width:34px;height:34px}
-}
-</style>
+    .mobileMenu {
+      display: none;
+      position: fixed;
+      top: 62px;
+      left: 0;
+      right: 0;
+      z-index: 99;
+      background: #101010;
+      border-bottom: 1px solid var(--border);
+      padding: 12px;
+    }
+
+    .mobileMenu.show {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
+    }
+
+    .mobileMenu a {
+      padding: 13px;
+      border-radius: 9px;
+      background: var(--panel2);
+      font-size: 14px;
+    }
+
+    .searchBox {
+      display: none;
+      padding: 12px 14px;
+      background: #0d0d0d;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .searchBox.show { display: block; }
+
+    .searchForm {
+      display: flex;
+      gap: 8px;
+      max-width: 850px;
+      margin: auto;
+    }
+
+    .searchInput {
+      min-width: 0;
+      flex: 1;
+      background: var(--panel2);
+      color: white;
+      border: 1px solid #333;
+      outline: none;
+      padding: 13px;
+      border-radius: 9px;
+    }
+
+    .searchInput:focus { border-color: var(--red); }
+
+    .searchSubmit {
+      border: 0;
+      border-radius: 9px;
+      padding: 0 17px;
+      color: white;
+      background: var(--red);
+      font-weight: bold;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1450px;
+      padding: 15px;
+      margin: auto;
+    }
+
+    .welcome {
+      padding: 21px 17px;
+      border: 1px solid #2b171a;
+      border-radius: 13px;
+      background: linear-gradient(120deg, #211012, #111 65%);
+      margin-bottom: 17px;
+    }
+
+    .welcome h1 {
+      margin: 0 0 7px;
+      font-size: clamp(22px, 4vw, 32px);
+    }
+
+    .welcome p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .categoriesButtonWrap { margin: 14px 0 10px; }
+
+    .categoriesButton {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #171717;
+      color: white;
+      border: 1px solid #353535;
+      border-radius: 10px;
+      text-align: left;
+      font-weight: bold;
+    }
+
+    .categoriesButton:hover { border-color: var(--red); }
+
+    .categoriesButton .arrow {
+      color: #ff6474;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .categories {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 0 12px;
+      scrollbar-width: thin;
+    }
+
+    .category {
+      flex-shrink: 0;
+      color: #ddd;
+      background: #191919;
+      border: 1px solid #333;
+      padding: 9px 14px;
+      border-radius: 30px;
+      font-size: 13px;
+    }
+
+    .category.active, .category:hover {
+      background: var(--red);
+      color: white;
+      border-color: var(--red);
+    }
+
+    .filterInfo {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0 0 13px;
+    }
+
+    .videoSection { margin: 23px 0 30px; }
+
+    .sectionHeading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 13px;
+    }
+
+    .sectionHeading h2 {
+      margin: 0;
+      font-size: 19px;
+    }
+
+    .sectionHeading h2 span { color: var(--red); }
+
+    .sectionHeading a {
+      color: #ff6a7a;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .videoGrid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px 12px;
+    }
+
+    .videoCard {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid #202020;
+      background: var(--panel);
+      border-radius: 10px;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .videoCard:hover {
+      border-color: #6d252e;
+      transform: translateY(-2px);
+    }
+
+    .thumbnailWrap {
+      position: relative;
+      background: #1b1b1b;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+    }
+
+    .thumbnail {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .duration {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      background: rgba(0, 0, 0, .85);
+      border-radius: 4px;
+      font-size: 11px;
+      padding: 4px 5px;
+    }
+
+    .videoInfo { padding: 9px; }
+
+    .videoTitle {
+      font-size: 13px;
+      line-height: 1.4;
+      font-weight: bold;
+      margin: 0 0 7px;
+      overflow-wrap: anywhere;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 36px;
+    }
+
+    .videoMeta {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .videoCategory {
+      color: #ff7381;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .emptyState, .loadingState, .errorState {
+      padding: 25px 12px;
+      text-align: center;
+      color: var(--muted);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      grid-column: 1 / -1;
+      line-height: 1.6;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 18px 0 8px;
+    }
+
+    .pageButton {
+      min-width: 37px;
+      min-height: 37px;
+      padding: 8px 11px;
+      border: 1px solid #333;
+      background: #171717;
+      color: white;
+      border-radius: 8px;
+    }
+
+    .pageButton.active, .pageButton:hover:not(:disabled) {
+      background: var(--red);
+      border-color: var(--red);
+    }
+
+    .pageButton:disabled {
+      opacity: .35;
+      cursor: not-allowed;
+    }
+
+    .paginationLabel {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .bottomNav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 62px;
+      z-index: 100;
+      background: #101010;
+      border-top: 1px solid #303030;
+      justify-content: space-around;
+      align-items: center;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .bottomNav a {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 100%;
+      font-size: 11px;
+      color: #aaa;
+    }
+
+    .bottomNav a span { font-size: 19px; }
+    .bottomNav a.active { color: #ff5266; }
+
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 23px 12px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .footer a { color: #ff6474; }
+
+    @media (max-width: 1000px) {
+      .videoGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 600px) {
+      .header { padding: 0 10px; gap: 7px; }
+      .logo { font-size: 23px; }
+      .headerLeft, .headerRight { gap: 6px; }
+      .headerButton, .userPanelTop {
+        min-width: 35px;
+        height: 36px;
+        border-radius: 9px;
+      }
+
+      .page { padding: 11px; }
+      .welcome { padding: 17px 13px; }
+      .videoGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 8px; }
+      .videoInfo { padding: 7px; }
+      .videoTitle { font-size: 12px; }
+      .videoMeta { font-size: 10px; }
+      .sectionHeading h2 { font-size: 17px; }
+      .bottomNav { display: flex; }
+    }
+
+    @media (max-width: 350px) {
+      .logo { font-size: 20px; }
+      .header { padding: 0 7px; }
+      .videoGrid { gap: 8px 6px; }
+      .videoTitle { font-size: 11px; }
+    }
+  </style>
 </head>
 
 <body>
-<div class="page">
+  <header class="header">
+    <div class="headerLeft">
+      <button type="button" class="headerButton" id="menuButton"
+        aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
 
-<header class="header">
-  <button class="menuButton" id="menuButton" aria-label="Open menu" aria-expanded="false">☰</button>
+    <a href="index.html" class="logo" aria-label="DesiVexa Home">
+      Desi<span>Vexa</span>
+    </a>
 
-  <div class="logo">Desi<span>Vexa</span></div>
+    <div class="headerRight">
+      <a href="user-panel.html" class="userPanelTop"
+        aria-label="User Panel" title="Login / Sign Up / My Account">👤</a>
+      <button type="button" class="headerButton" id="searchButton"
+        aria-label="Search videos">🔍</button>
+    </div>
+  </header>
 
-  <a href="user-panel.html" class="userPanelTop" aria-label="User Panel" title="Login / Sign Up / My Account">👤</a>
+  <nav class="mobileMenu" id="mobileMenu" aria-label="Main menu">
+    <a href="index.html">🏠 Home</a>
+    <a href="new">🆕 New Videos</a>
+    <a href="trending">🔥 Trending Videos</a>
+    <a href="recommended">⭐ Recommended</a>
+    <a href="category.html">📂 All Categories</a>
+    <a href="user-panel.html">👤 User Panel</a>
+  </nav>
 
-  <button class="searchButton" id="searchButton" aria-label="Search videos">🔍</button>
-</header>
-
-<nav class="mobileMenu" id="mobileMenu">
-  <a href="index.html" class="menuItem">🏠 Home</a>
-  <a href="user-panel.html" class="menuItem">👤 Login / Sign Up / My Account</a>
-  <a href="trending.html" class="menuItem">🔥 Trending</a>
-  <a href="new.html" class="menuItem">🆕 New Videos</a>
-  <a href="recommended.html" class="menuItem">⭐ Recommended</a>
-  <a href="category.html" class="menuItem">📂 Categories / Search</a>
-</nav>
-
-<div class="searchBox" id="searchBox">
-  <input id="searchInput" class="searchInput" type="search" placeholder="Search videos or category..." autocomplete="off" aria-label="Search videos">
-</div>
-
-<section class="hero">
-  <div class="heroBox">
-    <h1 class="heroTitle">Welcome to <span>DesiVexa</span></h1>
-    <p class="heroText">Discover latest, trending, recommended and random videos.</p>
+  <div class="searchBox" id="searchBox">
+    <form class="searchForm" id="searchForm">
+      <input id="searchInput" class="searchInput" type="search"
+        placeholder="Search videos or category..."
+        autocomplete="off" aria-label="Search videos or category">
+      <button type="submit" class="searchSubmit">Search</button>
+    </form>
   </div>
-</section>
 
-<div class="categoriesButtonWrap">
-  <a href="category.html" class="categoriesButton">
-    <span>📂 Categories</span>
-    <span class="arrow">Search →</span>
-  </a>
-</div>
+  <main class="page">
+    <section class="welcome">
+      <h1>Welcome to Desi<span style="color:#f21d35">Vexa</span></h1>
+      <p>Explore trending videos, the latest uploads, recommended videos and more.</p>
+    </section>
 
-<div class="categories" id="categories">
-  <button class="category active" data-category="all">All</button>
-</div>
+    <div class="categoriesButtonWrap">
+      <button type="button" class="categoriesButton" id="categoriesSearchButton">
+        <span>📂 Categories &amp; Search</span>
+        <span class="arrow">Open ↓</span>
+      </button>
+    </div>
 
-<section class="section" id="trendingSection">
-  <div class="sectionHeader">
-    <h2 class="sectionTitle">🔥 Trending</h2>
-    <a class="viewAll" href="trending.html">View All →</a>
-  </div>
-  <div class="videoGrid" id="trendingVideos"><div class="loadingVideos">Loading videos...</div></div>
-</section>
+    <div class="categories" id="categories" aria-label="Video categories">
+      <button type="button" class="category active" data-category="all">All</button>
+    </div>
 
-<section class="section" id="newSection">
-  <div class="sectionHeader">
-    <h2 class="sectionTitle">🆕 New Videos</h2>
-    <a class="viewAll" href="new.html">View All →</a>
-  </div>
-  <div class="videoGrid" id="newVideos"><div class="loadingVideos">Loading videos...</div></div>
-</section>
+    <p class="filterInfo" id="filterInfo">Loading videos...</p>
 
-<section class="section" id="recommendedSection">
-  <div class="sectionHeader">
-    <h2 class="sectionTitle">⭐ Recommended</h2>
-    <a class="viewAll" href="recommended.html">View All →</a>
-  </div>
-  <div class="videoGrid" id="recommendedVideos"><div class="loadingVideos">Loading videos...</div></div>
-</section>
-
-<section class="section" id="randomSection">
-  <div class="sectionHeader">
-    <h2 class="sectionTitle">🎲 Random Videos</h2>
-  </div>
-  <div class="videoGrid" id="randomVideos"><div class="loadingVideos">Loading random videos...</div></div>
-  <div class="randomPagination" id="randomPagination"></div>
-</section>
-
-<footer class="footer">
-  <div class="footerLogo">Desi<span>Vexa</span></div>
-  <p>18+ only · Upload and publish only lawful, authorized content involving adults.</p>
-</footer>
-
-</div>
-
-<nav class="bottomNav" aria-label="Main navigation">
-  <div class="bottomNavInner">
-    <a class="bottomItem active" href="index.html"><span>🏠</span><span>Home</span></a>
-    <a class="bottomItem" href="new.html"><span>🆕</span><span>New</span></a>
-    <a class="bottomItem" href="trending.html"><span>🔥</span><span>Trending</span></a>
-    <a class="bottomItem" href="recommended.html"><span>⭐</span><span>Recommended</span></a>
-  </div>
-</nav>
-
-<script type="module">
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-const MEDIA_FUNCTION = `${SUPABASE_URL}/functions/v1/get-video-media`;
-const RANDOM_PER_PAGE = 16;
-
-let randomPage = Math.max(1, parseInt(new URLSearchParams(location.search).get("randomPage") || "1", 10) || 1);
-let allVideos = [];
-let randomVideos = [];
-let currentCategory = "all";
-const thumbnailCache = new Map();
-
-const $ = id => document.getElementById(id);
-const menuButton = $("menuButton");
-const mobileMenu = $("mobileMenu");
-const searchButton = $("searchButton");
-const searchBox = $("searchBox");
-const searchInput = $("searchInput");
-const categoriesBox = $("categories");
-
-menuButton.addEventListener("click", () => {
-  const isOpen = mobileMenu.classList.toggle("open");
-  menuButton.setAttribute("aria-expanded", String(isOpen));
-});
-
-mobileMenu.addEventListener("click", event => {
-  if (event.target.closest("a")) {
-    mobileMenu.classList.remove("open");
-    menuButton.setAttribute("aria-expanded", "false");
-  }
-});
-
-searchButton.addEventListener("click", () => {
-  searchBox.classList.toggle("show");
-  if (searchBox.classList.contains("show")) searchInput.focus();
-});
-
-function escapeHTML(value) {
-  return String(value ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-function formatViews(value) {
-  const n = Number(value || 0);
-  if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
-  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K";
-  return String(n);
-}
-
-function timeAgo(date) {
-  if (!date) return "";
-  const timestamp = new Date(date).getTime();
-  if (!Number.isFinite(timestamp)) return "";
-  const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
-  if (seconds < 60) return "just now";
-  if (seconds < 3600) return Math.floor(seconds / 60) + "m ago";
-  if (seconds < 86400) return Math.floor(seconds / 3600) + "h ago";
-  if (seconds < 2592000) return Math.floor(seconds / 86400) + "d ago";
-  return Math.floor(seconds / 2592000) + "mo ago";
-}
-
-function fallbackThumbnail() {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450"><rect width="100%" height="100%" fill="#101d28"/><text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#ff1744" font-size="48" font-family="Arial" font-weight="bold">DesiVexa</text></svg>`;
-  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
-}
-
-async function getThumbnail(video) {
-  if (video.thumbnail_url) return video.thumbnail_url;
-  if (thumbnailCache.has(video.id)) return thumbnailCache.get(video.id);
-
-  try {
-    const response = await fetch(MEDIA_FUNCTION, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-      },
-      body: JSON.stringify({ videoId: video.id })
-    });
-
-    if (!response.ok) {
-      console.error("Thumbnail function returned:", response.status);
-      thumbnailCache.set(video.id, "");
-      return "";
-    }
-
-    const result = await response.json();
-    const url = result.thumbnailUrl || "";
-    thumbnailCache.set(video.id, url);
-    return url;
-  } catch (error) {
-    console.error("Thumbnail request failed:", error);
-    thumbnailCache.set(video.id, "");
-    return "";
-  }
-}
-
-async function prepareThumbnails(videos) {
-  await Promise.all(videos.map(async video => {
-    if (!video._thumbnailReady) {
-      video._thumbnailUrl = await getThumbnail(video);
-      video._thumbnailReady = true;
-    }
-  }));
-}
-
-window.thumbnailError = function(img) {
-  img.onerror = null;
-  img.src = fallbackThumbnail();
-};
-
-function videoCard(video) {
-  const id = encodeURIComponent(String(video.id));
-  const thumbnail = video._thumbnailUrl || fallbackThumbnail();
-
-  return `
-    <article class="videoCard" onclick="openVideo('${id}')">
-      <div class="videoThumb">
-        <img src="${escapeHTML(thumbnail)}" alt="${escapeHTML(video.title || "Video")}" loading="lazy" onerror="thumbnailError(this)">
-        <div class="playIcon">▶</div>
-        <div class="hdBadge">HD</div>
+    <section class="videoSection" id="trendingSection">
+      <div class="sectionHeading">
+        <h2>🔥 <span>Trending</span> Videos</h2>
+        <a href="trending">View all →</a>
       </div>
-      <div class="videoTitle">${escapeHTML(video.title || "Untitled Video")}</div>
-      <span class="videoCategory">${escapeHTML(video.category || "Other")}</span>
-      <div class="videoMeta">◉ ${formatViews(video.views)} views · ${timeAgo(video.created_at)}</div>
-    </article>`;
-}
+      <div class="videoGrid" id="trendingVideos">
+        <div class="loadingState">Loading trending videos...</div>
+      </div>
+    </section>
 
-window.openVideo = function(id) {
-  location.href = "video.html?id=" + encodeURIComponent(decodeURIComponent(id));
-};
+    <section class="videoSection" id="newSection">
+      <div class="sectionHeading">
+        <h2>🆕 New Videos</h2>
+        <a href="new">View all →</a>
+      </div>
+      <div class="videoGrid" id="newVideos">
+        <div class="loadingState">Loading new videos...</div>
+      </div>
+    </section>
 
-function shuffle(array) {
-  const result = [...array];
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
-}
+    <section class="videoSection" id="recommendedSection">
+      <div class="sectionHeading">
+        <h2>⭐ Recommended Videos</h2>
+        <a href="recommended">View all →</a>
+      </div>
+      <div class="videoGrid" id="recommendedVideos">
+        <div class="loadingState">Loading recommendations...</div>
+      </div>
+    </section>
 
-function emptyMessage() {
-  return `<div class="emptyVideos">No videos found.</div>`;
-}
+    <section class="videoSection" id="randomSection">
+      <div class="sectionHeading">
+        <h2>🎲 Random Videos</h2>
+        <span style="color:#aaa;font-size:12px">Discover more</span>
+      </div>
+      <div class="videoGrid" id="randomVideos">
+        <div class="loadingState">Loading random videos...</div>
+      </div>
+      <div class="pagination" id="randomPagination"></div>
+      <div class="paginationLabel" id="paginationLabel"></div>
+    </section>
+  </main>
 
-function loadingMessage() {
-  return `<div class="loadingVideos">Loading thumbnails...</div>`;
-}
+  <footer class="footer">
+    <div>© <span id="year"></span> DesiVexa. All rights reserved.</div>
+    <div>Discover videos across your favourite categories.</div>
+    <div><a href="user-panel.html">User Panel</a></div>
+  </footer>
 
-function getFilteredVideos() {
-  if (currentCategory === "all") return allVideos;
-  return allVideos.filter(video =>
-    String(video.category || "").trim().toLowerCase() === currentCategory.toLowerCase()
-  );
-}
+  <nav class="bottomNav" aria-label="Bottom navigation">
+    <a href="index.html" class="active"><span>🏠</span>Home</a>
+    <a href="new"><span>🆕</span>New</a>
+    <a href="trending"><span>🔥</span>Trending</a>
+    <a href="recommended"><span>⭐</span>Recommended</a>
+  </nav>
 
-async function renderSections(videos = getFilteredVideos()) {
-  const trending = [...videos]
-    .sort((a, b) => Number(b.views || 0) - Number(a.views || 0))
-    .slice(0, 4);
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+    import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
-  const latest = [...videos]
-    .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
-    .slice(0, 4);
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const $ = id => document.getElementById(id);
+    const RANDOM_PER_PAGE = 16;
+    const SECTION_COUNT = 4;
 
-  const recommended = [...videos]
-    .sort((a, b) => {
-      const viewDiff = Number(b.views || 0) - Number(a.views || 0);
-      return viewDiff || (new Date(b.created_at || 0) - new Date(a.created_at || 0));
-    })
-    .slice(0, 4);
-
-  const boxes = [
-    [$("trendingVideos"), trending],
-    [$("newVideos"), latest],
-    [$("recommendedVideos"), recommended]
-  ];
-
-  boxes.forEach(([box]) => box.innerHTML = loadingMessage());
-
-  const unique = [...new Map(
-    [...trending, ...latest, ...recommended].map(video => [video.id, video])
-  ).values()];
-
-  await prepareThumbnails(unique);
-
-  boxes.forEach(([box, videos]) => {
-    box.innerHTML = videos.length ? videos.map(videoCard).join("") : emptyMessage();
-  });
-}
-
-async function renderRandomVideos() {
-  const container = $("randomVideos");
-  const pagination = $("randomPagination");
-  const totalPages = Math.ceil(randomVideos.length / RANDOM_PER_PAGE);
-
-  if (totalPages > 0 && randomPage > totalPages) randomPage = totalPages;
-
-  const start = (randomPage - 1) * RANDOM_PER_PAGE;
-  const current = randomVideos.slice(start, start + RANDOM_PER_PAGE);
-
-  if (!current.length) {
-    container.innerHTML = emptyMessage();
-    renderRandomPagination(totalPages, pagination);
-    return;
-  }
-
-  container.innerHTML = loadingMessage();
-  await prepareThumbnails(current);
-  container.innerHTML = current.map(videoCard).join("");
-  renderRandomPagination(totalPages, pagination);
-}
-
-function renderRandomPagination(totalPages, container) {
-  if (totalPages <= 1) {
-    container.innerHTML = "";
-    return;
-  }
-
-  let html = `<button class="randomPageBtn" ${randomPage <= 1 ? "disabled" : ""} data-page="${randomPage - 1}">Previous</button>`;
-
-  let start = Math.max(1, randomPage - 2);
-  let end = Math.min(totalPages, randomPage + 2);
-
-  if (randomPage <= 3) {
-    start = 1;
-    end = Math.min(totalPages, 5);
-  }
-  if (randomPage >= totalPages - 2) {
-    start = Math.max(1, totalPages - 4);
-    end = totalPages;
-  }
-
-  for (let i = start; i <= end; i++) {
-    html += `<button class="randomPageBtn ${i === randomPage ? "active" : ""}" data-page="${i}" ${i === randomPage ? 'aria-current="page"' : ""}>${i}</button>`;
-  }
-
-  html += `<button class="randomPageBtn" ${randomPage >= totalPages ? "disabled" : ""} data-page="${randomPage + 1}">Next</button>`;
-  container.innerHTML = html;
-}
-
-$("randomPagination").addEventListener("click", async event => {
-  const button = event.target.closest("button[data-page]");
-  if (!button || button.disabled) return;
-
-  const page = Number(button.dataset.page);
-  const totalPages = Math.ceil(randomVideos.length / RANDOM_PER_PAGE);
-  if (page < 1 || page > totalPages) return;
-
-  randomPage = page;
-
-  const url = new URL(location.href);
-  if (randomPage === 1) url.searchParams.delete("randomPage");
-  else url.searchParams.set("randomPage", String(randomPage));
-
-  history.pushState({}, "", url);
-  await renderRandomVideos();
-
-  $("randomSection").scrollIntoView({ behavior: "smooth", block: "start" });
-});
-
-function renderCategories() {
-  const categories = [...new Set(
-    allVideos.map(video => String(video.category || "").trim()).filter(Boolean)
-  )].sort((a, b) => a.localeCompare(b));
-
-  categoriesBox.innerHTML = `
-    <button class="category ${currentCategory === "all" ? "active" : ""}" data-category="all">All</button>
-    ${categories.map(category => `
-      <button class="category ${currentCategory.toLowerCase() === category.toLowerCase() ? "active" : ""}" data-category="${escapeHTML(category)}">${escapeHTML(category)}</button>
-    `).join("")}
-  `;
-}
-
-categoriesBox.addEventListener("click", async event => {
-  const button = event.target.closest("button[data-category]");
-  if (!button) return;
-
-  currentCategory = button.dataset.category;
-  randomPage = 1;
-
-  renderCategories();
-  await renderSections();
-
-  randomVideos = shuffle(getFilteredVideos());
-  await renderRandomVideos();
-});
-
-searchInput.addEventListener("keydown", event => {
-  if (event.key !== "Enter") return;
-  event.preventDefault();
-
-  const query = searchInput.value.trim();
-  if (!query) return;
-
-  location.href = "search.html?q=" + encodeURIComponent(query) + "&page=1";
-});
-
-async function loadVideos() {
-  const boxes = [
-    $("trendingVideos"),
-    $("newVideos"),
-    $("recommendedVideos"),
-    $("randomVideos")
-  ];
-
-  try {
-    const { data, error } = await supabase
-      .from("videos")
-      .select("id,title,category,description,thumbnail_url,video_url,views,created_at")
-      .eq("published", true)
-      .order("created_at", { ascending: false })
-      .limit(200);
-
-    if (error) throw error;
-
-    allVideos = data || [];
-
-    const requestedPage = Math.max(
+    let allVideos = [];
+    let currentCategory = "all";
+    let searchQuery = "";
+    let randomPage = Math.max(
       1,
       parseInt(new URLSearchParams(location.search).get("randomPage") || "1", 10) || 1
     );
+    let randomVideos = [];
+    let searchTimer;
 
-    renderCategories();
-    await renderSections();
+    const searchBox = $("searchBox");
+    const searchInput = $("searchInput");
+    const menuButton = $("menuButton");
+    const mobileMenu = $("mobileMenu");
 
-    randomVideos = shuffle(allVideos);
-    const totalPages = Math.ceil(randomVideos.length / RANDOM_PER_PAGE);
-    randomPage = totalPages ? Math.min(requestedPage, totalPages) : 1;
+    $("year").textContent = new Date().getFullYear();
 
-    await renderRandomVideos();
-  } catch (error) {
-    console.error("Supabase error:", error);
-    boxes.forEach(box => {
-      box.innerHTML = `<div class="emptyVideos">Videos load nahi ho paaye. Connection ya Supabase settings check karo.</div>`;
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function normalise(value) {
+      return String(value ?? "").trim().toLowerCase();
+    }
+
+    function getFilteredVideos() {
+      const query = normalise(searchQuery);
+      const category = normalise(currentCategory);
+
+      return allVideos.filter(video => {
+        const videoCategory = normalise(video.category);
+        const title = normalise(video.title);
+        const description = normalise(video.description);
+
+        const matchesCategory =
+          category === "all" || videoCategory === category;
+
+        const matchesSearch =
+          !query ||
+          title.includes(query) ||
+          videoCategory.includes(query) ||
+          description.includes(query);
+
+        return matchesCategory && matchesSearch;
+      });
+    }
+
+    function getViews(video) {
+      const views = Number(video.views);
+      return Number.isFinite(views) && views > 0 ? views : 0;
+    }
+
+    function getCreatedTime(video) {
+      const time = new Date(video.created_at || 0).getTime();
+      return Number.isFinite(time) ? time : 0;
+    }
+
+    function getThumbnail(video) {
+      const url = video.thumbnail_url || video.thumbnail || "";
+      if (!url) return "";
+
+      try {
+        const parsed = new URL(url, location.href);
+        if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return "";
+        return parsed.href;
+      } catch {
+        return "";
+      }
+    }
+
+    function thumbnailHTML(video) {
+      const url = getThumbnail(video);
+      if (url) {
+        return `<img class="thumbnail" src="${escapeHTML(url)}"
+          alt="${escapeHTML(video.title || "Video thumbnail")}"
+          loading="lazy" referrerpolicy="no-referrer"
+          onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22250%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23171717%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23f21d35%22 font-size=%2224%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3EDesiVexa%3C/text%3E%3C/svg%3E'">`;
+      }
+
+      return `<div class="thumbnail" style="display:flex;align-items:center;justify-content:center;color:#f21d35;font-weight:bold;font-size:20px">DesiVexa</div>`;
+    }
+
+    function videoCardHTML(video) {
+      const id = String(video.id ?? "");
+      const title = escapeHTML(video.title || "Untitled video");
+      const category = escapeHTML(video.category || "Videos");
+      const views = getViews(video).toLocaleString("en-IN");
+
+      return `
+        <a class="videoCard" href="video.html?id=${encodeURIComponent(id)}"
+           aria-label="Watch ${title}">
+          <div class="thumbnailWrap">
+            ${thumbnailHTML(video)}
+          </div>
+          <div class="videoInfo">
+            <h3 class="videoTitle">${title}</h3>
+            <div class="videoMeta">
+              <span>${views} views</span>
+              <span class="videoCategory">${category}</span>
+            </div>
+          </div>
+        </a>`;
+    }
+
+    function renderGrid(containerId, videos, emptyMessage) {
+      const container = $(containerId);
+
+      if (!videos.length) {
+        container.innerHTML = `<div class="emptyState">${escapeHTML(emptyMessage)}</div>`;
+        return;
+      }
+
+      container.innerHTML = videos.map(videoCardHTML).join("");
+    }
+
+    function shuffle(videos) {
+      const result = [...videos];
+
+      for (let i = result.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+
+      return result;
+    }
+
+    function renderCategories() {
+      const categories = [...new Set(
+        allVideos
+          .map(video => String(video.category || "").trim())
+          .filter(Boolean)
+      )].sort((a, b) => a.localeCompare(b));
+
+      $("categories").innerHTML = [
+        `<button type="button" class="category ${currentCategory === "all" ? "active" : ""}" data-category="all">All</button>`,
+        ...categories.map(category => `
+          <button type="button"
+            class="category ${normalise(currentCategory) === normalise(category) ? "active" : ""}"
+            data-category="${escapeHTML(category)}">${escapeHTML(category)}</button>
+        `)
+      ].join("");
+    }
+
+    function renderSections() {
+      const filtered = getFilteredVideos();
+
+      const trending = [...filtered]
+        .sort((a, b) => getViews(b) - getViews(a))
+        .slice(0, SECTION_COUNT);
+
+      const newest = [...filtered]
+        .sort((a, b) => getCreatedTime(b) - getCreatedTime(a))
+        .slice(0, SECTION_COUNT);
+
+      const recommended = [...filtered]
+        .sort((a, b) => {
+          const scoreA = getViews(a) + getCreatedTime(a) / 1e10;
+          const scoreB = getViews(b) + getCreatedTime(b) / 1e10;
+          return scoreB - scoreA;
+        })
+        .slice(0, SECTION_COUNT);
+
+      renderGrid("trendingVideos", trending, "No trending videos found.");
+      renderGrid("newVideos", newest, "No new videos found.");
+      renderGrid("recommendedVideos", recommended, "No recommended videos found.");
+
+      const info = $("filterInfo");
+      const parts = [`${filtered.length} videos`];
+
+      if (currentCategory !== "all") parts.push(`Category: ${currentCategory}`);
+      if (searchQuery) parts.push(`Search: "${searchQuery}"`);
+
+      info.textContent = parts.join(" · ");
+
+      randomVideos = shuffle(filtered);
+      randomPage = Math.min(
+        randomPage,
+        Math.max(1, Math.ceil(randomVideos.length / RANDOM_PER_PAGE))
+      );
+
+      renderRandomVideos();
+    }
+
+    function renderRandomVideos() {
+      const total = randomVideos.length;
+      const totalPages = Math.max(1, Math.ceil(total / RANDOM_PER_PAGE));
+      randomPage = Math.min(Math.max(1, randomPage), totalPages);
+
+      const start = (randomPage - 1) * RANDOM_PER_PAGE;
+      const pageVideos = randomVideos.slice(start, start + RANDOM_PER_PAGE);
+
+      renderGrid("randomVideos", pageVideos, "No random videos found.");
+
+      const pagination = $("randomPagination");
+      pagination.innerHTML = "";
+
+      function addPageButton(label, page, options = {}) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "pageButton" + (options.active ? " active" : "");
+        button.textContent = label;
+        button.disabled = Boolean(options.disabled);
+
+        button.addEventListener("click", () => {
+          if (page < 1 || page > totalPages || page === randomPage) return;
+
+          randomPage = page;
+
+          const url = new URL(location.href);
+          url.searchParams.set("randomPage", String(randomPage));
+          history.replaceState({}, "", url);
+
+          renderRandomVideos();
+          $("randomSection").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+        });
+
+        pagination.appendChild(button);
+      }
+
+      addPageButton("←", randomPage - 1, { disabled: randomPage === 1 });
+
+      let first = Math.max(1, randomPage - 2);
+      let last = Math.min(totalPages, first + 4);
+      first = Math.max(1, last - 4);
+
+      for (let page = first; page <= last; page++) {
+        addPageButton(String(page), page, { active: page === randomPage });
+      }
+
+      addPageButton("Next →", randomPage + 1, {
+        disabled: randomPage >= totalPages
+      });
+
+      $("paginationLabel").textContent = total
+        ? `Page ${randomPage} of ${totalPages} · ${total} videos`
+        : "0 videos";
+    }
+
+    menuButton.addEventListener("click", () => {
+      const open = mobileMenu.classList.toggle("show");
+      menuButton.setAttribute("aria-expanded", String(open));
+      menuButton.textContent = open ? "✕" : "☰";
     });
-  }
-}
 
-window.addEventListener("popstate", async () => {
-  const page = Math.max(
-    1,
-    parseInt(new URLSearchParams(location.search).get("randomPage") || "1", 10) || 1
-  );
+    $("searchButton").addEventListener("click", () => {
+      const open = searchBox.classList.toggle("show");
 
-  const totalPages = Math.ceil(randomVideos.length / RANDOM_PER_PAGE);
-  randomPage = totalPages ? Math.min(page, totalPages) : 1;
-  await renderRandomVideos();
-});
+      if (open) {
+        searchInput.focus();
+        searchBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    });
 
-loadVideos();
-</script>
+    $("categoriesSearchButton").addEventListener("click", () => {
+      searchBox.classList.add("show");
+      searchInput.focus();
+
+      $("categories").scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+      });
+    });
+
+    $("categories").addEventListener("click", event => {
+      const button = event.target.closest("button[data-category]");
+      if (!button) return;
+
+      currentCategory = button.dataset.category || "all";
+      randomPage = 1;
+
+      renderCategories();
+      renderSections();
+    });
+
+    searchInput.addEventListener("input", () => {
+      clearTimeout(searchTimer);
+
+      searchTimer = setTimeout(() => {
+        searchQuery = searchInput.value.trim();
+        randomPage = 1;
+        renderSections();
+      }, 180);
+    });
+
+    $("searchForm").addEventListener("submit", event => {
+      event.preventDefault();
+
+      const query = searchInput.value.trim();
+      if (!query) return;
+
+      location.href = "search.html?q=" +
+        encodeURIComponent(query) + "&page=1";
+    });
+
+    async function loadVideos() {
+      $("filterInfo").textContent = "Loading videos...";
+
+      try {
+        const { data, error } = await supabase
+          .from("videos")
+          .select("id,title,category,description,thumbnail_url,views,created_at,published")
+          .eq("published", true)
+          .order("created_at", { ascending: false })
+          .limit(1000);
+
+        if (error) throw error;
+
+        allVideos = data || [];
+        renderCategories();
+
+        if (!allVideos.length) {
+          $("filterInfo").textContent = "No published videos available yet.";
+        }
+
+        renderSections();
+      } catch (error) {
+        console.error("DesiVexa video loading error:", error);
+
+        $("filterInfo").textContent = "Videos could not be loaded.";
+        const message = `
+          <div class="errorState">
+            Videos load nahi ho rahe.<br>
+            Supabase connection, config.js aur videos table check karo.
+          </div>`;
+
+        ["trendingVideos", "newVideos", "recommendedVideos", "randomVideos"]
+          .forEach(id => $(id).innerHTML = message);
+
+        $("randomPagination").innerHTML = "";
+        $("paginationLabel").textContent = "";
+      }
+    }
+
+    loadVideos();
+  </script>
 </body>
 </html>
