@@ -1,430 +1,184 @@
-/* =====================================================
-   DESIVEXA - JUICYADS
-===================================================== */
 
-const JUICY = {
+/* ==========================================
+   DESIVEXA ADS MANAGER
+   All ad codes go in this file only.
+========================================== */
 
-  banner: "1128301",
+const DESIVEXA_ADS = {
 
-  float: "1128307",
+  enabled: true,
 
-  small: "1128309",
+  // Homepage ads
+  homeTop: `
+    <!-- PASTE HOMEPAGE TOP AD CODE HERE -->
+  `,
 
-  wide: "1128310",
+  homeMiddle: `
+    <!-- PASTE HOMEPAGE MIDDLE AD CODE HERE -->
+  `,
 
-  compact: "1128312",
+  homeBottom: `
+    <!-- PASTE HOMEPAGE BOTTOM AD CODE HERE -->
+  `,
 
-  native: "1128313"
+  // Video page ads
+  videoTop: `
+    <!-- PASTE VIDEO PAGE TOP AD CODE HERE -->
+  `,
 
+  videoBelowPlayer: `
+    <!-- PASTE AD CODE BELOW VIDEO PLAYER HERE -->
+  `,
+
+  videoRelated: `
+    <!-- PASTE AD CODE ABOVE RELATED VIDEOS HERE -->
+  `,
+
+  videoBottom: `
+    <!-- PASTE VIDEO PAGE BOTTOM AD CODE HERE -->
+  `
 };
 
+(function () {
+  "use strict";
 
-const JUICY_SCRIPT =
-  "https://poweredby.jads.co/js/jads.js";
+  function runAdCode(container, html) {
+    if (!html || !html.trim()) return;
 
+    container.innerHTML = html;
 
-const NATIVE_SCRIPT =
-  "https://js.juicyads.com/juicyads.native-ads.min.js";
+    // Execute scripts included in the ad snippet
+    container.querySelectorAll("script").forEach(oldScript => {
+      const script = document.createElement("script");
 
+      Array.from(oldScript.attributes).forEach(attr => {
+        script.setAttribute(attr.name, attr.value);
+      });
 
-window.adsbyjuicy =
-  window.adsbyjuicy || [];
-
-
-let juicyLoader = null;
-
-
-/* =====================================================
-   LOAD JUICYADS SCRIPT ONCE
-===================================================== */
-
-function loadJuicyScript() {
-
-  if (juicyLoader) {
-
-    return juicyLoader;
-
+      script.textContent = oldScript.textContent;
+      oldScript.replaceWith(script);
+    });
   }
 
+  function addAd(name, target, position, html) {
+    if (!html || !html.trim() || !target) return;
 
-  juicyLoader = new Promise(
-    (resolve, reject) => {
+    const box = document.createElement("div");
+    box.className = "desivexa-ad desivexa-ad-" + name;
+    box.dataset.adName = name;
 
-      const existing =
-        document.querySelector(
-          'script[data-dv-juicy="1"]'
-        );
+    box.style.cssText =
+      "width:100%;max-width:100%;margin:18px auto;" +
+      "text-align:center;overflow:hidden;";
 
-
-      if (existing) {
-
-        resolve();
-
-        return;
-
-      }
-
-
-      const script =
-        document.createElement(
-          "script"
-        );
-
-
-      script.type =
-        "text/javascript";
-
-
-      script.async = true;
-
-
-      script.dataset.cfasync =
-        "false";
-
-
-      script.dataset.dvJuicy =
-        "1";
-
-
-      script.src =
-        JUICY_SCRIPT;
-
-
-      script.onload =
-        () => resolve();
-
-
-      script.onerror =
-        () => reject(
-          new Error(
-            "JuicyAds script failed"
-          )
-        );
-
-
-      document.head.appendChild(
-        script
-      );
-
+    if (position === "before") {
+      target.parentNode.insertBefore(box, target);
+    } else if (position === "after") {
+      target.parentNode.insertBefore(box, target.nextSibling);
+    } else {
+      target.appendChild(box);
     }
-  );
 
-
-  return juicyLoader;
-
-}
-
-
-/* =====================================================
-   CREATE STANDARD JUICYADS ZONE
-===================================================== */
-
-async function createZone(
-  element,
-  zoneId,
-  width,
-  height
-) {
-
-  if (!element) {
-
-    return;
-
+    runAdCode(box, html);
   }
 
+  function initAds() {
+    if (!DESIVEXA_ADS.enabled) return;
 
-  if (
-    element.dataset.loaded === "1"
-  ) {
+    const path = location.pathname.toLowerCase();
+    const isVideoPage =
+      /(^|\/)video\.html?$/.test(path) ||
+      document.body.classList.contains("video-page");
 
-    return;
-
-  }
-
-
-  element.dataset.loaded =
-    "1";
-
-
-  try {
-
-    const ins =
-      document.createElement(
-        "ins"
+    if (isVideoPage) {
+      const player = document.querySelector(
+        "#videoPlayer, .video-player, video, iframe"
       );
 
-
-    ins.id =
-      String(zoneId);
-
-
-    ins.dataset.width =
-      String(width);
-
-
-    ins.dataset.height =
-      String(height);
-
-
-    element.appendChild(
-      ins
-    );
-
-
-    await loadJuicyScript();
-
-
-    window.adsbyjuicy.push({
-      adzone: Number(zoneId)
-    });
-
-
-  } catch (error) {
-
-    console.warn(
-      "JuicyAds:",
-      error
-    );
-
-
-    element.dataset.loaded =
-      "0";
-
-  }
-
-}
-
-
-/* =====================================================
-   INITIALIZE JUICYADS
-===================================================== */
-
-export function initJuicyAds({
-
-  float = true,
-
-  native = true
-
-} = {}) {
-
-
-  /* =========================
-     WIDE ADS
-  ========================== */
-
-  document
-    .querySelectorAll(
-      '[data-juicy-ad="wide"]'
-    )
-    .forEach(element => {
-
-      createZone(
-        element,
-        JUICY.wide,
-        774,
-        290
+      const header = document.querySelector("header");
+      const related = document.querySelector(
+        "#relatedVideos, .related-videos, #related, .related"
       );
 
-    });
-
-
-  /* =========================
-     BANNER ADS
-  ========================== */
-
-  document
-    .querySelectorAll(
-      '[data-juicy-ad="banner"]'
-    )
-    .forEach(element => {
-
-      createZone(
-        element,
-        JUICY.banner,
-        308,
-        286
+      addAd(
+        "video-top",
+        header || document.body.firstElementChild,
+        "after",
+        DESIVEXA_ADS.videoTop
       );
 
-    });
+      if (player) {
+        const playerBox =
+          player.closest(".video-player, .player-container") || player;
 
-
-  /* =========================
-     SMALL ADS
-  ========================== */
-
-  document
-    .querySelectorAll(
-      '[data-juicy-ad="small"]'
-    )
-    .forEach(element => {
-
-      createZone(
-        element,
-        JUICY.small,
-        108,
-        140
-      );
-
-    });
-
-
-  /* =========================
-     COMPACT ADS
-  ========================== */
-
-  document
-    .querySelectorAll(
-      '[data-juicy-ad="compact"]'
-    )
-    .forEach(element => {
-
-      createZone(
-        element,
-        JUICY.compact,
-        300,
-        100
-      );
-
-    });
-
-
-  /* =================================================
-     FLOAT AD
-  ================================================= */
-
-  if (
-    float &&
-    !document.documentElement
-      .dataset.dvFloat
-  ) {
-
-    document.documentElement
-      .dataset.dvFloat = "1";
-
-
-    setTimeout(() => {
-
-      try {
-
-        const zoneScript =
-          document.createElement(
-            "script"
-          );
-
-
-        zoneScript.type =
-          "text/javascript";
-
-
-        zoneScript.text =
-          `juicy_adzone = '${JUICY.float}';`;
-
-
-        const adScript =
-          document.createElement(
-            "script"
-          );
-
-
-        adScript.type =
-          "text/javascript";
-
-
-        adScript.src =
-          "https://poweredby.jads.co/js/jfc.js";
-
-
-        adScript.charset =
-          "utf-8";
-
-
-        document.body.appendChild(
-          zoneScript
+        addAd(
+          "video-below-player",
+          playerBox,
+          "after",
+          DESIVEXA_ADS.videoBelowPlayer
         );
-
-
-        document.body.appendChild(
-          adScript
-        );
-
-
-      } catch (error) {
-
-        console.warn(
-          "JuicyAds Float:",
-          error
-        );
-
       }
 
-    }, 5000);
-
-  }
-
-
-  /* =================================================
-     NATIVE INTERSTITIAL
-  ================================================= */
-
-  if (
-    native &&
-    sessionStorage.getItem(
-      "dvNative"
-    ) !== "1"
-  ) {
-
-    sessionStorage.setItem(
-      "dvNative",
-      "1"
-    );
-
-
-    setTimeout(() => {
-
-      try {
-
-        const nativeScript =
-          document.createElement(
-            "script"
-          );
-
-
-        nativeScript.type =
-          "text/javascript";
-
-
-        nativeScript.dataset.id =
-          "juicyads-native-ads";
-
-
-        nativeScript.dataset.adZone =
-          JUICY.native;
-
-
-        nativeScript.dataset.targets =
-          "a";
-
-
-        nativeScript.src =
-          NATIVE_SCRIPT;
-
-
-        document.body.appendChild(
-          nativeScript
+      if (related) {
+        addAd(
+          "video-related",
+          related,
+          "before",
+          DESIVEXA_ADS.videoRelated
         );
-
-
-      } catch (error) {
-
-        console.warn(
-          "JuicyAds Native:",
-          error
-        );
-
       }
 
-    }, 8000);
+      addAd(
+        "video-bottom",
+        document.querySelector("footer") || document.body,
+        "append",
+        DESIVEXA_ADS.videoBottom
+      );
 
+    } else {
+      const header = document.querySelector("header");
+      const main = document.querySelector("main");
+      const sections = document.querySelectorAll(
+        "main section, .video-section, .video-grid"
+      );
+
+      addAd(
+        "home-top",
+        header || main || document.body.firstElementChild,
+        "after",
+        DESIVEXA_ADS.homeTop
+      );
+
+      if (sections.length) {
+        addAd(
+          "home-middle",
+          sections[0],
+          "after",
+          DESIVEXA_ADS.homeMiddle
+        );
+
+        addAd(
+          "home-bottom",
+          sections[sections.length - 1],
+          "after",
+          DESIVEXA_ADS.homeBottom
+        );
+      } else if (main) {
+        addAd(
+          "home-bottom",
+          main,
+          "append",
+          DESIVEXA_ADS.homeBottom
+        );
+      }
+    }
   }
 
-}
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAds, {
+      once: true
+    });
+  } else {
+    initAds();
+  }
+})();
