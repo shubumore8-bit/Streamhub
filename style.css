@@ -2099,3 +2099,114 @@ body:has(.admin) {
     align-items: flex-start;
   }
 }
+
+/* DESIVEXA — PREMIUM CATEGORY DROPDOWN */
+.categoriesButtonWrap{
+position:relative;
+padding:10px 14px 0;
+z-index:20;
+}
+
+.categoriesButton{
+width:100%;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+padding:14px;
+border:1px solid #293d4a;
+border-radius:13px;
+background:linear-gradient(135deg,#172632,#09131c);
+color:#fff;
+text-align:left;
+font-weight:800;
+cursor:pointer;
+}
+
+#selectedCategoryCount{
+display:block;
+color:#9babb6;
+font-size:11px;
+margin-top:4px;
+}
+
+.categoryDropdown{
+margin-top:8px;
+padding:12px;
+background:#08131c;
+border:1px solid #293d4a;
+border-radius:13px;
+box-shadow:0 12px 28px #0008;
+}
+
+.categoryDropdown[hidden]{
+display:none;
+}
+
+.categorySearch{
+width:100%;
+padding:12px;
+border:1px solid #293d4a;
+border-radius:9px;
+background:#0b1720;
+color:#fff;
+}
+
+.categoryMeta{
+display:flex;
+justify-content:space-between;
+gap:8px;
+margin:13px 0;
+color:#a9bac5;
+font-size:11px;
+}
+
+.categories{
+display:grid;
+grid-template-columns:repeat(2,minmax(0,1fr));
+gap:8px;
+max-height:280px;
+overflow-y:auto;
+}
+
+.category{
+padding:10px;
+border:1px solid #293d4a;
+border-radius:9px;
+background:#0b1720;
+color:#fff;
+text-align:left;
+font-size:12px;
+cursor:pointer;
+}
+
+.category.active{
+background:#35101b;
+border-color:#ff1744;
+}
+
+.categoryCount{
+float:right;
+color:#ff7188;
+margin-left:5px;
+}
+
+#categoryNoResults{
+padding:12px;
+color:#aaa;
+font-size:12px;
+}
+
+@media(max-width:600px){
+.categoriesButtonWrap{
+padding:9px 11px 0;
+}
+
+.categoryDropdown{
+padding:10px;
+}
+
+.categories{
+grid-template-columns:repeat(2,minmax(0,1fr));
+}
+}
