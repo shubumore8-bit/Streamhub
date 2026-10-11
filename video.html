@@ -1,197 +1,231 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
 
-  <script src="/ads.js" defer></script>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
 
-  <style>
-    body {
-      background: #080808;
-      color: white;
-    }
-  </style>
-</head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080808">
+  <meta
+    name="theme-color"
+    content="#080808"
+  >
+
+  <meta
+    name="description"
+    content="Watch video on DesiVexa."
+  >
+
   <title>Watch Video - DesiVexa</title>
-  <meta name="description" content="Watch videos on DesiVexa.">
-
-  <!-- Ads script: style block ke bahar -->
-  <script src="/ads.js" defer></script>
 
   <style>
-    :root {
-      --bg: #080808;
-      --panel: #141414;
-      --text: #f5f5f5;
-      --muted: #aaa;
-      --red: #ed1735;
-      --border: #292929;
+
+    * {
+      box-sizing: border-box;
     }
 
-    * { box-sizing: border-box; }
+    html {
+      scroll-behavior: smooth;
+    }
 
-    html { scroll-behavior: smooth; }
 
+<script src="/ads.js" defer></script>
+
+    
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Arial, sans-serif;
-      padding-bottom: 65px;
+      padding: 0;
+      background: #080808;
+      color: #fff;
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    button,
+    input {
+      font: inherit;
     }
 
     header {
       position: sticky;
       top: 0;
-      z-index: 20;
-      background: #0d0d0d;
-      border-bottom: 1px solid var(--border);
-      padding: 14px;
-    }
+      z-index: 9999;
 
-    .header-row {
+      height: 58px;
+
+      background: #0d0d0d;
+
+      border-bottom:
+        1px solid #242424;
+
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+
+      padding:
+        0 14px;
     }
 
-    .logo {
-      color: var(--red);
-      font-size: 25px;
-      font-weight: 900;
-      text-decoration: none;
-    }
+    .home-btn,
+    .search-btn {
 
-    .header-link {
-      color: white;
-      text-decoration: none;
-      background: #1c1c1c;
-      border: 1px solid #333;
-      border-radius: 8px;
-      padding: 9px 12px;
-    }
+      width: 38px;
+      height: 38px;
 
-    main {
-      width: 100%;
-      max-width: 1000px;
-      margin: auto;
-      padding: 0 12px;
-    }
+      border-radius: 10px;
 
-    .ad-banner {
-      width: 100%;
-      min-height: 90px;
-      margin: 14px auto;
-      padding: 5px;
+      border:
+        1px solid #333;
+
+      background: #151515;
+
+      color: #fff;
+
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
-      text-align: center;
-    }
 
-    .ad-banner:empty { display: none; }
-
-    .ad-banner img {
-      display: block;
-      max-width: 100%;
-      height: auto;
-    }
-
-    .ad-banner iframe {
-      max-width: 100%;
-      border: 0;
-    }
-
-    #page { min-height: 250px; }
-
-    .loading, .error {
-      padding: 35px 12px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 30;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      background: #111;
-      border-top: 1px solid #303030;
-      padding: 9px 3px;
-    }
-
-    .bottom-nav a {
-      color: #ddd;
-      text-align: center;
-      font-size: 11px;
       text-decoration: none;
-      padding: 5px 0;
+
+      font-size: 19px;
+
+      transition:
+        .2s ease;
     }
 
-    .bottom-nav a:nth-child(2) { color: var(--red); }
+    .home-btn:hover,
+    .search-btn:hover {
 
-    footer {
-      border-top: 1px solid var(--border);
-      text-align: center;
-      color: var(--muted);
-      padding: 20px 10px;
-      font-size: 12px;
+      background: #202020;
+
+      border-color:
+        #e50914;
     }
+
+    .logo {
+
+      color: #e50914;
+
+      font-size: 22px;
+
+      font-weight: 800;
+
+      letter-spacing:
+        .3px;
+    }
+
+    .logo span {
+      color: #fff;
+    }
+
+    main {
+
+      width: 100%;
+
+      max-width:
+        1100px;
+
+      margin:
+        0 auto;
+
+      padding-bottom:
+        60px;
+    }
+
+    #page {
+      width: 100%;
+    }
+
+    .loading {
+
+      min-height:
+        60vh;
+
+      display: flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      color: #aaa;
+
+      font-size: 16px;
+    }
+
+    @media (min-width: 768px) {
+
+      header {
+        padding:
+          0 25px;
+      }
+
+      .logo {
+        font-size: 25px;
+      }
+
+    }
+
   </style>
+
 </head>
 
 <body>
+
   <header>
-    <div class="header-row">
-      <a class="header-link" href="/">← Home</a>
-      <a class="logo" href="/">DesiVexa</a>
-      <a class="header-link" href="/trending">Trending</a>
+
+    <a
+      class="home-btn"
+      href="index.html"
+      aria-label="Home"
+    >
+      ⌂
+    </a>
+
+    <div class="logo">
+      Desi<span>Vexa</span>
     </div>
+
+    <a
+      class="search-btn"
+      href="index.html"
+      aria-label="Search"
+    >
+      ⌕
+    </a>
+
   </header>
 
+
   <main>
-    <!-- TOP BANNER -->
-    <div class="ad-banner" id="videoTop"></div>
 
     <div id="page">
-      <div class="loading">Loading video...</div>
+
+      <div class="loading">
+        Loading video...
+      </div>
+
     </div>
 
-    <!--
-      videoBelowPlayer, videoRelated aur videoBottom ko ads.js
-      mein unke slots ke saath configure karein.
-      Agar video.js player/related section dynamically banata hai,
-      to beech ke slots video.js se insert karne honge.
-    -->
-
-    <div class="ad-banner" id="videoBelowPlayer"></div>
-    <div class="ad-banner" id="videoRelated"></div>
-    <div class="ad-banner" id="videoBottom"></div>
   </main>
 
-  <footer>© <span id="year"></span> DesiVexa</footer>
 
-  <nav class="bottom-nav">
-    <a href="/">⌂<br>Home</a>
-    <a href="/new">▣<br>New</a>
-    <a href="/trending">🔥<br>Trending</a>
-    <a href="/recommended">★<br>Recommended</a>
-  </nav>
+  <script
+    type="module"
+    src="./video.js"
+  ></script>
 
-  <script>
-    document.getElementById("year").textContent =
-      new Date().getFullYear();
-  </script>
-
-  <!-- Existing video functionality -->
-  <script type="module" src="./video.js"></script>
 </body>
+
 </html>
