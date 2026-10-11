@@ -1559,4 +1559,875 @@ function shuffle(array){
 
   }
 
-  retur
+  return arr;
+
+}
+
+
+/* ======================================================
+   EMPTY
+====================================================== */
+
+function emptyMessage(){
+
+  return `
+
+    <div class="emptyVideos">
+
+      No videos found.
+
+    </div>
+
+  `;
+
+}
+
+
+/* ======================================================
+   LOADING
+====================================================== */
+
+function loadingMessage(){
+
+  return `
+
+    <div class="loadingVideos">
+
+      Loading thumbnails...
+
+    </div>
+
+  `;
+
+}
+
+
+/* ======================================================
+   RENDER SECTIONS
+====================================================== */
+
+async function renderSections(
+  videos = allVideos
+){
+
+  const trending =
+    [
+      ...videos
+    ]
+    .sort(
+      (a,b) =>
+        Number(
+          b.views || 0
+        ) -
+        Number(
+          a.views || 0
+        )
+    )
+    .slice(
+      0,
+      4
+    );
+
+
+  const latest =
+    [
+      ...videos
+    ]
+    .sort(
+      (a,b) =>
+        new Date(
+          b.created_at
+        ) -
+        new Date(
+          a.created_at
+        )
+    )
+    .slice(
+      0,
+      4
+    );
+
+
+  const recommended =
+    [
+      ...videos
+    ]
+    .sort(
+      (a,b) => {
+
+        const diff =
+          Number(
+            b.views || 0
+          ) -
+          Number(
+            a.views || 0
+          );
+
+        if(diff !== 0){
+          return diff;
+        }
+
+        return (
+          new Date(
+            b.created_at
+          ) -
+          new Date(
+            a.created_at
+          )
+        );
+
+      }
+    )
+    .slice(
+      0,
+      4
+    );
+
+
+  const uniqueVideos =
+    [
+      ...new Map(
+        [
+          ...trending,
+          ...latest,
+          ...recommended
+        ]
+        .map(
+          video => [
+            video.id,
+            video
+          ]
+        )
+      ).values()
+    ];
+
+
+  const trendingBox =
+    document.getElementById(
+      "trendingVideos"
+    );
+
+  const newBox =
+    document.getElementById(
+      "newVideos"
+    );
+
+  const recommendedBox =
+    document.getElementById(
+      "recommendedVideos"
+    );
+
+
+  if(trendingBox){
+    trendingBox.innerHTML =
+      loadingMessage();
+  }
+
+  if(newBox){
+    newBox.innerHTML =
+      loadingMessage();
+  }
+
+  if(recommendedBox){
+    recommendedBox.innerHTML =
+      loadingMessage();
+  }
+
+
+  /*
+    THUMBNAILS LOAD HERE
+  */
+
+  await prepareThumbnails(
+    uniqueVideos
+  );
+
+
+  if(trendingBox){
+
+    trendingBox.innerHTML =
+      trending.length
+        ? trending
+            .map(videoCard)
+            .join("")
+        : emptyMessage();
+
+  }
+
+
+  if(newBox){
+
+    newBox.innerHTML =
+      latest.length
+        ? latest
+            .map(videoCard)
+            .join("")
+        : emptyMessage();
+
+  }
+
+  if(recommendedBox){
+
+    recommendedBox.innerHTML =
+      recommended.length
+        ? recommended
+            .map(videoCard)
+            .join("")
+        : emptyMessage();
+
+  }
+
+}
+
+
+/* ======================================================
+   RANDOM
+====================================================== */
+
+async function renderRandomVideos(){
+
+  const container =
+    document.getElementById(
+      "randomVideos"
+    );
+
+  const pagination =
+    document.getElementById(
+      "randomPagination"
+    );
+
+
+  if(!container){
+    return;
+  }
+
+
+  const totalPages =
+    Math.ceil(
+      randomVideos.length /
+      RANDOM_PER_PAGE
+    );
+
+
+  if(
+    randomPage >
+      totalPages &&
+    totalPages > 0
+  ){
+
+    randomPage = 1;
+
+  }
+
+
+  const start =
+    (
+      randomPage -
+      1
+    ) *
+    RANDOM_PER_PAGE;
+
+
+  const current =
+    randomVideos.slice(
+      start,
+      start +
+      RANDOM_PER_PAGE
+    );
+
+
+  if(current.length === 0){
+
+    container.innerHTML =
+      emptyMessage();
+
+    renderRandomPagination(
+      totalPages,
+      pagination
+    );
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    loadingMessage();
+
+
+  await prepareThumbnails(
+    current
+  );
+
+
+  container.innerHTML =
+    current
+      .map(videoCard)
+      .join("");
+
+
+  renderRandomPagination(
+    totalPages,
+    pagination
+  );
+
+}
+
+
+/* ======================================================
+   RANDOM PAGINATION
+====================================================== */
+
+function renderRandomPagination(
+  totalPages,
+  container
+){
+
+  if(!container){
+    return;
+  }
+
+
+  if(totalPages <= 1){
+
+    container.innerHTML =
+      "";
+
+    return;
+
+  }
+
+
+  let html = "";
+
+
+  html += `
+
+    <button
+      class="randomPageBtn"
+      ${
+        randomPage <= 1
+          ? "disabled"
+          : ""
+      }
+      onclick="changeRandomPage(${
+        randomPage - 1
+      })"
+    >
+      Previous
+    </button>
+
+  `;
+
+
+  let start =
+    Math.max(
+      1,
+      randomPage - 2
+    );
+
+
+  let end =
+    Math.min(
+      totalPages,
+      randomPage + 2
+    );
+
+
+  if(randomPage <= 3){
+
+    start = 1;
+
+    end =
+      Math.min(
+        totalPages,
+        5
+      );
+
+  }
+
+
+  if(
+    randomPage >=
+    totalPages - 2
+  ){
+
+    start =
+      Math.max(
+        1,
+        totalPages - 4
+      );
+
+    end =
+      totalPages;
+
+  }
+
+
+  for(
+    let i = start;
+    i <= end;
+    i++
+  ){
+
+    html += `
+
+      <button
+        class="
+          randomPageBtn
+          ${
+            i === randomPage
+              ? "active"
+              : ""
+          }
+        "
+        onclick="changeRandomPage(${i})"
+      >
+        ${i}
+      </button>
+
+    `;
+
+  }
+
+
+  html += `
+
+    <button
+      class="randomPageBtn"
+      ${
+        randomPage >= totalPages
+          ? "disabled"
+          : ""
+      }
+      onclick="changeRandomPage(${
+        randomPage + 1
+      })"
+    >
+      Next
+    </button>
+
+  `;
+
+
+  container.innerHTML =
+    html;
+
+}
+
+  /* ======================================================
+   CHANGE RANDOM PAGE
+====================================================== */
+
+window.changeRandomPage =
+async function(page){
+
+  const totalPages =
+    Math.ceil(
+      randomVideos.length /
+      RANDOM_PER_PAGE
+    );
+
+
+  if(
+    page < 1 ||
+    page > totalPages
+  ){
+
+    return;
+
+  }
+
+
+  randomPage =
+    page;
+
+
+  const url =
+    new URL(
+      window.location.href
+    );
+
+
+  if(randomPage === 1){
+
+    url.searchParams.delete(
+      "randomPage"
+    );
+
+  }else{
+
+    url.searchParams.set(
+      "randomPage",
+      randomPage
+    );
+
+  }
+
+
+  window.history.pushState(
+    {},
+    "",
+    url
+  );
+
+
+  await renderRandomVideos();
+
+
+  document
+    .getElementById(
+      "randomSection"
+    )
+    ?.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
+
+};
+
+
+/* ======================================================
+   CATEGORIES
+====================================================== */
+
+function renderCategories(){
+
+  if(!categoriesBox){
+    return;
+  }
+
+
+  const categories =
+    [
+      ...new Set(
+        allVideos
+          .map(
+            video =>
+              String(
+                video.category ||
+                ""
+              ).trim()
+          )
+          .filter(Boolean)
+      )
+    ]
+    .slice(
+      0,
+      20
+    );
+
+
+  categoriesBox.innerHTML = `
+
+    <button
+      class="category active"
+      data-category="all"
+    >
+      All
+    </button>
+
+  `;
+
+
+  categories.forEach(
+    category => {
+
+      categoriesBox.innerHTML += `
+
+        <button
+          class="category"
+          data-category="${escapeHTML(
+            category
+          )}"
+        >
+          ${escapeHTML(
+            category
+          )}
+        </button>
+
+      `;
+
+    }
+  );
+
+
+  document
+    .querySelectorAll(
+      "#categories .category"
+    )
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          async () => {
+
+            document
+              .querySelectorAll(
+                "#categories .category"
+              )
+              .forEach(
+                item =>
+                  item.classList.remove(
+                    "active"
+                  )
+              );
+
+
+            button.classList.add(
+              "active"
+            );
+
+
+            const category =
+              button.dataset.category;
+
+
+            const filtered =
+              category === "all"
+                ? allVideos
+                : allVideos.filter(
+                    video =>
+                      String(
+                        video.category ||
+                        ""
+                      ) === category
+                  );
+
+
+            await renderSections(
+              filtered
+            );
+
+
+            randomVideos =
+              shuffle(
+                filtered
+              );
+
+
+            randomPage = 1;
+
+
+            await renderRandomVideos();
+
+          }
+        );
+
+      }
+    );
+
+  }
+
+  /* ======================================================
+   SEARCH
+====================================================== */
+
+if(searchInput){
+
+  searchInput.addEventListener(
+    "keydown",
+    function(event){
+
+      if(
+        event.key !==
+        "Enter"
+      ){
+
+        return;
+
+      }
+
+
+      event.preventDefault();
+
+
+      const query =
+        searchInput.value.trim();
+
+
+      if(!query){
+        return;
+      }
+
+
+      window.location.href =
+        "search.html?q=" +
+        encodeURIComponent(
+          query
+        ) +
+        "&page=1";
+
+    }
+  );
+
+}
+
+
+/* ======================================================
+   LOAD VIDEOS
+====================================================== */
+
+async function loadVideos(){
+
+  const boxes = [
+
+    document.getElementById(
+      "trendingVideos"
+    ),
+
+    document.getElementById(
+      "newVideos"
+    ),
+
+    document.getElementById(
+      "recommendedVideos"
+    ),
+
+    document.getElementById(
+      "randomVideos"
+    )
+
+  ];
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabase
+        .from("videos")
+        .select(
+          "id,title,category,description,thumbnail_url,video_url,views,created_at"
+        )
+        .eq(
+          "published",
+          true
+        )
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        )
+        .limit(
+          200
+        );
+
+
+    if(error){
+      throw error;
+    }
+
+
+    allVideos =
+      data || [];
+
+
+    /*
+      Main sections
+    */
+
+    await renderSections(
+      allVideos
+    );
+
+
+    /*
+      Categories
+    */
+
+    renderCategories();
+
+
+    /*
+      Random
+    */
+
+    randomVideos =
+      shuffle(
+        allVideos
+      );
+
+
+    await renderRandomVideos();
+
+
+  }catch(error){
+
+    console.error(
+      "Supabase error:",
+      error
+    );
+
+
+    boxes.forEach(
+      box => {
+
+        if(!box){
+          return;
+        }
+
+
+        box.innerHTML = `
+
+          <div class="emptyVideos">
+
+            Videos load nahi ho paaye.
+
+          </div>
+
+        `;
+
+      }
+    );
+
+  }
+
+}
+
+
+/* ======================================================
+   START
+====================================================== */
+
+loadVideos();
+
+
+/* ======================================================
+   BACK / FORWARD
+====================================================== */
+
+window.addEventListener(
+  "popstate",
+  async () => {
+
+    const page =
+      parseInt(
+        new URLSearchParams(
+          location.search
+        ).get(
+          "randomPage"
+        ) || "1"
+      );
+
+
+    randomPage =
+      Math.max(
+        1,
+        page
+      );
+
+
+    await renderRandomVideos();
+
+  }
+);
+
+</script>
+
+</body>
+</html>
