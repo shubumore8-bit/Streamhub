@@ -1,601 +1,757 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <script src="/ads.js" defer></script>
-
-  <style>
-    body {
-      background: #080808;
-      color: white;
-    }
-  </style>
-</head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080808">
-  <title>DesiVexa - Trending Videos</title>
-  <meta name="description" content="Explore trending, latest and recommended videos on DesiVexa.">
-
-  <script src="/ads.js" defer></script>
+  <meta name="description" content="Discover trending, latest, recommended and random videos on DesiVexa.">
+  <title>DesiVexa - Watch Trending Videos</title>
 
   <style>
     :root {
       --bg: #080808;
-      --panel: #141414;
+      --panel: #121212;
+      --panel2: #1b1b1b;
       --text: #f5f5f5;
-      --muted: #aaa;
-      --red: #ed1735;
+      --muted: #a4a4a4;
+      --red: #f21d35;
       --border: #292929;
     }
 
     * { box-sizing: border-box; }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 75px;
+    }
 
+
+<script src="/ads.js" defer></script>
+
+    
     body {
       margin: 0;
       background: var(--bg);
       color: var(--text);
-      font-family: Arial, sans-serif;
-      padding-bottom: 65px;
+      font-family: Arial, Helvetica, sans-serif;
+      padding-bottom: 75px;
     }
 
-    button, input { font: inherit; }
+    button, input, a { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
 
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: #0d0d0d;
-      border-bottom: 1px solid var(--border);
-      padding: 12px;
-    }
-
-    .header-row {
+    .header {
+      height: 62px;
+      padding: 0 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(8, 8, 8, .97);
+      border-bottom: 1px solid var(--border);
     }
 
     .logo {
-      color: var(--red);
       font-size: 25px;
       font-weight: 900;
-      text-decoration: none;
+      letter-spacing: -.8px;
+      white-space: nowrap;
     }
 
-    .header-btn {
+    .logo span { color: var(--red); }
+
+    .headerButton, .userPanelTop {
+      border: 1px solid var(--border);
       color: white;
-      background: #1c1c1c;
-      border: 1px solid #333;
-      border-radius: 8px;
-      padding: 9px 12px;
-      cursor: pointer;
+      background: var(--panel);
+      min-width: 39px;
+      height: 39px;
+      border-radius: 10px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 19px;
+      flex-shrink: 0;
     }
 
-    #searchBox {
-      display: none;
-      margin-top: 12px;
+    .headerButton:hover, .userPanelTop:hover {
+      border-color: var(--red);
     }
 
-    #searchInput {
-      width: 100%;
-      background: #181818;
-      color: white;
-      border: 1px solid #383838;
-      border-radius: 8px;
-      padding: 12px;
-      outline: none;
-    }
-
-    #menuBox {
-      display: none;
-      padding-top: 12px;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    #menuBox a {
-      color: white;
-      text-decoration: none;
-      background: #1b1b1b;
-      padding: 9px 12px;
-      border-radius: 7px;
-    }
-
-    main {
-      width: 100%;
-      max-width: 1200px;
-      margin: auto;
-      padding: 0 10px;
-    }
-
-    .ad-banner {
-      width: 100%;
-      min-height: 90px;
-      margin: 14px auto;
-      padding: 5px;
+    .headerLeft, .headerRight {
       display: flex;
       align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      text-align: center;
+      gap: 8px;
     }
 
-    .ad-banner:empty { display: none; }
-
-    .ad-banner img {
-      display: block;
-      max-width: 100%;
-      height: auto;
+    .mobileMenu {
+      display: none;
+      position: fixed;
+      top: 62px;
+      left: 0;
+      right: 0;
+      z-index: 99;
+      background: #101010;
+      border-bottom: 1px solid var(--border);
+      padding: 12px;
     }
 
-    .ad-banner iframe {
-      max-width: 100%;
+    .mobileMenu.show {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
+    }
+
+    .mobileMenu a {
+      padding: 13px;
+      border-radius: 9px;
+      background: var(--panel2);
+      font-size: 14px;
+    }
+
+    .searchBox {
+      display: none;
+      padding: 12px 14px;
+      background: #0d0d0d;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .searchBox.show { display: block; }
+
+    .searchForm {
+      display: flex;
+      gap: 8px;
+      max-width: 850px;
+      margin: auto;
+    }
+
+    .searchInput {
+      min-width: 0;
+      flex: 1;
+      background: var(--panel2);
+      color: white;
+      border: 1px solid #333;
+      outline: none;
+      padding: 13px;
+      border-radius: 9px;
+    }
+
+    .searchInput:focus { border-color: var(--red); }
+
+    .searchSubmit {
       border: 0;
+      border-radius: 9px;
+      padding: 0 17px;
+      color: white;
+      background: var(--red);
+      font-weight: bold;
     }
 
-    section { margin: 22px 0; }
+    .page {
+      width: 100%;
+      max-width: 1450px;
+      padding: 15px;
+      margin: auto;
+    }
 
-    .section-heading {
+    .welcome {
+      padding: 21px 17px;
+      border: 1px solid #2b171a;
+      border-radius: 13px;
+      background: linear-gradient(120deg, #211012, #111 65%);
+      margin-bottom: 17px;
+    }
+
+    .welcome h1 {
+      margin: 0 0 7px;
+      font-size: clamp(22px, 4vw, 32px);
+    }
+
+    .welcome p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .categoriesButtonWrap { margin: 14px 0 10px; }
+
+    .categoriesButton {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      margin: 14px 0;
+      gap: 10px;
+      background: #171717;
+      color: white;
+      border: 1px solid #353535;
+      border-radius: 10px;
+      text-align: left;
+      font-weight: bold;
     }
 
-    h2 {
-      font-size: 19px;
-      margin: 0;
-    }
+    .categoriesButton:hover { border-color: var(--red); }
 
-    .section-heading a {
-      color: var(--red);
-      text-decoration: none;
+    .categoriesButton .arrow {
+      color: #ff6474;
       font-size: 13px;
+      white-space: nowrap;
     }
 
     .categories {
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      padding: 12px 0;
-      scrollbar-width: none;
+      padding: 4px 0 12px;
+      scrollbar-width: thin;
     }
 
-    .categories button {
-      white-space: nowrap;
-      color: white;
+    .category {
+      flex-shrink: 0;
+      color: #ddd;
       background: #191919;
-      border: 1px solid #303030;
-      border-radius: 20px;
+      border: 1px solid #333;
       padding: 9px 14px;
-      cursor: pointer;
+      border-radius: 30px;
+      font-size: 13px;
     }
 
-    .categories button.active {
+    .category.active, .category:hover {
       background: var(--red);
+      color: white;
       border-color: var(--red);
     }
 
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px 9px;
+    .filterInfo {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0 0 13px;
     }
 
-    .video-card {
-      display: block;
+    .videoSection { margin: 23px 0 30px; }
+
+    .sectionHeading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 13px;
+    }
+
+    .sectionHeading h2 {
+      margin: 0;
+      font-size: 19px;
+    }
+
+    .sectionHeading h2 span { color: var(--red); }
+
+    .sectionHeading a {
+      color: #ff6a7a;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .videoGrid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px 12px;
+    }
+
+    .videoCard {
       min-width: 0;
-      color: white;
-      text-decoration: none;
-      background: var(--panel);
-      border-radius: 9px;
       overflow: hidden;
       border: 1px solid #202020;
+      background: var(--panel);
+      border-radius: 10px;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .videoCard:hover {
+      border-color: #6d252e;
+      transform: translateY(-2px);
+    }
+
+    .thumbnailWrap {
+      position: relative;
+      background: #1b1b1b;
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
     }
 
     .thumbnail {
-      width: 100%;
-      aspect-ratio: 16 / 10;
       display: block;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      background: #202020;
     }
 
-    .video-info { padding: 9px; }
+    .duration {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      background: rgba(0, 0, 0, .85);
+      border-radius: 4px;
+      font-size: 11px;
+      padding: 4px 5px;
+    }
 
-    .video-title {
-      margin: 0 0 6px;
+    .videoInfo { padding: 9px; }
+
+    .videoTitle {
       font-size: 13px;
       line-height: 1.4;
+      font-weight: bold;
+      margin: 0 0 7px;
+      overflow-wrap: anywhere;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
-      overflow-wrap: anywhere;
+      min-height: 36px;
     }
 
-    .video-meta {
+    .videoMeta {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
       color: var(--muted);
       font-size: 11px;
     }
 
-    .empty {
+    .videoCategory {
+      color: #ff7381;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .emptyState, .loadingState, .errorState {
+      padding: 25px 12px;
+      text-align: center;
       color: var(--muted);
-      padding: 20px 5px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
       grid-column: 1 / -1;
+      line-height: 1.6;
     }
 
     .pagination {
       display: flex;
       justify-content: center;
+      align-items: center;
       flex-wrap: wrap;
       gap: 7px;
-      margin: 20px 0;
+      margin: 18px 0 8px;
     }
 
-    .pagination button {
-      background: #1b1b1b;
+    .pageButton {
+      min-width: 37px;
+      min-height: 37px;
+      padding: 8px 11px;
       border: 1px solid #333;
+      background: #171717;
       color: white;
-      padding: 9px 12px;
-      border-radius: 7px;
-      cursor: pointer;
+      border-radius: 8px;
     }
 
-    .pagination button.active {
+    .pageButton.active, .pageButton:hover:not(:disabled) {
       background: var(--red);
       border-color: var(--red);
     }
 
-    footer {
-      border-top: 1px solid var(--border);
-      text-align: center;
-      color: var(--muted);
-      padding: 22px 10px;
-      font-size: 12px;
+    .pageButton:disabled {
+      opacity: .35;
+      cursor: not-allowed;
     }
 
-    .bottom-nav {
+    .paginationLabel {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .bottomNav {
+      display: none;
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
-      z-index: 30;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      background: #111;
+      height: 62px;
+      z-index: 100;
+      background: #101010;
       border-top: 1px solid #303030;
-      padding: 9px 3px;
+      justify-content: space-around;
+      align-items: center;
+      padding-bottom: env(safe-area-inset-bottom);
     }
 
-    .bottom-nav a {
-      color: #ddd;
-      text-align: center;
+    .bottomNav a {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 100%;
       font-size: 11px;
-      text-decoration: none;
-      padding: 5px 0;
+      color: #aaa;
     }
 
-    .bottom-nav a:first-child { color: var(--red); }
+    .bottomNav a span { font-size: 19px; }
+    .bottomNav a.active { color: #ff5266; }
 
-    @media (min-width: 650px) {
-      main { padding: 0 18px; }
-      .video-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-      .logo { font-size: 29px; }
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 23px 12px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    .footer a { color: #ff6474; }
+
+    @media (max-width: 1000px) {
+      .videoGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 600px) {
+      .header { padding: 0 10px; gap: 7px; }
+      .logo { font-size: 23px; }
+      .headerLeft, .headerRight { gap: 6px; }
+      .headerButton, .userPanelTop {
+        min-width: 35px;
+        height: 36px;
+        border-radius: 9px;
+      }
+
+      .page { padding: 11px; }
+      .welcome { padding: 17px 13px; }
+      .videoGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 8px; }
+      .videoInfo { padding: 7px; }
+      .videoTitle { font-size: 12px; }
+      .videoMeta { font-size: 10px; }
+      .sectionHeading h2 { font-size: 17px; }
+      .bottomNav { display: flex; }
+    }
+
+    @media (max-width: 350px) {
+      .logo { font-size: 20px; }
+      .header { padding: 0 7px; }
+      .videoGrid { gap: 8px 6px; }
+      .videoTitle { font-size: 11px; }
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <div class="header-row">
-      <button class="header-btn" id="menuBtn" type="button">☰ Menu</button>
-      <a class="logo" href="/">DesiVexa</a>
-      <button class="header-btn" id="searchBtn" type="button">⌕ Search</button>
+  <header class="header">
+    <div class="headerLeft">
+      <button type="button" class="headerButton" id="menuButton"
+        aria-label="Open menu" aria-expanded="false">☰</button>
     </div>
 
-    <div id="searchBox">
-      <input id="searchInput" type="search"
-        placeholder="Search videos or category..."
-        aria-label="Search videos">
-    </div>
+    <a href="index.html" class="logo" aria-label="DesiVexa Home">
+      Desi<span>Vexa</span>
+    </a>
 
-    <nav id="menuBox">
-      <a href="/">Home</a>
-      <a href="/new">New Videos</a>
-      <a href="/trending">Trending</a>
-      <a href="/recommended">Recommended</a>
-    </nav>
+    <div class="headerRight">
+      <a href="user-panel.html" class="userPanelTop"
+        aria-label="User Panel" title="Login / Sign Up / My Account">👤</a>
+      <button type="button" class="headerButton" id="searchButton"
+        aria-label="Search videos">🔍</button>
+    </div>
   </header>
 
-  <main>
-    <!-- TOP BANNER AD -->
-    <div class="ad-banner" id="homeTop"></div>
+  <nav class="mobileMenu" id="mobileMenu" aria-label="Main menu">
+    <a href="index.html">🏠 Home</a>
+    <a href="new">🆕 New Videos</a>
+    <a href="trending">🔥 Trending Videos</a>
+    <a href="recommended">⭐ Recommended</a>
+    <a href="category.html">📂 All Categories</a>
+    <a href="user-panel.html">👤 User Panel</a>
+  </nav>
 
-    <nav class="categories" id="categories">
-      <button class="active" data-category="All">All</button>
-      <button data-category="Trending">Trending</button>
-      <button data-category="Entertainment">Entertainment</button>
-      <button data-category="Music">Music</button>
-      <button data-category="Comedy">Comedy</button>
-      <button data-category="Other">Other</button>
-    </nav>
+  <div class="searchBox" id="searchBox">
+    <form class="searchForm" id="searchForm">
+      <input id="searchInput" class="searchInput" type="search"
+        placeholder="Search videos or category..."
+        autocomplete="off" aria-label="Search videos or category">
+      <button type="submit" class="searchSubmit">Search</button>
+    </form>
+  </div>
 
-    <section id="trendingSection">
-      <div class="section-heading">
-        <h2>🔥 Trending Videos</h2>
-        <a href="/trending">View all →</a>
+  <main class="page">
+    <section class="welcome">
+      <h1>Welcome to Desi<span style="color:#f21d35">Vexa</span></h1>
+      <p>Explore trending videos, the latest uploads, recommended videos and more.</p>
+    </section>
+
+    <div class="categoriesButtonWrap">
+      <button type="button" class="categoriesButton" id="categoriesSearchButton">
+        <span>📂 Categories &amp; Search</span>
+        <span class="arrow">Open ↓</span>
+      </button>
+    </div>
+
+    <div class="categories" id="categories" aria-label="Video categories">
+      <button type="button" class="category active" data-category="all">All</button>
+    </div>
+
+    <p class="filterInfo" id="filterInfo">Loading videos...</p>
+
+    <section class="videoSection" id="trendingSection">
+      <div class="sectionHeading">
+        <h2>🔥 <span>Trending</span> Videos</h2>
+        <a href="trending">View all →</a>
       </div>
-      <div class="video-grid" id="trendingVideos">
-        <div class="empty">Loading trending videos...</div>
+      <div class="videoGrid" id="trendingVideos">
+        <div class="loadingState">Loading trending videos...</div>
       </div>
     </section>
 
-    <section id="newSection">
-      <div class="section-heading">
+    <section class="videoSection" id="newSection">
+      <div class="sectionHeading">
         <h2>🆕 New Videos</h2>
-        <a href="/new">View all →</a>
+        <a href="new">View all →</a>
       </div>
-      <div class="video-grid" id="newVideos">
-        <div class="empty">Loading new videos...</div>
+      <div class="videoGrid" id="newVideos">
+        <div class="loadingState">Loading new videos...</div>
       </div>
     </section>
 
-    <!-- MIDDLE BANNER AD -->
-    <div class="ad-banner" id="homeMiddle"></div>
-
-    <section id="recommendedSection">
-      <div class="section-heading">
+    <section class="videoSection" id="recommendedSection">
+      <div class="sectionHeading">
         <h2>⭐ Recommended Videos</h2>
-        <a href="/recommended">View all →</a>
+        <a href="recommended">View all →</a>
       </div>
-      <div class="video-grid" id="recommendedVideos">
-        <div class="empty">Loading recommended videos...</div>
+      <div class="videoGrid" id="recommendedVideos">
+        <div class="loadingState">Loading recommendations...</div>
       </div>
     </section>
 
-    <section id="randomSection">
-      <div class="section-heading">
-        <h2>🎬 Random Videos</h2>
+    <section class="videoSection" id="randomSection">
+      <div class="sectionHeading">
+        <h2>🎲 Random Videos</h2>
+        <span style="color:#aaa;font-size:12px">Discover more</span>
       </div>
-      <div class="video-grid" id="randomVideos">
-        <div class="empty">Loading videos...</div>
+      <div class="videoGrid" id="randomVideos">
+        <div class="loadingState">Loading random videos...</div>
       </div>
       <div class="pagination" id="randomPagination"></div>
+      <div class="paginationLabel" id="paginationLabel"></div>
     </section>
-
-    <!-- BOTTOM BANNER AD -->
-    <div class="ad-banner" id="homeBottom"></div>
   </main>
 
-  <footer>© <span id="year"></span> DesiVexa. All rights reserved.</footer>
+  <footer class="footer">
+    <div>© <span id="year"></span> DesiVexa. All rights reserved.</div>
+    <div>Discover videos across your favourite categories.</div>
+    <div><a href="user-panel.html">User Panel</a></div>
+  </footer>
 
-  <nav class="bottom-nav">
-    <a href="/">⌂<br>Home</a>
-    <a href="/new">▣<br>New</a>
-    <a href="/trending">🔥<br>Trending</a>
-    <a href="/recommended">★<br>Recommended</a>
+  <nav class="bottomNav" aria-label="Bottom navigation">
+    <a href="index.html" class="active"><span>🏠</span>Home</a>
+    <a href="new"><span>🆕</span>New</a>
+    <a href="trending"><span>🔥</span>Trending</a>
+    <a href="recommended"><span>⭐</span>Recommended</a>
   </nav>
 
   <script type="module">
-    import { createClient } from
-      "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
     import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const $ = (id) => document.getElementById(id);
+    const $ = id => document.getElementById(id);
+    const RANDOM_PER_PAGE = 16;
+    const SECTION_COUNT = 4;
 
     let allVideos = [];
-    let selectedCategory = "All";
-    let searchText = "";
+    let currentCategory = "all";
+    let searchQuery = "";
     let randomPage = Math.max(
-      1, Number(new URLSearchParams(location.search).get("randomPage")) || 1
+      1,
+      parseInt(new URLSearchParams(location.search).get("randomPage") || "1", 10) || 1
     );
-    const RANDOM_PER_PAGE = 16;
+    let randomVideos = [];
+    let searchTimer;
+
+    const searchBox = $("searchBox");
+    const searchInput = $("searchInput");
+    const menuButton = $("menuButton");
+    const mobileMenu = $("mobileMenu");
 
     $("year").textContent = new Date().getFullYear();
 
-    $("menuBtn").addEventListener("click", () => {
-      const menu = $("menuBox");
-      menu.style.display = menu.style.display === "flex" ? "none" : "flex";
-    });
-
-    $("searchBtn").addEventListener("click", () => {
-      const box = $("searchBox");
-      box.style.display = box.style.display === "block" ? "none" : "block";
-      if (box.style.display === "block") $("searchInput").focus();
-    });
-
-    $("searchInput").addEventListener("input", (event) => {
-      searchText = event.target.value.trim().toLowerCase();
-      renderAll();
-    });
-
-    $("categories").addEventListener("click", (event) => {
-      const button = event.target.closest("button[data-category]");
-      if (!button) return;
-
-      selectedCategory = button.dataset.category;
-      $("categories").querySelectorAll("button").forEach((b) =>
-        b.classList.toggle("active", b === button)
-      );
-
-      $("searchBox").style.display = "block";
-      $("searchInput").value =
-        selectedCategory === "All" ? "" : selectedCategory;
-      searchText = $("searchInput").value.trim().toLowerCase();
-      renderAll();
-    });
-
-    function videoCard(video) {
-      const card = document.createElement("a");
-      card.className = "video-card";
-      card.href = "/video.html?id=" + encodeURIComponent(video.id);
-
-      const img = document.createElement("img");
-      img.className = "thumbnail";
-      img.loading = "lazy";
-      img.alt = video.title || "Video thumbnail";
-      img.src = video.thumbnail_url || video.thumbnail ||
-        "data:image/svg+xml," + encodeURIComponent(
-          '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400"><rect width="100%" height="100%" fill="#202020"/><text x="50%" y="50%" fill="#ed1735" font-size="32" text-anchor="middle">DesiVexa</text></svg>'
-        );
-      img.onerror = () => {
-        img.onerror = null;
-        img.src = "data:image/svg+xml," + encodeURIComponent(
-          '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400"><rect width="100%" height="100%" fill="#202020"/><text x="50%" y="50%" fill="#ed1735" font-size="32" text-anchor="middle">DesiVexa</text></svg>'
-        );
-      };
-
-      const info = document.createElement("div");
-      info.className = "video-info";
-
-      const title = document.createElement("h3");
-      title.className = "video-title";
-      title.textContent = video.title || "Untitled video";
-
-      const meta = document.createElement("div");
-      meta.className = "video-meta";
-      meta.textContent =
-        `${Number(video.views || 0).toLocaleString()} views` +
-        (video.category ? " · " + video.category : "");
-
-      info.append(title, meta);
-      card.append(img, info);
-      return card;
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
     }
 
-    function showVideos(containerId, videos) {
-      const container = $(containerId);
-      container.replaceChildren();
-
-      if (!videos.length) {
-        const empty = document.createElement("div");
-        empty.className = "empty";
-        empty.textContent = "Abhi koi video nahi mila.";
-        container.append(empty);
-        return;
-      }
-
-      videos.forEach((video) => container.append(videoCard(video)));
+    function normalise(value) {
+      return String(value ?? "").trim().toLowerCase();
     }
 
-    function filteredVideos() {
-      return allVideos.filter((video) => {
-        const category = String(video.category || "").toLowerCase();
-        const title = String(video.title || "").toLowerCase();
+    function getFilteredVideos() {
+      const query = normalise(searchQuery);
+      const category = normalise(currentCategory);
+
+      return allVideos.filter(video => {
+        const videoCategory = normalise(video.category);
+        const title = normalise(video.title);
+        const description = normalise(video.description);
+
         const matchesCategory =
-          selectedCategory === "All" ||
-          category === selectedCategory.toLowerCase() ||
-          (selectedCategory === "Trending" &&
-            Number(video.views || 0) > 0);
+          category === "all" || videoCategory === category;
 
-        const matchesSearch = !searchText ||
-          title.includes(searchText) ||
-          category.includes(searchText);
+        const matchesSearch =
+          !query ||
+          title.includes(query) ||
+          videoCategory.includes(query) ||
+          description.includes(query);
 
         return matchesCategory && matchesSearch;
       });
     }
 
-    function renderPagination(totalPages) {
-      const box = $("randomPagination");
-      box.replaceChildren();
-
-      if (totalPages <= 1) return;
-
-      const addButton = (label, page, active = false, disabled = false) => {
-        const button = document.createElement("button");
-        button.textContent = label;
-        button.disabled = disabled;
-        if (active) button.classList.add("active");
-        button.addEventListener("click", () => {
-          randomPage = page;
-          const url = new URL(location.href);
-          url.searchParams.set("randomPage", String(page));
-          history.replaceState({}, "", url);
-          renderAll();
-          $("randomSection").scrollIntoView({ behavior: "smooth" });
-        });
-        box.append(button);
-      };
-
-      addButton("← Prev", Math.max(1, randomPage - 1), false,
-        randomPage === 1);
-
-      const start = Math.max(1, Math.min(randomPage - 2, totalPages - 4));
-      for (let page = start; page <= Math.min(totalPages, start + 4); page++) {
-        addButton(String(page), page, page === randomPage);
-      }
-
-      addButton("Next →", Math.min(totalPages, randomPage + 1), false,
-        randomPage === totalPages);
+    function getViews(video) {
+      const views = Number(video.views);
+      return Number.isFinite(views) && views > 0 ? views : 0;
     }
 
-    function renderAll() {
-      const videos = filteredVideos();
-
-      showVideos("trendingVideos",
-        [...videos].sort((a, b) => Number(b.views || 0) - Number(a.views || 0))
-          .slice(0, 8));
-
-      showVideos("newVideos",
-        [...videos].sort((a, b) =>
-          new Date(b.created_at || 0) - new Date(a.created_at || 0))
-          .slice(0, 8));
-
-      showVideos("recommendedVideos", [...videos].slice(0, 8));
-
-      const shuffled = [...videos].sort(() => Math.random() - 0.5);
-      const totalPages = Math.max(1, Math.ceil(shuffled.length / RANDOM_PER_PAGE));
-      randomPage = Math.min(randomPage, totalPages);
-
-      const start = (randomPage - 1) * RANDOM_PER_PAGE;
-      showVideos("randomVideos",
-        shuffled.slice(start, start + RANDOM_PER_PAGE));
-      renderPagination(totalPages);
+    function getCreatedTime(video) {
+      const time = new Date(video.created_at || 0).getTime();
+      return Number.isFinite(time) ? time : 0;
     }
 
-    async function loadVideos() {
+    function getThumbnail(video) {
+      const url = video.thumbnail_url || video.thumbnail || "";
+      if (!url) return "";
+
       try {
-        let query = supabase.from("videos").select("*")
-          .order("created_at", { ascending: false });
-
-        const { data, error } = await query;
-        if (error) throw error;
-
-        // If your schema uses published/approval_status, only show approved
-        // public videos when those fields are populated in your database.
-        allVideos = (data || []).filter((video) => {
-          if (video.published === false) return false;
-          if (video.approval_status &&
-              !["approved", "published"].includes(
-                String(video.approval_status).toLowerCase()
-              )) return false;
-          return true;
-        });
-
-        renderAll();
-      } catch (error) {
-        console.error("DesiVexa load error:", error);
-        ["trendingVideos", "newVideos", "recommendedVideos", "randomVideos"]
-          .forEach((id) => {
-            $(id).replaceChildren();
-            const message = document.createElement("div");
-            message.className = "empty";
-            message.textContent = "Videos load nahi hue. Supabase settings check karein.";
-            $(id).append(message);
-          });
+        const parsed = new URL(url, location.href);
+        if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return "";
+        return parsed.href;
+      } catch {
+        return "";
       }
     }
 
-    loadVideos();
-  </script>
-</body>
-        </html>
+    function thumbnailHTML(video) {
+      const url = getThumbnail(video);
+      if (url) {
+        return `<img class="thumbnail" src="${escapeHTML(url)}"
+          alt="${escapeHTML(video.title || "Video thumbnail")}"
+          loading="lazy" referrerpolicy="no-referrer"
+          onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22250%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%23171717%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23f21d35%22 font-size=%2224%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3EDesiVexa%3C/text%3E%3C/svg%3E'">`;
+      }
+
+      return `<div class="thumbnail" style="display:flex;align-items:center;justify-content:center;color:#f21d35;font-weight:bold;font-size:20px">DesiVexa</div>`;
+    }
+
+    function videoCardHTML(video) {
+      const id = String(video.id ?? "");
+      const title = escapeHTML(video.title || "Untitled video");
+      const category = escapeHTML(video.category || "Videos");
+      const views = getViews(video).toLocaleString("en-IN");
+
+      return `
+        <a class="videoCard" href="video.html?id=${encodeURIComponent(id)}"
+           aria-label="Watch ${title}">
+          <div class="thumbnailWrap">
+            ${thumbnailHTML(video)}
+          </div>
+          <div class="videoInfo">
+            <h3 class="videoTitle">${title}</h3>
+            <div class="videoMeta">
+              <span>${views} views</span>
+              <span class="videoCategory">${category}</span>
+            </div>
+          </div>
+        </a>`;
+    }
+
+    function renderGrid(containerId, videos, emptyMessage) {
+      const container = $(containerId);
+
+      if (!videos.length) {
+        container.innerHTML = `<div class="emptyState">${escapeHTML(emptyMessage)}</div>`;
+        return;
+      }
+
+      container.innerHTML = videos.map(videoCardHTML).join("");
+    }
+
+    function shuffle(videos) {
+      const result = [...videos];
+
+      for (let i = result.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+
+      return result;
+    }
+
+    function renderCategories() {
+      const categories = [...new Set(
+        allVideos
+          .map(video => String(video.category || "").trim())
+          .filter(Boolean)
+      )].sort((a, b) => a.localeCompare(b));
+
+      $("categories").innerHTML = [
+        `<button type="button" class="category ${currentCategory === "all" ? "active" : ""}" data-category="all">All</button>`,
+        ...categories.map(category => `
+          <button type="button"
+            class="category ${normalise(currentCategory) === normalise(category) ? "active" : ""}"
+            data-category="${escapeHTML(category)}">${escapeHTML(category)}</button>
+        `)
+      ].join("");
+    }
+
+    function renderSections() {
+      const filtered = getFilteredVideos();
+
+      const trending = [...filtered]
+        .sort((a, b) => getViews(b) - getViews(a))
+        .slice(0, SECTION_COUNT);
+
+      const newest = [...filtered]
+        .sort((a, b) => getCreatedTime(b) - getCreatedTime(a))
+        .slice(0, SECTION_COUNT);
+
+      const recommended = [...filtered]
+        .sort((a, b) => {
+          const scoreA = getViews(a) + getCreatedTime(a) / 1e10;
+          const scoreB = getViews(b) + getCreatedTime(b) / 1e10;
+          return scoreB - scoreA;
+        })
+        .slice(0, SECTION_COUNT);
+
+      renderGrid("trendingVideos", trending, "No trending videos found.");
+      renderGrid("newVideos", newest, "No new videos found.");
+      renderGrid("recommendedVideos", recommended, "No recommended videos found.");
+
+      const info = $("filterInfo");
+      const parts = [`${filtered.length} videos`];
+
+      if (currentCategory !== "all") parts.push(`Category: ${currentCategory}`);
+      if (searchQuery) parts.push(`Search: "${searchQuery}"`);
+
+      info.textContent = parts.join(" · ");
+
+      randomVideos = shuffl
