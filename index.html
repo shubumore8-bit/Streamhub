@@ -225,45 +225,120 @@ a{
   line-height:1.5;
 }
 
+
 /* CATEGORY BUTTON */
+.categoriesButtonWrap{
+  padding:10px 14px;
+  position:relative;
+  z-index:50;
+}
 
+.categoriesButton{
+  width:100%;
+  min-height:52px;
+  padding:12px 15px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  border:1px solid #392532;
+  border-radius:12px;
+  background:linear-gradient(135deg,#171019,#0b1720);
+  color:#fff;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+}
 
+.categoriesButton:hover{
+  border-color:#ff1744;
+  background:#1b1018;
+}
 
-<div class="categoriesButtonWrap">
+.categoriesButton strong{
+  color:#fff;
+}
 
-  <button
-    type="button"
-    class="categoriesButton"
-    id="categoriesSearchButton"
-    aria-controls="categorySearchBox"
-    aria-expanded="false"
-  >
-    <span class="categoryButtonIcon">▦</span>
+.categoriesButton small{
+  display:block;
+  margin-top:4px;
+  color:#ff5575;
+  font-size:11px;
+  font-weight:600;
+}
 
-    <span class="categoryButtonText">
-      <strong>Explore Categories</strong>
-      <small>Choose a category and find videos</small>
-    </span>
+.categoryDropdown{
+  margin-top:9px;
+  padding:12px;
+  border:1px solid #293d4a;
+  border-radius:12px;
+  background:#0a141d;
+}
 
-    <span class="categoryButtonAction">SEARCH ↗</span>
-  </button>
+.categoryDropdown[hidden]{
+  display:none !important;
+}
 
-  <div class="categorySearchPanel" id="categorySearchBox" hidden>
-    <input
-      type="search"
-      id="categorySearchInput"
-      class="searchInput"
-      placeholder="Search categories..."
-      autocomplete="off"
-    >
-    <p class="categorySearchHint">
-      Select a category below to filter videos.
-    </p>
-  </div>
+.categorySearch{
+  width:100%;
+  height:43px;
+  padding:0 12px;
+  border:1px solid #293d4a;
+  border-radius:9px;
+  outline:none;
+  background:#071019;
+  color:#fff;
+}
 
-</div>
+.categorySearch:focus{
+  border-color:#ff1744;
+}
 
+.categoryMeta{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  margin:13px 0 5px;
+  color:#a9bac5;
+  font-size:11px;
+  font-weight:700;
+}
 
+.categoryNoResults{
+  padding:12px 0;
+  color:#a9bac5;
+  font-size:12px;
+}
+
+.categories{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:12px 0 5px;
+}
+
+.category{
+  flex-shrink:0;
+  border:1px solid #293d4a;
+  background:#0b1720;
+  color:#dce5ea;
+  padding:9px 13px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.category.active{
+  background:#ff1744;
+  border-color:#ff1744;
+  color:#fff;
+}
+
+@media(max-width:600px){
+  .categoriesButtonWrap{
+    padding:8px 12px 0;
+  }
+}
 
 /* CATEGORY PILLS */
 
