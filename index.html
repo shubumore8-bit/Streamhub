@@ -228,30 +228,41 @@ a{
 /* CATEGORY BUTTON */
 
 
+
 <div class="categoriesButtonWrap">
-  <button type="button" class="categoriesButton"
-    id="categoriesToggle" aria-expanded="false"
-    aria-controls="categoryDropdown">
-    <span>📂 <strong id="selectedCategoryLabel">All Categories</strong>
-      <small id="selectedCategoryCount">Loading…</small>
+
+  <button
+    type="button"
+    class="categoriesButton"
+    id="categoriesSearchButton"
+    aria-controls="categorySearchBox"
+    aria-expanded="false"
+  >
+    <span class="categoryButtonIcon">▦</span>
+
+    <span class="categoryButtonText">
+      <strong>Explore Categories</strong>
+      <small>Choose a category and find videos</small>
     </span>
-    <span>⌄</span>
+
+    <span class="categoryButtonAction">SEARCH ↗</span>
   </button>
 
-  <div class="categoryDropdown" id="categoryDropdown" hidden>
-    <input id="categorySearch" class="categorySearch"
-      type="search" placeholder="Search categories…">
-    <div class="categoryMeta">
-      <span>🔥 Popular Categories</span>
-      <span id="categoryTotal">0 categories</span>
-    </div>
-    <div class="categories" id="categories">
-      <button class="category active" type="button"
-        data-category="all">All Categories</button>
-    </div>
-    <p id="categoryNoResults" hidden>No categories found.</p>
+  <div class="categorySearchPanel" id="categorySearchBox" hidden>
+    <input
+      type="search"
+      id="categorySearchInput"
+      class="searchInput"
+      placeholder="Search categories..."
+      autocomplete="off"
+    >
+    <p class="categorySearchHint">
+      Select a category below to filter videos.
+    </p>
   </div>
+
 </div>
+
 
 
 /* CATEGORY PILLS */
