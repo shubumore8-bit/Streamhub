@@ -227,27 +227,32 @@ a{
 
 /* CATEGORY BUTTON */
 
-.categoriesButtonWrap{
-  padding:10px 14px 0;
-}
 
-.categoriesButton{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  width:100%;
-  padding:13px 15px;
-  border:1px solid #293d4a;
-  border-radius:10px;
-  background:#0b1720;
-  color:#fff;
-  font-size:14px;
-  font-weight:800;
-}
+<div class="categoriesButtonWrap">
+  <button type="button" class="categoriesButton"
+    id="categoriesToggle" aria-expanded="false"
+    aria-controls="categoryDropdown">
+    <span>📂 <strong id="selectedCategoryLabel">All Categories</strong>
+      <small id="selectedCategoryCount">Loading…</small>
+    </span>
+    <span>⌄</span>
+  </button>
 
-.categoriesButton span:last-child{
-  color:#ff1744;
-}
+  <div class="categoryDropdown" id="categoryDropdown" hidden>
+    <input id="categorySearch" class="categorySearch"
+      type="search" placeholder="Search categories…">
+    <div class="categoryMeta">
+      <span>🔥 Popular Categories</span>
+      <span id="categoryTotal">0 categories</span>
+    </div>
+    <div class="categories" id="categories">
+      <button class="category active" type="button"
+        data-category="all">All Categories</button>
+    </div>
+    <p id="categoryNoResults" hidden>No categories found.</p>
+  </div>
+</div>
+
 
 /* CATEGORY PILLS */
 
