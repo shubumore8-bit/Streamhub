@@ -515,33 +515,15 @@ async function loadRelatedVideos(id, category) {
       return;
     }
 
-    // Try the stored thumbnail URL first, then ask the media function.
-    const videos = await Promise.all(
-      data.map(async item => {
-        let thumbnail =
-          item.thumbnail_url ||
-          item.thumbnail ||
-          "";
-
-        // A normal HTTP(S) URL can be used directly.
-        const isDirectURL = /^https?:\/\//i.test(thumbnail);
-
-        // For missing/non-URL thumbnail values, resolve via the Edge Function.
-        if (!thumbnail || !isDirectURL) {
-          try {
-            const media = await getMedia(item.id);
-            thumbnail = media.thumbnailUrl || thumbnail;
-          } catch (error) {
-            console.warn("Thumbnail resolution failed:", item.id, error);
-          }
-        }
-
-        return {
-          ...item,
-          resolvedThumbnail: thumbnail
-        };
-      })
-    );
+    // Show related-video cards immediately using saved thumbnail URLs.
+    // Resolve missing thumbnails in the background so slow media requests
+    // do not delay the entire related-video grid.
+    const videos = data.map(item => ({
+      ...item,
+      resolvedThumbnail: /^https?:\/\//i.test(String(item.thumbnail_url || item.thumbnail || ""))
+        ? (item.thumbnail_url || item.thumbnail)
+        : ""
+    }));
 
     container.innerHTML = videos.map(item => {
       const thumb = item.resolvedThumbnail || "";
@@ -554,26 +536,14 @@ async function loadRelatedVideos(id, category) {
           <div style="position:relative;aspect-ratio:16/10;
             background:#252525;overflow:hidden;">
 
-            ${thumb ? `
-              <img
-                src="${escapeHTML(thumb)}"
-                alt="${escapeHTML(item.title || "Video thumbnail")}"
-                loading="lazy"
-                style="width:100%;height:100%;object-fit:cover;display:block;"
-                onerror="this.style.display='none';
-                  this.nextElementSibling.style.display='flex';"
-              >
-              <div style="display:none;position:absolute;inset:0;
-                align-items:center;justify-content:center;
-                color:#ff4444;font-weight:bold;font-size:12px;">
-                Thumbnail unavailable
-              </div>
-            ` : `
-              <div style="height:100%;display:flex;align-items:center;
-                justify-content:center;color:#ff4444;font-weight:bold;">
-                DesiVexa
-              </div>
-            `}
+            <img
+              ${thumb ? `src="${escapeHTML(thumb)}"` : `src="data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200"><rect width="100%" height="100%" fill="#202020"/><text x="50%" y="50%" fill="#ff4444" font-size="22" text-anchor="middle" dominant-baseline="middle">DesiVexa</text></svg>')}"`}
+              data-related-video-id="${escapeHTML(String(item.id))}"
+              alt="${escapeHTML(item.title || "Video thumbnail")}"
+              loading="lazy"
+              style="width:100%;height:100%;object-fit:cover;display:block;"
+              onerror="this.onerror=null;this.style.opacity='.25';"
+            >
           </div>
 
           <div style="padding:9px;">
@@ -589,6 +559,19 @@ async function loadRelatedVideos(id, category) {
           </div>
         </a>`;
     }).join("");
+
+    // Fetch fallback thumbnails after the grid is already visible.
+    videos.filter(item => !item.resolvedThumbnail).forEach(async item => {
+      try {
+        const media = await getMedia(item.id);
+        if (!media.thumbnailUrl) return;
+        const image = [...container.querySelectorAll("img[data-related-video-id]")]
+          .find(img => img.dataset.relatedVideoId === String(item.id));
+        if (image) image.src = media.thumbnailUrl;
+      } catch (error) {
+        console.warn("Thumbnail resolution failed:", item.id, error);
+      }
+    });
 
   } catch (error) {
     console.error("Related videos error:", error);

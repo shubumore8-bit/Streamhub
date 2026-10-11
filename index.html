@@ -1424,55 +1424,26 @@ async function getThumbnail(videoId){
    PREPARE THUMBNAILS
 ====================================================== */
 
-async function prepareThumbnails(videos){
-
-  if(
-    !videos ||
-    videos.length === 0
-  ){
-
-    return;
-
-  }
-
-
-  /*
-    IMPORTANT FIX:
-    thumbnail_url empty/null ho tab bhi
-    Edge Function ko call kiya jayega.
-    
-    Function video.id ke through
-    database se thumbnail_url khud read karta hai.
-  */
-
-  await Promise.all(
-    videos.map(
-      async video => {
-
-        if(
-          video._thumbnailReady
-        ){
-
-          return;
-
-        }
-
-
-        video._thumbnailUrl =
-          await getThumbnail(
-            video.id
-          );
-
-
-        video._thumbnailReady =
-          true;
-
-      }
-    )
-  );
-
+function directThumbnail(video){
+  const value = String(video?.thumbnail_url || video?.thumbnail || "").trim();
+  return /^https?:\/\//i.test(value) ? value : "";
 }
 
+/* Resolve only missing thumbnails in the background; never block video cards. */
+async function resolveMissingThumbnails(videos){
+  const missing = (videos || []).filter(video =>
+    video && video.id && !directThumbnail(video) && !video._thumbnailReady
+  );
+  await Promise.all(missing.map(async video => {
+    video._thumbnailUrl = await getThumbnail(video.id);
+    video._thumbnailReady = true;
+    if(!video._thumbnailUrl) return;
+    const targetId = encodeURIComponent(String(video.id));
+    document.querySelectorAll("img[data-video-id]").forEach(img => {
+      if(img.dataset.videoId === targetId) img.src = video._thumbnailUrl;
+    });
+  }));
+}
 
 /* ======================================================
    IMAGE FALLBACK
@@ -1504,6 +1475,7 @@ function videoCard(video){
 
 
   const thumbnail =
+    directThumbnail(video) ||
     video._thumbnailUrl ||
     fallbackThumbnail();
 
@@ -1669,7 +1641,7 @@ function loadingMessage(){
 
     <div class="loadingVideos">
 
-      Loading thumbnails...
+      Loading videos...
 
     </div>
 
@@ -1810,15 +1782,7 @@ async function renderSections(
   }
 
 
-  /*
-    THUMBNAILS LOAD HERE
-  */
-
-  await prepareThumbnails(
-    uniqueVideos
-  );
-
-
+  // Render cards immediately. Missing thumbnails are resolved in the background.
   if(trendingBox){
 
     trendingBox.innerHTML =
@@ -1852,6 +1816,8 @@ async function renderSections(
         : emptyMessage();
 
   }
+
+  resolveMissingThumbnails(uniqueVideos);
 
 }
 
@@ -1928,24 +1894,16 @@ async function renderRandomVideos(){
 
 
   container.innerHTML =
-    loadingMessage();
-
-
-  await prepareThumbnails(
-    current
-  );
-
-
-  container.innerHTML =
     current
       .map(videoCard)
       .join("");
-
 
   renderRandomPagination(
     totalPages,
     pagination
   );
+
+  resolveMissingThumbnails(current);
 
 }
 
@@ -2247,7 +2205,7 @@ async function loadVideos(){
       Main sections
     */
 
-    await renderSections(
+    renderSections(
       allVideos
     );
 
