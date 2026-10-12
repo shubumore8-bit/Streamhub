@@ -6,7 +6,7 @@ const MEDIA_FUNCTION = `${SUPABASE_URL}/functions/v1/get-video-media`;
 
 // Your supplied HilltopAds VAST tag
 const VAST_TAG_URL =
-  "https://organic-package.com/dPmMF.z/dIG_NPvJZAGcUh/veLmo9/uAZvUclUkqPpTecf0/OpTdM/xANQjxE/tZNOz/QF5mMtztEv2aNuQK";
+  "https://organic-package.com/d.mcFyzadqG/N/vGZTGVUM/Se-ms9wuZZbUElPkpP/T/cJ1/McTHEl3LOjTNMKt/N_z/Umx/MxT/co5lNywa";
 
 const params = new URLSearchParams(window.location.search);
 const videoId = params.get("id");
@@ -248,16 +248,6 @@ function renderVideo(video, media) {
         </div>
       </section>
 
-      <!-- Second banner slot -->
-      <div id="randomBannerAd" class="dv-ad-slot"
-        aria-label="Banner ad below related videos"
-        style="width:100%;min-height:90px;margin:18px 0;
-        display:flex;align-items:center;justify-content:center;
-        background:#101010;border:1px dashed #444;border-radius:8px;
-        color:#888;font-size:11px;">
-        Advertisement
-      </div>
-
       <!-- COMMENTS -->
       <section id="commentsSection"
         style="margin-top:35px;scroll-margin-top:75px;">
@@ -292,6 +282,8 @@ function renderVideo(video, media) {
     </div>
   `;
 
+  setupBannerAd();
+
   document.getElementById("likeButton").addEventListener("click", () => {
     toggleLike(video.id);
   });
@@ -314,6 +306,23 @@ function renderVideo(video, media) {
   });
 
   setupVastPreRoll();
+}
+
+
+// One banner ad slot using the supplied ad-network script URL.
+function setupBannerAd() {
+  const slot = document.getElementById("videoBannerAd");
+  if (!slot || slot.dataset.adLoaded === "true") return;
+
+  slot.dataset.adLoaded = "true";
+  slot.replaceChildren();
+
+  const script = document.createElement("script");
+  script.settings = {};
+  script.src = "https://nervousstroke.com/bXXXV/s.dmGnlk0TYTWBcW/_e/mH9xuAZmU/lHkrPPTtcs1XMLTdEEyqODTzMFt/NMzJUzxsMWTaIe5mNzws";
+  script.async = true;
+  script.referrerPolicy = "no-referrer-when-downgrade";
+  slot.appendChild(script);
 }
 
 /*
