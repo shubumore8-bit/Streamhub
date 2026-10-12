@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-<script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-  
-
   <meta charset="UTF-8">
 
   <meta
@@ -12,20 +8,19 @@
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
 
-  <meta
-    name="theme-color"
-    content="#080808"
-  >
+  <meta name="theme-color" content="#080808">
 
   <meta
     name="description"
-    content="Watch video on DesiVexa."
+    content="Watch videos on DesiVexa."
   >
 
   <title>Watch Video - DesiVexa</title>
 
-  <style>
+  <!-- Google IMA SDK: VAST video ad support -->
+  <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
 
+  <style>
     * {
       box-sizing: border-box;
     }
@@ -38,11 +33,8 @@
       margin: 0;
       padding: 0;
       background: #080808;
-      color: #fff;
-      font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
+      color: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     a {
@@ -50,95 +42,90 @@
     }
 
     button,
-    input {
+    input,
+    textarea {
       font: inherit;
     }
 
-    header {
+    /* HEADER */
+    .site-header {
       position: sticky;
       top: 0;
       z-index: 9999;
-
       height: 58px;
-
       background: #0d0d0d;
-
-      border-bottom:
-        1px solid #242424;
-
+      border-bottom: 1px solid #242424;
       display: flex;
       align-items: center;
       justify-content: space-between;
-
-      padding:
-        0 14px;
+      padding: 0 14px;
     }
 
     .home-btn,
     .search-btn {
-
       width: 38px;
       height: 38px;
-
+      flex: 0 0 38px;
       border-radius: 10px;
-
-      border:
-        1px solid #333;
-
+      border: 1px solid #333;
       background: #151515;
-
       color: #fff;
-
       display: flex;
       align-items: center;
       justify-content: center;
-
       text-decoration: none;
-
-      font-size: 19px;
-
-      transition:
-        .2s ease;
+      font-size: 20px;
     }
 
     .home-btn:hover,
     .search-btn:hover {
-
       background: #202020;
-
-      border-color:
-        #e50914;
+      border-color: #e50914;
     }
 
-    /* Banner ad placeholders */
-    .ad-slot {
+    .logo {
+      color: #e50914;
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    .logo span {
+      color: #ffffff;
+    }
+
+    /* MAIN CONTENT */
+    main {
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-bottom: 35px;
+    }
+
+    #page {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .loading {
+      min-height: 60vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 90px;
-      width: calc(100% - 24px);
-      max-width: 970px;
-      margin: 18px auto;
-      padding: 8px;
-      border: 1px dashed #444;
-      border-radius: 8px;
-      background: #101010;
-      color: #777;
+      color: #aaa;
+      font-size: 16px;
       text-align: center;
-      font-size: 11px;
-      letter-spacing: .4px;
-      overflow: hidden;
+      padding: 20px;
     }
 
-
-    /* Banner spaces used inside the video page */
+    /* BANNER AD SLOTS */
+    .ad-slot,
     .dv-ad-slot {
       width: calc(100% - 24px);
       max-width: 970px;
-      min-height: 100px;
+      min-height: 90px;
       margin: 18px auto 24px;
-      padding: 10px;
-      box-sizing: border-box;
+      padding: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -148,29 +135,14 @@
       background: #101010;
       border: 1px dashed #444;
       border-radius: 8px;
-      font: 11px/1.4 Arial, Helvetica, sans-serif;
+      font-size: 11px;
     }
 
+    .ad-slot iframe,
+    .ad-slot img,
     .dv-ad-slot iframe,
     .dv-ad-slot img {
       max-width: 100%;
-    }
-
-    @media (min-width: 768px) {
-      .dv-ad-slot { min-height: 110px; }
-    }
-
-    .header-ad {
-      flex: 1 1 auto;
-      min-width: 0;
-      max-width: 320px;
-      height: 50px;
-      min-height: 50px;
-      margin: 0 8px;
-      padding: 4px;
-      font-size: 9px;
-      white-space: nowrap;
-      border-radius: 6px;
     }
 
     .bottom-ad {
@@ -179,60 +151,66 @@
       margin-bottom: 28px;
     }
 
-    .logo {
-
-      color: #e50914;
-
-      font-size: 22px;
-
-      font-weight: 800;
-
-      letter-spacing:
-        .3px;
+    /* VIDEO PLAYER */
+    #mainVideo {
+      display: block;
+      width: 100%;
+      max-height: 70vh;
+      min-height: 200px;
+      background: #000;
     }
 
-    .logo span {
+    #imaAdContainer {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: none;
+      background: #000;
+    }
+
+    #imaAdContainer video {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* BUTTONS */
+    .video-action {
+      background: #242424;
       color: #fff;
+      border: 0;
+      padding: 11px 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
     }
 
-    main {
+    .video-action:active {
+      background: #383838;
+    }
 
+    /* COMMENTS */
+    #commentInput {
+      box-sizing: border-box;
       width: 100%;
-
-      max-width:
-        1100px;
-
-      margin:
-        0 auto;
-
-      padding-bottom:
-        60px;
+      min-height: 90px;
+      background: #171717;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 9px;
+      padding: 12px;
+      font-size: 14px;
+      resize: vertical;
     }
 
-    #page {
-      width: 100%;
-    }
-
-    .loading {
-
-      min-height:
-        60vh;
-
-      display: flex;
-
-      align-items:
-        center;
-
-      justify-content:
-        center;
-
-      color: #aaa;
-
-      font-size: 16px;
+    /* RELATED VIDEOS */
+    #randomVideos {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
     }
 
     @media (max-width: 360px) {
-      header {
+      .site-header {
         padding: 0 8px;
       }
 
@@ -240,47 +218,40 @@
       .search-btn {
         width: 34px;
         height: 34px;
-        flex: 0 0 34px;
-      }
-
-      .header-ad {
-        margin: 0 5px;
-        font-size: 8px;
+        flex-basis: 34px;
       }
 
       .logo {
-        font-size: 18px;
+        font-size: 19px;
       }
     }
 
     @media (min-width: 768px) {
-
-      header {
-        padding:
-          0 25px;
+      .site-header {
+        padding: 0 25px;
       }
 
       .logo {
         font-size: 25px;
       }
 
+      .dv-ad-slot {
+        min-height: 110px;
+      }
     }
-
   </style>
-
 </head>
 
 <body>
 
-  <header>
+  <!-- WEBSITE HEADER -->
+  <header class="site-header">
 
     <a
       class="home-btn"
       href="index.html"
       aria-label="Home"
-    >
-      ⌂
-    </a>
+    >⌂</a>
 
     <div class="logo">
       Desi<span>Vexa</span>
@@ -290,13 +261,11 @@
       class="search-btn"
       href="index.html"
       aria-label="Search"
-    >
-      ⌕
-    </a>
+    >⌕</a>
 
   </header>
 
-
+  <!-- VIDEO PAGE -->
   <main>
 
     <div id="page">
@@ -307,18 +276,26 @@
 
     </div>
 
-    <div class="ad-slot bottom-ad" aria-label="Banner advertisement">
-      <script async src="//nervousstroke.com/b.X/VhsBdDGflg0/YjWDcZ/TepmI9uu/ZfUrlpkHPaT/c/1dM/TlEmxzMVzicCt-NJznUxxdM/TJE/0oMKQx"></script>
+    <!-- BOTTOM BANNER AD -->
+    <!-- Existing ad script retained from your original file. -->
+    <div
+      class="ad-slot bottom-ad"
+      id="bottomBannerAd"
+      aria-label="Advertisement"
+    >
+      <script
+        async
+        src="//nervousstroke.com/b.X/VhsBdDGflg0/YjWDcZ/TepmI9uu/ZfUrlpkHPaT/c/1dM/TlEmxzMVzicCt-NJznUxxdM/TJE/0oMKQx">
+      </script>
     </div>
 
   </main>
 
-
+  <!-- KEEP YOUR EXISTING SUPABASE VIDEO LOGIC -->
   <script
     type="module"
-    src="./video.js"
-  ></script>
+    src="./video.js">
+  </script>
 
 </body>
-
 </html>
