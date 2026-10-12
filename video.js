@@ -16,13 +16,16 @@ if (!visitorId) {
   localStorage.setItem("desivexa_visitor_id", visitorId);
 }
 
+
 const root =
+  document.getElementById("page") ||
   document.getElementById("videoContent") ||
   document.getElementById("videoPage") ||
   document.getElementById("videoApp") ||
   document.getElementById("app") ||
   document.querySelector("main") ||
   document.body.appendChild(document.createElement("main"));
+
 
 function escapeHTML(value = "") {
   return String(value).replace(/[&<>"']/g, char => ({
