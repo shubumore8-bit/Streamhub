@@ -365,10 +365,7 @@ function setupVastPreRoll() {
     adRequested = true;
 
     try {
-      adDisplayContainer = new google.ima.AdDisplayContainer(
-        adContainer,
-        videoElement
-      );
+      
 
       adsLoader = new google.ima.AdsLoader(adDisplayContainer);
 
