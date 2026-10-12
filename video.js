@@ -155,6 +155,12 @@ function renderVideo(video, media) {
         </video>
       </div>
 
+
+      <!-- BANNER AD SPACE: directly below the video player -->
+      <div id="videoBannerAd" class="dv-ad-slot" aria-label="Banner ad below video player">
+        <span>Banner Ad Space · Below Video</span>
+      </div>
+
       ${!media.videoUrl ? `
         <p style="color:#ff7777;margin:10px 0;">
           Video URL load nahi hui. Supabase media function check karein.
@@ -213,6 +219,12 @@ function renderVideo(video, media) {
           </p>
         </div>
       </section>
+
+
+      <!-- BANNER AD SPACE: directly below related/random videos -->
+      <div id="randomBannerAd" class="dv-ad-slot" aria-label="Banner ad below related videos">
+        <span>Banner Ad Space · Below Random Videos</span>
+      </div>
 
       <!-- COMMENTS BELOW RELATED VIDEOS -->
       <section id="commentsSection"
