@@ -398,9 +398,8 @@ function setupVastPreRoll() {
 
     try {
       // IMA needs a measurable, visible ad slot when it initializes.
-      // Keep the content visible while the ad server is responding.
-      // The old black overlay appeared immediately and covered the video
-      // during the VAST request, even when no ad was available.
+      // Keep the paused content frame visible while the ad server responds.
+      // The overlay becomes opaque only after IMA has a manager to start.
       adContainer.style.display = "block";
       adContainer.style.visibility = "visible";
       adContainer.style.opacity = "0";
@@ -428,10 +427,10 @@ function setupVastPreRoll() {
             adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, resumeContent);
             adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, resumeContent);
             adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, () => {
-              adPlaying = true;
               if (adStatus) adStatus.style.display = "block";
-              videoElement.style.visibility = "hidden";
-              if (fallbackTimer) clearTimeout(fallbackTimer);
+              // Keep the paused content frame behind the ad until the ad's
+              // STARTED event confirms that playback really began. Leave the
+              // fallback timer active in case the ad never actually starts.
             });
             adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, () => {
               adPlaying = true;
@@ -488,8 +487,11 @@ function setupVastPreRoll() {
   videoElement.addEventListener("play", function firstPlay() {
     if (adRequested || adPlaying) return;
     contentShouldResume = true;
-    // Do not pause the content while waiting for the VAST response; this
-    // avoids a black/blank pause when the ad server is slow or has no fill.
+
+    // Treat the first Play as a true pre-roll: pause synchronously within the
+    // user's gesture and initialize IMA before making the asynchronous request.
+    // If no ad is returned, failOpen() resumes the content video.
+    videoElement.pause();
     requestAds();
   });
 
