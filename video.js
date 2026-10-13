@@ -355,6 +355,8 @@ function setupVastPreRoll() {
     adPlaying = false;
     if (fallbackTimer) clearTimeout(fallbackTimer);
     adContainer.style.display = "none";
+    adContainer.style.opacity = "0";
+    adContainer.style.pointerEvents = "none";
     if (adStatus) adStatus.style.display = "none";
     videoElement.style.visibility = "visible";
   }
@@ -396,8 +398,14 @@ function setupVastPreRoll() {
 
     try {
       // IMA needs a measurable, visible ad slot when it initializes.
+      // Keep the content visible while the ad server is responding.
+      // The old black overlay appeared immediately and covered the video
+      // during the VAST request, even when no ad was available.
       adContainer.style.display = "block";
       adContainer.style.visibility = "visible";
+      adContainer.style.opacity = "0";
+      adContainer.style.pointerEvents = "none";
+      adContainer.style.background = "transparent";
       adContainer.style.position = "absolute";
       adContainer.style.inset = "0";
       adContainer.style.width = "100%";
@@ -411,6 +419,10 @@ function setupVastPreRoll() {
         google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
         event => {
           try {
+            // Only cover the content once an ad manager actually arrives.
+            videoElement.pause();
+            adContainer.style.opacity = "1";
+            adContainer.style.pointerEvents = "auto";
             adsManager = event.getAdsManager(videoElement);
             adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, e => failOpen("Ad manager error; playing content instead.", e));
             adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, resumeContent);
@@ -476,7 +488,8 @@ function setupVastPreRoll() {
   videoElement.addEventListener("play", function firstPlay() {
     if (adRequested || adPlaying) return;
     contentShouldResume = true;
-    videoElement.pause();
+    // Do not pause the content while waiting for the VAST response; this
+    // avoids a black/blank pause when the ad server is slow or has no fill.
     requestAds();
   });
 
