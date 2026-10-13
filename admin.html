@@ -110,11 +110,19 @@
     button:disabled { opacity: .5; cursor: wait; }
 
     .hidden { display: none !important; }
-    .category-picker{margin:6px 0 14px;padding:12px;border:1px solid #393939;border-radius:9px;background:#0d0d0d}
-    .category-picker>strong{display:block;font-size:13px;margin-bottom:10px}
-    .category-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-    .category-choices label{display:flex;align-items:center;gap:7px;background:#171717;padding:8px;border-radius:7px;font-size:12px}
-    .category-choices input{width:auto;margin:0;accent-color:var(--red)}
+    .category-picker{margin:6px 0 14px;padding:13px;border:1px solid #482027;border-radius:15px;background:linear-gradient(145deg,#12090b,#090909)}
+    .category-picker>strong{display:block;font-size:13px;margin-bottom:11px;color:#fff}
+    .category-choices{display:flex;flex-wrap:wrap;gap:8px}
+    .category-choices label{display:inline-flex;align-items:center;gap:7px;background:#101010;border:1px solid #482027;padding:9px 12px;border-radius:999px;font-size:12px;line-height:1.2;cursor:pointer;transition:background .15s,border-color .15s}
+    .category-choices label:has(input:checked){background:linear-gradient(135deg,#f21d35,#bd1027);border-color:#ff5267;color:#fff}
+    .category-choices input{width:14px;height:14px;margin:0;accent-color:#fff;flex:0 0 auto}
+    .category-picker input[type="text"]{border-radius:12px}
+    .category-search-row{display:flex;gap:8px;margin:0 0 7px;align-items:stretch}
+    .category-search-row input{flex:1;min-width:0;margin:0}
+    .category-add-btn{white-space:nowrap;border-radius:12px!important;padding:10px 13px!important;background:linear-gradient(135deg,#f21d35,#bd1027)!important}
+    .category-help{display:block;color:#aaa;font-size:11px;margin:0 0 11px}
+    .category-choices label.category-hidden{display:none!important}
+    @media(max-width:520px){.category-choices{gap:7px}.category-choices label{font-size:11px;padding:9px 10px}}
 
     .message {
       white-space: pre-wrap;
@@ -297,17 +305,41 @@
           </label>
 
           <div class="category-picker">
-            <strong>Choose categories (select as many as you want)</strong>
-            <div id="uploadCategoryChoices" class="category-choices">
-              <label><input type="checkbox" value="Trending"> Trending</label><label><input type="checkbox" value="Comedy"> Comedy</label>
-              <label><input type="checkbox" value="Drama"> Drama</label><label><input type="checkbox" value="Romance"> Romance</label>
-              <label><input type="checkbox" value="Action"> Action</label><label><input type="checkbox" value="Music"> Music</label>
-              <label><input type="checkbox" value="Sports"> Sports</label><label><input type="checkbox" value="Entertainment"> Entertainment</label>
-              <label><input type="checkbox" value="Movies"> Movies</label><label><input type="checkbox" value="Web Series"> Web Series</label>
-              <label><input type="checkbox" value="Education"> Education</label><label><input type="checkbox" value="News"> News</label>
-              <label><input type="checkbox" value="Lifestyle"> Lifestyle</label><label><input type="checkbox" value="Other"> Other</label>
+            <strong>Choose categories / tags (select all that apply)</strong>
+            <div class="category-search-row">
+              <input id="uploadCategorySearch" type="text" placeholder="Type a category/tag name..." autocomplete="off" aria-label="Search or add category">
+              <button id="uploadCategoryAdd" type="button" class="category-add-btn">Add / Select</button>
             </div>
-            <input id="videoCategoryCustom" placeholder="Extra categories (comma-separated), optional">
+            <small class="category-help">Type a name, then tap <b>Add / Select</b>. You can add multiple tags one by one.</small>
+            <div id="uploadCategoryChoices" class="category-choices">
+              <label><input type="checkbox" value="18+ Adult"> 18+ Adult</label>
+<label><input type="checkbox" value="Desi Adult"> Desi Adult</label>
+<label><input type="checkbox" value="Indian"> Indian</label>
+<label><input type="checkbox" value="Amateur"> Amateur</label>
+<label><input type="checkbox" value="Couples"> Couples</label>
+<label><input type="checkbox" value="Solo"> Solo</label>
+<label><input type="checkbox" value="Lesbian"> Lesbian</label>
+<label><input type="checkbox" value="Gay"> Gay</label>
+<label><input type="checkbox" value="Trans"> Trans</label>
+<label><input type="checkbox" value="MILF"> MILF</label>
+<label><input type="checkbox" value="Mature"> Mature</label>
+<label><input type="checkbox" value="POV"> POV</label>
+<label><input type="checkbox" value="Roleplay"> Roleplay</label>
+<label><input type="checkbox" value="Cosplay"> Cosplay</label>
+<label><input type="checkbox" value="BDSM"> BDSM</label>
+<label><input type="checkbox" value="Fetish"> Fetish</label>
+<label><input type="checkbox" value="Romance"> Romance</label>
+<label><input type="checkbox" value="Softcore"> Softcore</label>
+<label><input type="checkbox" value="Hardcore"> Hardcore</label>
+<label><input type="checkbox" value="Compilation"> Compilation</label>
+<label><input type="checkbox" value="Web Series"> Web Series</label>
+<label><input type="checkbox" value="Short Videos"> Short Videos</label>
+<label><input type="checkbox" value="Trending"> Trending</label>
+<label><input type="checkbox" value="New Videos"> New Videos</label>
+<label><input type="checkbox" value="Popular"> Popular</label>
+<label><input type="checkbox" value="Other"> Other</label>
+            </div>
+            <input id="videoCategoryCustom" placeholder="Your extra tags (comma-separated), optional">
           </div>
 
           <label>Description
@@ -384,16 +416,40 @@
 
       <div class="category-picker">
         <strong>Edit categories (select any number)</strong>
-        <div id="editCategoryChoices" class="category-choices">
-          <label><input type="checkbox" value="Trending"> Trending</label><label><input type="checkbox" value="Comedy"> Comedy</label>
-          <label><input type="checkbox" value="Drama"> Drama</label><label><input type="checkbox" value="Romance"> Romance</label>
-          <label><input type="checkbox" value="Action"> Action</label><label><input type="checkbox" value="Music"> Music</label>
-          <label><input type="checkbox" value="Sports"> Sports</label><label><input type="checkbox" value="Entertainment"> Entertainment</label>
-          <label><input type="checkbox" value="Movies"> Movies</label><label><input type="checkbox" value="Web Series"> Web Series</label>
-          <label><input type="checkbox" value="Education"> Education</label><label><input type="checkbox" value="News"> News</label>
-          <label><input type="checkbox" value="Lifestyle"> Lifestyle</label><label><input type="checkbox" value="Other"> Other</label>
+        <div class="category-search-row">
+          <input id="editCategorySearch" type="text" placeholder="Type a category/tag name..." autocomplete="off" aria-label="Search or add category">
+          <button id="editCategoryAdd" type="button" class="category-add-btn">Add / Select</button>
         </div>
-        <input id="editCategoryCustom" placeholder="Extra categories (comma-separated), optional">
+        <small class="category-help">Type a name, then tap <b>Add / Select</b>. You can add multiple tags one by one.</small>
+        <div id="editCategoryChoices" class="category-choices">
+          <label><input type="checkbox" value="18+ Adult"> 18+ Adult</label>
+<label><input type="checkbox" value="Desi Adult"> Desi Adult</label>
+<label><input type="checkbox" value="Indian"> Indian</label>
+<label><input type="checkbox" value="Amateur"> Amateur</label>
+<label><input type="checkbox" value="Couples"> Couples</label>
+<label><input type="checkbox" value="Solo"> Solo</label>
+<label><input type="checkbox" value="Lesbian"> Lesbian</label>
+<label><input type="checkbox" value="Gay"> Gay</label>
+<label><input type="checkbox" value="Trans"> Trans</label>
+<label><input type="checkbox" value="MILF"> MILF</label>
+<label><input type="checkbox" value="Mature"> Mature</label>
+<label><input type="checkbox" value="POV"> POV</label>
+<label><input type="checkbox" value="Roleplay"> Roleplay</label>
+<label><input type="checkbox" value="Cosplay"> Cosplay</label>
+<label><input type="checkbox" value="BDSM"> BDSM</label>
+<label><input type="checkbox" value="Fetish"> Fetish</label>
+<label><input type="checkbox" value="Romance"> Romance</label>
+<label><input type="checkbox" value="Softcore"> Softcore</label>
+<label><input type="checkbox" value="Hardcore"> Hardcore</label>
+<label><input type="checkbox" value="Compilation"> Compilation</label>
+<label><input type="checkbox" value="Web Series"> Web Series</label>
+<label><input type="checkbox" value="Short Videos"> Short Videos</label>
+<label><input type="checkbox" value="Trending"> Trending</label>
+<label><input type="checkbox" value="New Videos"> New Videos</label>
+<label><input type="checkbox" value="Popular"> Popular</label>
+<label><input type="checkbox" value="Other"> Other</label>
+        </div>
+        <input id="editCategoryCustom" placeholder="Your extra tags (comma-separated), optional">
       </div>
 
       <label>Description

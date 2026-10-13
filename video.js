@@ -41,11 +41,20 @@ function escapeHTML(value = "") {
 }
 
 function parseVideoCategories(value) {
-  if (Array.isArray(value)) return value.map(v => String(v).trim()).filter(Boolean);
-  const raw = String(value || "").trim();
-  if (!raw) return [];
-  try { const parsed = JSON.parse(raw); if (Array.isArray(parsed)) return parsed.map(v => String(v).trim()).filter(Boolean); } catch (_) {}
-  return raw.split(",").map(v => v.trim()).filter(Boolean);
+  let items = [];
+  if (Array.isArray(value)) items = value;
+  else {
+    const raw = String(value || "").trim();
+    if (!raw) return [];
+    try { const parsed = JSON.parse(raw); if (Array.isArray(parsed)) items = parsed; else items = raw.split(","); }
+    catch (_) { items = raw.split(","); }
+  }
+  const seen = new Set();
+  return items.map(v => String(v).trim()).filter(v => {
+    const key = v.toLocaleLowerCase();
+    if (!v || seen.has(key)) return false;
+    seen.add(key); return true;
+  });
 }
 
 function formatViews(value) {

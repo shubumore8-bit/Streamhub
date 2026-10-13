@@ -225,19 +225,21 @@ a{
   line-height:1.5;
 }
 
-/* CATEGORY BUTTON */
+/* CATEGORY BUTTON — DesiVexa red/black pills */
 .categoriesButtonWrap{position:relative;padding:12px 14px 0;z-index:20}
-.categoriesButton{width:100%;min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border:1px solid #293d4a;border-radius:12px;background:linear-gradient(135deg,#111f2b,#0b141d);color:#fff;text-align:left;box-shadow:0 5px 18px rgba(0,0,0,.18)}
+.categoriesButton{width:100%;min-height:50px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;border:1px solid #f21d35;border-radius:16px;background:linear-gradient(135deg,#1a090c,#080808 72%);color:#fff;text-align:left;box-shadow:0 5px 18px rgba(242,29,53,.12)}
+.categoriesButton:focus-visible,.category:focus-visible{outline:2px solid #ff5366;outline-offset:2px}
 .categoriesButton strong{display:inline-block;font-size:14px}
-.categoriesButton small{display:block;margin:4px 0 0 25px;color:#91a2af;font-size:11px}
-.categoryDropdown{margin-top:8px;padding:12px;border:1px solid #263b49;border-radius:12px;background:#0a141e;box-shadow:0 12px 28px rgba(0,0,0,.35)}
+.categoriesButton small{display:block;margin:4px 0 0 25px;color:#b9a6a9;font-size:11px}
+.categoryDropdown{margin-top:8px;padding:12px;border:1px solid #482027;border-radius:16px;background:#0b090a;box-shadow:0 12px 28px rgba(0,0,0,.45)}
 .categoryDropdown[hidden]{display:none}
-.categorySearch{width:100%;height:42px;padding:0 12px;border:1px solid #304654;border-radius:9px;outline:none;background:#071019;color:#fff}
-.categoryMeta{display:flex;justify-content:space-between;gap:8px;margin:12px 2px 8px;color:#b9c7d0;font-size:11px}
-.categoryDropdown .categories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:240px;overflow:auto;padding:0}
-.categoryDropdown .category{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;border-radius:8px}
-.categoryDropdown .categoryCount{float:right;color:#8fa1ad;font-size:10px}
-#categoryNoResults{padding:12px 4px;color:#91a2af;font-size:12px}
+.categorySearch{width:100%;height:42px;padding:0 12px;border:1px solid #482027;border-radius:12px;outline:none;background:#050505;color:#fff}
+.categorySearch:focus{border-color:#f21d35;box-shadow:0 0 0 2px rgba(242,29,53,.14)}
+.categoryMeta{display:flex;justify-content:space-between;gap:8px;margin:12px 2px 8px;color:#cbbfc1;font-size:11px}
+.categoryDropdown .categories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:260px;overflow:auto;padding:0}
+.categoryDropdown .category{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;border-radius:999px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.categoryDropdown .categoryCount{flex-shrink:0;color:#c5aeb2;font-size:10px}
+#categoryNoResults{padding:12px 4px;color:#b9a6a9;font-size:12px}
 
 /* CATEGORY PILLS */
 
@@ -255,19 +257,22 @@ a{
 
 .category{
   flex-shrink:0;
-  border:1px solid #293d4a;
-  background:#0b1720;
-  color:#dce5ea;
-  padding:8px 14px;
-  border-radius:20px;
+  border:1px solid #482027;
+  background:linear-gradient(180deg,#171012,#090909);
+  color:#f3e9eb;
+  padding:9px 15px;
+  border-radius:999px;
   font-size:12px;
   font-weight:700;
+  transition:background .18s ease,border-color .18s ease,transform .18s ease;
+  cursor:pointer;
 }
 
 .category.active{
-  background:#ff1744;
-  border-color:#ff1744;
+  background:linear-gradient(135deg,#ff304b,#d80d2a);
+  border-color:#ff304b;
   color:#fff;
+  box-shadow:0 4px 12px rgba(242,29,53,.22);
 }
 
 /* AD SPACES */
@@ -2078,8 +2083,9 @@ function parseVideoCategories(value){
   try { const parsed=JSON.parse(raw); if(Array.isArray(parsed)) return parsed.map(v=>String(v).trim()).filter(Boolean); } catch(_){}
   return raw.split(",").map(v=>v.trim()).filter(Boolean);
 }
+const CATEGORY_PRESETS = ["18+ Adult", "Desi Adult", "Indian", "Amateur", "Couples", "Solo", "Lesbian", "Gay", "Trans", "MILF", "Mature", "POV", "Roleplay", "Cosplay", "BDSM", "Fetish", "Romance", "Softcore", "Hardcore", "Compilation", "Web Series", "Short Videos", "Trending", "New Videos", "Popular", "Other"];
 function categoryCounts(){
-  const counts = new Map();
+  const counts = new Map(CATEGORY_PRESETS.map(name => [name, 0]));
   allVideos.forEach(video => {
     parseVideoCategories(video.category).forEach(name => {
       const existing=[...counts.keys()].find(key=>key.toLowerCase()===name.toLowerCase());

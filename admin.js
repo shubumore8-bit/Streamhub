@@ -62,26 +62,103 @@ function escapeHTML(value = "") {
   })[char]);
 }
 
-const DEFAULT_CATEGORIES = ["Trending","Comedy","Drama","Romance","Action","Music","Sports","Entertainment","Movies","Web Series","Education","News","Lifestyle","Other"];
+const DEFAULT_CATEGORIES = ["18+ Adult", "Desi Adult", "Indian", "Amateur", "Couples", "Solo", "Lesbian", "Gay", "Trans", "MILF", "Mature", "POV", "Roleplay", "Cosplay", "BDSM", "Fetish", "Romance", "Softcore", "Hardcore", "Compilation", "Web Series", "Short Videos", "Trending", "New Videos", "Popular", "Other"];
 function parseCategories(value) {
-  if (Array.isArray(value)) return value.map(v => String(v).trim()).filter(Boolean);
-  const raw = String(value || "").trim();
-  if (!raw) return [];
-  try { const parsed = JSON.parse(raw); if (Array.isArray(parsed)) return parsed.map(v => String(v).trim()).filter(Boolean); } catch (_) {}
-  return raw.split(",").map(v => v.trim()).filter(Boolean);
+  let items = [];
+  if (Array.isArray(value)) items = value;
+  else {
+    const raw = String(value || "").trim();
+    if (!raw) return [];
+    try { const parsed = JSON.parse(raw); if (Array.isArray(parsed)) items = parsed; else items = raw.split(","); }
+    catch (_) { items = raw.split(","); }
+  }
+  const seen = new Set();
+  return items.map(v => String(v).trim()).filter(v => {
+    const key = v.toLocaleLowerCase();
+    if (!v || seen.has(key)) return false;
+    seen.add(key); return true;
+  });
 }
 function getSelectedCategories(containerId, customInputId) {
   const selected = [...($(containerId)?.querySelectorAll('input[type="checkbox"]:checked') || [])].map(input => input.value);
   const custom = String($(customInputId)?.value || "").split(",").map(v => v.trim()).filter(Boolean);
-  return [...new Set([...selected, ...custom].map(v => v.trim()).filter(Boolean))].join(", ");
+  const seen = new Set();
+  return [...selected, ...custom].map(v => v.trim()).filter(v => {
+    const key = v.toLocaleLowerCase();
+    if (!v || seen.has(key)) return false;
+    seen.add(key); return true;
+  }).join(", ");
 }
 function setCategoryChoices(containerId, customInputId, value) {
   const categories = parseCategories(value);
-  const known = new Set(DEFAULT_CATEGORIES.map(v => v.toLowerCase()));
-  $(containerId)?.querySelectorAll('input[type="checkbox"]').forEach(input => {
-    input.checked = categories.some(v => v.toLowerCase() === input.value.toLowerCase());
+  const container = $(containerId);
+  if (!container) return;
+  // Remove old dynamically-added tags before loading a different video.
+  container.querySelectorAll('label[data-custom-category="true"]').forEach(label => label.remove());
+  const knownInputs = [...container.querySelectorAll('input[type="checkbox"]')];
+  const known = new Set(knownInputs.map(input => input.value.toLocaleLowerCase()));
+  knownInputs.forEach(input => {
+    input.checked = categories.some(v => v.toLocaleLowerCase() === input.value.toLocaleLowerCase());
   });
-  if ($(customInputId)) $(customInputId).value = categories.filter(v => !known.has(v.toLowerCase())).join(", ");
+  categories.filter(v => !known.has(v.toLocaleLowerCase())).forEach(value => {
+    const label = document.createElement('label');
+    label.dataset.customCategory = 'true';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = value;
+    checkbox.checked = true;
+    label.append(checkbox, document.createTextNode(' ' + value));
+    container.appendChild(label);
+  });
+  // Categories are represented as selected buttons; leave the legacy text field empty.
+  if ($(customInputId)) $(customInputId).value = '';
+}
+
+function filterCategoryChoices(containerId, searchValue) {
+  const query = String(searchValue || "").trim().toLocaleLowerCase();
+  $(containerId)?.querySelectorAll('label').forEach(label => {
+    const text = (label.textContent || "").toLocaleLowerCase();
+    label.classList.toggle('category-hidden', Boolean(query) && !text.includes(query));
+  });
+}
+function addOrSelectCategory(containerId, searchInputId, customInputId) {
+  const search = $(searchInputId);
+  const value = String(search?.value || "").trim().replace(/\s+/g, " ");
+  if (!value) { search?.focus(); return; }
+  const container = $(containerId);
+  if (!container) return;
+  let existing = [...container.querySelectorAll('input[type="checkbox"]')].find(input => input.value.toLocaleLowerCase() === value.toLocaleLowerCase());
+  if (!existing) {
+    const label = document.createElement('label');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = value;
+    checkbox.checked = true;
+    label.append(checkbox, document.createTextNode(' ' + value));
+    container.appendChild(label);
+    existing = checkbox;
+  }
+  existing.checked = true;
+  // Remove this tag from the legacy free-text field if it was already there.
+  const custom = $(customInputId);
+  if (custom) custom.value = String(custom.value || '').split(',').map(v => v.trim()).filter(v => v && v.toLocaleLowerCase() !== value.toLocaleLowerCase()).join(', ');
+  if (search) { search.value = ''; search.focus(); }
+  filterCategoryChoices(containerId, '');
+}
+function setupCategorySearch(prefix, containerId, customInputId) {
+  const searchId = prefix + 'CategorySearch';
+  const addId = prefix + 'CategoryAdd';
+  const search = $(searchId);
+  const add = $(addId);
+  if (!search || !add) return;
+  search.addEventListener('input', () => filterCategoryChoices(containerId, search.value));
+  add.addEventListener('click', () => addOrSelectCategory(containerId, searchId, customInputId));
+  search.addEventListener('keydown', event => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      addOrSelectCategory(containerId, searchId, customInputId);
+    }
+  });
 }
 
 function safeURL(value) {
@@ -939,6 +1016,10 @@ $("uploadForm")?.addEventListener("submit", async (event) => {
     setBusy(button, false);
   }
 });
+
+// Searchable multi-category controls: select existing tags or add any custom tag.
+setupCategorySearch("upload", "uploadCategoryChoices", "videoCategoryCustom");
+setupCategorySearch("edit", "editCategoryChoices", "editCategoryCustom");
 
 // AUTH STATE
 supabase.auth.onAuthStateChange((event, session) => {
