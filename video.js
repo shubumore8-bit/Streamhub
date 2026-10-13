@@ -350,6 +350,7 @@ function setupVastPreRoll() {
   let adPlaying = false;
   let contentShouldResume = false;
   let fallbackTimer = null;
+  let adFailedOpen = false;
 
   function showContent() {
     adPlaying = false;
@@ -388,8 +389,25 @@ function setupVastPreRoll() {
   }
 
   function failOpen(reason, error) {
-    console.warn(`[DesiVexa VAST] ${reason}`, describeAdError(error));
-    resumeContent();
+  if (adFailedOpen || adPlaying) return;
+
+  adFailedOpen = true;
+
+  if (fallbackTimer) {
+    clearTimeout(fallbackTimer);
+    fallbackTimer = null;
+  }
+
+  console.warn(
+    `[DesiVexa VAST] ${reason}`,
+    describeAdError(error)
+  );
+
+  try {
+    adsManager?.destroy();
+  } catch (_) {}
+
+  resumeContent();
   }
 
   function requestAds() {
@@ -416,7 +434,7 @@ function setupVastPreRoll() {
 
       adsLoader.addEventListener(
         google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
-        event => {
+        event => {if (adFailedOpen) return;
           try {
             // Only cover the content once an ad manager actually arrives.
             videoElement.pause();
