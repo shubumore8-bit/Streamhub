@@ -402,6 +402,10 @@ function setupVastPreRoll() {
     `[DesiVexa VAST] ${reason}`,
     describeAdError(error)
   );
+    alert(
+  "[VAST ERROR] " + reason + "\n" +
+  JSON.stringify(describeAdError(error))
+);
 
   try {
     adsManager?.destroy();
