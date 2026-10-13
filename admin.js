@@ -883,37 +883,105 @@ async function uploadToBucket(bucket, file, folder) {
   };
 }
 
-async function generateVideoThumbnail(file) {
-  return new Promise((resolve, reject) => {
-    const objectUrl = URL.createObjectURL(file);
-    const video = document.createElement("video");
-    video.preload = "auto"; video.muted = true; video.playsInline = true;
-    let done = false;
-    const finish = (error, result) => {
-      if (done) return; done = true; clearTimeout(timeout); URL.revokeObjectURL(objectUrl);
-      video.removeAttribute("src"); video.load(); error ? reject(error) : resolve(result);
-    };
-    const timeout = setTimeout(() => finish(new Error("Thumbnail auto-generate nahi hui. Manual thumbnail select karke dobara try karein.")), 20000);
-    video.onloadedmetadata = () => {
-      if (!video.videoWidth || !video.videoHeight) return finish(new Error("Video dimensions read nahi ho paaye."));
-      try { video.currentTime = Number.isFinite(video.duration) && video.duration > 1 ? Math.min(video.duration * 0.2, 8) : 0.1; } catch (_) {}
-    };
-    video.onseeked = () => {
-      try {
-        const canvas = document.createElement("canvas"), scale = Math.min(1, 640 / video.videoWidth);
-        canvas.width = Math.max(1, Math.round(video.videoWidth * scale)); canvas.height = Math.max(1, Math.round(video.videoHeight * scale));
-        const ctx = canvas.getContext("2d"); if (!ctx) return finish(new Error("Thumbnail canvas available nahi hai."));
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob(blob => {
-          if (!blob) return finish(new Error("Thumbnail image create nahi hui."));
-          finish(null, new File([blob], `thumbnail-${Date.now()}.jpg`, { type: "image/jpeg" }));
-        }, "image/jpeg", 0.85);
-      } catch (error) { finish(error); }
-    };
-    video.onerror = () => finish(new Error("Video se thumbnail nahi ban paayi. Manual thumbnail select karein."));
-    video.src = objectUrl; video.load();
-  });
+let adminGeneratedThumbnailFiles = [];
+let adminGeneratedThumbnailURLs = [];
+let adminSelectedThumbnail = null;
+let adminThumbnailToken = 0;
+
+function clearAdminThumbnailOptions() {
+  adminGeneratedThumbnailURLs.forEach(url => URL.revokeObjectURL(url));
+  adminGeneratedThumbnailURLs = [];
+  adminGeneratedThumbnailFiles = [];
+  adminSelectedThumbnail = null;
+  const container = $("adminThumbnailOptions");
+  if (container) container.innerHTML = "";
 }
+function showAdminThumbnailStatus(text) {
+  const el = $("adminThumbnailStatus");
+  if (el) el.textContent = text;
+}
+function selectAdminThumbnail(index) {
+  adminSelectedThumbnail = adminGeneratedThumbnailFiles[index] || null;
+  [...($("adminThumbnailOptions")?.querySelectorAll(".thumb-option") || [])].forEach((button, i) => {
+    button.classList.toggle("selected", i === index);
+    button.setAttribute("aria-pressed", i === index ? "true" : "false");
+  });
+  if (adminSelectedThumbnail) showAdminThumbnailStatus(`Automatic thumbnail ${index + 1} selected.`);
+}
+async function generateVideoThumbnails(file) {
+  const video = document.createElement("video");
+  const objectUrl = URL.createObjectURL(file);
+  video.preload = "auto"; video.muted = true; video.playsInline = true;
+  try {
+    await new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => reject(new Error("Video frames load nahi hue. MP4 try karo.")), 30000);
+      video.onloadedmetadata = () => { clearTimeout(timeout); resolve(); };
+      video.onerror = () => { clearTimeout(timeout); reject(new Error("Browser video format read nahi kar paaya. MP4 try karo.")); };
+      video.src = objectUrl; video.load();
+    });
+    if (!Number.isFinite(video.duration) || video.duration <= 0 || !video.videoWidth || !video.videoHeight) {
+      throw new Error("Video ki details read nahi ho paayi.");
+    }
+    const fractions = [0.08, 0.2, 0.32, 0.45, 0.58, 0.72, 0.88];
+    const scale = Math.min(1, 640 / video.videoWidth);
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(video.videoWidth * scale));
+    canvas.height = Math.max(1, Math.round(video.videoHeight * scale));
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Thumbnail canvas available nahi hai.");
+    const files = [];
+    for (let i = 0; i < fractions.length; i++) {
+      const time = Math.max(0, Math.min(video.duration - 0.08, video.duration * fractions[i]));
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error("Video frame seek nahi ho paaya.")), 12000);
+        video.onseeked = () => { clearTimeout(timeout); resolve(); };
+        try { video.currentTime = time; } catch (error) { clearTimeout(timeout); reject(error); }
+      });
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.86));
+      if (!blob) throw new Error("Thumbnail image create nahi hui.");
+      files.push(new File([blob], `thumbnail-option-${i + 1}.jpg`, { type: "image/jpeg" }));
+    }
+    return files;
+  } finally {
+    video.pause(); video.removeAttribute("src"); video.load(); URL.revokeObjectURL(objectUrl);
+  }
+}
+async function createAdminThumbnailOptions(file) {
+  const token = ++adminThumbnailToken;
+  clearAdminThumbnailOptions();
+  if (!file) { showAdminThumbnailStatus(""); return; }
+  showAdminThumbnailStatus("Video se 7 thumbnail options ban rahe hain…");
+  try {
+    const files = await generateVideoThumbnails(file);
+    if (token !== adminThumbnailToken) return;
+    adminGeneratedThumbnailFiles = files;
+    const container = $("adminThumbnailOptions");
+    files.forEach((thumb, index) => {
+      const url = URL.createObjectURL(thumb);
+      adminGeneratedThumbnailURLs.push(url);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "thumb-option";
+      button.innerHTML = `<img src="${url}" alt="Thumbnail option ${index + 1}"><span>Option ${index + 1}</span>`;
+      button.setAttribute("aria-pressed", "false");
+      button.addEventListener("click", () => selectAdminThumbnail(index));
+      container.appendChild(button);
+    });
+    selectAdminThumbnail(0);
+    showAdminThumbnailStatus("7 options ready. Apni pasand ka option select karo.");
+  } catch (error) {
+    if (token === adminThumbnailToken) showAdminThumbnailStatus(error.message || "Automatic thumbnails nahi ban paaye.");
+  }
+}
+$("videoFile")?.addEventListener("change", () => {
+  if ($("thumbnailFile")) $("thumbnailFile").value = "";
+  createAdminThumbnailOptions($("videoFile").files?.[0]);
+});
+$("thumbnailFile")?.addEventListener("change", () => {
+  if ($("thumbnailFile").files?.[0]) showAdminThumbnailStatus("Custom thumbnail selected. Ye automatic option ko replace karega.");
+  else if (adminSelectedThumbnail) showAdminThumbnailStatus("Automatic thumbnail selected.");
+});
 
 // ADMIN VIDEO UPLOAD
 $("uploadForm")?.addEventListener("submit", async (event) => {
@@ -962,10 +1030,9 @@ $("uploadForm")?.addEventListener("submit", async (event) => {
     uploadedVideoPath = uploadedVideo.path;
 
     let thumbnailURL = null;
-    let thumbnailToUpload = thumbnailFile;
+    let thumbnailToUpload = thumbnailFile || adminSelectedThumbnail;
     if (!thumbnailToUpload) {
-      message(uploadMessage, "Video se thumbnail auto-generate ho rahi hai…");
-      thumbnailToUpload = await generateVideoThumbnail(videoFile);
+      throw new Error("Video select karke 7 thumbnail options mein se ek choose karo, ya custom thumbnail upload karo.");
     }
     message(uploadMessage, "Thumbnail upload ho raha hai…");
     const uploadedThumb = await uploadToBucket(THUMB_BUCKET, thumbnailToUpload, "uploads");
@@ -992,6 +1059,9 @@ $("uploadForm")?.addEventListener("submit", async (event) => {
     if (error) throw error;
 
     $("uploadForm").reset();
+    clearAdminThumbnailOptions();
+    adminThumbnailToken++;
+    showAdminThumbnailStatus("");
 
     message(
       uploadMessage,

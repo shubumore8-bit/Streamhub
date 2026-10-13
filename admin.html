@@ -245,7 +245,14 @@
       h1 { font-size: 19px; }
       .toolbar { grid-template-columns: 1fr; gap: 0; }
     }
-  </style>
+  
+.thumb-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.thumb-option{background:#101010;border:2px solid #383838;border-radius:10px;padding:6px;text-align:left;color:#fff;min-width:0}
+.thumb-option.selected{border-color:#ed1935;box-shadow:0 0 0 1px #ed1935}
+.thumb-option img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:6px}
+.thumb-option span{display:block;font-size:12px;margin-top:6px}
+@media(min-width:520px){.thumb-options{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
 </head>
 
 <body>
@@ -349,9 +356,11 @@
           <label>Video file
             <input id="videoFile" type="file" accept="video/*" required>
           </label>
-
-          <label>Thumbnail image (optional)
-            <input id="thumbnailFile" type="file" accept="image/*">
+          <p class="muted">Video select karne par 7 automatic thumbnail options banenge. Ek choose karo ya custom image upload karo.</p>
+          <div id="adminThumbnailStatus" class="message" aria-live="polite"></div>
+          <div id="adminThumbnailOptions" class="thumb-options" aria-label="Choose automatic thumbnail"></div>
+          <label>Custom thumbnail image (optional; selected custom image will override)
+            <input id="thumbnailFile" type="file" accept="image/jpeg,image/png,image/webp">
           </label>
 
           <label>
