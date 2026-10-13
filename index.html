@@ -2126,9 +2126,11 @@ function renderCategories(filterText = ""){
   `;
   categoriesBox.querySelectorAll(".category").forEach(button => {
     button.addEventListener("click", () => {
-      applyCategoryFilter(button.dataset.category);
-      if(categoryDropdown) categoryDropdown.hidden = true;
-      if(categoriesToggle) categoriesToggle.setAttribute("aria-expanded", "false");
+      const chosen = button.dataset.category || "all";
+      const target = chosen.toLowerCase() === "all"
+        ? "category.html"
+        : "category.html?name=" + encodeURIComponent(chosen);
+      window.location.href = target;
     });
   });
 }
@@ -2146,8 +2148,16 @@ if(categorySearch){
   categorySearch.addEventListener("keydown", event => {
     if(event.key !== "Enter") return;
     event.preventDefault();
-    const first = categoriesBox?.querySelector(".category");
-    if(first) first.click();
+    const query = categorySearch.value.trim().toLowerCase();
+    if(!query) return;
+    const options = [...(categoriesBox?.querySelectorAll(".category") || [])];
+    const exact = options.find(button => (button.dataset.category || "").toLowerCase() === query);
+    const partial = options.find(button => (button.dataset.category || "").toLowerCase().includes(query));
+    const match = exact || partial;
+    if(match) match.click();
+    else {
+      window.location.href = "category.html?name=" + encodeURIComponent(categorySearch.value.trim());
+    }
   });
 }
 
