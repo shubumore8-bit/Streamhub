@@ -337,36 +337,40 @@ function setupVastPreRoll() {
 
   if (!videoElement || !adContainer) return;
 
-  if (!window.google || !window.google.ima) {
-    console.warn("Google IMA SDK unavailable; normal video playback enabled.");
+  // Helpful diagnostic: if this appears, the IMA SDK was not loaded.
+  if (!window.google?.ima) {
+    console.error("[DesiVexa VAST] Google IMA SDK is unavailable. Check the ima3.js request/ad blockers.");
     return;
   }
 
-  let adsLoader;
-  let adsManager;
-  let adDisplayContainer;
+  let adsLoader = null;
+  let adsManager = null;
+  let adDisplayContainer = null;
   let adRequested = false;
   let adPlaying = false;
   let contentShouldResume = false;
+  let fallbackTimer = null;
 
   function showContent() {
     adPlaying = false;
+    if (fallbackTimer) clearTimeout(fallbackTimer);
     adContainer.style.display = "none";
-    adStatus.style.display = "none";
+    if (adStatus) adStatus.style.display = "none";
     videoElement.style.visibility = "visible";
   }
 
-  function resumeContentIfRequested() {
+  function resumeContent() {
     showContent();
+    if (!contentShouldResume) return;
+    const promise = videoElement.play();
+    if (promise?.catch) promise.catch(() => {
+      console.info("[DesiVexa VAST] Browser requires the viewer to tap Play again.");
+    });
+  }
 
-    if (contentShouldResume) {
-      const playPromise = videoElement.play();
-      if (playPromise && typeof playPromise.catch === "function") {
-        playPromise.catch(() => {
-          // Browser may require another tap on the video play control.
-        });
-      }
-    }
+  function failOpen(reason, error) {
+    console.warn(`[DesiVexa VAST] ${reason}`, error || "");
+    resumeContent();
   }
 
   function requestAds() {
@@ -374,8 +378,16 @@ function setupVastPreRoll() {
     adRequested = true;
 
     try {
-      
+      // IMA needs a measurable, visible ad slot when it initializes.
+      adContainer.style.display = "block";
+      adContainer.style.visibility = "visible";
+      adContainer.style.position = "absolute";
+      adContainer.style.inset = "0";
+      adContainer.style.width = "100%";
+      adContainer.style.height = "100%";
 
+      adDisplayContainer = new google.ima.AdDisplayContainer(adContainer, videoElement);
+      adDisplayContainer.initialize();
       adsLoader = new google.ima.AdsLoader(adDisplayContainer);
 
       adsLoader.addEventListener(
@@ -383,110 +395,71 @@ function setupVastPreRoll() {
         event => {
           try {
             adsManager = event.getAdsManager(videoElement);
+            adsManager.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, e => failOpen("Ad manager error; playing content instead.", e));
+            adsManager.addEventListener(google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, resumeContent);
+            adsManager.addEventListener(google.ima.AdEvent.Type.ALL_ADS_COMPLETED, resumeContent);
+            adsManager.addEventListener(google.ima.AdEvent.Type.LOADED, () => {
+              adPlaying = true;
+              if (adStatus) adStatus.style.display = "block";
+              videoElement.style.visibility = "hidden";
+              if (fallbackTimer) clearTimeout(fallbackTimer);
+            });
+            adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, () => {
+              adPlaying = true;
+              if (adStatus) adStatus.style.display = "block";
+            });
 
-            adsManager.addEventListener(
-              google.ima.AdErrorEvent.Type.AD_ERROR,
-              error => {
-                console.warn("VAST ad playback failed:", error);
-                resumeContentIfRequested();
-              }
-            );
-
-            adsManager.addEventListener(
-              google.ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
-              resumeContentIfRequested
-            );
-
-            adsManager.addEventListener(
-              google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
-              showContent
-            );
-
-            adsManager.addEventListener(
-              google.ima.AdEvent.Type.LOADED,
-              () => {
-                adPlaying = true;
-                adContainer.style.display = "block";
-                adStatus.style.display = "block";
-                videoElement.style.visibility = "hidden";
-              }
-            );
-
-            const width = videoElement.clientWidth || 640;
-            const height = videoElement.clientHeight || 360;
-
+            const width = Math.max(1, videoElement.clientWidth || 640);
+            const height = Math.max(1, videoElement.clientHeight || 360);
             adsManager.init(width, height, google.ima.ViewMode.NORMAL);
             adsManager.start();
-
-          } catch (error) {
-            console.warn("IMA manager could not start:", error);
-            resumeContentIfRequested();
+          } catch (e) {
+            failOpen("Could not initialize ad playback; playing content instead.", e);
           }
         },
         false
       );
 
-      adsLoader.addEventListener(
-        google.ima.AdErrorEvent.Type.AD_ERROR,
-        error => {
-          console.warn("VAST request failed:", error);
-          resumeContentIfRequested();
-        },
-        false
-      );
+      adsLoader.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, e => {
+        failOpen("VAST request failed or returned no playable ad.", e);
+      }, false);
 
       const request = new google.ima.AdsRequest();
       request.adTagUrl = VAST_TAG_URL;
-
-      request.linearAdSlotWidth = videoElement.clientWidth || 640;
-      request.linearAdSlotHeight = videoElement.clientHeight || 360;
-      request.nonLinearAdSlotWidth = videoElement.clientWidth || 640;
-      request.nonLinearAdSlotHeight = Math.max(
-        50,
-        Math.round((videoElement.clientHeight || 360) / 3)
-      );
-
+      request.linearAdSlotWidth = Math.max(1, videoElement.clientWidth || 640);
+      request.linearAdSlotHeight = Math.max(1, videoElement.clientHeight || 360);
+      request.nonLinearAdSlotWidth = request.linearAdSlotWidth;
+      request.nonLinearAdSlotHeight = Math.max(50, Math.round(request.linearAdSlotHeight / 3));
+      request.forceNonLinearFullSlot = false;
       adsLoader.requestAds(request);
 
-    } catch (error) {
-      console.warn("IMA setup failed:", error);
-      resumeContentIfRequested();
+      // Never leave the viewer stuck if the ad server does not answer.
+      fallbackTimer = setTimeout(() => {
+        if (!adPlaying) failOpen("VAST response timed out; continuing to the video.");
+      }, 8000);
+    } catch (e) {
+      failOpen("IMA setup failed; playing content instead.", e);
     }
   }
 
-  // Request the pre-roll after the viewer taps Play.
+  // Only request once, on the first user-initiated play attempt.
   videoElement.addEventListener("play", function firstPlay() {
     if (adRequested || adPlaying) return;
-
     contentShouldResume = true;
-
-    // Pause the content while the pre-roll is requested.
     videoElement.pause();
-
-    try {
-      adDisplayContainer = new google.ima.AdDisplayContainer(
-        adContainer,
-        videoElement
-      );
-      adDisplayContainer.initialize();
-    } catch (error) {
-      console.warn("IMA initialization failed:", error);
-    }
-
     requestAds();
   });
 
   window.addEventListener("resize", () => {
     if (!adsManager || !adPlaying) return;
-
     try {
       adsManager.resize(
-        videoElement.clientWidth || 640,
-        videoElement.clientHeight || 360,
+        Math.max(1, videoElement.clientWidth || 640),
+        Math.max(1, videoElement.clientHeight || 360),
         google.ima.ViewMode.NORMAL
       );
-    } catch (error) {
-      console.warn("IMA resize failed:", error);
+    } catch (e) {
+      console.warn("[DesiVexa VAST] Resize failed.", e);
     }
   });
 }
