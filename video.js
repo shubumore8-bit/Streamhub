@@ -368,8 +368,25 @@ function setupVastPreRoll() {
     });
   }
 
+  function describeAdError(error) {
+    try {
+      const e = error?.getError?.();
+      if (!e) return error || "No detailed IMA error was provided.";
+      return {
+        code: e.getErrorCode?.(),
+        type: e.getType?.(),
+        message: e.getMessage?.(),
+        vastErrorCode: e.getVastErrorCode?.(),
+        adSystem: e.getAd?.()?.getAdSystem?.(),
+        innerError: e.getInnerError?.()?.message
+      };
+    } catch (_) {
+      return error || "Unable to read IMA error details.";
+    }
+  }
+
   function failOpen(reason, error) {
-    console.warn(`[DesiVexa VAST] ${reason}`, error || "");
+    console.warn(`[DesiVexa VAST] ${reason}`, describeAdError(error));
     resumeContent();
   }
 
@@ -406,7 +423,9 @@ function setupVastPreRoll() {
             });
             adsManager.addEventListener(google.ima.AdEvent.Type.STARTED, () => {
               adPlaying = true;
+              if (fallbackTimer) clearTimeout(fallbackTimer);
               if (adStatus) adStatus.style.display = "block";
+              console.info("[DesiVexa VAST] Ad playback started.");
             });
 
             const width = Math.max(1, videoElement.clientWidth || 640);
@@ -423,6 +442,8 @@ function setupVastPreRoll() {
       adsLoader.addEventListener(google.ima.AdErrorEvent.Type.AD_ERROR, e => {
         failOpen("VAST request failed or returned no playable ad.", e);
       }, false);
+      adsLoader.addEventListener(google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
+        () => console.info("[DesiVexa VAST] Ads manager loaded."), false);
 
       const request = new google.ima.AdsRequest();
       request.adTagUrl = VAST_TAG_URL;
@@ -431,6 +452,15 @@ function setupVastPreRoll() {
       request.nonLinearAdSlotWidth = request.linearAdSlotWidth;
       request.nonLinearAdSlotHeight = Math.max(50, Math.round(request.linearAdSlotHeight / 3));
       request.forceNonLinearFullSlot = false;
+      // Explicitly declare the content video to IMA; useful for VAST wrappers
+      // and ad servers that make decisions based on player dimensions.
+      request.setAdWillAutoPlay(false);
+      request.setAdWillPlayMuted(false);
+      console.info("[DesiVexa VAST] Requesting pre-roll", {
+        tag: VAST_TAG_URL,
+        width: request.linearAdSlotWidth,
+        height: request.linearAdSlotHeight
+      });
       adsLoader.requestAds(request);
 
       // Never leave the viewer stuck if the ad server does not answer.
