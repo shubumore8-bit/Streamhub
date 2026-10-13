@@ -149,7 +149,7 @@ function renderVideo(video, media) {
         style="position:relative;width:100%;background:#000;
         border-radius:10px;overflow:hidden;">
 
-        <video id="mainVideo" controls playsinline preload="metadata"
+        <video id="mainVideo" controls playsinline preload="auto"
           poster="${escapeHTML(thumbnail)}"
           style="display:block;width:100%;max-height:70vh;
           min-height:200px;background:#000;">
