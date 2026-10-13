@@ -6,7 +6,7 @@ const MEDIA_FUNCTION = `${SUPABASE_URL}/functions/v1/get-video-media`;
 
 // Your supplied HilltopAds VAST tag
 const VAST_TAG_URL =
-  "https://organic-package.com/d.mcFyzadqG/N/vGZTGVUM/Se-ms9wuZZbUElPkpP/T/cJ1/McTHEl3LOjTNMKt/N_z/Umx/MxT/co5lNywa";
+  "https://organic-package.com/drm.FdzHd-GnNDvGZFGqUD/qesmy9EuIZiUilXksPTTncO1qMuTEEP3/OrTwMPtaN/zXU/xfMbTScE5bNzwc";
 
 const params = new URLSearchParams(window.location.search);
 const videoId = params.get("id");
