@@ -1,0 +1,46 @@
+--- a/video.js
++++ b/video.js
+@@
+ async function recordView(id) {
+   try {
+     const { data, error } = await supabase.rpc(
+       "increment_video_views_v2",
+       {
+         p_video_id: id
+       }
+     );
+
+     if (error) {
+       console.error("View count RPC failed:", error);
+       return;
+     }
+
+     if (data === null || data === undefined) {
+       console.warn("View count update nahi hua.");
+       return;
+     }
+
+     const element = document.getElementById("viewsCount");
+
+     if (element) {
+       element.textContent = formatViews(data);
+     }
+
+     console.log("View count updated:", data);
+   } catch (error) {
+     console.error("View count error:", error);
+   }
+ }
+
+-    // PostgreSQL function returns the new count, or null if video isn't public.
+-    const nextViews = Number(data);
+-    if (!Number.isFinite(nextViews)) return;
+-
+-    const element = document.getElementById("viewsCount");
+-    if (element) element.textContent = formatViews(nextViews);
+-  } catch (error) {
+-    console.error("View count error:", error);
+-  }
+-}
+-
+ async function loadLikes(id) {
