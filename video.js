@@ -574,17 +574,35 @@ function setupVastPreRoll() {
 }
 
 async function recordView(id) {
-  // Atomic server-side increment avoids read/update races and works with RLS
-  // when the SQL function below has been installed in Supabase.
   try {
-    const { data, error } = await supabase.rpc("increment_video_views", {
-      video_id_input: id
-    });
+    const { data, error } = await supabase.rpc(
+      "increment_video_views_v2",
+      {
+        p_video_id: id
+      }
+    );
 
     if (error) {
-      console.error("View count RPC failed:", error.message || error);
+      console.error("View count RPC failed:", error);
       return;
     }
+
+    if (data === null || data === undefined) {
+      console.warn("View count update nahi hua.");
+      return;
+    }
+
+    const element = document.getElementById("viewsCount");
+
+    if (element) {
+      element.textContent = formatViews(data);
+    }
+
+    console.log("View count updated:", data);
+  } catch (error) {
+    console.error("View count error:", error);
+  }
+}
 
     // PostgreSQL function returns the new count, or null if video isn't public.
     const nextViews = Number(data);
