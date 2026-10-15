@@ -3,8 +3,7 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const MEDIA_FUNCTION = `${SUPABASE_URL}/functions/v1/get-video-media`;
-const VAST_TAG_URL = "https://youradexchange.com/video/select.php?r=12316118";
-const BANNER_SCRIPT_URL = "https://acscdn.com/script/aclib.js";
+const VAST_TAG_URL = "https://vast.yomeno.xyz/vast?spot_id=1504496";
 const videoId = new URLSearchParams(location.search).get("id");
 let currentVideo = null;
 let visitorId = localStorage.getItem("desivexa_visitor_id");
@@ -70,8 +69,9 @@ function renderVideo(v,m) {
       <div id="imaAdContainer" style="display:none;position:absolute;inset:0;z-index:5;background:#000"></div>
     </div>
     <p id="playerLoading" style="display:none;color:#aaa">Video loading…</p><p id="playerError" style="color:#f88;font-size:12px"></p><p id="adStatus" style="display:none;color:#aaa">Advertisement</p>
-    <div id="videoBannerAd" style="min-height:90px;margin:18px 0;display:flex;align-items:center;justify-content:center;background:#101010;border:1px dashed #444;color:#888">Advertisement</div>
+    <div id="videoBannerAd" style="min-height:90px;margin:18px 0;display:flex;align-items:center;justify-content:center"><div data-banner-id="1504500"></div></div>
     ${!m.videoUrl?'<p style="color:#f88">Video URL nahi mili. Supabase media function/storage path check karein.</p>':""}
+    <div id="playerBottomAd" style="min-height:90px;margin:18px 0;display:flex;align-items:center;justify-content:center"><div data-banner-id="1504501"></div></div>
     <h1 style="font-size:21px">${esc(v.title || "Untitled video")}</h1>
     <p style="color:#aaa">👁 <span id="viewsCount">${views(v.views)}</span> views ${v.category?" · "+esc(cats(v.category).join(" · ")):""}</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0">
@@ -95,39 +95,7 @@ function renderVideo(v,m) {
 }
 
 function setupBannerAd() {
-  const slot = document.getElementById("videoBannerAd");
-  if (!slot || slot.dataset.loaded) return;
-  slot.dataset.loaded = "1";
-  slot.replaceChildren();
-
-  // Load the ad provider library, then run the supplied banner zone inside this slot.
-  const runBanner = () => {
-    if (!window.aclib || typeof window.aclib.runBanner !== "function") {
-      console.warn("Banner ad library loaded, but aclib.runBanner is unavailable.");
-      return;
-    }
-    const call = document.createElement("script");
-    call.type = "text/javascript";
-    call.textContent = "aclib.runBanner({ zoneId: '12316182' });";
-    slot.appendChild(call);
-  };
-
-  let script = document.getElementById("aclib");
-  if (window.aclib && typeof window.aclib.runBanner === "function") {
-    runBanner();
-    return;
-  }
-  if (!script) {
-    script = document.createElement("script");
-    script.id = "aclib";
-    script.type = "text/javascript";
-    script.src = BANNER_SCRIPT_URL;
-    script.async = true;
-    script.referrerPolicy = "no-referrer-when-downgrade";
-    document.head.appendChild(script);
-  }
-  script.addEventListener("load", runBanner, { once: true });
-  script.addEventListener("error", () => console.warn("Banner ad script failed to load."), { once: true });
+  // ClickAdilla banner slots are embedded directly in the page markup.
 }
 
 function setupVastPreRoll() {
