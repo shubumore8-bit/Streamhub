@@ -187,7 +187,9 @@ async function submitComment(e,id) {
 async function loadRelatedVideos(id,category) {
   const box=document.getElementById("randomVideos");
   try {
-    const {data,error}=await supabase.from("videos").select("id,title,category,thumbnail_url,thumbnail,views,created_at").eq("published",true).neq("id",id).order("created_at",{ascending:false}).limit(60);
+    
+const {data,error}=await supabase.from("videos").select("id,title,category,thumbnail_url,views,created_at").eq("published",true).neq("id",id).order("created_at",{ascending:false}).limit(60);
+    
     if(error)throw error;
     const wanted=cats(category).map(x=>x.toLowerCase());
     const match=(data||[]).filter(v=>cats(v.category).some(c=>wanted.includes(c.toLowerCase())));
