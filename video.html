@@ -9,14 +9,7 @@
   <meta name="description" content="Watch videos on DesiVexa.">
 
   <link rel="stylesheet" href="style.css">
-
-  <!-- Video.js player -->
-  <link
-    href="https://vjs.zencdn.net/8.23.4/video-js.css"
-    rel="stylesheet"
-  >
-
-  <style>
+<style>
     body {
       margin: 0;
       background: #080808;
@@ -30,19 +23,6 @@
       margin: 0 auto;
       padding: 12px;
       box-sizing: border-box;
-    }
-
-    .player-wrapper {
-      width: 100%;
-      background: #000;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .video-js {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      height: auto;
     }
 
     .ad-slot {
@@ -192,56 +172,10 @@
     © <span id="footerYear"></span> DesiVexa
   </footer>
 
-  <!-- Video.js library -->
-  <script src="https://vjs.zencdn.net/8.23.4/video.min.js"></script>
-
-  <!-- Google IMA SDK for VAST ads -->
+  <!-- Google IMA SDK: used by video.js for VAST pre-roll ads -->
   <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
 
-  <!-- Video.js IMA plugin -->
-  <script src="https://cdn.jsdelivr.net/npm/videojs-contrib-ads@7.5.2/dist/videojs.ads.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/videojs-ima@2.4.0/dist/videojs.ima.min.js"></script>
-
-  <!-- Adcash AutoTag -->
-  <script id="aclib" type="text/javascript"
-    src="https://acscdn.com/script/aclib.js"></script>
-
-  <script>
-    window.addEventListener("load", function () {
-      if (window.aclib && typeof window.aclib.runAutoTag === "function") {
-        window.aclib.runAutoTag({
-          zoneId: "l2rdw266o0"
-        });
-      }
-    });
-  </script>
-
-  <!-- Initialize the VAST ad player -->
-  <script>
-    (function () {
-      const videoElement = document.getElementById("mainVideo");
-
-      if (!videoElement || typeof videojs === "undefined") {
-        console.error("Video.js player could not be initialized.");
-        return;
-      }
-
-      const player = videojs("mainVideo");
-
-      player.ready(function () {
-        if (typeof player.ima !== "function") {
-          console.error("Video.js IMA plugin did not load.");
-          return;
-        }
-
-        player.ima({
-          adTagUrl: "https://youradexchange.com/video/select.php?r=12316118"
-        });
-      });
-    })();
-  </script>
-
-  <!-- Keep your existing Supabase video functionality -->
+  <!-- IMPORTANT: video.js uses ES module imports, so load it as a module. -->
   <script type="module" src="video.js"></script>
 
   <script>

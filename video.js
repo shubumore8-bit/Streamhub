@@ -3,7 +3,7 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js";
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const MEDIA_FUNCTION = `${SUPABASE_URL}/functions/v1/get-video-media`;
-const VAST_TAG_URL = "https://organic-package.com/drm.FdzHd-GnNDvGZFGqUD/qesmy9EuIZiUilXksPTTncO1qMuTEEP3/OrTwMPtaN/zXU/xfMbTScE5bNzwc";
+const VAST_TAG_URL = "https://youradexchange.com/video/select.php?r=12316118";
 const BANNER_SCRIPT_URL = "https://nervousstroke.com/bXXXV/s.dmGnlk0TYTWBcW/_e/mH9xuAZmU/lHkrPPTtcs1XMLTdEEyqODTzMFt/NMzJUzxsMWTaIe5mNzws";
 const videoId = new URLSearchParams(location.search).get("id");
 let currentVideo = null;
