@@ -1,250 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<script id="aclib" type="text/javascript" src="https://acscdn.com/script/aclib.js"></script>
-<script type="text/javascript">
-    aclib.runAutoTag({
-        zoneId: 'vmqpcthm9r',
-    });
-</script>
-  
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#080808">
 
-  <meta
-    name="description"
-    content="Watch videos on DesiVexa."
+  <title>Watch Video - DesiVexa</title>
+  <meta name="description" content="Watch videos on DesiVexa.">
+
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Video.js player -->
+  <link
+    href="https://vjs.zencdn.net/8.23.4/video-js.css"
+    rel="stylesheet"
   >
 
-  <title>Watch Video - DesiVexa</title>
-
-  <!-- Google IMA SDK: VAST video ad support -->
-  <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
     body {
       margin: 0;
-      padding: 0;
       background: #080808;
-      color: #ffffff;
-      font-family: Arial, Helvetica, sans-serif;
+      color: #f5f5f5;
+      font-family: Arial, sans-serif;
     }
 
-    a {
-      color: inherit;
-    }
-
-    button,
-    input,
-    textarea {
-      font: inherit;
-    }
-
-    /* HEADER */
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 9999;
-      height: 58px;
-      background: #0d0d0d;
-      border-bottom: 1px solid #242424;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 14px;
-    }
-
-    .home-btn,
-    .search-btn {
-      width: 38px;
-      height: 38px;
-      flex: 0 0 38px;
-      border-radius: 10px;
-      border: 1px solid #333;
-      background: #151515;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      font-size: 20px;
-    }
-
-    .home-btn:hover,
-    .search-btn:hover {
-      background: #202020;
-      border-color: #e50914;
-    }
-
-    .logo {
-      color: #e50914;
-      font-size: 23px;
-      font-weight: 800;
-      letter-spacing: 0.3px;
-    }
-
-    .logo span {
-      color: #ffffff;
-    }
-
-    /* MAIN CONTENT */
-    main {
+    .video-container {
       width: 100%;
       max-width: 1100px;
       margin: 0 auto;
-      padding-bottom: 35px;
+      padding: 12px;
+      box-sizing: border-box;
     }
 
-    #page {
+    .player-wrapper {
       width: 100%;
-      min-width: 0;
-    }
-
-    .loading {
-      min-height: 60vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #aaa;
-      font-size: 16px;
-      text-align: center;
-      padding: 20px;
-    }
-
-    /* BANNER AD SLOTS */
-    .ad-slot,
-    .dv-ad-slot {
-      width: calc(100% - 24px);
-      max-width: 970px;
-      min-height: 90px;
-      margin: 18px auto 24px;
-      padding: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: #000;
+      border-radius: 10px;
       overflow: hidden;
+    }
+
+    .video-js {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      height: auto;
+    }
+
+    .ad-slot {
+      margin: 15px 0;
+      min-height: 0;
       text-align: center;
-      color: #888;
-      background: #101010;
-      border: 1px dashed #444;
-      border-radius: 8px;
-      font-size: 11px;
+      overflow: hidden;
     }
 
-    .ad-slot iframe,
-    .ad-slot img,
-    .dv-ad-slot iframe,
-    .dv-ad-slot img {
-      max-width: 100%;
-    }
-
-    .bottom-ad {
-      min-height: 100px;
-      margin-top: 20px;
-      margin-bottom: 28px;
-    }
-
-    /* VIDEO PLAYER */
-    #mainVideo {
-      display: block;
-      width: 100%;
-      max-height: 70vh;
-      min-height: 200px;
-      background: #000;
-    }
-
-    #imaAdContainer {
-      position: absolute;
-      inset: 0;
-      z-index: 5;
+    .ad-slot:empty {
       display: none;
-      background: #000;
     }
 
-    #imaAdContainer video {
-      width: 100%;
-      height: 100%;
+    .video-heading {
+      font-size: 22px;
+      margin: 16px 0 8px;
+      overflow-wrap: anywhere;
     }
 
-    /* BUTTONS */
-    .video-action {
-      background: #242424;
-      color: #fff;
-      border: 0;
-      padding: 11px 15px;
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .action-buttons button {
+      background: #171717;
+      border: 1px solid #333;
+      color: white;
       border-radius: 8px;
-      font-size: 14px;
+      padding: 10px 16px;
+      font-size: 15px;
       cursor: pointer;
     }
 
-    .video-action:active {
-      background: #383838;
+    .action-buttons button:hover {
+      background: #f21d35;
     }
 
-    /* COMMENTS */
-    #commentInput {
-      box-sizing: border-box;
-      width: 100%;
-      min-height: 90px;
-      background: #171717;
-      color: #fff;
-      border: 1px solid #333;
-      border-radius: 9px;
-      padding: 12px;
-      font-size: 14px;
-      resize: vertical;
+    .section-title {
+      border-left: 3px solid #f21d35;
+      padding-left: 10px;
+      margin-top: 25px;
     }
 
-    /* RELATED VIDEOS */
     #randomVideos {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
     }
 
-    @media (max-width: 360px) {
-      .site-header {
-        padding: 0 8px;
+    #commentsSection {
+      scroll-margin-top: 20px;
+      margin-top: 25px;
+    }
+
+    @media (max-width: 700px) {
+      #randomVideos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .home-btn,
-      .search-btn {
-        width: 34px;
-        height: 34px;
-        flex-basis: 34px;
-      }
-
-      .logo {
+      .video-heading {
         font-size: 19px;
-      }
-    }
-
-    @media (min-width: 768px) {
-      .site-header {
-        padding: 0 25px;
-      }
-
-      .logo {
-        font-size: 25px;
-      }
-
-      .dv-ad-slot {
-        min-height: 110px;
       }
     }
   </style>
@@ -252,44 +114,167 @@
 
 <body>
 
-  <!-- WEBSITE HEADER -->
-  <header class="site-header">
-
-    <a
-      class="home-btn"
-      href="index.html"
-      aria-label="Home"
-    >⌂</a>
-
-    <div class="logo">
-      Desi<span>Vexa</span>
-    </div>
-
-    <a
-      class="search-btn"
-      href="index.html"
-      aria-label="Search"
-    >⌕</a>
-
+  <header style="padding:15px;background:#111;border-bottom:1px solid #292929;">
+    <a href="index.html"
+       style="text-decoration:none;font-size:25px;font-weight:bold;">
+      <span style="color:white;">Desi</span><span style="color:#f21d35;">Vexa</span>
+    </a>
   </header>
 
-  <!-- VIDEO PAGE -->
-  <main>
+  <main class="video-container">
 
-    <div id="page">
+    <!-- Banner ad above player -->
+    <div id="videoBannerAd" class="ad-slot"></div>
 
-      <div class="loading">
-        Loading video...
-      </div>
-
+    <!-- Main video player -->
+    <div class="player-wrapper">
+      <video
+        id="mainVideo"
+        class="video-js vjs-default-skin vjs-big-play-centered"
+        controls
+        playsinline
+        preload="metadata"
+      ></video>
     </div>
+
+    <!-- Banner ad below player -->
+    <div id="playerBottomAd" class="ad-slot"></div>
+
+    <h1 id="videoTitle" class="video-heading">Loading video...</h1>
+
+    <div id="videoInfo"></div>
+
+    <div class="action-buttons">
+      <button id="likeButton" type="button">❤️ Like</button>
+      <button id="commentsButton" type="button">💬 Comments</button>
+      <button id="shareButton" type="button">🔗 Share</button>
+    </div>
+
+    <section>
+      <h3 class="section-title">Description</h3>
+      <div id="videoDescription">Loading...</div>
+    </section>
+
+    <section>
+      <h3 class="section-title">Related Videos</h3>
+      <div id="randomVideos"></div>
+    </section>
+
+    <!-- Banner ad below related videos -->
+    <div id="randomBannerAd" class="ad-slot"></div>
+
+    <section id="commentsSection">
+      <h3 class="section-title">Comments</h3>
+
+      <form id="commentForm">
+        <textarea
+          id="commentInput"
+          placeholder="Write a comment..."
+          rows="3"
+          required
+          style="box-sizing:border-box;width:100%;padding:12px;background:#171717;color:white;border:1px solid #333;border-radius:8px;"
+        ></textarea>
+
+        <button
+          type="submit"
+          style="margin-top:10px;padding:10px 18px;background:#f21d35;color:white;border:0;border-radius:8px;"
+        >
+          Post Comment
+        </button>
+      </form>
+
+      <div id="commentsList"></div>
+    </section>
 
   </main>
 
-  <!-- KEEP YOUR EXISTING SUPABASE VIDEO LOGIC -->
-  <script
-    type="module"
-    src="./video.js?v=13">
+  <footer style="padding:20px;text-align:center;color:#888;">
+    © <span id="footerYear"></span> DesiVexa
+  </footer>
+
+  <!-- Video.js library -->
+  <script src="https://vjs.zencdn.net/8.23.4/video.min.js"></script>
+
+  <!-- Google IMA SDK for VAST ads -->
+  <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+
+  <!-- Video.js IMA plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/videojs-contrib-ads@7.5.2/dist/videojs.ads.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/videojs-ima@2.4.0/dist/videojs.ima.min.js"></script>
+
+  <!-- Adcash AutoTag -->
+  <script id="aclib" type="text/javascript"
+    src="https://acscdn.com/script/aclib.js"></script>
+
+  <script>
+    window.addEventListener("load", function () {
+      if (window.aclib && typeof window.aclib.runAutoTag === "function") {
+        window.aclib.runAutoTag({
+          zoneId: "l2rdw266o0"
+        });
+      }
+    });
+  </script>
+
+  <!-- Initialize the VAST ad player -->
+  <script>
+    (function () {
+      const videoElement = document.getElementById("mainVideo");
+
+      if (!videoElement || typeof videojs === "undefined") {
+        console.error("Video.js player could not be initialized.");
+        return;
+      }
+
+      const player = videojs("mainVideo");
+
+      player.ready(function () {
+        if (typeof player.ima !== "function") {
+          console.error("Video.js IMA plugin did not load.");
+          return;
+        }
+
+        player.ima({
+          adTagUrl: "https://youradexchange.com/video/select.php?r=12316118"
+        });
+      });
+    })();
+  </script>
+
+  <!-- Keep your existing Supabase video functionality -->
+  <script src="config.js"></script>
+  <script src="video.js"></script>
+
+  <script>
+    document.getElementById("footerYear").textContent =
+      new Date().getFullYear();
+
+    document.getElementById("commentsButton").addEventListener("click", function () {
+      document.getElementById("commentsSection").scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+
+    document.getElementById("shareButton").addEventListener("click", async function () {
+      const shareData = {
+        title: document.title,
+        url: window.location.href
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+        } else if (navigator.clipboard) {
+          await navigator.clipboard.writeText(window.location.href);
+          alert("Video link copied!");
+        } else {
+          prompt("Copy video link:", window.location.href);
+        }
+      } catch (error) {
+        console.log("Share cancelled or unavailable.");
+      }
+    });
   </script>
 
 </body>
