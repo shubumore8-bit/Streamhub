@@ -69,9 +69,9 @@ function renderVideo(v,m) {
       <div id="imaAdContainer" style="display:none;position:absolute;inset:0;z-index:5;background:#000"></div>
     </div>
     <p id="playerLoading" style="display:none;color:#aaa">Video loading…</p><p id="playerError" style="color:#f88;font-size:12px"></p><p id="adStatus" style="display:none;color:#aaa">Advertisement</p>
-    <div id="videoBannerAd" style="min-height:90px;margin:18px 0;display:flex;align-items:center;justify-content:center"><div data-banner-id="1504500"></div></div>
+    <div id="videoBannerAd" class="mnd-ad-slot" style="min-height:90px;margin:18px 0;display:flex;align-items:center;justify-content:center"><div data-mndbanid="2e346c96-868a-4cde-8538-0df02f5792e8"></div></div>
     ${!m.videoUrl?'<p style="color:#f88">Video URL nahi mili. Supabase media function/storage path check karein.</p>':""}
-    <div id="playerBottomAd" style="min-height:90px;margin:18px 0;display:flex;align-items:center;justify-content:center"><div data-banner-id="1504501"></div></div>
+    <div id="playerBottomAd" class="mnd-ad-slot" style="min-height:90px;margin:18px 0;display:flex;align-items:center;justify-content:center"><div data-mndbanid="fa0b67e9-476a-4d90-af9d-4d738f94a02e"></div></div>
     <h1 style="font-size:21px">${esc(v.title || "Untitled video")}</h1>
     <p style="color:#aaa">👁 <span id="viewsCount">${views(v.views)}</span> views ${v.category?" · "+esc(cats(v.category).join(" · ")):""}</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0">
@@ -79,6 +79,7 @@ function renderVideo(v,m) {
     </div>
     ${v.description?`<section style="background:#151515;padding:14px;border-radius:9px;white-space:pre-wrap">${esc(v.description)}</section>`:""}
     <section style="margin-top:28px"><h2>Related Videos</h2><div id="randomVideos" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">Loading related videos...</div></section>
+    <div class="native-ad-slot" aria-label="Sponsored content" style="margin:18px 0;overflow:hidden;text-align:center"><div data-mndazid="d8fe8892-0743-402c-8ccf-ce46c9c4499e"></div></div>
     <section id="commentsSection" style="margin-top:35px;scroll-margin-top:70px"><h2>Comments</h2><form id="commentForm"><textarea id="commentInput" required maxlength="2000" placeholder="Apna comment likhein..." style="box-sizing:border-box;width:100%;min-height:90px;background:#171717;color:white;padding:12px"></textarea><button type="submit">Post Comment</button></form><div id="commentsList">Loading comments...</div></section>
     <footer style="text-align:center;color:#777;margin:30px">© ${new Date().getFullYear()} DesiVexa</footer>
   </div>`;
@@ -95,7 +96,17 @@ function renderVideo(v,m) {
 }
 
 function setupBannerAd() {
-  // ClickAdilla banner slots are embedded directly in the page markup.
+  // Load the Mondiad renderers after video.js has inserted the banner/native slots.
+  const loadOnce = (id, src) => {
+    if (document.getElementById(id)) return;
+    const s = document.createElement("script");
+    s.id = id;
+    s.async = true;
+    s.src = src;
+    document.body.appendChild(s);
+  };
+  loadOnce("mondiad-banner-js", "https://ss.mrmnd.com/banner.js");
+  loadOnce("mondiad-native-js", "https://ss.mrmnd.com/native.js");
 }
 
 function setupVastPreRoll() {

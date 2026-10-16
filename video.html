@@ -32,9 +32,11 @@
       overflow: hidden;
     }
 
-    .ad-slot:empty {
-      display: none;
-    }
+    .ad-slot:empty { display: none; }
+    .mnd-ad-slot, .native-ad-slot { width:100%; max-width:100%; min-width:0; overflow:hidden; text-align:center; display:flex; justify-content:center; align-items:center; margin:14px auto; }
+    .mnd-ad-slot > div, .native-ad-slot > div { max-width:100%; }
+    .mnd-ad-slot iframe, .mnd-ad-slot img, .native-ad-slot iframe, .native-ad-slot img { max-width:100%; }
+    @media (max-width:600px) { .mnd-ad-slot, .native-ad-slot { margin:10px auto; } }
 
     .video-heading {
       font-size: 22px;
@@ -103,7 +105,7 @@
   <main class="video-container">
 
     <!-- Banner ad above player -->
-    <div id="videoBannerAd" class="ad-slot"><div data-banner-id="1504500"></div></div>
+    <div id="videoBannerAd" class="ad-slot mnd-ad-slot"><div data-mndbanid="2e346c96-868a-4cde-8538-0df02f5792e8"></div></div>
 
     <!-- Main video player -->
     <div class="player-wrapper">
@@ -117,7 +119,7 @@
     </div>
 
     <!-- Banner ad below player -->
-    <div id="playerBottomAd" class="ad-slot"><div data-banner-id="1504501"></div></div>
+    <div id="playerBottomAd" class="ad-slot mnd-ad-slot"><div data-mndbanid="fa0b67e9-476a-4d90-af9d-4d738f94a02e"></div></div>
 
     <h1 id="videoTitle" class="video-heading">Loading video...</h1>
 
@@ -170,6 +172,13 @@
   <footer style="padding:20px;text-align:center;color:#888;">
     © <span id="footerYear"></span> DesiVexa
   </footer>
+
+
+  <!-- Mondiad site-wide formats -->
+  <script async src="https://ds.mrmnd.com/c6dd7933-d900-4826-9641-19879c7cf42d.js"></script>
+  <script async src="https://ss.mrmnd.com/interstitial.js" data-mndintid="1e0bf308-8270-4114-9154-8f4f252256c5"></script>
+  <script async src="https://ss.mrmnd.com/dynamic.js" data-mnddynid="d9faa4d6-b91c-4925-843a-4dda5a359202"></script>
+  <script async src="https://ss.mrmnd.com/static/fbc04aa6-c166-416c-871d-819d674ed4cb.js"></script>
 
   <!-- Google IMA SDK: used by video.js for VAST pre-roll ads -->
   <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>

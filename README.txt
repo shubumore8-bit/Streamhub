@@ -1,13 +1,9 @@
-DesiVexa — complete video page banner-space update
+DesiVexa Mondiad integration
 
-Files included:
-- video.html (complete file; existing ad scripts preserved, banner-slot styling added)
-- video.js (complete file; banner spaces inserted below the player and below related/random videos)
+Files: index.html, video.html, video.js, style.css
 
-How to use on GitHub (phone):
-1. Open your Streamhub repository and select video.html.
-2. Tap the pencil/Edit icon, replace the full file with the included video.html, then Commit changes.
-3. Repeat for video.js using the included complete video.js.
-4. Wait for Cloudflare Pages deployment, then refresh the video page.
+Replace the corresponding website files with these versions and deploy to Cloudflare Pages. Keep your existing config.js and any other files unchanged.
 
-Important: The two new areas are placeholders, so they reserve visible banner space. To show actual ads in these exact areas, put the ad network's banner code inside the corresponding div in video.js. Existing ad scripts and the existing bottom banner in video.html are kept.
+Mondiad banners: 3 homepage placements and 2 video-page placements. Native ad is placed on homepage and below related videos. Popunder, interstitial, dynamic, and page-push scripts are included on both pages. Existing VAST pre-roll code remains in video.js.
+
+Note: ad serving, format eligibility, consent rules, and browser restrictions are controlled by Mondiad and may affect whether/when ads appear. Test in a normal browser after deployment; ad blockers can hide ads.
